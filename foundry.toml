@@ -1,0 +1,42 @@
+# meta-platform — cấu hình Foundry
+# Chain MVM (đo 2026-11-18, docs/04-lo-trinh.md câu 4): chain id 991, opcode Cancun, trần gas block 1e10,
+# chain KHÔNG áp EIP-170/3860. Vẫn giữ trần 24 KB (`make sizes`) làm quy tắc thiết kế (AGENTS.md nguyên tắc 6).
+
+[profile.default]
+src = "src"
+test = "test"
+script = "script"
+out = "out"
+libs = ["lib"]
+solc = "0.8.28"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 200
+via_ir = false
+bytecode_hash = "none"
+cbor_metadata = false
+extra_output = ["storageLayout"]
+fs_permissions = [{ access = "read", path = "./storage-layouts" }]
+
+[profile.default.fuzz]
+runs = 256
+
+[profile.default.invariant]
+runs = 64
+depth = 64
+fail_on_revert = false
+
+[profile.ci.fuzz]
+runs = 2048
+
+[profile.ci.invariant]
+runs = 256
+depth = 128
+
+[fmt]
+line_length = 120
+tab_width = 4
+bracket_spacing = false
+int_types = "long"
+quote_style = "double"
+number_underscore = "thousands"
