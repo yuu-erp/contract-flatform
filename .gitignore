@@ -3,6 +3,8 @@ cache/
 broadcast/
 deployments/*-31337.json
 node_modules/
+web/node_modules/
+web/dist/
 .env
 .env.*
 !.env.example

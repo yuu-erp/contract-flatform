@@ -56,6 +56,10 @@ Lưu ý: khác với tài liệu cũ `meta-iqr/PROJECT_ARCHITECTURE_README.md` (
 git submodule update --init --recursive   # lần đầu
 make ci                 # fmt, build, sizes, deps, layout, test, gas snapshot
 make legacy-inventory   # sinh dữ liệu thô kiểm kê meta-iqr vào docs/legacy/generated/
+
+# Trang thử vai trò (cần ví MetaNode để đăng nhập)
+cd web && pnpm install && pnpm dev
+# http://localhost:5173/platform-test/  — chain mặc định 991, đổi bằng VITE_CHAIN_ID=… pnpm dev
 ```
 
 | Thư mục | Nội dung |

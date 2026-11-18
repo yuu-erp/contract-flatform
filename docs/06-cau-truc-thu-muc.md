@@ -15,6 +15,7 @@ meta-platform/
 ├── script/                  script Foundry deploy/cấu hình (chỉ local/devnet)
 ├── abi/                     ABI JSON thuần cho client, sinh bằng `make abi` (commit)
 ├── deployments/             `platform-<chainid>.json` do script deploy ghi (file anvil 31337 không commit)
+├── web/                     trang thử vai trò bằng ví MetaNode (pnpm, không nằm trong forge)
 ├── scripts/                 công cụ kiểm tra và tiện ích (Python/Bash)
 ├── storage-layouts/         snapshot storage layout để chặn nâng cấp làm hỏng dữ liệu
 ├── docs/                    tài liệu nghiệp vụ, kiến trúc, đặc tả (mục 5)
@@ -122,6 +123,7 @@ Giữa các module, khi NET hay IQR cần báo cho Loyalty, nó gọi qua `inter
 | `script/` | `DeployPlatform.s.sol`, `DeployAgentAccess.s.sol`, `SetPlatformAdmin.s.sol` | Deploy tầng quản trị, thêm AgentAccess vào hệ đã deploy, cấp/thu admin. Không chứa khoá. Người dùng tự chạy `make deploy` / `make deploy-agent-access` / `make set-admin` |
 | `abi/` | `PlatformAccess.json`, `AgentRegistry.json`, `BranchRegistry.json`, `HistoryIndex.json`, `AgentAccess.json` | Mảng ABI thuần (`make abi`), client copy. Không có bytecode |
 | `deployments/` | `platform-<chainid>.json` | Địa chỉ proxy, impl, owner, admin sau deploy. `*-31337.json` (anvil) nằm trong `.gitignore` |
+| `web/` | Vite + React, `pnpm` | Trang thử luồng vai trò (admin, chủ agent, quản lý, nhân viên, user). ABI và địa chỉ đọc từ `abi/` và `deployments/`, không chép. `node_modules/` và `dist/` không commit |
 | `scripts/check_deps.sh` | kiểm luật mục 4 | Giữ kiến trúc không bị xói mòn |
 | `scripts/storage_layout.py` | `check` / `snapshot` layout | Chặn nâng cấp làm lệch storage (lỗi hệ cũ phải có `rescueAdminAccess`) |
 | `scripts/legacy/` | `inventory.py`, `check_docs.py` | Kiểm kê hệ cũ meta-iqr (GĐ0), chỉ đọc |
