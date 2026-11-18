@@ -1,0 +1,80 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct AgentRegistry.AgentsStorage"
+ ],
+ [
+  "s.history",
+  0,
+  0,
+  "contract IHistoryIndex"
+ ],
+ [
+  "s.agentCount",
+  0,
+  20,
+  "uint64"
+ ],
+ [
+  "s.agents",
+  1,
+  0,
+  "mapping(uint64 => struct IAgentRegistry.Agent)"
+ ],
+ [
+  "s.agentByOwner",
+  2,
+  0,
+  "mapping(address => uint64)"
+ ],
+ [
+  "agentRow",
+  3,
+  0,
+  "struct IAgentRegistry.Agent"
+ ],
+ [
+  "agentRow.id",
+  3,
+  0,
+  "uint64"
+ ],
+ [
+  "agentRow.owner",
+  3,
+  8,
+  "address"
+ ],
+ [
+  "agentRow.pendingOwner",
+  4,
+  0,
+  "address"
+ ],
+ [
+  "agentRow.status",
+  4,
+  20,
+  "enum IAgentRegistry.AgentStatus"
+ ],
+ [
+  "agentRow.createdAt",
+  4,
+  21,
+  "uint64"
+ ],
+ [
+  "agentRow.updatedAt",
+  5,
+  0,
+  "uint64"
+ ],
+ [
+  "agentRow.profileDocId",
+  6,
+  0,
+  "uint256"
+ ]
+]

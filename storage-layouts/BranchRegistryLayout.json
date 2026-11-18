@@ -1,0 +1,128 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct BranchRegistry.BranchesStorage"
+ ],
+ [
+  "s.agents",
+  0,
+  0,
+  "contract IAgentRegistry"
+ ],
+ [
+  "s.history",
+  1,
+  0,
+  "contract IHistoryIndex"
+ ],
+ [
+  "s.branchCount",
+  1,
+  20,
+  "uint64"
+ ],
+ [
+  "s.branches",
+  2,
+  0,
+  "mapping(uint64 => struct IBranchRegistry.Branch)"
+ ],
+ [
+  "s.branchByDomainHash",
+  3,
+  0,
+  "mapping(bytes32 => uint64)"
+ ],
+ [
+  "s.mainBranchOf",
+  4,
+  0,
+  "mapping(uint64 => uint64)"
+ ],
+ [
+  "s.branchCountOf",
+  5,
+  0,
+  "mapping(uint64 => uint32)"
+ ],
+ [
+  "s.agentTax",
+  6,
+  0,
+  "mapping(uint64 => mapping(uint16 => uint16))"
+ ],
+ [
+  "s.branchTaxPlusOne",
+  7,
+  0,
+  "mapping(uint64 => mapping(uint16 => uint16))"
+ ],
+ [
+  "branchRow",
+  8,
+  0,
+  "struct IBranchRegistry.Branch"
+ ],
+ [
+  "branchRow.id",
+  8,
+  0,
+  "uint64"
+ ],
+ [
+  "branchRow.agentId",
+  8,
+  8,
+  "uint64"
+ ],
+ [
+  "branchRow.status",
+  8,
+  16,
+  "enum IBranchRegistry.BranchStatus"
+ ],
+ [
+  "branchRow.services",
+  8,
+  17,
+  "uint16"
+ ],
+ [
+  "branchRow.isMain",
+  8,
+  19,
+  "bool"
+ ],
+ [
+  "branchRow.tzOffsetMinutes",
+  8,
+  20,
+  "int16"
+ ],
+ [
+  "branchRow.domainHash",
+  9,
+  0,
+  "bytes32"
+ ],
+ [
+  "branchRow.createdAt",
+  10,
+  0,
+  "uint64"
+ ],
+ [
+  "branchRow.updatedAt",
+  10,
+  8,
+  "uint64"
+ ],
+ [
+  "branchRow.profileDocId",
+  11,
+  0,
+  "uint256"
+ ]
+]

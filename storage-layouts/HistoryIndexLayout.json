@@ -1,0 +1,32 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct HistoryIndex.HistoryStorage"
+ ],
+ [
+  "s.fullDB",
+  0,
+  0,
+  "contract IFullDB"
+ ],
+ [
+  "s.writers",
+  1,
+  0,
+  "mapping(address => bool)"
+ ],
+ [
+  "s.dbReady",
+  2,
+  0,
+  "mapping(bytes32 => bool)"
+ ],
+ [
+  "s.docUsed",
+  3,
+  0,
+  "mapping(bytes32 => mapping(uint256 => bool))"
+ ]
+]

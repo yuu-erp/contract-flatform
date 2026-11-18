@@ -1,0 +1,14 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct PlatformAccessed.AccessedStorage"
+ ],
+ [
+  "s.access",
+  0,
+  0,
+  "contract IPlatformAccess"
+ ]
+]

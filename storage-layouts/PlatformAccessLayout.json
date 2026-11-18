@@ -1,0 +1,20 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct PlatformAccess.AccessStorage"
+ ],
+ [
+  "s.admins",
+  0,
+  0,
+  "address[]"
+ ],
+ [
+  "s.adminIndexPlusOne",
+  1,
+  0,
+  "mapping(address => uint256)"
+ ]
+]
