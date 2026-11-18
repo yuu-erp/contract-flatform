@@ -7,9 +7,11 @@ import {PlatformAccess} from "../src/core/access/PlatformAccess.sol";
 import {HistoryIndex} from "../src/core/history/HistoryIndex.sol";
 import {AgentRegistry} from "../src/core/tenant/AgentRegistry.sol";
 import {BranchRegistry} from "../src/core/tenant/BranchRegistry.sol";
+import {AgentAccess} from "../src/core/access/AgentAccess.sol";
 
-/// @notice Deploy tầng quản trị: PlatformAccess → HistoryIndex → AgentRegistry → BranchRegistry,
-///         rồi đăng ký hai registry làm writer của HistoryIndex.
+/// @notice Deploy tầng quản trị: PlatformAccess → HistoryIndex → AgentRegistry → BranchRegistry → AgentAccess,
+///         rồi đăng ký ba contract làm writer của HistoryIndex.
+///         Hệ đã deploy trước khi có AgentAccess thì dùng `script/DeployAgentAccess.s.sol`.
 ///         `run()` đọc env và broadcast. `deploy()` không đọc env, để test gọi trực tiếp.
 ///         Không hard-code khoá. Người dùng tự chạy `make deploy` với `.env`.
 contract DeployPlatform is Script {
@@ -22,6 +24,8 @@ contract DeployPlatform is Script {
         address agentsImpl;
         address branchesProxy;
         address branchesImpl;
+        address agentAccessProxy;
+        address agentAccessImpl;
         address owner;
         address admin;
     }
@@ -67,12 +71,24 @@ contract DeployPlatform is Script {
             )
         );
 
+        deployed.agentAccessImpl = address(new AgentAccess());
+        deployed.agentAccessProxy = address(
+            new ERC1967Proxy(
+                deployed.agentAccessImpl,
+                abi.encodeCall(
+                    AgentAccess.initialize,
+                    (deployed.accessProxy, deployed.agentsProxy, deployed.branchesProxy, deployed.historyProxy)
+                )
+            )
+        );
+
         HistoryIndex history = HistoryIndex(deployed.historyProxy);
         PlatformAccess access = PlatformAccess(deployed.accessProxy);
 
         if (!_broadcasting) vm.startPrank(owner);
         history.setWriter(deployed.agentsProxy, true);
         history.setWriter(deployed.branchesProxy, true);
+        history.setWriter(deployed.agentAccessProxy, true);
         if (admin != address(0)) access.addPlatformAdmin(admin);
         if (!_broadcasting) vm.stopPrank();
     }
@@ -96,6 +112,7 @@ contract DeployPlatform is Script {
         console2.log("historyProxy", deployed.historyProxy);
         console2.log("agentsProxy", deployed.agentsProxy);
         console2.log("branchesProxy", deployed.branchesProxy);
+        console2.log("agentAccessProxy", deployed.agentAccessProxy);
         console2.log("wrote", path);
     }
 
@@ -122,6 +139,8 @@ contract DeployPlatform is Script {
         vm.serializeAddress(obj, "agentsImpl", deployed.agentsImpl);
         vm.serializeAddress(obj, "branchesProxy", deployed.branchesProxy);
         vm.serializeAddress(obj, "branchesImpl", deployed.branchesImpl);
+        vm.serializeAddress(obj, "agentAccessProxy", deployed.agentAccessProxy);
+        vm.serializeAddress(obj, "agentAccessImpl", deployed.agentAccessImpl);
         vm.serializeAddress(obj, "owner", deployed.owner);
         string memory json = vm.serializeAddress(obj, "admin", deployed.admin);
         vm.writeJson(json, path);

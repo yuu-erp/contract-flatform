@@ -48,7 +48,7 @@ Trong `core/` có hai nhóm khác nhau về **người quản lý**. Ranh giới
 | Thư mục | Contract dự kiến | Làm gì | Mục đích | Ai được ghi | Đặc tả / task |
 |---|---|---|---|---|---|
 | `operator/` | `PlatformOperator` (**hoãn**) | Gom thao tác vận hành nhiều bước (ví dụ tạo agent + chi nhánh chính) vào một giao dịch, nếu cần | Hiện mỗi registry tự kiểm `PLATFORM_ADMIN` nên chưa cần | `PLATFORM_ADMIN` | `docs/modules/core-operator.md` mục 2.1 |
-| `access/` | ✅ `PlatformAccess`, ✅ `PlatformAccessed` (abstract); sau: `AgentAccess` | `PlatformAccess`: **chỉ tầng quản trị** (`PLATFORM_OWNER`, `PLATFORM_ADMIN`) + pause toàn hệ. `PlatformAccessed`: modifier kiểm quyền và quyền nâng cấp cho mọi contract. Vai trò bên trong agent (co-owner, quản lý, nhân viên) để ở `AgentAccess`, **tách khỏi** tầng quản trị | Một nơi trả lời "ai quản trị hệ thống", thay cho 3 vai trò admin rời rạc của hệ cũ; vai trò agent không lẫn vào | `PLATFORM_OWNER` | `docs/modules/core-operator.md` mục 2.2 |
+| `access/` | ✅ `PlatformAccess`, ✅ `PlatformAccessed` (abstract), ✅ `AgentAccess` | `PlatformAccess`: **chỉ tầng quản trị** (`PLATFORM_OWNER`, `PLATFORM_ADMIN`) + pause toàn hệ. `PlatformAccessed`: modifier kiểm quyền và quyền nâng cấp cho mọi contract. Vai trò bên trong agent để ở `AgentAccess` (chủ agent → `Manager` → `Staff` theo chi nhánh; co-owner để sau), **tách khỏi** tầng quản trị | Một nơi trả lời "ai quản trị hệ thống", thay cho 3 vai trò admin rời rạc của hệ cũ; vai trò agent không lẫn vào | `PLATFORM_OWNER`; vai trò agent do chủ agent / quản lý | `docs/modules/core-operator.md` mục 2.2, `docs/modules/core-access.md` |
 | `tenant/` | ✅ `AgentRegistry`, ✅ `BranchRegistry` | `AgentRegistry`: agent, chủ agent, trạng thái (`Active`/`Suspended`/`Deleted`), `requireAgentWritable`. `BranchRegistry`: chi nhánh, dịch vụ bật, domain, thuế, `requireWritable(branchId, service)` | Nguồn sự thật về "agent/chi nhánh nào tồn tại, đang chạy, bật dịch vụ gì". Mọi module hỏi ở đây trước khi ghi (dừng thì chỉ đọc) | `PLATFORM_ADMIN`; thuế do chủ agent | `docs/modules/core-operator.md` |
 | `registry/` | `Registry` | Sổ địa chỉ các contract core và module, có version | Client và contract tra địa chỉ ở một chỗ; nâng cấp hay thêm module không phải sửa cấu hình rải rác | `PLATFORM_OWNER` | chưa lập |
 | `migration/` | `Migration` | Nhập dữ liệu từ meta-iqr theo lô, idempotent, có Merkle proof; `finalize` khoá vĩnh viễn | Chuyển agent từ hệ cũ sang mà không nhập trùng, không sửa được sau khi chốt | vai trò `MIGRATOR` (thu hồi sau finalize) | `docs/03-chuyen-du-lieu.md` |
@@ -96,9 +96,9 @@ Interface công khai của mọi contract (`I<Tên>.sol`): hàm, event, lỗi, s
 | `e2e/` | kịch bản đầu cuối qua nhiều contract (tạo agent → bật dịch vụ → nghiệp vụ → dừng → chỉ đọc) | Kiểm các khối nối với nhau đúng, như người dùng thật đi qua |
 | `layout/` | harness `<Tên>Layout.sol`: khai báo struct storage namespaced như biến thường | Cho `scripts/storage_layout.py` in và so layout từng trường |
 | `utils/` | `BaseTest.sol` (vai trò mẫu, `deployProxy`, `installMockFullDB`), `MockFullDB.sol`, `MockServiceModule.sol` | Hạ tầng test dùng chung |
-| `script/` | test script deploy (`DeployPlatform`, `SetPlatformAdmin`) | Script chạy được trong test, không cần chain |
+| `script/` | test script deploy (`DeployPlatform`, `DeployAgentAccess`, `SetPlatformAdmin`) | Script chạy được trong test, không cần chain |
 
-Khung `Scaffold` đã xoá (2026-11-18) khi có khối thật đầu tiên. Harness layout của core ở `test/layout/CoreLayouts.sol`; `test/utils/PlatformFixture.sol` dựng sẵn PlatformAccess → HistoryIndex → AgentRegistry cho test.
+Khung `Scaffold` đã xoá (2026-11-18) khi có khối thật đầu tiên. Harness layout của core ở `test/layout/CoreLayouts.sol`; `test/utils/PlatformFixture.sol` dựng sẵn PlatformAccess → HistoryIndex → AgentRegistry → BranchRegistry → AgentAccess cho test.
 
 ## 4. Luật phụ thuộc trong `src/`
 
@@ -119,8 +119,8 @@ Giữa các module, khi NET hay IQR cần báo cho Loyalty, nó gọi qua `inter
 
 | Thư mục / file | Chứa gì | Mục đích |
 |---|---|---|
-| `script/` | `DeployPlatform.s.sol`, `SetPlatformAdmin.s.sol` | Deploy tầng quản trị và cấp/thu admin. Không chứa khoá. Người dùng tự chạy `make deploy` / `make set-admin` |
-| `abi/` | `PlatformAccess.json`, `AgentRegistry.json`, `BranchRegistry.json`, `HistoryIndex.json` | Mảng ABI thuần (`make abi`), client copy. Không có bytecode |
+| `script/` | `DeployPlatform.s.sol`, `DeployAgentAccess.s.sol`, `SetPlatformAdmin.s.sol` | Deploy tầng quản trị, thêm AgentAccess vào hệ đã deploy, cấp/thu admin. Không chứa khoá. Người dùng tự chạy `make deploy` / `make deploy-agent-access` / `make set-admin` |
+| `abi/` | `PlatformAccess.json`, `AgentRegistry.json`, `BranchRegistry.json`, `HistoryIndex.json`, `AgentAccess.json` | Mảng ABI thuần (`make abi`), client copy. Không có bytecode |
 | `deployments/` | `platform-<chainid>.json` | Địa chỉ proxy, impl, owner, admin sau deploy. `*-31337.json` (anvil) nằm trong `.gitignore` |
 | `scripts/check_deps.sh` | kiểm luật mục 4 | Giữ kiến trúc không bị xói mòn |
 | `scripts/storage_layout.py` | `check` / `snapshot` layout | Chặn nâng cấp làm lệch storage (lỗi hệ cũ phải có `rescueAdminAccess`) |

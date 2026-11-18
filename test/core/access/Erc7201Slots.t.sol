@@ -39,4 +39,9 @@ contract Erc7201SlotsTest is PlatformFixture {
         bytes32 v = vm.load(address(branches), _slot("metaplatform.core.tenant.branches"));
         assertEq(address(uint160(uint256(v))), address(registry));
     }
+
+    function test_agentAccessSlot() public view {
+        bytes32 v = vm.load(address(agentAccess), _slot("metaplatform.core.access.agent"));
+        assertEq(address(uint160(uint256(v))), address(registry));
+    }
 }

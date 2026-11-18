@@ -6,6 +6,8 @@ import {PlatformAccessed} from "../../src/core/access/PlatformAccessed.sol";
 import {HistoryIndex} from "../../src/core/history/HistoryIndex.sol";
 import {AgentRegistry} from "../../src/core/tenant/AgentRegistry.sol";
 import {BranchRegistry} from "../../src/core/tenant/BranchRegistry.sol";
+import {AgentAccess} from "../../src/core/access/AgentAccess.sol";
+import {IAgentAccess} from "../../src/interfaces/IAgentAccess.sol";
 import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
 import {IAgentRegistry} from "../../src/interfaces/IAgentRegistry.sol";
 
@@ -33,4 +35,10 @@ contract BranchRegistryLayout {
     BranchRegistry.BranchesStorage internal s;
     // Branch nằm trong mapping nên phải khai báo riêng để kiểm thứ tự trường
     IBranchRegistry.Branch internal branchRow;
+}
+
+contract AgentAccessLayout {
+    AgentAccess.AgentAccessStorage internal s;
+    // Member nằm trong mapping nên phải khai báo riêng để kiểm thứ tự trường
+    IAgentAccess.Member internal memberRow;
 }

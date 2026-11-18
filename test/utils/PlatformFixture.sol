@@ -7,17 +7,19 @@ import {PlatformAccess} from "../../src/core/access/PlatformAccess.sol";
 import {HistoryIndex} from "../../src/core/history/HistoryIndex.sol";
 import {AgentRegistry} from "../../src/core/tenant/AgentRegistry.sol";
 import {BranchRegistry} from "../../src/core/tenant/BranchRegistry.sol";
+import {AgentAccess} from "../../src/core/access/AgentAccess.sol";
 import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
 import {IAgentRegistry} from "../../src/interfaces/IAgentRegistry.sol";
 
 /// @notice Dựng tầng quản trị như khi deploy thật: PlatformAccess → HistoryIndex → AgentRegistry → BranchRegistry,
-///         owner đăng ký hai registry làm writer và thêm hai admin.
+///         → AgentAccess; owner đăng ký ba contract làm writer và thêm hai admin.
 abstract contract PlatformFixture is BaseTest {
     MockFullDB internal fulldb;
     PlatformAccess internal access;
     HistoryIndex internal historyIndex;
     AgentRegistry internal registry;
     BranchRegistry internal branches;
+    AgentAccess internal agentAccess;
 
     uint16 internal constant NET = 1;
     uint16 internal constant IQR = 2;
@@ -49,9 +51,20 @@ abstract contract PlatformFixture is BaseTest {
             )
         );
 
+        agentAccess = AgentAccess(
+            deployProxy(
+                address(new AgentAccess()),
+                abi.encodeCall(
+                    AgentAccess.initialize,
+                    (address(access), address(registry), address(branches), address(historyIndex))
+                )
+            )
+        );
+
         vm.startPrank(platformOwner);
         historyIndex.setWriter(address(registry), true);
         historyIndex.setWriter(address(branches), true);
+        historyIndex.setWriter(address(agentAccess), true);
         access.addPlatformAdmin(platformAdmin);
         access.addPlatformAdmin(platformAdmin2);
         vm.stopPrank();

@@ -1,0 +1,787 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "EVENT_VERSION",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MAX_BRANCHES_PER_ACCOUNT",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint16",
+        "internalType": "uint16"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MAX_MEMBERS_PER_BRANCH",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint16",
+        "internalType": "uint16"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MAX_PAGE",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "UPGRADE_INTERFACE_VERSION",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "agentRegistry",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "branchCountOfAccount",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "branchRegistry",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "branchesOfAccount",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "offset",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "limit",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "out",
+        "type": "uint64[]",
+        "internalType": "uint64[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "effectiveRoleOf",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "enum IAgentAccess.Role"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getMember",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct IAgentAccess.Member",
+        "components": [
+          {
+            "name": "grantedBy",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "grantedAt",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "indexPlusOne",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "role",
+            "type": "uint8",
+            "internalType": "enum IAgentAccess.Role"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "grantRole",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "role",
+        "type": "uint8",
+        "internalType": "enum IAgentAccess.Role"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "hasRole",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "minRole",
+        "type": "uint8",
+        "internalType": "enum IAgentAccess.Role"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "initialize",
+    "inputs": [
+      {
+        "name": "access_",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "agents_",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "branches_",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "history_",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "memberCountOf",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "membersOf",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "offset",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "limit",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "out",
+        "type": "tuple[]",
+        "internalType": "struct IAgentAccess.MemberView[]",
+        "components": [
+          {
+            "name": "account",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "role",
+            "type": "uint8",
+            "internalType": "enum IAgentAccess.Role"
+          },
+          {
+            "name": "grantedBy",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "grantedAt",
+            "type": "uint64",
+            "internalType": "uint64"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "platformAccess",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract IPlatformAccess"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "proxiableUUID",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "renounceRole",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "requireRole",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "minRole",
+        "type": "uint8",
+        "internalType": "enum IAgentAccess.Role"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "revokeRole",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "roleOf",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "enum IAgentAccess.Role"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "upgradeToAndCall",
+    "inputs": [
+      {
+        "name": "newImplementation",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "data",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "event",
+    "name": "Initialized",
+    "inputs": [
+      {
+        "name": "version",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleChanged",
+    "inputs": [
+      {
+        "name": "version",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "uint8"
+      },
+      {
+        "name": "agentId",
+        "type": "uint64",
+        "indexed": true,
+        "internalType": "uint64"
+      },
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "indexed": true,
+        "internalType": "uint64"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "from",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum IAgentAccess.Role"
+      },
+      {
+        "name": "to",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum IAgentAccess.Role"
+      },
+      {
+        "name": "by",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Upgraded",
+    "inputs": [
+      {
+        "name": "implementation",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "AccountIsAgentOwner",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "agentId",
+        "type": "uint64",
+        "internalType": "uint64"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "AccountIsPlatformRole",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "AddressEmptyCode",
+    "inputs": [
+      {
+        "name": "target",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "BranchNotActive",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ERC1967InvalidImplementation",
+    "inputs": [
+      {
+        "name": "implementation",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ERC1967NonPayable",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "FailedCall",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidInitialization",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidRole",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "uint8",
+        "internalType": "enum IAgentAccess.Role"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "MissingRole",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "required",
+        "type": "uint8",
+        "internalType": "enum IAgentAccess.Role"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "NotAuthorized",
+    "inputs": [
+      {
+        "name": "caller",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "NotInitializing",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotMember",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "NotPlatformOwner",
+    "inputs": [
+      {
+        "name": "caller",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "RoleUnchanged",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "role",
+        "type": "uint8",
+        "internalType": "enum IAgentAccess.Role"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "TooManyBranches",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "TooManyMembers",
+    "inputs": [
+      {
+        "name": "branchId",
+        "type": "uint64",
+        "internalType": "uint64"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "UUPSUnauthorizedCallContext",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "UUPSUnsupportedProxiableUUID",
+    "inputs": [
+      {
+        "name": "slot",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ZeroAddress",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ZeroAddress",
+    "inputs": []
+  }
+]

@@ -1,6 +1,6 @@
 # Lệnh chuẩn của meta-platform. CI chạy `make ci`.
-# `deploy` và `set-admin` chỉ người dùng chạy (đọc .env, có --broadcast). Agent không chạy hai target đó.
-.PHONY: build test fmt sizes layout deps snapshot snapshot-update ci legacy-inventory abi deploy deploy-local set-admin
+# `deploy`, `deploy-agent-access` và `set-admin` chỉ người dùng chạy (đọc .env, có --broadcast). Agent không chạy các target đó.
+.PHONY: build test fmt sizes layout deps snapshot snapshot-update ci legacy-inventory abi deploy deploy-agent-access deploy-local set-admin
 
 build:
 	forge build
@@ -42,10 +42,16 @@ abi:
 	forge inspect AgentRegistry abi --json > abi/AgentRegistry.json
 	forge inspect BranchRegistry abi --json > abi/BranchRegistry.json
 	forge inspect HistoryIndex abi --json > abi/HistoryIndex.json
+	forge inspect AgentAccess abi --json > abi/AgentAccess.json
 
 # Chỉ người dùng chạy. Cần PRIVATE_KEY và RPC_URL trong .env (foundry nạp .env; rpc "platform" = ${RPC_URL}).
 deploy:
 	forge script script/DeployPlatform.s.sol --rpc-url platform --broadcast
+
+# Chỉ người dùng chạy. Hệ đã deploy trước khi có AgentAccess: thêm AgentAccess, đọc/ghi deployments/platform-<chainid>.json.
+# Cần PRIVATE_KEY (owner) trong .env.
+deploy-agent-access:
+	forge script script/DeployAgentAccess.s.sol --rpc-url platform --broadcast
 
 # Chỉ người dùng chạy. Cần PRIVATE_KEY (owner), ACCESS_PROXY, ADMIN, ALLOW=true|false.
 set-admin:
