@@ -1,0 +1,2129 @@
+{
+ "storage": [
+  {
+   "astId": 30539,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "restaurantInfo",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_struct(RestaurantInfo)26276_storage"
+  },
+  {
+   "astId": 30541,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "restaurantOrder",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_address"
+  },
+  {
+   "astId": 30546,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mCodeToCat",
+   "offset": 0,
+   "slot": "10",
+   "type": "t_mapping(t_string_memory_ptr,t_struct(Category)26302_storage)"
+  },
+  {
+   "astId": 30550,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "categories",
+   "offset": 0,
+   "slot": "11",
+   "type": "t_array(t_struct(Category)26302_storage)dyn_storage"
+  },
+  {
+   "astId": 30555,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mCodeToDish",
+   "offset": 0,
+   "slot": "12",
+   "type": "t_mapping(t_string_memory_ptr,t_struct(Dish)26347_storage)"
+  },
+  {
+   "astId": 30561,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mCodeCatToDishes",
+   "offset": 0,
+   "slot": "13",
+   "type": "t_mapping(t_string_memory_ptr,t_array(t_struct(Dish)26347_storage)dyn_storage)"
+  },
+  {
+   "astId": 30566,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mCodeToDiscount",
+   "offset": 0,
+   "slot": "14",
+   "type": "t_mapping(t_string_memory_ptr,t_struct(Discount)26480_storage)"
+  },
+  {
+   "astId": 30570,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "discounts",
+   "offset": 0,
+   "slot": "15",
+   "type": "t_array(t_struct(Discount)26480_storage)dyn_storage"
+  },
+  {
+   "astId": 30574,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "isCodeExist",
+   "offset": 0,
+   "slot": "16",
+   "type": "t_mapping(t_string_memory_ptr,t_bool)"
+  },
+  {
+   "astId": 30579,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mDishVariant",
+   "offset": 0,
+   "slot": "17",
+   "type": "t_mapping(t_string_memory_ptr,t_array(t_bytes32)dyn_storage)"
+  },
+  {
+   "astId": 30586,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mVariant",
+   "offset": 0,
+   "slot": "18",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_bytes32,t_struct(Variant)26382_storage))"
+  },
+  {
+   "astId": 30594,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mVariantAttributes",
+   "offset": 0,
+   "slot": "19",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_bytes32,t_array(t_struct(Attribute)26370_storage)dyn_storage))"
+  },
+  {
+   "astId": 30599,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mAttribute",
+   "offset": 0,
+   "slot": "20",
+   "type": "t_mapping(t_bytes32,t_struct(Attribute)26370_storage)"
+  },
+  {
+   "astId": 30604,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mCategoryAttributes",
+   "offset": 0,
+   "slot": "21",
+   "type": "t_mapping(t_string_memory_ptr,t_array(t_bytes32)dyn_storage)"
+  },
+  {
+   "astId": 30607,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "allDishCodes",
+   "offset": 0,
+   "slot": "22",
+   "type": "t_array(t_string_storage)dyn_storage"
+  },
+  {
+   "astId": 30611,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dishCodeIndex",
+   "offset": 0,
+   "slot": "23",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 30615,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dishIsNew",
+   "offset": 0,
+   "slot": "24",
+   "type": "t_mapping(t_string_memory_ptr,t_bool)"
+  },
+  {
+   "astId": 30619,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dishTotalRevenue",
+   "offset": 0,
+   "slot": "25",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 30623,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dishTotalOrders",
+   "offset": 0,
+   "slot": "26",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 30627,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dishStartTime",
+   "offset": 0,
+   "slot": "27",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 30629,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "serviceStartTime",
+   "offset": 0,
+   "slot": "28",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 30633,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "digitalMenu",
+   "offset": 0,
+   "slot": "29",
+   "type": "t_array(t_struct(DigitalMenu)26693_storage)dyn_storage"
+  },
+  {
+   "astId": 30637,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "banners",
+   "offset": 0,
+   "slot": "30",
+   "type": "t_array(t_struct(Banner)26713_storage)dyn_storage"
+  },
+  {
+   "astId": 30641,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "tcs",
+   "offset": 0,
+   "slot": "31",
+   "type": "t_array(t_struct(TCInfo)26723_storage)dyn_storage"
+  },
+  {
+   "astId": 30645,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "uniforms",
+   "offset": 0,
+   "slot": "32",
+   "type": "t_array(t_struct(Uniform)26741_storage)dyn_storage"
+  },
+  {
+   "astId": 30647,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "linkGG",
+   "offset": 0,
+   "slot": "33",
+   "type": "t_string_storage"
+  },
+  {
+   "astId": 30651,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dishesWithOrder",
+   "offset": 0,
+   "slot": "34",
+   "type": "t_array(t_struct(DishWithOrder)27123_storage)dyn_storage"
+  },
+  {
+   "astId": 30655,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "voucherUseHistory",
+   "offset": 0,
+   "slot": "35",
+   "type": "t_array(t_struct(VoucherUse)27103_storage)dyn_storage"
+  },
+  {
+   "astId": 30659,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "totalCustomersDays",
+   "offset": 0,
+   "slot": "36",
+   "type": "t_array(t_struct(ChartTotalCustomers)27139_storage)dyn_storage"
+  },
+  {
+   "astId": 30663,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "totalRevenueDays",
+   "offset": 0,
+   "slot": "37",
+   "type": "t_array(t_struct(ChartTotalRevenue)27144_storage)dyn_storage"
+  },
+  {
+   "astId": 30669,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mDayToDishCode",
+   "offset": 0,
+   "slot": "38",
+   "type": "t_mapping(t_uint256,t_mapping(t_string_memory_ptr,t_bool))"
+  },
+  {
+   "astId": 30675,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mMonthToDishCode",
+   "offset": 0,
+   "slot": "39",
+   "type": "t_mapping(t_uint256,t_mapping(t_string_memory_ptr,t_bool))"
+  },
+  {
+   "astId": 30680,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mMonthToDishCodeOrder",
+   "offset": 0,
+   "slot": "40",
+   "type": "t_mapping(t_uint256,t_array(t_string_storage)dyn_storage)"
+  },
+  {
+   "astId": 30685,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mDayToDishCodeOrder",
+   "offset": 0,
+   "slot": "41",
+   "type": "t_mapping(t_uint256,t_array(t_string_storage)dyn_storage)"
+  },
+  {
+   "astId": 30687,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "report",
+   "offset": 0,
+   "slot": "42",
+   "type": "t_address"
+  },
+  {
+   "astId": 30693,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mDishCodeToRankReport",
+   "offset": 0,
+   "slot": "43",
+   "type": "t_mapping(t_string_memory_ptr,t_array(t_struct(RankReport)27161_storage)dyn_storage)"
+  },
+  {
+   "astId": 30697,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dishOrderIndex",
+   "offset": 0,
+   "slot": "44",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 30701,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mDishRemain",
+   "offset": 0,
+   "slot": "45",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 30706,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mIdToOption",
+   "offset": 0,
+   "slot": "46",
+   "type": "t_mapping(t_bytes32,t_struct(DishOption)27181_storage)"
+  },
+  {
+   "astId": 30713,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mDishCodeToFeatureIds",
+   "offset": 0,
+   "slot": "47",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_string_memory_ptr,t_array(t_bytes32)dyn_storage))"
+  },
+  {
+   "astId": 30718,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mDishCodeToOptionNames",
+   "offset": 0,
+   "slot": "48",
+   "type": "t_mapping(t_string_memory_ptr,t_array(t_string_storage)dyn_storage)"
+  },
+  {
+   "astId": 30724,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mDishCodeToOptions",
+   "offset": 0,
+   "slot": "49",
+   "type": "t_mapping(t_string_memory_ptr,t_array(t_struct(DishOption)27181_storage)dyn_storage)"
+  },
+  {
+   "astId": 30729,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mOptionIdToDishCodes",
+   "offset": 0,
+   "slot": "50",
+   "type": "t_mapping(t_bytes32,t_array(t_string_storage)dyn_storage)"
+  },
+  {
+   "astId": 30733,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "allDishOptions",
+   "offset": 0,
+   "slot": "51",
+   "type": "t_array(t_struct(DishOption)27181_storage)dyn_storage"
+  },
+  {
+   "astId": 30736,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "allOptionNames",
+   "offset": 0,
+   "slot": "52",
+   "type": "t_array(t_string_storage)dyn_storage"
+  },
+  {
+   "astId": 30740,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "isOptionNameExist",
+   "offset": 0,
+   "slot": "53",
+   "type": "t_mapping(t_string_memory_ptr,t_bool)"
+  },
+  {
+   "astId": 30742,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "active",
+   "offset": 0,
+   "slot": "54",
+   "type": "t_bool"
+  },
+  {
+   "astId": 30744,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "agentIQRSC",
+   "offset": 1,
+   "slot": "54",
+   "type": "t_address"
+  },
+  {
+   "astId": 30748,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "totalOrderDays",
+   "offset": 0,
+   "slot": "55",
+   "type": "t_array(t_struct(ChartTotalOrder)27149_storage)dyn_storage"
+  },
+  {
+   "astId": 30750,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "timeKeeping",
+   "offset": 0,
+   "slot": "56",
+   "type": "t_address"
+  },
+  {
+   "astId": 30753,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "POINTS",
+   "offset": 0,
+   "slot": "57",
+   "type": "t_contract(IPoint)25853"
+  },
+  {
+   "astId": 30755,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "agent",
+   "offset": 0,
+   "slot": "58",
+   "type": "t_address"
+  },
+  {
+   "astId": 30757,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "branchId",
+   "offset": 0,
+   "slot": "59",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 30760,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "branchAccessManager",
+   "offset": 0,
+   "slot": "60",
+   "type": "t_contract(IBranchAccessManager)22929"
+  },
+  {
+   "astId": 30763,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "branchResourceRegistry",
+   "offset": 0,
+   "slot": "61",
+   "type": "t_contract(IBranchResourceRegistry)23301"
+  },
+  {
+   "astId": 30766,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "branchPaymentRegistry",
+   "offset": 0,
+   "slot": "62",
+   "type": "t_contract(IBranchPaymentRegistry)23001"
+  },
+  {
+   "astId": 30769,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "historyTracking",
+   "offset": 0,
+   "slot": "63",
+   "type": "t_contract(IHistoryTracking)24034"
+  },
+  {
+   "astId": 30771,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "staffAgentStore",
+   "offset": 0,
+   "slot": "64",
+   "type": "t_address"
+  },
+  {
+   "astId": 30773,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "branchManagement",
+   "offset": 0,
+   "slot": "65",
+   "type": "t_address"
+  },
+  {
+   "astId": 30776,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dbWrapper",
+   "offset": 0,
+   "slot": "66",
+   "type": "t_contract(PublicfullDB)105912"
+  },
+  {
+   "astId": 30783,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dishDefaultQuantity",
+   "offset": 0,
+   "slot": "67",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 30787,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dishActualQuantity",
+   "offset": 0,
+   "slot": "68",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 30791,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dishLastResetTime",
+   "offset": 0,
+   "slot": "69",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 30793,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "lastResetTime",
+   "offset": 0,
+   "slot": "70",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 30803,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dishResetSchedule",
+   "offset": 0,
+   "slot": "71",
+   "type": "t_struct(DishResetSchedule)30800_storage"
+  },
+  {
+   "astId": 30908,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "74",
+   "type": "t_array(t_uint256)42_storage"
+  },
+  {
+   "astId": 44552,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mIdToDiscount",
+   "offset": 0,
+   "slot": "116",
+   "type": "t_mapping(t_bytes32,t_struct(DiscountV2)26521_storage)"
+  },
+  {
+   "astId": 44556,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "mCodeHashToDiscountId",
+   "offset": 0,
+   "slot": "117",
+   "type": "t_mapping(t_bytes32,t_bytes32)"
+  },
+  {
+   "astId": 44562,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "discountUserUsedCount",
+   "offset": 0,
+   "slot": "118",
+   "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))"
+  },
+  {
+   "astId": 44565,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "discountIds",
+   "offset": 0,
+   "slot": "119",
+   "type": "t_array(t_bytes32)dyn_storage"
+  },
+  {
+   "astId": 44569,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "categoryIndexPlusOne",
+   "offset": 0,
+   "slot": "120",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 44575,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "categoryDishIndexPlusOne",
+   "offset": 0,
+   "slot": "121",
+   "type": "t_mapping(t_bytes32,t_mapping(t_bytes32,t_uint256))"
+  },
+  {
+   "astId": 44579,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "discountIndexPlusOne",
+   "offset": 0,
+   "slot": "122",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 44581,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "discountCatalogVersion",
+   "offset": 0,
+   "slot": "123",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 44585,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "discountIdCatalogVersion",
+   "offset": 0,
+   "slot": "124",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 44589,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "discountCodeHashCatalogVersion",
+   "offset": 0,
+   "slot": "125",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 44593,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "allDishOptionIndexPlusOne",
+   "offset": 0,
+   "slot": "126",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 44597,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "allOptionNameIndexPlusOne",
+   "offset": 0,
+   "slot": "127",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 44603,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dishOptionIndexPlusOne",
+   "offset": 0,
+   "slot": "128",
+   "type": "t_mapping(t_bytes32,t_mapping(t_bytes32,t_uint256))"
+  },
+  {
+   "astId": 44609,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "dishOptionNameIndexPlusOne",
+   "offset": 0,
+   "slot": "129",
+   "type": "t_mapping(t_bytes32,t_mapping(t_bytes32,t_uint256))"
+  },
+  {
+   "astId": 44615,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "optionDishIndexPlusOne",
+   "offset": 0,
+   "slot": "130",
+   "type": "t_mapping(t_bytes32,t_mapping(t_bytes32,t_uint256))"
+  },
+  {
+   "astId": 44619,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "orderDiscountUses",
+   "offset": 0,
+   "slot": "131",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 44623,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "orderDiscountUserCounted",
+   "offset": 0,
+   "slot": "132",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 44627,
+   "contract": "contracts/iqr/Management.sol:Management",
+   "label": "orderDiscountCountedUser",
+   "offset": 0,
+   "slot": "133",
+   "type": "t_mapping(t_bytes32,t_address)"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_bytes32)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "bytes32[]",
+   "numberOfBytes": "32",
+   "base": "t_bytes32"
+  },
+  "t_array(t_string_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "string[]",
+   "numberOfBytes": "32",
+   "base": "t_string_storage"
+  },
+  "t_array(t_struct(Attribute)26370_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Attribute[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Attribute)26370_storage"
+  },
+  "t_array(t_struct(Banner)26713_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Banner[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Banner)26713_storage"
+  },
+  "t_array(t_struct(Category)26302_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Category[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Category)26302_storage"
+  },
+  "t_array(t_struct(ChartTotalCustomers)27139_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct ChartTotalCustomers[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(ChartTotalCustomers)27139_storage"
+  },
+  "t_array(t_struct(ChartTotalOrder)27149_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct ChartTotalOrder[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(ChartTotalOrder)27149_storage"
+  },
+  "t_array(t_struct(ChartTotalRevenue)27144_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct ChartTotalRevenue[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(ChartTotalRevenue)27144_storage"
+  },
+  "t_array(t_struct(DigitalMenu)26693_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct DigitalMenu[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(DigitalMenu)26693_storage"
+  },
+  "t_array(t_struct(Discount)26480_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Discount[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Discount)26480_storage"
+  },
+  "t_array(t_struct(Dish)26347_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Dish[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Dish)26347_storage"
+  },
+  "t_array(t_struct(DishOption)27181_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct DishOption[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(DishOption)27181_storage"
+  },
+  "t_array(t_struct(DishWithOrder)27123_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct DishWithOrder[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(DishWithOrder)27123_storage"
+  },
+  "t_array(t_struct(OptionFeature)27168_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct OptionFeature[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(OptionFeature)27168_storage"
+  },
+  "t_array(t_struct(RankReport)27161_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct RankReport[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(RankReport)27161_storage"
+  },
+  "t_array(t_struct(TCInfo)26723_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct TCInfo[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(TCInfo)26723_storage"
+  },
+  "t_array(t_struct(Uniform)26741_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Uniform[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Uniform)26741_storage"
+  },
+  "t_array(t_struct(VoucherUse)27103_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct VoucherUse[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(VoucherUse)27103_storage"
+  },
+  "t_array(t_uint256)42_storage": {
+   "encoding": "inplace",
+   "label": "uint256[42]",
+   "numberOfBytes": "1344",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_bytes32": {
+   "encoding": "inplace",
+   "label": "bytes32",
+   "numberOfBytes": "32"
+  },
+  "t_contract(IBranchAccessManager)22929": {
+   "encoding": "inplace",
+   "label": "contract IBranchAccessManager",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IBranchPaymentRegistry)23001": {
+   "encoding": "inplace",
+   "label": "contract IBranchPaymentRegistry",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IBranchResourceRegistry)23301": {
+   "encoding": "inplace",
+   "label": "contract IBranchResourceRegistry",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IHistoryTracking)24034": {
+   "encoding": "inplace",
+   "label": "contract IHistoryTracking",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IPoint)25853": {
+   "encoding": "inplace",
+   "label": "contract IPoint",
+   "numberOfBytes": "20"
+  },
+  "t_contract(PublicfullDB)105912": {
+   "encoding": "inplace",
+   "label": "contract PublicfullDB",
+   "numberOfBytes": "20"
+  },
+  "t_enum(BannerPosition)26134": {
+   "encoding": "inplace",
+   "label": "enum BannerPosition",
+   "numberOfBytes": "1"
+  },
+  "t_enum(DiscountType)26142": {
+   "encoding": "inplace",
+   "label": "enum DiscountType",
+   "numberOfBytes": "1"
+  },
+  "t_enum(TCStatus)26191": {
+   "encoding": "inplace",
+   "label": "enum TCStatus",
+   "numberOfBytes": "1"
+  },
+  "t_mapping(t_address,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_bytes32,t_address)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_mapping(t_bytes32,t_array(t_string_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => string[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_string_storage)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_array(t_struct(Attribute)26370_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct Attribute[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(Attribute)26370_storage)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_bytes32)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => bytes32)",
+   "numberOfBytes": "32",
+   "value": "t_bytes32"
+  },
+  "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => mapping(address => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_uint256)"
+  },
+  "t_mapping(t_bytes32,t_mapping(t_bytes32,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => mapping(bytes32 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_bytes32,t_uint256)"
+  },
+  "t_mapping(t_bytes32,t_struct(Attribute)26370_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct Attribute)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Attribute)26370_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(DiscountV2)26521_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct DiscountV2)",
+   "numberOfBytes": "32",
+   "value": "t_struct(DiscountV2)26521_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(DishOption)27181_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct DishOption)",
+   "numberOfBytes": "32",
+   "value": "t_struct(DishOption)27181_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(Variant)26382_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct Variant)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Variant)26382_storage"
+  },
+  "t_mapping(t_bytes32,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_string_memory_ptr,t_array(t_bytes32)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => bytes32[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_bytes32)dyn_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_array(t_string_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => string[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_string_storage)dyn_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_array(t_struct(Dish)26347_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct Dish[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(Dish)26347_storage)dyn_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_array(t_struct(DishOption)27181_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct DishOption[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(DishOption)27181_storage)dyn_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_array(t_struct(RankReport)27161_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct RankReport[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(RankReport)27161_storage)dyn_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_string_memory_ptr,t_mapping(t_bytes32,t_array(t_struct(Attribute)26370_storage)dyn_storage))": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => mapping(bytes32 => struct Attribute[]))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_bytes32,t_array(t_struct(Attribute)26370_storage)dyn_storage)"
+  },
+  "t_mapping(t_string_memory_ptr,t_mapping(t_bytes32,t_struct(Variant)26382_storage))": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => mapping(bytes32 => struct Variant))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_bytes32,t_struct(Variant)26382_storage)"
+  },
+  "t_mapping(t_string_memory_ptr,t_mapping(t_string_memory_ptr,t_array(t_bytes32)dyn_storage))": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => mapping(string => bytes32[]))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_string_memory_ptr,t_array(t_bytes32)dyn_storage)"
+  },
+  "t_mapping(t_string_memory_ptr,t_struct(Category)26302_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct Category)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Category)26302_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_struct(Discount)26480_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct Discount)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Discount)26480_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_struct(Dish)26347_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct Dish)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Dish)26347_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_uint256,t_array(t_string_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => string[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_string_storage)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_mapping(t_string_memory_ptr,t_bool))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(string => bool))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_string_memory_ptr,t_bool)"
+  },
+  "t_string_memory_ptr": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(Attribute)26370_storage": {
+   "encoding": "inplace",
+   "label": "struct Attribute",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 26365,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26367,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "key",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26369,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "value",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(Banner)26713_storage": {
+   "encoding": "inplace",
+   "label": "struct Banner",
+   "numberOfBytes": "288",
+   "members": [
+    {
+     "astId": 26695,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26697,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26699,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "linkImg",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26701,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "description",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26703,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "linkTo",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26705,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "active",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26707,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "from",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26709,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "to",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26712,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "location",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_enum(BannerPosition)26134"
+    }
+   ]
+  },
+  "t_struct(Category)26302_storage": {
+   "encoding": "inplace",
+   "label": "struct Category",
+   "numberOfBytes": "224",
+   "members": [
+    {
+     "astId": 26289,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "code",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26291,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26293,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "rank",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26295,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "desc",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26297,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "active",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26299,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "imgUrl",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26301,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "icon",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(ChartTotalCustomers)27139_storage": {
+   "encoding": "inplace",
+   "label": "struct ChartTotalCustomers",
+   "numberOfBytes": "64",
+   "members": [
+    {
+     "astId": 27136,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "time",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27138,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "totalCustomers",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(ChartTotalOrder)27149_storage": {
+   "encoding": "inplace",
+   "label": "struct ChartTotalOrder",
+   "numberOfBytes": "64",
+   "members": [
+    {
+     "astId": 27146,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "time",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27148,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "addOrder",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(ChartTotalRevenue)27144_storage": {
+   "encoding": "inplace",
+   "label": "struct ChartTotalRevenue",
+   "numberOfBytes": "64",
+   "members": [
+    {
+     "astId": 27141,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "time",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27143,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "addRevenue",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(DigitalMenu)26693_storage": {
+   "encoding": "inplace",
+   "label": "struct DigitalMenu",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 26688,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26690,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "linkImg",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26692,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "title",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(Discount)26480_storage": {
+   "encoding": "inplace",
+   "label": "struct Discount",
+   "numberOfBytes": "448",
+   "members": [
+    {
+     "astId": 26451,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "code",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26453,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26455,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "discountPercent",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26457,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "desc",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26459,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "from",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26461,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "to",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26463,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "active",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26465,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "imgURL",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26467,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "amountMax",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26469,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "amountUsed",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26471,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "updatedAt",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26474,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "discountType",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_enum(DiscountType)26142"
+    },
+    {
+     "astId": 26477,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "targetGroupIds",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_array(t_bytes32)dyn_storage"
+    },
+    {
+     "astId": 26479,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "textDes",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(DiscountV2)26521_storage": {
+   "encoding": "inplace",
+   "label": "struct DiscountV2",
+   "numberOfBytes": "576",
+   "members": [
+    {
+     "astId": 26483,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26485,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "codeHash",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26487,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "name",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26489,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "discountPercent",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26491,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "desc",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26493,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "from",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26495,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "to",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26497,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "active",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26499,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "imgURL",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26501,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "amountMax",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26503,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "amountUsed",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26505,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "updatedAt",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26508,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "discountType",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_enum(DiscountType)26142"
+    },
+    {
+     "astId": 26511,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "targetGroupIds",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_array(t_bytes32)dyn_storage"
+    },
+    {
+     "astId": 26513,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "textDes",
+     "offset": 0,
+     "slot": "14",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26515,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "secret",
+     "offset": 0,
+     "slot": "15",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26517,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "userLimit",
+     "offset": 0,
+     "slot": "16",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26520,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "maxDiscountAmount",
+     "offset": 0,
+     "slot": "17",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Dish)26347_storage": {
+   "encoding": "inplace",
+   "label": "struct Dish",
+   "numberOfBytes": "448",
+   "members": [
+    {
+     "astId": 26317,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "code",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26319,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "nameCategory",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26321,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "name",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26323,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "des",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26325,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "available",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26327,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "active",
+     "offset": 1,
+     "slot": "4",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26329,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "imgUrl",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26331,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "averageStar",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26333,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "cookingTime",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26336,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "ingredients",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_array(t_string_storage)dyn_storage"
+    },
+    {
+     "astId": 26338,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "showIngredient",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26340,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "videoLink",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26342,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "totalReview",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26344,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "orderNum",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26346,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(DishOption)27181_storage": {
+   "encoding": "inplace",
+   "label": "struct DishOption",
+   "numberOfBytes": "160",
+   "members": [
+    {
+     "astId": 27170,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "optionId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 27172,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "optionName",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27176,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "features",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_array(t_struct(OptionFeature)27168_storage)dyn_storage"
+    },
+    {
+     "astId": 27178,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "isCompulsory",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27180,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "maximumSelection",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(DishResetSchedule)30800_storage": {
+   "encoding": "inplace",
+   "label": "struct Management.DishResetSchedule",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 30795,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "resetIntervalDays",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint8"
+    },
+    {
+     "astId": 30797,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "setTime",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 30799,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "lastReset",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(DishWithOrder)27123_storage": {
+   "encoding": "inplace",
+   "label": "struct DishWithOrder",
+   "numberOfBytes": "608",
+   "members": [
+    {
+     "astId": 27111,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "dish",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(Dish)26347_storage"
+    },
+    {
+     "astId": 27113,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "orderNum",
+     "offset": 0,
+     "slot": "14",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27115,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "originalIndex",
+     "offset": 0,
+     "slot": "15",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27118,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "variant",
+     "offset": 0,
+     "slot": "16",
+     "type": "t_struct(Variant)26382_storage"
+    },
+    {
+     "astId": 27122,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "attributes",
+     "offset": 0,
+     "slot": "18",
+     "type": "t_array(t_struct(Attribute)26370_storage)dyn_storage"
+    }
+   ]
+  },
+  "t_struct(OptionFeature)27168_storage": {
+   "encoding": "inplace",
+   "label": "struct OptionFeature",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 27163,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "featureId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 27165,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "featureName",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27167,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "featurePrice",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(RankReport)27161_storage": {
+   "encoding": "inplace",
+   "label": "struct RankReport",
+   "numberOfBytes": "64",
+   "members": [
+    {
+     "astId": 27158,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27160,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "rank",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(RestaurantInfo)26276_storage": {
+   "encoding": "inplace",
+   "label": "struct RestaurantInfo",
+   "numberOfBytes": "288",
+   "members": [
+    {
+     "astId": 26259,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "name",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26261,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "addr",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26263,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "phone",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26265,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "visaInfo",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26267,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "walletAddress",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_address"
+    },
+    {
+     "astId": 26269,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "workPlaceId",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26271,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "imgLink",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26273,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "registeredAt",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26275,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "updatedAt",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(TCInfo)26723_storage": {
+   "encoding": "inplace",
+   "label": "struct TCInfo",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 26715,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26717,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "title",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26719,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "content",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26722,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "status",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_enum(TCStatus)26191"
+    }
+   ]
+  },
+  "t_struct(Uniform)26741_storage": {
+   "encoding": "inplace",
+   "label": "struct Uniform",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 26734,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26736,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26738,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "linkImgFront",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26740,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "linkImgBack",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(Variant)26382_storage": {
+   "encoding": "inplace",
+   "label": "struct Variant",
+   "numberOfBytes": "64",
+   "members": [
+    {
+     "astId": 26379,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "variantID",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26381,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "dishPrice",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(VoucherUse)27103_storage": {
+   "encoding": "inplace",
+   "label": "struct VoucherUse",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 27096,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "time",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27098,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "amountUsed",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27100,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "amountExpired",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27102,
+     "contract": "contracts/iqr/Management.sol:Management",
+     "label": "amountUnused",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  },
+  "t_uint8": {
+   "encoding": "inplace",
+   "label": "uint8",
+   "numberOfBytes": "1"
+  }
+ }
+}

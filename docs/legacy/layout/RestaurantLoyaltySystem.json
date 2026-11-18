@@ -1,0 +1,3296 @@
+{
+ "storage": [
+  {
+   "astId": 212310,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_status",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100632,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "members",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_mapping(t_address,t_struct(Member)25005_storage)"
+  },
+  {
+   "astId": 100636,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "memberIdToAddress",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_mapping(t_string_memory_ptr,t_address)"
+  },
+  {
+   "astId": 100641,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "memberTxIds",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 100646,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "memberToGroups",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)"
+  },
+  {
+   "astId": 100651,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "memberGroups",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_mapping(t_bytes32,t_struct(MemberGroup)25117_storage)"
+  },
+  {
+   "astId": 100656,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "groupMembers",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_mapping(t_bytes32,t_array(t_address)dyn_storage)"
+  },
+  {
+   "astId": 100661,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "manualRequests",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_mapping(t_uint256,t_struct(ManualRequest)25108_storage)"
+  },
+  {
+   "astId": 100665,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "processedInvoices",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 100669,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "lastRequestDate",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 100673,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "staffDailyRequests",
+   "offset": 0,
+   "slot": "10",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 100677,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "isTokenHolder",
+   "offset": 0,
+   "slot": "11",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 100681,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "allMembers",
+   "offset": 0,
+   "slot": "12",
+   "type": "t_array(t_struct(Member)25005_storage)dyn_storage"
+  },
+  {
+   "astId": 100685,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "allMemberGroups",
+   "offset": 0,
+   "slot": "13",
+   "type": "t_array(t_struct(MemberGroup)25117_storage)dyn_storage"
+  },
+  {
+   "astId": 100688,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "allGroupIds",
+   "offset": 0,
+   "slot": "14",
+   "type": "t_array(t_bytes32)dyn_storage"
+  },
+  {
+   "astId": 100692,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "allTransactions",
+   "offset": 0,
+   "slot": "15",
+   "type": "t_array(t_struct(Transaction)25030_storage)dyn_storage"
+  },
+  {
+   "astId": 100695,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "tokenHolders",
+   "offset": 0,
+   "slot": "16",
+   "type": "t_array(t_address)dyn_storage"
+  },
+  {
+   "astId": 100697,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_txCounter",
+   "offset": 0,
+   "slot": "17",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100699,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_requestCounter",
+   "offset": 0,
+   "slot": "18",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100703,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_balanceA",
+   "offset": 0,
+   "slot": "19",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 100707,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_processedTopups",
+   "offset": 0,
+   "slot": "20",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 100724,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_ledgerA",
+   "offset": 0,
+   "slot": "21",
+   "type": "t_array(t_struct(LedgerEntryA)100720_storage)dyn_storage"
+  },
+  {
+   "astId": 100729,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_ledgerAIdx",
+   "offset": 0,
+   "slot": "22",
+   "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 100731,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "totalACredited",
+   "offset": 0,
+   "slot": "23",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100733,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "totalADebited",
+   "offset": 0,
+   "slot": "24",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100754,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_rewardBatches",
+   "offset": 0,
+   "slot": "25",
+   "type": "t_mapping(t_address,t_array(t_struct(RewardBatch)100748_storage)dyn_storage)"
+  },
+  {
+   "astId": 100758,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_balanceB",
+   "offset": 0,
+   "slot": "26",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 100762,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_processedGrants",
+   "offset": 0,
+   "slot": "27",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 100779,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_ledgerB",
+   "offset": 0,
+   "slot": "28",
+   "type": "t_array(t_struct(LedgerEntryB)100775_storage)dyn_storage"
+  },
+  {
+   "astId": 100784,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_ledgerBIdx",
+   "offset": 0,
+   "slot": "29",
+   "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 100786,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "totalBGranted",
+   "offset": 0,
+   "slot": "30",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100788,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "totalBDebited",
+   "offset": 0,
+   "slot": "31",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100790,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "totalBExpired",
+   "offset": 0,
+   "slot": "32",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100792,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_batchCounter",
+   "offset": 0,
+   "slot": "33",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100795,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "allowedActionTypeList",
+   "offset": 0,
+   "slot": "34",
+   "type": "t_array(t_bytes32)dyn_storage"
+  },
+  {
+   "astId": 100799,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "allowedActionTypes",
+   "offset": 0,
+   "slot": "35",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 100801,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "__layoutGapBeforeBranchAccessManagers",
+   "offset": 0,
+   "slot": "36",
+   "type": "t_address"
+  },
+  {
+   "astId": 100806,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "branchAccessManagers",
+   "offset": 0,
+   "slot": "37",
+   "type": "t_mapping(t_uint256,t_contract(IBranchAccessManager)22929)"
+  },
+  {
+   "astId": 100808,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "topupRate",
+   "offset": 0,
+   "slot": "38",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100810,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "topupMin",
+   "offset": 0,
+   "slot": "39",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100812,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "topupMax",
+   "offset": 0,
+   "slot": "40",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100815,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "spendPriority",
+   "offset": 0,
+   "slot": "41",
+   "type": "t_enum(SpendPriority)58"
+  },
+  {
+   "astId": 100817,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardMaxPercent",
+   "offset": 0,
+   "slot": "42",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100819,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardMaxAbsolute",
+   "offset": 0,
+   "slot": "43",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100821,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "defaultExpiryDays",
+   "offset": 0,
+   "slot": "44",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100823,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "tierEnabled",
+   "offset": 0,
+   "slot": "45",
+   "type": "t_bool"
+  },
+  {
+   "astId": 100827,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "customerTier",
+   "offset": 0,
+   "slot": "46",
+   "type": "t_mapping(t_address,t_bytes32)"
+  },
+  {
+   "astId": 100831,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "lifetimeTokenA",
+   "offset": 0,
+   "slot": "47",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 100836,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "tierConfigs",
+   "offset": 0,
+   "slot": "48",
+   "type": "t_mapping(t_bytes32,t_struct(TierConfig)101_storage)"
+  },
+  {
+   "astId": 100840,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "allTiers",
+   "offset": 0,
+   "slot": "49",
+   "type": "t_array(t_struct(TierConfig)101_storage)dyn_storage"
+  },
+  {
+   "astId": 100844,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "tierIdByName",
+   "offset": 0,
+   "slot": "50",
+   "type": "t_mapping(t_string_memory_ptr,t_bytes32)"
+  },
+  {
+   "astId": 100846,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_campaignCounter",
+   "offset": 0,
+   "slot": "51",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100851,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "campaigns",
+   "offset": 0,
+   "slot": "52",
+   "type": "t_mapping(t_uint256,t_struct(Campaign)137_storage)"
+  },
+  {
+   "astId": 100854,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "campaignIds",
+   "offset": 0,
+   "slot": "53",
+   "type": "t_array(t_uint256)dyn_storage"
+  },
+  {
+   "astId": 100858,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "campaignExecutionLog",
+   "offset": 0,
+   "slot": "54",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 100860,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "__layoutGapBeforeTopUp",
+   "offset": 0,
+   "slot": "55",
+   "type": "t_address"
+  },
+  {
+   "astId": 100862,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "TopUp",
+   "offset": 0,
+   "slot": "56",
+   "type": "t_address"
+  },
+  {
+   "astId": 100864,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "agent",
+   "offset": 0,
+   "slot": "57",
+   "type": "t_address"
+  },
+  {
+   "astId": 100868,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "mOrder",
+   "offset": 0,
+   "slot": "58",
+   "type": "t_mapping(t_uint256,t_address)"
+  },
+  {
+   "astId": 100872,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "mTopUp",
+   "offset": 0,
+   "slot": "59",
+   "type": "t_mapping(t_uint256,t_address)"
+  },
+  {
+   "astId": 100876,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "isOrder",
+   "offset": 0,
+   "slot": "60",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 100880,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "isTopUp",
+   "offset": 0,
+   "slot": "61",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 100884,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "orderBranchIds",
+   "offset": 0,
+   "slot": "62",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 100888,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "vaultBranchRegistered",
+   "offset": 0,
+   "slot": "63",
+   "type": "t_mapping(t_uint256,t_bool)"
+  },
+  {
+   "astId": 100891,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "vaultBranchIds",
+   "offset": 0,
+   "slot": "64",
+   "type": "t_array(t_uint256)dyn_storage"
+  },
+  {
+   "astId": 100893,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "exchangeRate",
+   "offset": 0,
+   "slot": "65",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100895,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "enhancedAgentSC",
+   "offset": 0,
+   "slot": "66",
+   "type": "t_address"
+  },
+  {
+   "astId": 100897,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "maxPercentPerInvoice",
+   "offset": 0,
+   "slot": "67",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100899,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "transactionCounter",
+   "offset": 0,
+   "slot": "68",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100904,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "transactions",
+   "offset": 0,
+   "slot": "69",
+   "type": "t_mapping(t_uint256,t_struct(Transaction)25030_storage)"
+  },
+  {
+   "astId": 100909,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "memberTransactions",
+   "offset": 0,
+   "slot": "70",
+   "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 100915,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "memberPaymentHistory",
+   "offset": 0,
+   "slot": "71",
+   "type": "t_mapping(t_address,t_array(t_struct(PaymentTransaction)25126_storage)dyn_storage)"
+  },
+  {
+   "astId": 100917,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "manualGrantEnabled",
+   "offset": 0,
+   "slot": "72",
+   "type": "t_bool"
+  },
+  {
+   "astId": 100922,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "debitByRefId",
+   "offset": 0,
+   "slot": "73",
+   "type": "t_mapping(t_bytes32,t_struct(DebitRecord)25141_storage)"
+  },
+  {
+   "astId": 100926,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "debitRefExists",
+   "offset": 0,
+   "slot": "74",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 100931,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "customerDebitRefs",
+   "offset": 0,
+   "slot": "75",
+   "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)"
+  },
+  {
+   "astId": 100938,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "dailyStatsByBranch",
+   "offset": 0,
+   "slot": "76",
+   "type": "t_mapping(t_uint256,t_mapping(t_uint256,t_struct(DailyStats)25158_storage))"
+  },
+  {
+   "astId": 100941,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "recordedDays",
+   "offset": 0,
+   "slot": "77",
+   "type": "t_array(t_uint256)dyn_storage"
+  },
+  {
+   "astId": 100945,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_dayRecorded",
+   "offset": 0,
+   "slot": "78",
+   "type": "t_mapping(t_uint256,t_bool)"
+  },
+  {
+   "astId": 100947,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_execLogCounter",
+   "offset": 0,
+   "slot": "79",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100952,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "campaignExecRecords",
+   "offset": 0,
+   "slot": "80",
+   "type": "t_mapping(t_uint256,t_struct(CampaignExecRecord)25173_storage)"
+  },
+  {
+   "astId": 100957,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "campaignExecIds",
+   "offset": 0,
+   "slot": "81",
+   "type": "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 100962,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "customerExecIds",
+   "offset": 0,
+   "slot": "82",
+   "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 100965,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "allExecIds",
+   "offset": 0,
+   "slot": "83",
+   "type": "t_array(t_uint256)dyn_storage"
+  },
+  {
+   "astId": 100967,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_changeCounter",
+   "offset": 0,
+   "slot": "84",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 100971,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "changeHistory",
+   "offset": 0,
+   "slot": "85",
+   "type": "t_array(t_struct(ChangeRecord)25185_storage)dyn_storage"
+  },
+  {
+   "astId": 100976,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "changeIdsByType",
+   "offset": 0,
+   "slot": "86",
+   "type": "t_mapping(t_uint8,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 100978,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "searchIndex",
+   "offset": 0,
+   "slot": "87",
+   "type": "t_address"
+  },
+  {
+   "astId": 100982,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "lockedBalanceOf",
+   "offset": 0,
+   "slot": "88",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 101049,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "lockedPoints",
+   "offset": 0,
+   "slot": "89",
+   "type": "t_mapping(t_bytes32,t_struct(LockedPoint)101004_storage)"
+  },
+  {
+   "astId": 101053,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "mManagement",
+   "offset": 0,
+   "slot": "90",
+   "type": "t_mapping(t_uint256,t_address)"
+  },
+  {
+   "astId": 101056,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "economyVault",
+   "offset": 0,
+   "slot": "91",
+   "type": "t_contract(IEconomyVault)23441"
+  },
+  {
+   "astId": 101060,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "transactionIdByRefId",
+   "offset": 0,
+   "slot": "92",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 101065,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "lockedEarns",
+   "offset": 0,
+   "slot": "93",
+   "type": "t_mapping(t_bytes32,t_struct(LockedEarn)101044_storage)"
+  },
+  {
+   "astId": 101069,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "processedEarnLocks",
+   "offset": 0,
+   "slot": "94",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 101074,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "mRewardVouchers",
+   "offset": 0,
+   "slot": "95",
+   "type": "t_mapping(t_string_memory_ptr,t_struct(RewardVoucher)26563_storage)"
+  },
+  {
+   "astId": 101077,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardVoucherCodes",
+   "offset": 0,
+   "slot": "96",
+   "type": "t_array(t_string_storage)dyn_storage"
+  },
+  {
+   "astId": 101083,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "userRedeemedCount",
+   "offset": 0,
+   "slot": "97",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_address,t_uint256))"
+  },
+  {
+   "astId": 101088,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "memberRewardVouchers",
+   "offset": 0,
+   "slot": "98",
+   "type": "t_mapping(t_address,t_array(t_string_storage)dyn_storage)"
+  },
+  {
+   "astId": 101096,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "memberRewardVoucherDetails",
+   "offset": 0,
+   "slot": "99",
+   "type": "t_mapping(t_address,t_mapping(t_string_memory_ptr,t_array(t_struct(MemberRewardVoucher)26575_storage)dyn_storage))"
+  },
+  {
+   "astId": 101098,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "invoiceRewardPercent",
+   "offset": 0,
+   "slot": "100",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 101102,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "isNetSpendModule",
+   "offset": 0,
+   "slot": "101",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 101106,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "netSpendBranchIds",
+   "offset": 0,
+   "slot": "102",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 101110,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "lockedEarnTierBPlanned",
+   "offset": 0,
+   "slot": "103",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 101115,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "mRewardVouchersById",
+   "offset": 0,
+   "slot": "104",
+   "type": "t_mapping(t_bytes32,t_struct(RewardVoucher)26563_storage)"
+  },
+  {
+   "astId": 101118,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardVoucherIds",
+   "offset": 0,
+   "slot": "105",
+   "type": "t_array(t_bytes32)dyn_storage"
+  },
+  {
+   "astId": 101124,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "userRedeemedCountById",
+   "offset": 0,
+   "slot": "106",
+   "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))"
+  },
+  {
+   "astId": 101128,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "nextMemberVoucherInstanceId",
+   "offset": 0,
+   "slot": "107",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 101135,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "memberVoucherInstances",
+   "offset": 0,
+   "slot": "108",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_struct(MemberRewardVoucherInstance)26609_storage))"
+  },
+  {
+   "astId": 101140,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "memberVoucherInstanceIds",
+   "offset": 0,
+   "slot": "109",
+   "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 101144,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardVoucherDeleted",
+   "offset": 0,
+   "slot": "110",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 101148,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "sessionWalletToMember",
+   "offset": 0,
+   "slot": "111",
+   "type": "t_mapping(t_address,t_address)"
+  },
+  {
+   "astId": 101152,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "memberActiveSessionWallet",
+   "offset": 0,
+   "slot": "112",
+   "type": "t_mapping(t_address,t_address)"
+  },
+  {
+   "astId": 101156,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "manualPointOpsEnabled",
+   "offset": 0,
+   "slot": "113",
+   "type": "t_mapping(t_uint256,t_bool)"
+  },
+  {
+   "astId": 101160,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "branchExpiryDays",
+   "offset": 0,
+   "slot": "114",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 101167,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "moduleMaxPercent",
+   "offset": 0,
+   "slot": "115",
+   "type": "t_mapping(t_uint256,t_mapping(t_bytes32,t_uint256))"
+  },
+  {
+   "astId": 101172,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "activeCampaignIdsByEvent",
+   "offset": 0,
+   "slot": "116",
+   "type": "t_mapping(t_bytes32,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 101176,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "activeCampaignIndexPlusOne",
+   "offset": 0,
+   "slot": "117",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 101180,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "activeCampaignIndexReady",
+   "offset": 0,
+   "slot": "118",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 101183,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_allActiveCampaignIds",
+   "offset": 0,
+   "slot": "119",
+   "type": "t_array(t_uint256)dyn_storage"
+  },
+  {
+   "astId": 101187,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "_allActiveCampaignIndexPlusOne",
+   "offset": 0,
+   "slot": "120",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 101191,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "allMemberIndexPlusOne",
+   "offset": 0,
+   "slot": "121",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 101195,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "allMemberGroupIndexPlusOne",
+   "offset": 0,
+   "slot": "122",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 101199,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "allGroupIdIndexPlusOne",
+   "offset": 0,
+   "slot": "123",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 101205,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "groupMemberIndexPlusOne",
+   "offset": 0,
+   "slot": "124",
+   "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))"
+  },
+  {
+   "astId": 101211,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "memberGroupIndexPlusOne",
+   "offset": 0,
+   "slot": "125",
+   "type": "t_mapping(t_address,t_mapping(t_bytes32,t_uint256))"
+  },
+  {
+   "astId": 101215,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "groupDeleting",
+   "offset": 0,
+   "slot": "126",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 101220,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "transactionIdsByType",
+   "offset": 0,
+   "slot": "127",
+   "type": "t_mapping(t_uint8,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 101224,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "transactionTypeIndexed",
+   "offset": 0,
+   "slot": "128",
+   "type": "t_mapping(t_uint256,t_bool)"
+  },
+  {
+   "astId": 101226,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "transactionTypeBackfillCursor",
+   "offset": 0,
+   "slot": "129",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 101228,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "transactionTypeIndexReady",
+   "offset": 0,
+   "slot": "130",
+   "type": "t_bool"
+  },
+  {
+   "astId": 101230,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardVoucherCatalogVersion",
+   "offset": 0,
+   "slot": "131",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 101234,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardVoucherIdCatalogVersion",
+   "offset": 0,
+   "slot": "132",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 101238,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardVoucherCodeCatalogVersion",
+   "offset": 0,
+   "slot": "133",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 101244,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardBatchIndexPlusOne",
+   "offset": 0,
+   "slot": "134",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 101251,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "activeRewardBatchHeap",
+   "offset": 0,
+   "slot": "135",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))"
+  },
+  {
+   "astId": 101259,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardBatchHeapIndexPlusOne",
+   "offset": 0,
+   "slot": "136",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_uint256,t_uint256)))"
+  },
+  {
+   "astId": 101265,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardBatchHeapReady",
+   "offset": 0,
+   "slot": "137",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_bool))"
+  },
+  {
+   "astId": 101267,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardBatchHeapDefaultReady",
+   "offset": 0,
+   "slot": "138",
+   "type": "t_bool"
+  },
+  {
+   "astId": 101272,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardBatchBranchIds",
+   "offset": 0,
+   "slot": "139",
+   "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 101278,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardBatchBranchTracked",
+   "offset": 0,
+   "slot": "140",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_bool))"
+  },
+  {
+   "astId": 101282,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardBatchHeapsReady",
+   "offset": 0,
+   "slot": "141",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 101286,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "lockedPointMember",
+   "offset": 0,
+   "slot": "142",
+   "type": "t_mapping(t_bytes32,t_address)"
+  },
+  {
+   "astId": 101290,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardVoucherAppliedOwner",
+   "offset": 0,
+   "slot": "143",
+   "type": "t_mapping(t_bytes32,t_address)"
+  },
+  {
+   "astId": 101294,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "rewardVoucherRestored",
+   "offset": 0,
+   "slot": "144",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 101298,
+   "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "145",
+   "type": "t_array(t_uint256)24_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_address)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "address[]",
+   "numberOfBytes": "32",
+   "base": "t_address"
+  },
+  "t_array(t_bytes32)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "bytes32[]",
+   "numberOfBytes": "32",
+   "base": "t_bytes32"
+  },
+  "t_array(t_string_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "string[]",
+   "numberOfBytes": "32",
+   "base": "t_string_storage"
+  },
+  "t_array(t_struct(ChangeRecord)25185_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct ChangeRecord[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(ChangeRecord)25185_storage"
+  },
+  "t_array(t_struct(LedgerEntryA)100720_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct LoyaltyStorage.LedgerEntryA[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(LedgerEntryA)100720_storage"
+  },
+  "t_array(t_struct(LedgerEntryB)100775_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct LoyaltyStorage.LedgerEntryB[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(LedgerEntryB)100775_storage"
+  },
+  "t_array(t_struct(LockedBatch)100987_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct LoyaltyStorage.LockedBatch[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(LockedBatch)100987_storage"
+  },
+  "t_array(t_struct(Member)25005_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Member[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Member)25005_storage"
+  },
+  "t_array(t_struct(MemberGroup)25117_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct MemberGroup[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(MemberGroup)25117_storage"
+  },
+  "t_array(t_struct(MemberRewardVoucher)26575_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct MemberRewardVoucher[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(MemberRewardVoucher)26575_storage"
+  },
+  "t_array(t_struct(PaymentTransaction)25126_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct PaymentTransaction[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(PaymentTransaction)25126_storage"
+  },
+  "t_array(t_struct(PlannedCampaignReward)101013_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct LoyaltyStorage.PlannedCampaignReward[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(PlannedCampaignReward)101013_storage"
+  },
+  "t_array(t_struct(RewardBatch)100748_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct LoyaltyStorage.RewardBatch[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(RewardBatch)100748_storage"
+  },
+  "t_array(t_struct(TierConfig)101_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct EconomyTypes.TierConfig[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(TierConfig)101_storage"
+  },
+  "t_array(t_struct(Transaction)25030_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Transaction[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Transaction)25030_storage"
+  },
+  "t_array(t_uint256)24_storage": {
+   "encoding": "inplace",
+   "label": "uint256[24]",
+   "numberOfBytes": "768",
+   "base": "t_uint256"
+  },
+  "t_array(t_uint256)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "uint256[]",
+   "numberOfBytes": "32",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_bytes32": {
+   "encoding": "inplace",
+   "label": "bytes32",
+   "numberOfBytes": "32"
+  },
+  "t_bytes_storage": {
+   "encoding": "bytes",
+   "label": "bytes",
+   "numberOfBytes": "32"
+  },
+  "t_contract(IBranchAccessManager)22929": {
+   "encoding": "inplace",
+   "label": "contract IBranchAccessManager",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IEconomyVault)23441": {
+   "encoding": "inplace",
+   "label": "contract IEconomyVault",
+   "numberOfBytes": "20"
+  },
+  "t_enum(ChangeType)25198": {
+   "encoding": "inplace",
+   "label": "enum ChangeType",
+   "numberOfBytes": "1"
+  },
+  "t_enum(PointTransactionStatus)25215": {
+   "encoding": "inplace",
+   "label": "enum PointTransactionStatus",
+   "numberOfBytes": "1"
+  },
+  "t_enum(RequestEarnPointType)25202": {
+   "encoding": "inplace",
+   "label": "enum RequestEarnPointType",
+   "numberOfBytes": "1"
+  },
+  "t_enum(RequestStatus)25219": {
+   "encoding": "inplace",
+   "label": "enum RequestStatus",
+   "numberOfBytes": "1"
+  },
+  "t_enum(RewardVoucherType)26526": {
+   "encoding": "inplace",
+   "label": "enum RewardVoucherType",
+   "numberOfBytes": "1"
+  },
+  "t_enum(SpendPriority)58": {
+   "encoding": "inplace",
+   "label": "enum EconomyTypes.SpendPriority",
+   "numberOfBytes": "1"
+  },
+  "t_enum(TransactionType)25210": {
+   "encoding": "inplace",
+   "label": "enum TransactionType",
+   "numberOfBytes": "1"
+  },
+  "t_int256": {
+   "encoding": "inplace",
+   "label": "int256",
+   "numberOfBytes": "32"
+  },
+  "t_mapping(t_address,t_address)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_mapping(t_address,t_array(t_bytes32)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => bytes32[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_bytes32)dyn_storage"
+  },
+  "t_mapping(t_address,t_array(t_string_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => string[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_string_storage)dyn_storage"
+  },
+  "t_mapping(t_address,t_array(t_struct(PaymentTransaction)25126_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct PaymentTransaction[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(PaymentTransaction)25126_storage)dyn_storage"
+  },
+  "t_mapping(t_address,t_array(t_struct(RewardBatch)100748_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct LoyaltyStorage.RewardBatch[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(RewardBatch)100748_storage)dyn_storage"
+  },
+  "t_mapping(t_address,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_mapping(t_address,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_address,t_bytes32)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => bytes32)",
+   "numberOfBytes": "32",
+   "value": "t_bytes32"
+  },
+  "t_mapping(t_address,t_mapping(t_bytes32,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(bytes32 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_bytes32,t_uint256)"
+  },
+  "t_mapping(t_address,t_mapping(t_string_memory_ptr,t_array(t_struct(MemberRewardVoucher)26575_storage)dyn_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(string => struct MemberRewardVoucher[]))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_string_memory_ptr,t_array(t_struct(MemberRewardVoucher)26575_storage)dyn_storage)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => uint256[]))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_bool))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => bool))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_bool)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_uint256,t_uint256)))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => mapping(uint256 => uint256)))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_mapping(t_uint256,t_uint256))"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_struct(MemberRewardVoucherInstance)26609_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => struct MemberRewardVoucherInstance))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_struct(MemberRewardVoucherInstance)26609_storage)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_uint256)"
+  },
+  "t_mapping(t_address,t_struct(Member)25005_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct Member)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Member)25005_storage"
+  },
+  "t_mapping(t_address,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_bytes32,t_address)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_mapping(t_bytes32,t_array(t_address)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => address[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_address)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => mapping(address => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_uint256)"
+  },
+  "t_mapping(t_bytes32,t_struct(DebitRecord)25141_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct DebitRecord)",
+   "numberOfBytes": "32",
+   "value": "t_struct(DebitRecord)25141_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(LockedEarn)101044_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct LoyaltyStorage.LockedEarn)",
+   "numberOfBytes": "32",
+   "value": "t_struct(LockedEarn)101044_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(LockedPoint)101004_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct LoyaltyStorage.LockedPoint)",
+   "numberOfBytes": "32",
+   "value": "t_struct(LockedPoint)101004_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(MemberGroup)25117_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct MemberGroup)",
+   "numberOfBytes": "32",
+   "value": "t_struct(MemberGroup)25117_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(RewardVoucher)26563_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct RewardVoucher)",
+   "numberOfBytes": "32",
+   "value": "t_struct(RewardVoucher)26563_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(TierConfig)101_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct EconomyTypes.TierConfig)",
+   "numberOfBytes": "32",
+   "value": "t_struct(TierConfig)101_storage"
+  },
+  "t_mapping(t_bytes32,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_string_memory_ptr,t_address)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_mapping(t_string_memory_ptr,t_array(t_struct(MemberRewardVoucher)26575_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct MemberRewardVoucher[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(MemberRewardVoucher)26575_storage)dyn_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_bytes32)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => bytes32)",
+   "numberOfBytes": "32",
+   "value": "t_bytes32"
+  },
+  "t_mapping(t_string_memory_ptr,t_mapping(t_address,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => mapping(address => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_uint256)"
+  },
+  "t_mapping(t_string_memory_ptr,t_struct(RewardVoucher)26563_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct RewardVoucher)",
+   "numberOfBytes": "32",
+   "value": "t_struct(RewardVoucher)26563_storage"
+  },
+  "t_mapping(t_uint256,t_address)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_uint256,t_contract(IBranchAccessManager)22929)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => contract IBranchAccessManager)",
+   "numberOfBytes": "32",
+   "value": "t_contract(IBranchAccessManager)22929"
+  },
+  "t_mapping(t_uint256,t_mapping(t_bytes32,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(bytes32 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_bytes32,t_uint256)"
+  },
+  "t_mapping(t_uint256,t_mapping(t_uint256,t_struct(DailyStats)25158_storage))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(uint256 => struct DailyStats))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_struct(DailyStats)25158_storage)"
+  },
+  "t_mapping(t_uint256,t_mapping(t_uint256,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(uint256 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_uint256)"
+  },
+  "t_mapping(t_uint256,t_struct(Campaign)137_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct EconomyTypes.Campaign)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Campaign)137_storage"
+  },
+  "t_mapping(t_uint256,t_struct(CampaignExecRecord)25173_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct CampaignExecRecord)",
+   "numberOfBytes": "32",
+   "value": "t_struct(CampaignExecRecord)25173_storage"
+  },
+  "t_mapping(t_uint256,t_struct(DailyStats)25158_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct DailyStats)",
+   "numberOfBytes": "32",
+   "value": "t_struct(DailyStats)25158_storage"
+  },
+  "t_mapping(t_uint256,t_struct(ManualRequest)25108_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct ManualRequest)",
+   "numberOfBytes": "32",
+   "value": "t_struct(ManualRequest)25108_storage"
+  },
+  "t_mapping(t_uint256,t_struct(MemberRewardVoucherInstance)26609_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct MemberRewardVoucherInstance)",
+   "numberOfBytes": "32",
+   "value": "t_struct(MemberRewardVoucherInstance)26609_storage"
+  },
+  "t_mapping(t_uint256,t_struct(Transaction)25030_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct Transaction)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Transaction)25030_storage"
+  },
+  "t_mapping(t_uint256,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_uint8,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint8",
+   "label": "mapping(uint8 => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_string_memory_ptr": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(Campaign)137_storage": {
+   "encoding": "inplace",
+   "label": "struct EconomyTypes.Campaign",
+   "numberOfBytes": "480",
+   "members": [
+    {
+     "astId": 104,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 106,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 108,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "eventType",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 110,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "minAmount",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 112,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "rewardAmount",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 114,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "isPercent",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_bool"
+    },
+    {
+     "astId": 116,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "branchScope",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 118,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "exclusiveGroup",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 120,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "priority",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 122,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "stackable",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_bool"
+    },
+    {
+     "astId": 124,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "active",
+     "offset": 1,
+     "slot": "9",
+     "type": "t_bool"
+    },
+    {
+     "astId": 126,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "expiresAt",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 128,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "minTierID",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 131,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "allowedTiers",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_array(t_bytes32)dyn_storage"
+    },
+    {
+     "astId": 133,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "rewardExpiryDaysOverride",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 136,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "maxRewardAmount",
+     "offset": 0,
+     "slot": "14",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(CampaignExecRecord)25173_storage": {
+   "encoding": "inplace",
+   "label": "struct CampaignExecRecord",
+   "numberOfBytes": "224",
+   "members": [
+    {
+     "astId": 25160,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "campaignId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25162,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "customer",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 25164,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "sourceEventId",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 25166,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "baseAmount",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25168,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "finalAmount",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25170,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "branchId",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25172,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(ChangeRecord)25185_storage": {
+   "encoding": "inplace",
+   "label": "struct ChangeRecord",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 25175,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25178,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "changeType",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_enum(ChangeType)25198"
+    },
+    {
+     "astId": 25180,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "actor",
+     "offset": 1,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 25182,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "payload",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bytes_storage"
+    },
+    {
+     "astId": 25184,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(DailyStats)25158_storage": {
+   "encoding": "inplace",
+   "label": "struct DailyStats",
+   "numberOfBytes": "256",
+   "members": [
+    {
+     "astId": 25143,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "totalTopup",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25145,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "totalEarned",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25147,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "totalSpend",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25149,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "totalGrantB",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25151,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "totalDebitB",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25153,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "totalExpiredB",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25155,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "newMembers",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25157,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "txCount",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(DebitRecord)25141_storage": {
+   "encoding": "inplace",
+   "label": "struct DebitRecord",
+   "numberOfBytes": "224",
+   "members": [
+    {
+     "astId": 25128,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "customer",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 25130,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "actionType",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 25132,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "refId",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 25134,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "amount",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25136,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "spentA",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25138,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "spentB",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25140,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(LedgerEntryA)100720_storage": {
+   "encoding": "inplace",
+   "label": "struct LoyaltyStorage.LedgerEntryA",
+   "numberOfBytes": "192",
+   "members": [
+    {
+     "astId": 100709,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "customer",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 100711,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "delta",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_int256"
+    },
+    {
+     "astId": 100713,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "actionType",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 100715,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "refId",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 100717,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "idempotencyKey",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 100719,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(LedgerEntryB)100775_storage": {
+   "encoding": "inplace",
+   "label": "struct LoyaltyStorage.LedgerEntryB",
+   "numberOfBytes": "192",
+   "members": [
+    {
+     "astId": 100764,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "customer",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 100766,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "delta",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_int256"
+    },
+    {
+     "astId": 100768,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "actionType",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 100770,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "refId",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 100772,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 100774,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "note",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(LockedBatch)100987_storage": {
+   "encoding": "inplace",
+   "label": "struct LoyaltyStorage.LockedBatch",
+   "numberOfBytes": "64",
+   "members": [
+    {
+     "astId": 100984,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "batchId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 100986,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "amountTaken",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(LockedEarn)101044_storage": {
+   "encoding": "inplace",
+   "label": "struct LoyaltyStorage.LockedEarn",
+   "numberOfBytes": "448",
+   "members": [
+    {
+     "astId": 101015,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "member",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 101017,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "inputAmount",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 101019,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "idempotencyKey",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 101021,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "refId",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 101023,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "eventType",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 101025,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "branchId",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 101027,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "source",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 101029,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "tokenAPlanned",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 101031,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "tokenBFromTierPlanned",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 101033,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "tierRewardExpiresAt",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 101037,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "campaignRewards",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_array(t_struct(PlannedCampaignReward)101013_storage)dyn_storage"
+    },
+    {
+     "astId": 101039,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 101041,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "active",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_bool"
+    },
+    {
+     "astId": 101043,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "invoiceRewardBPlanned",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(LockedPoint)101004_storage": {
+   "encoding": "inplace",
+   "label": "struct LoyaltyStorage.LockedPoint",
+   "numberOfBytes": "224",
+   "members": [
+    {
+     "astId": 100989,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "amount",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 100991,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "amountA",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 100993,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "amountB",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 100997,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "lockedBatches",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_array(t_struct(LockedBatch)100987_storage)dyn_storage"
+    },
+    {
+     "astId": 100999,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "referenceId",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 101001,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "lockTimestamp",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 101003,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "active",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_bool"
+    }
+   ]
+  },
+  "t_struct(ManualRequest)25108_storage": {
+   "encoding": "inplace",
+   "label": "struct ManualRequest",
+   "numberOfBytes": "384",
+   "members": [
+    {
+     "astId": 25081,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25083,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "member",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 25085,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "invoiceId",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 25087,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "amount",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25089,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "pointsToEarn",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25091,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "requestedBy",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_address"
+    },
+    {
+     "astId": 25093,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "requestTime",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25096,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "status",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_enum(RequestStatus)25219"
+    },
+    {
+     "astId": 25098,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "approvedBy",
+     "offset": 1,
+     "slot": "7",
+     "type": "t_address"
+    },
+    {
+     "astId": 25100,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "approvedTime",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25102,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "rejectReason",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 25105,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "typeRequest",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_enum(RequestEarnPointType)25202"
+    },
+    {
+     "astId": 25107,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "img",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(Member)25005_storage": {
+   "encoding": "inplace",
+   "label": "struct Member",
+   "numberOfBytes": "448",
+   "members": [
+    {
+     "astId": 24976,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "memberId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 24978,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "walletAddress",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 24980,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "totalPoints",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 24982,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "lifetimePoints",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 24984,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "totalSpent",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 24986,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "tierID",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 24988,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "lastBuyActivityAt",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 24990,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "isActive",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_bool"
+    },
+    {
+     "astId": 24992,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "isLocked",
+     "offset": 1,
+     "slot": "7",
+     "type": "t_bool"
+    },
+    {
+     "astId": 24994,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "phoneNumber",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 24996,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "firstName",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 24998,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "lastName",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 25000,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "whatsapp",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 25002,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "email",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 25004,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "avatar",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(MemberGroup)25117_storage": {
+   "encoding": "inplace",
+   "label": "struct MemberGroup",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 25110,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 25112,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 25114,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "isActive",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bool"
+    },
+    {
+     "astId": 25116,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(MemberRewardVoucher)26575_storage": {
+   "encoding": "inplace",
+   "label": "struct MemberRewardVoucher",
+   "numberOfBytes": "640",
+   "members": [
+    {
+     "astId": 26565,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "code",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26567,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "redeemedAt",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26569,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "isUsed",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26571,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "usedAt",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26574,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "voucherDetail",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_struct(RewardVoucher)26563_storage"
+    }
+   ]
+  },
+  "t_struct(MemberRewardVoucherInstance)26609_storage": {
+   "encoding": "inplace",
+   "label": "struct MemberRewardVoucherInstance",
+   "numberOfBytes": "448",
+   "members": [
+    {
+     "astId": 26578,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "voucherId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26580,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "redeemedAt",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26582,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "isUsed",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26584,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "usedAt",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26587,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "voucherType",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_enum(RewardVoucherType)26526"
+    },
+    {
+     "astId": 26589,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "value",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26591,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "from",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26593,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "to",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26595,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "active",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26598,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "branchIds",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_array(t_uint256)dyn_storage"
+    },
+    {
+     "astId": 26601,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "productCodes",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_array(t_string_storage)dyn_storage"
+    },
+    {
+     "astId": 26603,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "name",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26605,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "imgURL",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26608,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "maxValue",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(PaymentTransaction)25126_storage": {
+   "encoding": "inplace",
+   "label": "struct PaymentTransaction",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 25119,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "paymentId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 25121,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "pointsUsed",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25123,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "orderAmount",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25125,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(PlannedCampaignReward)101013_storage": {
+   "encoding": "inplace",
+   "label": "struct LoyaltyStorage.PlannedCampaignReward",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 101006,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "campaignId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 101008,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "baseAmount",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 101010,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "finalAmount",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 101012,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "expiresAt",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(RewardBatch)100748_storage": {
+   "encoding": "inplace",
+   "label": "struct LoyaltyStorage.RewardBatch",
+   "numberOfBytes": "224",
+   "members": [
+    {
+     "astId": 100735,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 100737,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "amount",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 100739,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "expiresAt",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 100741,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "campaignId",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 100743,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "sourceEventId",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 100745,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "active",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_bool"
+    },
+    {
+     "astId": 100747,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "branchId",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(RewardVoucher)26563_storage": {
+   "encoding": "inplace",
+   "label": "struct RewardVoucher",
+   "numberOfBytes": "512",
+   "members": [
+    {
+     "astId": 26528,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "code",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26530,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26532,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "description",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26534,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "imgURL",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26537,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "voucherType",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_enum(RewardVoucherType)26526"
+    },
+    {
+     "astId": 26539,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "pointCost",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26541,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "value",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26543,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "from",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26545,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "to",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26547,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "amountMax",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26549,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "amountUsed",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26551,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "userLimit",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26553,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "active",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26556,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "branchIds",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_array(t_uint256)dyn_storage"
+    },
+    {
+     "astId": 26559,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "productCodes",
+     "offset": 0,
+     "slot": "14",
+     "type": "t_array(t_string_storage)dyn_storage"
+    },
+    {
+     "astId": 26562,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "maxValue",
+     "offset": 0,
+     "slot": "15",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(TierConfig)101_storage": {
+   "encoding": "inplace",
+   "label": "struct EconomyTypes.TierConfig",
+   "numberOfBytes": "288",
+   "members": [
+    {
+     "astId": 84,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 86,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 88,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "pointsRequired",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 90,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "pointsMax",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 92,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "tokenBBonusPercent",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 94,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "campaignMultiplier",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 96,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "rewardCapPercentBonus",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 98,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "rewardCapAbsoluteBonus",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 100,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "colour",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(Transaction)25030_storage": {
+   "encoding": "inplace",
+   "label": "struct Transaction",
+   "numberOfBytes": "320",
+   "members": [
+    {
+     "astId": 25007,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25009,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "member",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 25012,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "txType",
+     "offset": 20,
+     "slot": "1",
+     "type": "t_enum(TransactionType)25210"
+    },
+    {
+     "astId": 25014,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "points",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_int256"
+    },
+    {
+     "astId": 25016,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "amount",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25018,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "invoiceId",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 25020,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "processedBy",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_address"
+    },
+    {
+     "astId": 25022,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25024,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "note",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 25026,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "eventId",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 25029,
+     "contract": "contracts/loyalty/RestaurantLoyaltySystem.sol:RestaurantLoyaltySystem",
+     "label": "status",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_enum(PointTransactionStatus)25215"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  },
+  "t_uint8": {
+   "encoding": "inplace",
+   "label": "uint8",
+   "numberOfBytes": "1"
+  }
+ }
+}

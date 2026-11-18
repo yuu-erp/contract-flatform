@@ -1,0 +1,253 @@
+{
+ "storage": [
+  {
+   "astId": 164464,
+   "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+   "label": "accessManager",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_contract(IBranchAccessManager)22929"
+  },
+  {
+   "astId": 181221,
+   "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+   "label": "accountCounter",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 181224,
+   "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+   "label": "branchAuditTrail",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_contract(IBranchAuditTrail)22951"
+  },
+  {
+   "astId": 181229,
+   "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+   "label": "_accounts",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_mapping(t_uint256,t_struct(BankAccount)181219_storage)"
+  },
+  {
+   "astId": 181234,
+   "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+   "label": "_agentAccountIds",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 181240,
+   "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+   "label": "branchToAccount",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 182627,
+   "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_array(t_uint256)45_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_uint256)45_storage": {
+   "encoding": "inplace",
+   "label": "uint256[45]",
+   "numberOfBytes": "1440",
+   "base": "t_uint256"
+  },
+  "t_array(t_uint256)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "uint256[]",
+   "numberOfBytes": "32",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_bytes32": {
+   "encoding": "inplace",
+   "label": "bytes32",
+   "numberOfBytes": "32"
+  },
+  "t_contract(IBranchAccessManager)22929": {
+   "encoding": "inplace",
+   "label": "contract IBranchAccessManager",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IBranchAuditTrail)22951": {
+   "encoding": "inplace",
+   "label": "contract IBranchAuditTrail",
+   "numberOfBytes": "20"
+  },
+  "t_mapping(t_address,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_uint256)"
+  },
+  "t_mapping(t_uint256,t_struct(BankAccount)181219_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct BranchPaymentRegistry.BankAccount)",
+   "numberOfBytes": "32",
+   "value": "t_struct(BankAccount)181219_storage"
+  },
+  "t_mapping(t_uint256,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(BankAccount)181219_storage": {
+   "encoding": "inplace",
+   "label": "struct BranchPaymentRegistry.BankAccount",
+   "numberOfBytes": "384",
+   "members": [
+    {
+     "astId": 181193,
+     "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 181195,
+     "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+     "label": "agent",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 181198,
+     "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+     "label": "branchIds",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_array(t_uint256)dyn_storage"
+    },
+    {
+     "astId": 181200,
+     "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+     "label": "bankCode",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint16"
+    },
+    {
+     "astId": 181202,
+     "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+     "label": "bankName",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 181204,
+     "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+     "label": "memorableName",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 181206,
+     "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+     "label": "accountNumberMasked",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 181208,
+     "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+     "label": "accountNumberHash",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 181210,
+     "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+     "label": "secretRef",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 181212,
+     "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+     "label": "active",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_bool"
+    },
+    {
+     "astId": 181214,
+     "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+     "label": "exists",
+     "offset": 1,
+     "slot": "9",
+     "type": "t_bool"
+    },
+    {
+     "astId": 181216,
+     "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 181218,
+     "contract": "contracts/shared/BranchPaymentRegistry.sol:BranchPaymentRegistry",
+     "label": "updatedAt",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_uint16": {
+   "encoding": "inplace",
+   "label": "uint16",
+   "numberOfBytes": "2"
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

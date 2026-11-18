@@ -1,0 +1,946 @@
+{
+ "storage": [
+  {
+   "astId": 212310,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "_status",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 191000,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "version",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_string_storage"
+  },
+  {
+   "astId": 191002,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "superAdmin",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_address"
+  },
+  {
+   "astId": 191004,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "_adminInitialized",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 191016,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "iqrFactory",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_address"
+  },
+  {
+   "astId": 191018,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "loyaltyFactory",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_address"
+  },
+  {
+   "astId": 191020,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "netCafeFactory",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_address"
+  },
+  {
+   "astId": 191022,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "agentModuleProvisioner",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_address"
+  },
+  {
+   "astId": 191024,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "revenueManager",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_address"
+  },
+  {
+   "astId": 191026,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "mtdToken",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_address"
+  },
+  {
+   "astId": 191028,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "bmFactory",
+   "offset": 0,
+   "slot": "10",
+   "type": "t_address"
+  },
+  {
+   "astId": 191030,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "robotFactory",
+   "offset": 0,
+   "slot": "11",
+   "type": "t_address"
+  },
+  {
+   "astId": 191043,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "agents",
+   "offset": 0,
+   "slot": "12",
+   "type": "t_mapping(t_address,t_struct(Agent)20747_storage)"
+  },
+  {
+   "astId": 191049,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "agentIQRContracts",
+   "offset": 0,
+   "slot": "13",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_address))"
+  },
+  {
+   "astId": 191055,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "agentNetCafeContracts",
+   "offset": 0,
+   "slot": "14",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_address))"
+  },
+  {
+   "astId": 191061,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "agentROBOTContracts",
+   "offset": 0,
+   "slot": "15",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_address))"
+  },
+  {
+   "astId": 191067,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "agentLoyaltyContracts",
+   "offset": 0,
+   "slot": "16",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_address))"
+  },
+  {
+   "astId": 191071,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "agentBranchManagement",
+   "offset": 0,
+   "slot": "17",
+   "type": "t_mapping(t_address,t_address)"
+  },
+  {
+   "astId": 191078,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "netCafeLicenses",
+   "offset": 0,
+   "slot": "18",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_struct(NetCafeV3License)20793_storage))"
+  },
+  {
+   "astId": 191086,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "branchModuleOverrides",
+   "offset": 0,
+   "slot": "19",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_array(t_bool)4_storage))"
+  },
+  {
+   "astId": 191092,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "branchModuleOverrideSet",
+   "offset": 0,
+   "slot": "20",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_bool))"
+  },
+  {
+   "astId": 191095,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "agentList",
+   "offset": 0,
+   "slot": "21",
+   "type": "t_array(t_address)dyn_storage"
+  },
+  {
+   "astId": 191097,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "paused",
+   "offset": 0,
+   "slot": "22",
+   "type": "t_bool"
+  },
+  {
+   "astId": 191101,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "deletedAgents",
+   "offset": 0,
+   "slot": "23",
+   "type": "t_array(t_struct(Agent)20747_storage)dyn_storage"
+  },
+  {
+   "astId": 191105,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "isAdmin",
+   "offset": 0,
+   "slot": "24",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 191109,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "mDomainToWallet",
+   "offset": 0,
+   "slot": "25",
+   "type": "t_mapping(t_string_memory_ptr,t_address)"
+  },
+  {
+   "astId": 191113,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "mAgentToDomain",
+   "offset": 0,
+   "slot": "26",
+   "type": "t_mapping(t_address,t_string_storage)"
+  },
+  {
+   "astId": 191119,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "iqrTransfered",
+   "offset": 0,
+   "slot": "27",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_bool))"
+  },
+  {
+   "astId": 191124,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "agentToBranchIds",
+   "offset": 0,
+   "slot": "28",
+   "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 191129,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "mBranchIdToBranch",
+   "offset": 0,
+   "slot": "29",
+   "type": "t_mapping(t_uint256,t_struct(BranchInfo)20784_storage)"
+  },
+  {
+   "astId": 191133,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "mAgentToMainBranchId",
+   "offset": 0,
+   "slot": "30",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 191135,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "branchIdCount",
+   "offset": 0,
+   "slot": "31",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 191139,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "existsInNew",
+   "offset": 0,
+   "slot": "32",
+   "type": "t_mapping(t_uint256,t_bool)"
+  },
+  {
+   "astId": 191143,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "mDomainToBranchId",
+   "offset": 0,
+   "slot": "33",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 191162,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "isCompanyAdmin",
+   "offset": 0,
+   "slot": "34",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 191166,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "isDA",
+   "offset": 0,
+   "slot": "35",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 191171,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "agentsByPermissionCache",
+   "offset": 0,
+   "slot": "36",
+   "type": "t_mapping(t_uint8,t_array(t_address)dyn_storage)"
+  },
+  {
+   "astId": 191175,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "permissionCacheValid",
+   "offset": 0,
+   "slot": "37",
+   "type": "t_mapping(t_uint8,t_bool)"
+  },
+  {
+   "astId": 191235,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "superAdminToCompanyAdmin",
+   "offset": 0,
+   "slot": "38",
+   "type": "t_mapping(t_address,t_address)"
+  },
+  {
+   "astId": 191240,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "companyAdminSuperAdmins",
+   "offset": 0,
+   "slot": "39",
+   "type": "t_mapping(t_address,t_array(t_address)dyn_storage)"
+  },
+  {
+   "astId": 191242,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "publicfullDB",
+   "offset": 0,
+   "slot": "40",
+   "type": "t_address"
+  },
+  {
+   "astId": 191244,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "branchAccessManager",
+   "offset": 0,
+   "slot": "41",
+   "type": "t_address"
+  },
+  {
+   "astId": 191246,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "economyVault",
+   "offset": 0,
+   "slot": "42",
+   "type": "t_address"
+  },
+  {
+   "astId": 191250,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "43",
+   "type": "t_array(t_uint256)43_storage"
+  },
+  {
+   "astId": 197007,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "agentTaxPercent",
+   "offset": 0,
+   "slot": "86",
+   "type": "t_mapping(t_address,t_uint8)"
+  },
+  {
+   "astId": 197013,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "notiService",
+   "offset": 0,
+   "slot": "87",
+   "type": "t_address"
+  },
+  {
+   "astId": 197015,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "notiAppId",
+   "offset": 0,
+   "slot": "88",
+   "type": "t_bytes32"
+  },
+  {
+   "astId": 197019,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "_notiSenderRegistered",
+   "offset": 0,
+   "slot": "89",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 197024,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "agentAnalytics",
+   "offset": 0,
+   "slot": "90",
+   "type": "t_mapping(t_address,t_struct(AgentAnalytics)20886_storage)"
+  },
+  {
+   "astId": 197029,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "monthlyAgents",
+   "offset": 0,
+   "slot": "91",
+   "type": "t_mapping(t_uint256,t_array(t_address)dyn_storage)"
+  },
+  {
+   "astId": 197034,
+   "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+   "label": "yearlyAgents",
+   "offset": 0,
+   "slot": "92",
+   "type": "t_mapping(t_uint256,t_array(t_address)dyn_storage)"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_address)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "address[]",
+   "numberOfBytes": "32",
+   "base": "t_address"
+  },
+  "t_array(t_bool)4_storage": {
+   "encoding": "inplace",
+   "label": "bool[4]",
+   "numberOfBytes": "32",
+   "base": "t_bool"
+  },
+  "t_array(t_struct(Agent)20747_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Agent[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Agent)20747_storage"
+  },
+  "t_array(t_struct(BranchInfo)20784_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct BranchInfo[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(BranchInfo)20784_storage"
+  },
+  "t_array(t_uint256)43_storage": {
+   "encoding": "inplace",
+   "label": "uint256[43]",
+   "numberOfBytes": "1376",
+   "base": "t_uint256"
+  },
+  "t_array(t_uint256)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "uint256[]",
+   "numberOfBytes": "32",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_bytes32": {
+   "encoding": "inplace",
+   "label": "bytes32",
+   "numberOfBytes": "32"
+  },
+  "t_mapping(t_address,t_address)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_mapping(t_address,t_array(t_address)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => address[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_address)dyn_storage"
+  },
+  "t_mapping(t_address,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_mapping(t_address,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_address))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => address))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_address)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_array(t_bool)4_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => bool[4]))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_array(t_bool)4_storage)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_bool))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => bool))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_bool)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_struct(NetCafeV3License)20793_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => struct NetCafeV3License))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_struct(NetCafeV3License)20793_storage)"
+  },
+  "t_mapping(t_address,t_string_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => string)",
+   "numberOfBytes": "32",
+   "value": "t_string_storage"
+  },
+  "t_mapping(t_address,t_struct(Agent)20747_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct Agent)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Agent)20747_storage"
+  },
+  "t_mapping(t_address,t_struct(AgentAnalytics)20886_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct AgentAnalytics)",
+   "numberOfBytes": "32",
+   "value": "t_struct(AgentAnalytics)20886_storage"
+  },
+  "t_mapping(t_address,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_address,t_uint8)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint8)",
+   "numberOfBytes": "32",
+   "value": "t_uint8"
+  },
+  "t_mapping(t_string_memory_ptr,t_address)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_mapping(t_string_memory_ptr,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_uint256,t_address)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_mapping(t_uint256,t_array(t_address)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => address[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_address)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_array(t_bool)4_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => bool[4])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_bool)4_storage"
+  },
+  "t_mapping(t_uint256,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_uint256,t_struct(BranchInfo)20784_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct BranchInfo)",
+   "numberOfBytes": "32",
+   "value": "t_struct(BranchInfo)20784_storage"
+  },
+  "t_mapping(t_uint256,t_struct(NetCafeV3License)20793_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct NetCafeV3License)",
+   "numberOfBytes": "32",
+   "value": "t_struct(NetCafeV3License)20793_storage"
+  },
+  "t_mapping(t_uint8,t_array(t_address)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint8",
+   "label": "mapping(uint8 => address[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_address)dyn_storage"
+  },
+  "t_mapping(t_uint8,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_uint8",
+   "label": "mapping(uint8 => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_string_memory_ptr": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(Agent)20747_storage": {
+   "encoding": "inplace",
+   "label": "struct Agent",
+   "numberOfBytes": "384",
+   "members": [
+    {
+     "astId": 20718,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "walletAddress",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 20720,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "storeName",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 20722,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "storeAddress",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 20724,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "phone",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 20726,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "note",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 20730,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "permissions",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_array(t_bool)4_storage"
+    },
+    {
+     "astId": 20732,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20734,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "updatedAt",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20736,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "isActive",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_bool"
+    },
+    {
+     "astId": 20738,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "exists",
+     "offset": 1,
+     "slot": "8",
+     "type": "t_bool"
+    },
+    {
+     "astId": 20740,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "domain",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 20742,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "longlat",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 20746,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "branches",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_array(t_struct(BranchInfo)20784_storage)dyn_storage"
+    }
+   ]
+  },
+  "t_struct(AgentAnalytics)20886_storage": {
+   "encoding": "inplace",
+   "label": "struct AgentAnalytics",
+   "numberOfBytes": "256",
+   "members": [
+    {
+     "astId": 20871,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "totalOrders",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20873,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "totalRevenue",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20875,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "loyaltyTokensIssued",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20877,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "netCafeLicensesActive",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20879,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "customerCount",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20881,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "averageOrderValue",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20883,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "lastActivityTimestamp",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20885,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "performanceScore",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(BranchInfo)20784_storage": {
+   "encoding": "inplace",
+   "label": "struct BranchInfo",
+   "numberOfBytes": "256",
+   "members": [
+    {
+     "astId": 20767,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "branchId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20769,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 20771,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "location",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 20773,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "phone",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 20775,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "domain",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 20777,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "longlat",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 20779,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "isActive",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 20781,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "isMain",
+     "offset": 1,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 20783,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(NetCafeV3License)20793_storage": {
+   "encoding": "inplace",
+   "label": "struct NetCafeV3License",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 20786,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "licenseKey",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 20788,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "isActive",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_bool"
+    },
+    {
+     "astId": 20790,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20792,
+     "contract": "contracts/system/EnhancedAgentManagement.sol:EnhancedAgentManagement",
+     "label": "expiryAt",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  },
+  "t_uint8": {
+   "encoding": "inplace",
+   "label": "uint8",
+   "numberOfBytes": "1"
+  }
+ }
+}

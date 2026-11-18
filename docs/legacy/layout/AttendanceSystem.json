@@ -1,0 +1,1265 @@
+{
+ "storage": [
+  {
+   "astId": 212310,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "_status",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 182,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "managementContract",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_contract(IManagement)24819"
+  },
+  {
+   "astId": 185,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "accessManager",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_contract(IBranchAccessManager)22929"
+  },
+  {
+   "astId": 187,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "agent",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_address"
+  },
+  {
+   "astId": 189,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "branchId",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 205,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "staffDailyAttendance",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_array(t_struct(AttendanceRecord)27772_storage)dyn_storage))"
+  },
+  {
+   "astId": 210,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "dailyReports",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_mapping(t_uint256,t_struct(DailyReportHR)27917_storage)"
+  },
+  {
+   "astId": 215,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "monthlyReports",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_mapping(t_uint256,t_struct(MonthlyReportHR)27971_storage)"
+  },
+  {
+   "astId": 219,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "isStaffExists",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 225,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "isAttendanceRecorded",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_bool))"
+  },
+  {
+   "astId": 231,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "mLatestCheckinShift",
+   "offset": 0,
+   "slot": "10",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 237,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "mLatestCheckoutShift",
+   "offset": 0,
+   "slot": "11",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 240,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "reportedDates",
+   "offset": 0,
+   "slot": "12",
+   "type": "t_array(t_uint256)dyn_storage"
+  },
+  {
+   "astId": 243,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "reportedMonths",
+   "offset": 0,
+   "slot": "13",
+   "type": "t_array(t_uint256)dyn_storage"
+  },
+  {
+   "astId": 246,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "allStaffAddresses",
+   "offset": 0,
+   "slot": "14",
+   "type": "t_array(t_address)dyn_storage"
+  },
+  {
+   "astId": 248,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "TIMEZONE",
+   "offset": 0,
+   "slot": "15",
+   "type": "t_int256"
+  },
+  {
+   "astId": 250,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "totalAttendanceRecords",
+   "offset": 0,
+   "slot": "16",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 252,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "standardWorkingHours",
+   "offset": 0,
+   "slot": "17",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 254,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "lateThreshold",
+   "offset": 0,
+   "slot": "18",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 256,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "halfDayThreshold",
+   "offset": 0,
+   "slot": "19",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 258,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "BE",
+   "offset": 0,
+   "slot": "20",
+   "type": "t_address"
+  },
+  {
+   "astId": 261,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "settingAddress",
+   "offset": 0,
+   "slot": "21",
+   "type": "t_struct(SettingAddress)27717_storage"
+  },
+  {
+   "astId": 263,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "nextWorkPlaceId",
+   "offset": 0,
+   "slot": "23",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 269,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "mStaffToDateToIncidents",
+   "offset": 0,
+   "slot": "24",
+   "type": "t_mapping(t_address,t_array(t_struct(ReportCheckinAccident)27696_storage)dyn_storage)"
+  },
+  {
+   "astId": 274,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "mIdToIncident",
+   "offset": 0,
+   "slot": "25",
+   "type": "t_mapping(t_bytes32,t_struct(ReportCheckinAccident)27696_storage)"
+  },
+  {
+   "astId": 279,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "workplaceById",
+   "offset": 0,
+   "slot": "26",
+   "type": "t_mapping(t_uint256,t_struct(WorkPlace)27710_storage)"
+  },
+  {
+   "astId": 283,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "workplaceExists",
+   "offset": 0,
+   "slot": "27",
+   "type": "t_mapping(t_uint256,t_bool)"
+  },
+  {
+   "astId": 352,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "28",
+   "type": "t_array(t_uint256)50_storage"
+  },
+  {
+   "astId": 4291,
+   "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+   "label": "companyHolidays",
+   "offset": 0,
+   "slot": "78",
+   "type": "t_mapping(t_uint256,t_bool)"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_address)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "address[]",
+   "numberOfBytes": "32",
+   "base": "t_address"
+  },
+  "t_array(t_struct(AttendanceRecord)27772_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct AttendanceRecord[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(AttendanceRecord)27772_storage"
+  },
+  "t_array(t_struct(DailyStaffSummary)27878_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct DailyStaffSummary[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(DailyStaffSummary)27878_storage"
+  },
+  "t_array(t_struct(NotInPositionRecord)27724_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct NotInPositionRecord[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(NotInPositionRecord)27724_storage"
+  },
+  "t_array(t_struct(ReportCheckinAccident)27696_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct ReportCheckinAccident[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(ReportCheckinAccident)27696_storage"
+  },
+  "t_array(t_struct(WorkPlace)27710_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct WorkPlace[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(WorkPlace)27710_storage"
+  },
+  "t_array(t_uint256)50_storage": {
+   "encoding": "inplace",
+   "label": "uint256[50]",
+   "numberOfBytes": "1600",
+   "base": "t_uint256"
+  },
+  "t_array(t_uint256)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "uint256[]",
+   "numberOfBytes": "32",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_bytes32": {
+   "encoding": "inplace",
+   "label": "bytes32",
+   "numberOfBytes": "32"
+  },
+  "t_contract(IBranchAccessManager)22929": {
+   "encoding": "inplace",
+   "label": "contract IBranchAccessManager",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IManagement)24819": {
+   "encoding": "inplace",
+   "label": "contract IManagement",
+   "numberOfBytes": "20"
+  },
+  "t_enum(ABSENT_TYPE)27682": {
+   "encoding": "inplace",
+   "label": "enum ABSENT_TYPE",
+   "numberOfBytes": "1"
+  },
+  "t_enum(AttendanceStatus)27679": {
+   "encoding": "inplace",
+   "label": "enum AttendanceStatus",
+   "numberOfBytes": "1"
+  },
+  "t_int256": {
+   "encoding": "inplace",
+   "label": "int256",
+   "numberOfBytes": "32"
+  },
+  "t_mapping(t_address,t_array(t_struct(ReportCheckinAccident)27696_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct ReportCheckinAccident[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(ReportCheckinAccident)27696_storage)dyn_storage"
+  },
+  "t_mapping(t_address,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_array(t_struct(AttendanceRecord)27772_storage)dyn_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => struct AttendanceRecord[]))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_array(t_struct(AttendanceRecord)27772_storage)dyn_storage)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_bool))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => bool))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_bool)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_uint256)"
+  },
+  "t_mapping(t_address,t_struct(StaffMonthlyStats)28013_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct StaffMonthlyStats)",
+   "numberOfBytes": "32",
+   "value": "t_struct(StaffMonthlyStats)28013_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(ReportCheckinAccident)27696_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct ReportCheckinAccident)",
+   "numberOfBytes": "32",
+   "value": "t_struct(ReportCheckinAccident)27696_storage"
+  },
+  "t_mapping(t_uint256,t_array(t_struct(AttendanceRecord)27772_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct AttendanceRecord[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(AttendanceRecord)27772_storage)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_uint256,t_struct(DailyReportHR)27917_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct DailyReportHR)",
+   "numberOfBytes": "32",
+   "value": "t_struct(DailyReportHR)27917_storage"
+  },
+  "t_mapping(t_uint256,t_struct(MonthlyReportHR)27971_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct MonthlyReportHR)",
+   "numberOfBytes": "32",
+   "value": "t_struct(MonthlyReportHR)27971_storage"
+  },
+  "t_mapping(t_uint256,t_struct(WorkPlace)27710_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct WorkPlace)",
+   "numberOfBytes": "32",
+   "value": "t_struct(WorkPlace)27710_storage"
+  },
+  "t_mapping(t_uint256,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(AttendanceRecord)27772_storage": {
+   "encoding": "inplace",
+   "label": "struct AttendanceRecord",
+   "numberOfBytes": "608",
+   "members": [
+    {
+     "astId": 27726,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "staffWallet",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 27728,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "staffCode",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27730,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "staffName",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27732,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "date",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27734,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "checkInTime",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27736,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "checkOutTime",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27738,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "lateMinutes",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27740,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "isLate",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27742,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "isHalfDay",
+     "offset": 1,
+     "slot": "7",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27746,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "notInPositionRecords",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_array(t_struct(NotInPositionRecord)27724_storage)dyn_storage"
+    },
+    {
+     "astId": 27748,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalNotInPositionTime",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27750,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalNotInPositionCount",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27752,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalWorkingHours",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27755,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "status",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_enum(AttendanceStatus)27679"
+    },
+    {
+     "astId": 27758,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "absentType",
+     "offset": 1,
+     "slot": "12",
+     "type": "t_enum(ABSENT_TYPE)27682"
+    },
+    {
+     "astId": 27760,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "notes",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27762,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "isApproved",
+     "offset": 0,
+     "slot": "14",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27764,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "approvedBy",
+     "offset": 1,
+     "slot": "14",
+     "type": "t_address"
+    },
+    {
+     "astId": 27766,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "approvedAt",
+     "offset": 0,
+     "slot": "15",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27769,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "WorkPlaceAttendance",
+     "offset": 0,
+     "slot": "16",
+     "type": "t_struct(WorkPlaceAttendance)27701_storage"
+    },
+    {
+     "astId": 27771,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "ShiftId",
+     "offset": 0,
+     "slot": "18",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(DailyReportHR)27917_storage": {
+   "encoding": "inplace",
+   "label": "struct DailyReportHR",
+   "numberOfBytes": "576",
+   "members": [
+    {
+     "astId": 27880,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "date",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27882,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalStaff",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27884,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "presentStaff",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27886,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "absentStaff",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27888,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "lateStaff",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27890,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "vacationStaff",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27892,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "unauthorizedStaff",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27894,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "halfDayStaff",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27896,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalWorkingHours",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27898,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalNotInPositionCount",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27900,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "averageWorkingHours",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27902,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalLateMinutes",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27904,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalTakeawayOrders",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27906,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalDineInOrders",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27908,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "takeawayPercentage",
+     "offset": 0,
+     "slot": "14",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27910,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "dineInPercentage",
+     "offset": 0,
+     "slot": "15",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27914,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "staffList",
+     "offset": 0,
+     "slot": "16",
+     "type": "t_array(t_struct(DailyStaffSummary)27878_storage)dyn_storage"
+    },
+    {
+     "astId": 27916,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "unrecordedStaff",
+     "offset": 0,
+     "slot": "17",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(DailyStaffSummary)27878_storage": {
+   "encoding": "inplace",
+   "label": "struct DailyStaffSummary",
+   "numberOfBytes": "320",
+   "members": [
+    {
+     "astId": 27855,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "staffWallet",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 27857,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "staffCode",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27859,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "staffName",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27861,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "workingHours",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27863,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "lateCount",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27865,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "isHalfDay",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27867,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "checkInTime",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27869,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "checkOutTime",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27872,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "status",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_enum(AttendanceStatus)27679"
+    },
+    {
+     "astId": 27875,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "absentType",
+     "offset": 1,
+     "slot": "8",
+     "type": "t_enum(ABSENT_TYPE)27682"
+    },
+    {
+     "astId": 27877,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "lateMinutes",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(MonthlyReportHR)27971_storage": {
+   "encoding": "inplace",
+   "label": "struct MonthlyReportHR",
+   "numberOfBytes": "352",
+   "members": [
+    {
+     "astId": 27946,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "month",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27948,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalWorkingDays",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27950,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalStaffDays",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27952,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "presentDays",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27954,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "lateDays",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27956,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalWorkingHours",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27958,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalNotInPositionCount",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27960,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "averageAttendanceRate",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27965,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "staffStats",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_mapping(t_address,t_struct(StaffMonthlyStats)28013_storage)"
+    },
+    {
+     "astId": 27968,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "staffList",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_array(t_address)dyn_storage"
+    },
+    {
+     "astId": 27970,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "lastUpdated",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(NotInPositionRecord)27724_storage": {
+   "encoding": "inplace",
+   "label": "struct NotInPositionRecord",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 27719,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "startTime",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27721,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "endTime",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27723,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "duration",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(ReportCheckinAccident)27696_storage": {
+   "encoding": "inplace",
+   "label": "struct ReportCheckinAccident",
+   "numberOfBytes": "224",
+   "members": [
+    {
+     "astId": 27684,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 27686,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "staff",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 27689,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "workPlace",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_struct(WorkPlaceAttendance)27701_storage"
+    },
+    {
+     "astId": 27691,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27693,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "approved",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27695,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "approvedAt",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(SettingAddress)27717_storage": {
+   "encoding": "inplace",
+   "label": "struct SettingAddress",
+   "numberOfBytes": "64",
+   "members": [
+    {
+     "astId": 27714,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "WorkPlaces",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_array(t_struct(WorkPlace)27710_storage)dyn_storage"
+    },
+    {
+     "astId": 27716,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "LastUpdate",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(StaffMonthlyStats)28013_storage": {
+   "encoding": "inplace",
+   "label": "struct StaffMonthlyStats",
+   "numberOfBytes": "576",
+   "members": [
+    {
+     "astId": 27973,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "staffWallet",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 27975,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "staffCode",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27977,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "staffName",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27979,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "presentDays",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27981,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "lateDays",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27983,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "vacationDays",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27985,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "unauthorizedDays",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27987,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "halfDays",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27989,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalWorkingHours",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27991,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalNotInPositionCount",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27993,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "totalNotInPositionTime",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27995,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "attendanceRate",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27997,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "punctualityRate",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 28000,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "workingDayArr",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_array(t_uint256)dyn_storage"
+    },
+    {
+     "astId": 28003,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "absentVacationDayArr",
+     "offset": 0,
+     "slot": "14",
+     "type": "t_array(t_uint256)dyn_storage"
+    },
+    {
+     "astId": 28006,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "absentUnauthorizedDayArr",
+     "offset": 0,
+     "slot": "15",
+     "type": "t_array(t_uint256)dyn_storage"
+    },
+    {
+     "astId": 28009,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "halfDayArr",
+     "offset": 0,
+     "slot": "16",
+     "type": "t_array(t_uint256)dyn_storage"
+    },
+    {
+     "astId": 28012,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "lateDayArr",
+     "offset": 0,
+     "slot": "17",
+     "type": "t_array(t_uint256)dyn_storage"
+    }
+   ]
+  },
+  "t_struct(WorkPlace)27710_storage": {
+   "encoding": "inplace",
+   "label": "struct WorkPlace",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 27703,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "WorkPlaceId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27705,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "LocationName",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27707,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "LocationAddress",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27709,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "LatLon",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(WorkPlaceAttendance)27701_storage": {
+   "encoding": "inplace",
+   "label": "struct WorkPlaceAttendance",
+   "numberOfBytes": "64",
+   "members": [
+    {
+     "astId": 27698,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "WorkPlaceId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27700,
+     "contract": "contracts/branch/AttendanceSystem.sol:AttendanceSystem",
+     "label": "LatLon",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

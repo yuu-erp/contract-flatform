@@ -1,0 +1,1958 @@
+{
+ "storage": [
+  {
+   "astId": 14068,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "entityHistories",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_mapping(t_enum(EntityType)23477,t_mapping(t_string_memory_ptr,t_struct(EntityHistory)23503_storage))"
+  },
+  {
+   "astId": 14072,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "allHistoryEntries",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_array(t_struct(HistoryEntry)23496_storage)dyn_storage"
+  },
+  {
+   "astId": 14078,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "historyIndicesByType",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_mapping(t_enum(EntityType)23477,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 14086,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "historyIndicesByEntity",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_mapping(t_enum(EntityType)23477,t_mapping(t_string_memory_ptr,t_array(t_uint256)dyn_storage))"
+  },
+  {
+   "astId": 14092,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "dishSnapshots",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_mapping(t_string_memory_ptr,t_array(t_struct(DishSnapshot)23518_storage)dyn_storage)"
+  },
+  {
+   "astId": 14098,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "categorySnapshots",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_mapping(t_string_memory_ptr,t_array(t_struct(CategorySnapshot)23536_storage)dyn_storage)"
+  },
+  {
+   "astId": 14104,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "discountSnapshots",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_mapping(t_string_memory_ptr,t_array(t_struct(DiscountSnapshot)23542_storage)dyn_storage)"
+  },
+  {
+   "astId": 14110,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "staffSnapshots",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_mapping(t_address,t_array(t_struct(StaffSnapshot)23548_storage)dyn_storage)"
+  },
+  {
+   "astId": 14116,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "historyByTableSnapshots",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_mapping(t_uint256,t_array(t_struct(TableSnapshot)23554_storage)dyn_storage)"
+  },
+  {
+   "astId": 14122,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "bannerSnapshots",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_mapping(t_uint256,t_array(t_struct(BannerSnapshot)23560_storage)dyn_storage)"
+  },
+  {
+   "astId": 14128,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "tcSnapshots",
+   "offset": 0,
+   "slot": "10",
+   "type": "t_mapping(t_uint256,t_array(t_struct(TCSnapshot)23566_storage)dyn_storage)"
+  },
+  {
+   "astId": 14134,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "workingShiftSnapshots",
+   "offset": 0,
+   "slot": "11",
+   "type": "t_mapping(t_uint256,t_array(t_struct(WorkingShiftSnapshot)23572_storage)dyn_storage)"
+  },
+  {
+   "astId": 14140,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "uniformSnapshots",
+   "offset": 0,
+   "slot": "12",
+   "type": "t_mapping(t_uint256,t_array(t_struct(UniformSnapshot)23578_storage)dyn_storage)"
+  },
+  {
+   "astId": 14146,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "areaSnapshots",
+   "offset": 0,
+   "slot": "13",
+   "type": "t_mapping(t_uint256,t_array(t_struct(AreaSnapshot)23584_storage)dyn_storage)"
+  },
+  {
+   "astId": 14152,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "positionSnapshots",
+   "offset": 0,
+   "slot": "14",
+   "type": "t_mapping(t_string_memory_ptr,t_array(t_struct(PositionSnapshot)23590_storage)dyn_storage)"
+  },
+  {
+   "astId": 14158,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "dishOptionSnapshots",
+   "offset": 0,
+   "slot": "15",
+   "type": "t_mapping(t_bytes32,t_array(t_struct(DishOptionSnapshot)23596_storage)dyn_storage)"
+  },
+  {
+   "astId": 14164,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "managerSnapshots",
+   "offset": 0,
+   "slot": "16",
+   "type": "t_mapping(t_address,t_array(t_struct(ManagerSnapshot)23530_storage)dyn_storage)"
+  },
+  {
+   "astId": 14170,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "paymentInfoSnapshots",
+   "offset": 0,
+   "slot": "17",
+   "type": "t_mapping(t_uint256,t_array(t_struct(PaymentInfoSnapshot)23524_storage)dyn_storage)"
+  },
+  {
+   "astId": 20589,
+   "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "18",
+   "type": "t_array(t_uint256)50_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_array(t_struct(Attribute)26370_storage)dyn_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Attribute[][]",
+   "numberOfBytes": "32",
+   "base": "t_array(t_struct(Attribute)26370_storage)dyn_storage"
+  },
+  "t_array(t_bytes32)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "bytes32[]",
+   "numberOfBytes": "32",
+   "base": "t_bytes32"
+  },
+  "t_array(t_enum(STAFF_ROLE)26155)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "enum STAFF_ROLE[]",
+   "numberOfBytes": "32",
+   "base": "t_enum(STAFF_ROLE)26155"
+  },
+  "t_array(t_string_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "string[]",
+   "numberOfBytes": "32",
+   "base": "t_string_storage"
+  },
+  "t_array(t_struct(AreaSnapshot)23584_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct AreaSnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(AreaSnapshot)23584_storage"
+  },
+  "t_array(t_struct(Attribute)26370_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Attribute[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Attribute)26370_storage"
+  },
+  "t_array(t_struct(BannerSnapshot)23560_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct BannerSnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(BannerSnapshot)23560_storage"
+  },
+  "t_array(t_struct(CategorySnapshot)23536_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct CategorySnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(CategorySnapshot)23536_storage"
+  },
+  "t_array(t_struct(DiscountSnapshot)23542_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct DiscountSnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(DiscountSnapshot)23542_storage"
+  },
+  "t_array(t_struct(DishOptionSnapshot)23596_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct DishOptionSnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(DishOptionSnapshot)23596_storage"
+  },
+  "t_array(t_struct(DishSnapshot)23518_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct DishSnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(DishSnapshot)23518_storage"
+  },
+  "t_array(t_struct(HistoryEntry)23496_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct HistoryEntry[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(HistoryEntry)23496_storage"
+  },
+  "t_array(t_struct(ManagerSnapshot)23530_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct ManagerSnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(ManagerSnapshot)23530_storage"
+  },
+  "t_array(t_struct(OptionFeature)27168_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct OptionFeature[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(OptionFeature)27168_storage"
+  },
+  "t_array(t_struct(PaymentInfoSnapshot)23524_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct PaymentInfoSnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(PaymentInfoSnapshot)23524_storage"
+  },
+  "t_array(t_struct(PositionSnapshot)23590_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct PositionSnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(PositionSnapshot)23590_storage"
+  },
+  "t_array(t_struct(StaffSnapshot)23548_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct StaffSnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(StaffSnapshot)23548_storage"
+  },
+  "t_array(t_struct(TCSnapshot)23566_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct TCSnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(TCSnapshot)23566_storage"
+  },
+  "t_array(t_struct(TableSnapshot)23554_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct TableSnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(TableSnapshot)23554_storage"
+  },
+  "t_array(t_struct(UniformSnapshot)23578_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct UniformSnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(UniformSnapshot)23578_storage"
+  },
+  "t_array(t_struct(Variant)26382_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Variant[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Variant)26382_storage"
+  },
+  "t_array(t_struct(WorkingShift)26732_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct WorkingShift[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(WorkingShift)26732_storage"
+  },
+  "t_array(t_struct(WorkingShiftSnapshot)23572_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct WorkingShiftSnapshot[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(WorkingShiftSnapshot)23572_storage"
+  },
+  "t_array(t_uint256)50_storage": {
+   "encoding": "inplace",
+   "label": "uint256[50]",
+   "numberOfBytes": "1600",
+   "base": "t_uint256"
+  },
+  "t_array(t_uint256)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "uint256[]",
+   "numberOfBytes": "32",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_bytes32": {
+   "encoding": "inplace",
+   "label": "bytes32",
+   "numberOfBytes": "32"
+  },
+  "t_enum(ActionType)23481": {
+   "encoding": "inplace",
+   "label": "enum ActionType",
+   "numberOfBytes": "1"
+  },
+  "t_enum(BannerPosition)26134": {
+   "encoding": "inplace",
+   "label": "enum BannerPosition",
+   "numberOfBytes": "1"
+  },
+  "t_enum(DiscountType)26142": {
+   "encoding": "inplace",
+   "label": "enum DiscountType",
+   "numberOfBytes": "1"
+  },
+  "t_enum(EntityType)23477": {
+   "encoding": "inplace",
+   "label": "enum EntityType",
+   "numberOfBytes": "1"
+  },
+  "t_enum(ROLE)26145": {
+   "encoding": "inplace",
+   "label": "enum ROLE",
+   "numberOfBytes": "1"
+  },
+  "t_enum(STAFF_ROLE)26155": {
+   "encoding": "inplace",
+   "label": "enum STAFF_ROLE",
+   "numberOfBytes": "1"
+  },
+  "t_enum(TABLE_STATUS)26171": {
+   "encoding": "inplace",
+   "label": "enum TABLE_STATUS",
+   "numberOfBytes": "1"
+  },
+  "t_enum(TCStatus)26191": {
+   "encoding": "inplace",
+   "label": "enum TCStatus",
+   "numberOfBytes": "1"
+  },
+  "t_mapping(t_address,t_array(t_struct(ManagerSnapshot)23530_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct ManagerSnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(ManagerSnapshot)23530_storage)dyn_storage"
+  },
+  "t_mapping(t_address,t_array(t_struct(StaffSnapshot)23548_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct StaffSnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(StaffSnapshot)23548_storage)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_array(t_struct(DishOptionSnapshot)23596_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct DishOptionSnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(DishOptionSnapshot)23596_storage)dyn_storage"
+  },
+  "t_mapping(t_enum(EntityType)23477,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_enum(EntityType)23477",
+   "label": "mapping(enum EntityType => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_mapping(t_enum(EntityType)23477,t_mapping(t_string_memory_ptr,t_array(t_uint256)dyn_storage))": {
+   "encoding": "mapping",
+   "key": "t_enum(EntityType)23477",
+   "label": "mapping(enum EntityType => mapping(string => uint256[]))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_string_memory_ptr,t_array(t_uint256)dyn_storage)"
+  },
+  "t_mapping(t_enum(EntityType)23477,t_mapping(t_string_memory_ptr,t_struct(EntityHistory)23503_storage))": {
+   "encoding": "mapping",
+   "key": "t_enum(EntityType)23477",
+   "label": "mapping(enum EntityType => mapping(string => struct EntityHistory))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_string_memory_ptr,t_struct(EntityHistory)23503_storage)"
+  },
+  "t_mapping(t_string_memory_ptr,t_array(t_struct(CategorySnapshot)23536_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct CategorySnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(CategorySnapshot)23536_storage)dyn_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_array(t_struct(DiscountSnapshot)23542_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct DiscountSnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(DiscountSnapshot)23542_storage)dyn_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_array(t_struct(DishSnapshot)23518_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct DishSnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(DishSnapshot)23518_storage)dyn_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_array(t_struct(PositionSnapshot)23590_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct PositionSnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(PositionSnapshot)23590_storage)dyn_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_struct(EntityHistory)23503_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct EntityHistory)",
+   "numberOfBytes": "32",
+   "value": "t_struct(EntityHistory)23503_storage"
+  },
+  "t_mapping(t_uint256,t_array(t_struct(AreaSnapshot)23584_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct AreaSnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(AreaSnapshot)23584_storage)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_array(t_struct(BannerSnapshot)23560_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct BannerSnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(BannerSnapshot)23560_storage)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_array(t_struct(PaymentInfoSnapshot)23524_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct PaymentInfoSnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(PaymentInfoSnapshot)23524_storage)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_array(t_struct(TCSnapshot)23566_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct TCSnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(TCSnapshot)23566_storage)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_array(t_struct(TableSnapshot)23554_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct TableSnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(TableSnapshot)23554_storage)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_array(t_struct(UniformSnapshot)23578_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct UniformSnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(UniformSnapshot)23578_storage)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_array(t_struct(WorkingShiftSnapshot)23572_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct WorkingShiftSnapshot[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(WorkingShiftSnapshot)23572_storage)dyn_storage"
+  },
+  "t_string_memory_ptr": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(Area)26257_storage": {
+   "encoding": "inplace",
+   "label": "struct Area",
+   "numberOfBytes": "64",
+   "members": [
+    {
+     "astId": 26254,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26256,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(AreaSnapshot)23584_storage": {
+   "encoding": "inplace",
+   "label": "struct AreaSnapshot",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 23581,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "area",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(Area)26257_storage"
+    },
+    {
+     "astId": 23583,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Attribute)26370_storage": {
+   "encoding": "inplace",
+   "label": "struct Attribute",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 26365,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26367,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "key",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26369,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "value",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(Banner)26713_storage": {
+   "encoding": "inplace",
+   "label": "struct Banner",
+   "numberOfBytes": "288",
+   "members": [
+    {
+     "astId": 26695,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26697,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26699,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "linkImg",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26701,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "description",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26703,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "linkTo",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26705,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "active",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26707,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "from",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26709,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "to",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26712,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "location",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_enum(BannerPosition)26134"
+    }
+   ]
+  },
+  "t_struct(BannerSnapshot)23560_storage": {
+   "encoding": "inplace",
+   "label": "struct BannerSnapshot",
+   "numberOfBytes": "320",
+   "members": [
+    {
+     "astId": 23557,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "banner",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(Banner)26713_storage"
+    },
+    {
+     "astId": 23559,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Category)26302_storage": {
+   "encoding": "inplace",
+   "label": "struct Category",
+   "numberOfBytes": "224",
+   "members": [
+    {
+     "astId": 26289,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "code",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26291,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26293,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "rank",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26295,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "desc",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26297,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "active",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26299,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "imgUrl",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26301,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "icon",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(CategorySnapshot)23536_storage": {
+   "encoding": "inplace",
+   "label": "struct CategorySnapshot",
+   "numberOfBytes": "256",
+   "members": [
+    {
+     "astId": 23533,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "category",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(Category)26302_storage"
+    },
+    {
+     "astId": 23535,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Discount)26480_storage": {
+   "encoding": "inplace",
+   "label": "struct Discount",
+   "numberOfBytes": "448",
+   "members": [
+    {
+     "astId": 26451,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "code",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26453,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26455,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "discountPercent",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26457,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "desc",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26459,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "from",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26461,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "to",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26463,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "active",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26465,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "imgURL",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26467,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "amountMax",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26469,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "amountUsed",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26471,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "updatedAt",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26474,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "discountType",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_enum(DiscountType)26142"
+    },
+    {
+     "astId": 26477,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "targetGroupIds",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_array(t_bytes32)dyn_storage"
+    },
+    {
+     "astId": 26479,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "textDes",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(DiscountSnapshot)23542_storage": {
+   "encoding": "inplace",
+   "label": "struct DiscountSnapshot",
+   "numberOfBytes": "480",
+   "members": [
+    {
+     "astId": 23539,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "discount",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(Discount)26480_storage"
+    },
+    {
+     "astId": 23541,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "14",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Dish)26347_storage": {
+   "encoding": "inplace",
+   "label": "struct Dish",
+   "numberOfBytes": "448",
+   "members": [
+    {
+     "astId": 26317,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "code",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26319,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "nameCategory",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26321,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "name",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26323,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "des",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26325,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "available",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26327,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "active",
+     "offset": 1,
+     "slot": "4",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26329,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "imgUrl",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26331,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "averageStar",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26333,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "cookingTime",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26336,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "ingredients",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_array(t_string_storage)dyn_storage"
+    },
+    {
+     "astId": 26338,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "showIngredient",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26340,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "videoLink",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26342,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "totalReview",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26344,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "orderNum",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26346,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(DishOption)27181_storage": {
+   "encoding": "inplace",
+   "label": "struct DishOption",
+   "numberOfBytes": "160",
+   "members": [
+    {
+     "astId": 27170,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "optionId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 27172,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "optionName",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27176,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "features",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_array(t_struct(OptionFeature)27168_storage)dyn_storage"
+    },
+    {
+     "astId": 27178,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "isCompulsory",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27180,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "maximumSelection",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(DishOptionSnapshot)23596_storage": {
+   "encoding": "inplace",
+   "label": "struct DishOptionSnapshot",
+   "numberOfBytes": "192",
+   "members": [
+    {
+     "astId": 23593,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "option",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(DishOption)27181_storage"
+    },
+    {
+     "astId": 23595,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(DishSnapshot)23518_storage": {
+   "encoding": "inplace",
+   "label": "struct DishSnapshot",
+   "numberOfBytes": "544",
+   "members": [
+    {
+     "astId": 23506,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "dish",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(Dish)26347_storage"
+    },
+    {
+     "astId": 23510,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "variants",
+     "offset": 0,
+     "slot": "14",
+     "type": "t_array(t_struct(Variant)26382_storage)dyn_storage"
+    },
+    {
+     "astId": 23515,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "attributes",
+     "offset": 0,
+     "slot": "15",
+     "type": "t_array(t_array(t_struct(Attribute)26370_storage)dyn_storage)dyn_storage"
+    },
+    {
+     "astId": 23517,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "16",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(EntityHistory)23503_storage": {
+   "encoding": "inplace",
+   "label": "struct EntityHistory",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 23498,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "lastUpdateTime",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 23500,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "previousUpdateTime",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 23502,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "exists",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bool"
+    }
+   ]
+  },
+  "t_struct(HistoryEntry)23496_storage": {
+   "encoding": "inplace",
+   "label": "struct HistoryEntry",
+   "numberOfBytes": "192",
+   "members": [
+    {
+     "astId": 23484,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "entityType",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_enum(EntityType)23477"
+    },
+    {
+     "astId": 23486,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "entityId",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 23489,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "actionType",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_enum(ActionType)23481"
+    },
+    {
+     "astId": 23491,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 23493,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "actor",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_address"
+    },
+    {
+     "astId": 23495,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "reason",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(ManagerInfo)27228_storage": {
+   "encoding": "inplace",
+   "label": "struct ManagerInfo",
+   "numberOfBytes": "288",
+   "members": [
+    {
+     "astId": 27204,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "wallet",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 27206,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27208,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "phone",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27210,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "image",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27212,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "isCoOwner",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27215,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "branchIds",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_array(t_uint256)dyn_storage"
+    },
+    {
+     "astId": 27217,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "hasFullAccess",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27219,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "canViewData",
+     "offset": 1,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27221,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "canEditData",
+     "offset": 2,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27223,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "canProposeAndVote",
+     "offset": 3,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27225,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27227,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "active",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_bool"
+    }
+   ]
+  },
+  "t_struct(ManagerSnapshot)23530_storage": {
+   "encoding": "inplace",
+   "label": "struct ManagerSnapshot",
+   "numberOfBytes": "320",
+   "members": [
+    {
+     "astId": 23527,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "manager",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(ManagerInfo)27228_storage"
+    },
+    {
+     "astId": 23529,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(OptionFeature)27168_storage": {
+   "encoding": "inplace",
+   "label": "struct OptionFeature",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 27163,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "featureId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 27165,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "featureName",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27167,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "featurePrice",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(PaymentInfo)27296_storage": {
+   "encoding": "inplace",
+   "label": "struct PaymentInfo",
+   "numberOfBytes": "160",
+   "members": [
+    {
+     "astId": 27287,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "bankAccount",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27289,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "nameAccount",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27291,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "nameOfBank",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27293,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "taxCode",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27295,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "wallet",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(PaymentInfoSnapshot)23524_storage": {
+   "encoding": "inplace",
+   "label": "struct PaymentInfoSnapshot",
+   "numberOfBytes": "192",
+   "members": [
+    {
+     "astId": 23521,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "paymentInfo",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(PaymentInfo)27296_storage"
+    },
+    {
+     "astId": 23523,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Position)26757_storage": {
+   "encoding": "inplace",
+   "label": "struct Position",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 26750,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26752,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26756,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "positionRoles",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_array(t_enum(STAFF_ROLE)26155)dyn_storage"
+    }
+   ]
+  },
+  "t_struct(PositionSnapshot)23590_storage": {
+   "encoding": "inplace",
+   "label": "struct PositionSnapshot",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 23587,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "position",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(Position)26757_storage"
+    },
+    {
+     "astId": 23589,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Staff)26787_storage": {
+   "encoding": "inplace",
+   "label": "struct Staff",
+   "numberOfBytes": "352",
+   "members": [
+    {
+     "astId": 26759,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "wallet",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 26761,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26763,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "code",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26765,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "phone",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26767,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "addr",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26769,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "position",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26772,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "role",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_enum(ROLE)26145"
+    },
+    {
+     "astId": 26774,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "active",
+     "offset": 1,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26776,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "linkImgSelfie",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26778,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "linkImgPortrait",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26782,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "shifts",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_array(t_struct(WorkingShift)26732_storage)dyn_storage"
+    },
+    {
+     "astId": 26786,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "roles",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_array(t_enum(STAFF_ROLE)26155)dyn_storage"
+    }
+   ]
+  },
+  "t_struct(StaffSnapshot)23548_storage": {
+   "encoding": "inplace",
+   "label": "struct StaffSnapshot",
+   "numberOfBytes": "384",
+   "members": [
+    {
+     "astId": 23545,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "staff",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(Staff)26787_storage"
+    },
+    {
+     "astId": 23547,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(TCInfo)26723_storage": {
+   "encoding": "inplace",
+   "label": "struct TCInfo",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 26715,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26717,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "title",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26719,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "content",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26722,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "status",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_enum(TCStatus)26191"
+    }
+   ]
+  },
+  "t_struct(TCSnapshot)23566_storage": {
+   "encoding": "inplace",
+   "label": "struct TCSnapshot",
+   "numberOfBytes": "160",
+   "members": [
+    {
+     "astId": 23563,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "tc",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(TCInfo)26723_storage"
+    },
+    {
+     "astId": 23565,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Table)26404_storage": {
+   "encoding": "inplace",
+   "label": "struct Table",
+   "numberOfBytes": "288",
+   "members": [
+    {
+     "astId": 26384,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "number",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26386,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "numPeople",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26388,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "occupiedSeats",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26391,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "status",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_enum(TABLE_STATUS)26171"
+    },
+    {
+     "astId": 26393,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "active",
+     "offset": 1,
+     "slot": "3",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26395,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "name",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26398,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "area",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_struct(Area)26257_storage"
+    },
+    {
+     "astId": 26401,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "sessionIds",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_array(t_bytes32)dyn_storage"
+    },
+    {
+     "astId": 26403,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "parentTableId",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(TableSnapshot)23554_storage": {
+   "encoding": "inplace",
+   "label": "struct TableSnapshot",
+   "numberOfBytes": "320",
+   "members": [
+    {
+     "astId": 23551,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "table",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(Table)26404_storage"
+    },
+    {
+     "astId": 23553,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Uniform)26741_storage": {
+   "encoding": "inplace",
+   "label": "struct Uniform",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 26734,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26736,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26738,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "linkImgFront",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26740,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "linkImgBack",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(UniformSnapshot)23578_storage": {
+   "encoding": "inplace",
+   "label": "struct UniformSnapshot",
+   "numberOfBytes": "160",
+   "members": [
+    {
+     "astId": 23575,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "uniform",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(Uniform)26741_storage"
+    },
+    {
+     "astId": 23577,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Variant)26382_storage": {
+   "encoding": "inplace",
+   "label": "struct Variant",
+   "numberOfBytes": "64",
+   "members": [
+    {
+     "astId": 26379,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "variantID",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26381,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "dishPrice",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(WorkingShift)26732_storage": {
+   "encoding": "inplace",
+   "label": "struct WorkingShift",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 26725,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "title",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26727,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "from",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26729,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "to",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26731,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "shiftId",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(WorkingShiftSnapshot)23572_storage": {
+   "encoding": "inplace",
+   "label": "struct WorkingShiftSnapshot",
+   "numberOfBytes": "160",
+   "members": [
+    {
+     "astId": 23569,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "shift",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_struct(WorkingShift)26732_storage"
+    },
+    {
+     "astId": 23571,
+     "contract": "contracts/branch/HistoryTracking.sol:HistoryTracking",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

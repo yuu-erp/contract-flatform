@@ -1,0 +1,1146 @@
+{
+ "storage": [
+  {
+   "astId": 164761,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "__deprecated_agent",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_address"
+  },
+  {
+   "astId": 164763,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "__deprecated_branchId",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 164769,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "agentAdmins",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_mapping(t_address,t_mapping(t_address,t_bool))"
+  },
+  {
+   "astId": 164775,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "agentCoOwners",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_mapping(t_address,t_mapping(t_address,t_bool))"
+  },
+  {
+   "astId": 164781,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "agentCoOwnerFullAccess",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_mapping(t_address,t_mapping(t_address,t_bool))"
+  },
+  {
+   "astId": 164789,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "branchCoOwners",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_bool)))"
+  },
+  {
+   "astId": 164797,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "branchCoOwnerFullAccess",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_bool)))"
+  },
+  {
+   "astId": 164805,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "branchManagers",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_bool)))"
+  },
+  {
+   "astId": 164813,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "branchStaff",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_bool)))"
+  },
+  {
+   "astId": 164821,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "branchMembers",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_bool)))"
+  },
+  {
+   "astId": 164831,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "_permissions",
+   "offset": 0,
+   "slot": "10",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_mapping(t_bytes32,t_bool))))"
+  },
+  {
+   "astId": 164840,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "principals",
+   "offset": 0,
+   "slot": "11",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_struct(Principal)164759_storage)))"
+  },
+  {
+   "astId": 164845,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "mAddToStaff",
+   "offset": 0,
+   "slot": "12",
+   "type": "t_mapping(t_address,t_struct(Staff)26787_storage)"
+  },
+  {
+   "astId": 164849,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "staffs",
+   "offset": 0,
+   "slot": "13",
+   "type": "t_array(t_struct(Staff)26787_storage)dyn_storage"
+  },
+  {
+   "astId": 164853,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "workingShifts",
+   "offset": 0,
+   "slot": "14",
+   "type": "t_array(t_struct(WorkingShift)26732_storage)dyn_storage"
+  },
+  {
+   "astId": 164858,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "dailyActiveStaff",
+   "offset": 0,
+   "slot": "15",
+   "type": "t_mapping(t_uint256,t_array(t_address)dyn_storage)"
+  },
+  {
+   "astId": 164864,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "isDailyActive",
+   "offset": 0,
+   "slot": "16",
+   "type": "t_mapping(t_uint256,t_mapping(t_address,t_bool))"
+  },
+  {
+   "astId": 164869,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "monthlyActiveStaff",
+   "offset": 0,
+   "slot": "17",
+   "type": "t_mapping(t_uint256,t_array(t_address)dyn_storage)"
+  },
+  {
+   "astId": 164875,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "isMonthlyActive",
+   "offset": 0,
+   "slot": "18",
+   "type": "t_mapping(t_uint256,t_mapping(t_address,t_bool))"
+  },
+  {
+   "astId": 164879,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "staffCreatedDate",
+   "offset": 0,
+   "slot": "19",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 164883,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "staffLastActiveDate",
+   "offset": 0,
+   "slot": "20",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 164885,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "timeKeeping",
+   "offset": 0,
+   "slot": "21",
+   "type": "t_address"
+  },
+  {
+   "astId": 164890,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "mPosition",
+   "offset": 0,
+   "slot": "22",
+   "type": "t_mapping(t_string_memory_ptr,t_struct(Position)26757_storage)"
+  },
+  {
+   "astId": 164894,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "positions",
+   "offset": 0,
+   "slot": "23",
+   "type": "t_array(t_struct(Position)26757_storage)dyn_storage"
+  },
+  {
+   "astId": 164896,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "branchManagement",
+   "offset": 0,
+   "slot": "24",
+   "type": "t_address"
+  },
+  {
+   "astId": 164899,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "historyTracking",
+   "offset": 0,
+   "slot": "25",
+   "type": "t_contract(IHistoryTracking)24034"
+  },
+  {
+   "astId": 164902,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "branchAuditTrail",
+   "offset": 0,
+   "slot": "26",
+   "type": "t_contract(IBranchAuditTrail)22951"
+  },
+  {
+   "astId": 164905,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "staffAgentStore",
+   "offset": 0,
+   "slot": "27",
+   "type": "t_contract(IStaffAgentStore)21707"
+  },
+  {
+   "astId": 164945,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "staffIndexPlusOne",
+   "offset": 0,
+   "slot": "28",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 164953,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "staffWalletsByAgentBranch",
+   "offset": 0,
+   "slot": "29",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_array(t_address)dyn_storage))"
+  },
+  {
+   "astId": 164958,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "staffWalletIndexPlusOne",
+   "offset": 0,
+   "slot": "30",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 164967,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "dailyActiveStaffByBranch",
+   "offset": 0,
+   "slot": "31",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_address)dyn_storage)))"
+  },
+  {
+   "astId": 164977,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "isDailyActiveByBranch",
+   "offset": 0,
+   "slot": "32",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_uint256,t_mapping(t_address,t_bool))))"
+  },
+  {
+   "astId": 164981,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "33",
+   "type": "t_array(t_uint256)24_storage"
+  },
+  {
+   "astId": 172031,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "systemOperators",
+   "offset": 0,
+   "slot": "57",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 172038,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "branchManagerProfiles",
+   "offset": 0,
+   "slot": "58",
+   "type": "t_mapping(t_address,t_mapping(t_address,t_struct(BranchManagerProfile)164692_storage))"
+  },
+  {
+   "astId": 172045,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "branchCoOwnerProfiles",
+   "offset": 0,
+   "slot": "59",
+   "type": "t_mapping(t_address,t_mapping(t_address,t_struct(BranchCoOwnerProfile)164710_storage))"
+  },
+  {
+   "astId": 172050,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "agentManagers",
+   "offset": 0,
+   "slot": "60",
+   "type": "t_mapping(t_address,t_array(t_address)dyn_storage)"
+  },
+  {
+   "astId": 172056,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "agentManagerListed",
+   "offset": 0,
+   "slot": "61",
+   "type": "t_mapping(t_address,t_mapping(t_address,t_bool))"
+  },
+  {
+   "astId": 172061,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "agentCoOwnersList",
+   "offset": 0,
+   "slot": "62",
+   "type": "t_mapping(t_address,t_array(t_address)dyn_storage)"
+  },
+  {
+   "astId": 172067,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "agentCoOwnerListed",
+   "offset": 0,
+   "slot": "63",
+   "type": "t_mapping(t_address,t_mapping(t_address,t_bool))"
+  },
+  {
+   "astId": 172075,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "_workingShiftsByAgentBranch",
+   "offset": 0,
+   "slot": "64",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_array(t_struct(WorkingShift)26732_storage)dyn_storage))"
+  },
+  {
+   "astId": 172084,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "_positionByAgentBranchName",
+   "offset": 0,
+   "slot": "65",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_string_memory_ptr,t_struct(Position)26757_storage)))"
+  },
+  {
+   "astId": 172092,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "_positionsByAgentBranch",
+   "offset": 0,
+   "slot": "66",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_array(t_struct(Position)26757_storage)dyn_storage))"
+  },
+  {
+   "astId": 172213,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "delegations",
+   "offset": 0,
+   "slot": "67",
+   "type": "t_mapping(t_address,t_mapping(t_address,t_struct(Delegation)164938_storage))"
+  },
+  {
+   "astId": 172218,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "_agentDelegateList",
+   "offset": 0,
+   "slot": "68",
+   "type": "t_mapping(t_address,t_array(t_address)dyn_storage)"
+  },
+  {
+   "astId": 172224,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "_agentDelegateListed",
+   "offset": 0,
+   "slot": "69",
+   "type": "t_mapping(t_address,t_mapping(t_address,t_bool))"
+  },
+  {
+   "astId": 172228,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "delegateToAgent",
+   "offset": 0,
+   "slot": "70",
+   "type": "t_mapping(t_address,t_address)"
+  },
+  {
+   "astId": 172232,
+   "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+   "label": "_isDelegateWallet",
+   "offset": 0,
+   "slot": "71",
+   "type": "t_mapping(t_address,t_bool)"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_address)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "address[]",
+   "numberOfBytes": "32",
+   "base": "t_address"
+  },
+  "t_array(t_enum(STAFF_ROLE)26155)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "enum STAFF_ROLE[]",
+   "numberOfBytes": "32",
+   "base": "t_enum(STAFF_ROLE)26155"
+  },
+  "t_array(t_struct(Position)26757_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Position[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Position)26757_storage"
+  },
+  "t_array(t_struct(Staff)26787_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Staff[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Staff)26787_storage"
+  },
+  "t_array(t_struct(WorkingShift)26732_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct WorkingShift[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(WorkingShift)26732_storage"
+  },
+  "t_array(t_uint256)24_storage": {
+   "encoding": "inplace",
+   "label": "uint256[24]",
+   "numberOfBytes": "768",
+   "base": "t_uint256"
+  },
+  "t_array(t_uint256)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "uint256[]",
+   "numberOfBytes": "32",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_bytes32": {
+   "encoding": "inplace",
+   "label": "bytes32",
+   "numberOfBytes": "32"
+  },
+  "t_contract(IBranchAuditTrail)22951": {
+   "encoding": "inplace",
+   "label": "contract IBranchAuditTrail",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IHistoryTracking)24034": {
+   "encoding": "inplace",
+   "label": "contract IHistoryTracking",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IStaffAgentStore)21707": {
+   "encoding": "inplace",
+   "label": "contract IStaffAgentStore",
+   "numberOfBytes": "20"
+  },
+  "t_enum(PrincipalType)164749": {
+   "encoding": "inplace",
+   "label": "enum BranchAccessManager.PrincipalType",
+   "numberOfBytes": "1"
+  },
+  "t_enum(ROLE)26145": {
+   "encoding": "inplace",
+   "label": "enum ROLE",
+   "numberOfBytes": "1"
+  },
+  "t_enum(STAFF_ROLE)26155": {
+   "encoding": "inplace",
+   "label": "enum STAFF_ROLE",
+   "numberOfBytes": "1"
+  },
+  "t_mapping(t_address,t_address)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_mapping(t_address,t_array(t_address)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => address[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_address)dyn_storage"
+  },
+  "t_mapping(t_address,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(address => bool))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_bool)"
+  },
+  "t_mapping(t_address,t_mapping(t_address,t_struct(BranchCoOwnerProfile)164710_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(address => struct BranchAccessManager.BranchCoOwnerProfile))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_struct(BranchCoOwnerProfile)164710_storage)"
+  },
+  "t_mapping(t_address,t_mapping(t_address,t_struct(BranchManagerProfile)164692_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(address => struct BranchAccessManager.BranchManagerProfile))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_struct(BranchManagerProfile)164692_storage)"
+  },
+  "t_mapping(t_address,t_mapping(t_address,t_struct(Delegation)164938_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(address => struct BranchAccessManager.Delegation))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_struct(Delegation)164938_storage)"
+  },
+  "t_mapping(t_address,t_mapping(t_bytes32,t_bool))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(bytes32 => bool))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_bytes32,t_bool)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_array(t_address)dyn_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => address[]))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_array(t_address)dyn_storage)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_array(t_struct(Position)26757_storage)dyn_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => struct Position[]))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_array(t_struct(Position)26757_storage)dyn_storage)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_array(t_struct(WorkingShift)26732_storage)dyn_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => struct WorkingShift[]))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_array(t_struct(WorkingShift)26732_storage)dyn_storage)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_bool)))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => mapping(address => bool)))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_mapping(t_address,t_bool))"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_mapping(t_bytes32,t_bool))))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => mapping(address => mapping(bytes32 => bool))))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_mapping(t_address,t_mapping(t_bytes32,t_bool)))"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_struct(Principal)164759_storage)))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => mapping(address => struct BranchAccessManager.Principal)))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_mapping(t_address,t_struct(Principal)164759_storage))"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_string_memory_ptr,t_struct(Position)26757_storage)))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => mapping(string => struct Position)))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_mapping(t_string_memory_ptr,t_struct(Position)26757_storage))"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_address)dyn_storage)))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => mapping(uint256 => address[])))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_address)dyn_storage))"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_uint256,t_mapping(t_address,t_bool))))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => mapping(uint256 => mapping(address => bool))))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_mapping(t_uint256,t_mapping(t_address,t_bool)))"
+  },
+  "t_mapping(t_address,t_struct(BranchCoOwnerProfile)164710_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct BranchAccessManager.BranchCoOwnerProfile)",
+   "numberOfBytes": "32",
+   "value": "t_struct(BranchCoOwnerProfile)164710_storage"
+  },
+  "t_mapping(t_address,t_struct(BranchManagerProfile)164692_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct BranchAccessManager.BranchManagerProfile)",
+   "numberOfBytes": "32",
+   "value": "t_struct(BranchManagerProfile)164692_storage"
+  },
+  "t_mapping(t_address,t_struct(Delegation)164938_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct BranchAccessManager.Delegation)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Delegation)164938_storage"
+  },
+  "t_mapping(t_address,t_struct(Principal)164759_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct BranchAccessManager.Principal)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Principal)164759_storage"
+  },
+  "t_mapping(t_address,t_struct(Staff)26787_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct Staff)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Staff)26787_storage"
+  },
+  "t_mapping(t_address,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_bytes32,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_bytes32,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_string_memory_ptr,t_struct(Position)26757_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct Position)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Position)26757_storage"
+  },
+  "t_mapping(t_uint256,t_array(t_address)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => address[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_address)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_array(t_struct(Position)26757_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct Position[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(Position)26757_storage)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_array(t_struct(WorkingShift)26732_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct WorkingShift[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(WorkingShift)26732_storage)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_mapping(t_address,t_bool))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(address => bool))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_bool)"
+  },
+  "t_mapping(t_uint256,t_mapping(t_address,t_mapping(t_bytes32,t_bool)))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(address => mapping(bytes32 => bool)))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_mapping(t_bytes32,t_bool))"
+  },
+  "t_mapping(t_uint256,t_mapping(t_address,t_struct(Principal)164759_storage))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(address => struct BranchAccessManager.Principal))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_struct(Principal)164759_storage)"
+  },
+  "t_mapping(t_uint256,t_mapping(t_string_memory_ptr,t_struct(Position)26757_storage))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(string => struct Position))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_string_memory_ptr,t_struct(Position)26757_storage)"
+  },
+  "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_address)dyn_storage))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(uint256 => address[]))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_array(t_address)dyn_storage)"
+  },
+  "t_mapping(t_uint256,t_mapping(t_uint256,t_mapping(t_address,t_bool)))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(uint256 => mapping(address => bool)))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_mapping(t_address,t_bool))"
+  },
+  "t_string_memory_ptr": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(BranchCoOwnerProfile)164710_storage": {
+   "encoding": "inplace",
+   "label": "struct BranchAccessManager.BranchCoOwnerProfile",
+   "numberOfBytes": "224",
+   "members": [
+    {
+     "astId": 164694,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "wallet",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 164696,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 164698,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "phone",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 164701,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "branchIds",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_array(t_uint256)dyn_storage"
+    },
+    {
+     "astId": 164703,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "active",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bool"
+    },
+    {
+     "astId": 164705,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "fullAccess",
+     "offset": 1,
+     "slot": "4",
+     "type": "t_bool"
+    },
+    {
+     "astId": 164707,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 164709,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "updatedAt",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(BranchManagerProfile)164692_storage": {
+   "encoding": "inplace",
+   "label": "struct BranchAccessManager.BranchManagerProfile",
+   "numberOfBytes": "224",
+   "members": [
+    {
+     "astId": 164678,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "wallet",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 164680,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 164682,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "phone",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 164685,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "branchIds",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_array(t_uint256)dyn_storage"
+    },
+    {
+     "astId": 164687,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "active",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bool"
+    },
+    {
+     "astId": 164689,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 164691,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "updatedAt",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Delegation)164938_storage": {
+   "encoding": "inplace",
+   "label": "struct BranchAccessManager.Delegation",
+   "numberOfBytes": "160",
+   "members": [
+    {
+     "astId": 164927,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "delegator",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 164929,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "agent",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 164931,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "branchId",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 164933,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "delegate",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_address"
+    },
+    {
+     "astId": 164935,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "active",
+     "offset": 20,
+     "slot": "3",
+     "type": "t_bool"
+    },
+    {
+     "astId": 164937,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Position)26757_storage": {
+   "encoding": "inplace",
+   "label": "struct Position",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 26750,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26752,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26756,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "positionRoles",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_array(t_enum(STAFF_ROLE)26155)dyn_storage"
+    }
+   ]
+  },
+  "t_struct(Principal)164759_storage": {
+   "encoding": "inplace",
+   "label": "struct BranchAccessManager.Principal",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 164752,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "principalType",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_enum(PrincipalType)164749"
+    },
+    {
+     "astId": 164754,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "active",
+     "offset": 1,
+     "slot": "0",
+     "type": "t_bool"
+    },
+    {
+     "astId": 164756,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 164758,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "updatedAt",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Staff)26787_storage": {
+   "encoding": "inplace",
+   "label": "struct Staff",
+   "numberOfBytes": "352",
+   "members": [
+    {
+     "astId": 26759,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "wallet",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 26761,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26763,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "code",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26765,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "phone",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26767,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "addr",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26769,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "position",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26772,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "role",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_enum(ROLE)26145"
+    },
+    {
+     "astId": 26774,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "active",
+     "offset": 1,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26776,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "linkImgSelfie",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26778,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "linkImgPortrait",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26782,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "shifts",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_array(t_struct(WorkingShift)26732_storage)dyn_storage"
+    },
+    {
+     "astId": 26786,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "roles",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_array(t_enum(STAFF_ROLE)26155)dyn_storage"
+    }
+   ]
+  },
+  "t_struct(WorkingShift)26732_storage": {
+   "encoding": "inplace",
+   "label": "struct WorkingShift",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 26725,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "title",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26727,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "from",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26729,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "to",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26731,
+     "contract": "contracts/shared/BranchAccessManager.sol:BranchAccessManager",
+     "label": "shiftId",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

@@ -1,0 +1,673 @@
+{
+ "storage": [
+  {
+   "astId": 5616,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "mainMerchantId",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 5618,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "merchantName",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_string_storage"
+  },
+  {
+   "astId": 5620,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "branchCounter",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 5625,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "branches",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_mapping(t_uint256,t_struct(Branch)27202_storage)"
+  },
+  {
+   "astId": 5628,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "branchIds",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_array(t_uint256)dyn_storage"
+  },
+  {
+   "astId": 5630,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "proposalCounter",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 5635,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "proposals",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_mapping(t_uint256,t_struct(Proposal)27255_storage)"
+  },
+  {
+   "astId": 5638,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "proposalIds",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_array(t_uint256)dyn_storage"
+  },
+  {
+   "astId": 5651,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "notificationCounter",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 5656,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "userNotifications",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 5661,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "notifications",
+   "offset": 0,
+   "slot": "10",
+   "type": "t_mapping(t_uint256,t_struct(Notification)27285_storage)"
+  },
+  {
+   "astId": 5666,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "branchNotifications",
+   "offset": 0,
+   "slot": "11",
+   "type": "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 5668,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "votingThreshold",
+   "offset": 0,
+   "slot": "12",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 5671,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "paymentInfo",
+   "offset": 0,
+   "slot": "13",
+   "type": "t_struct(PaymentInfo)27296_storage"
+  },
+  {
+   "astId": 5676,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "mPaymentMethodActive",
+   "offset": 0,
+   "slot": "18",
+   "type": "t_mapping(t_enum(PaymentMethod)26119,t_bool)"
+  },
+  {
+   "astId": 5682,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "paymentOrder",
+   "offset": 0,
+   "slot": "19",
+   "type": "t_enum(PaymentOrder)26114"
+  },
+  {
+   "astId": 5685,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "currency",
+   "offset": 1,
+   "slot": "19",
+   "type": "t_enum(Currency)26111"
+  },
+  {
+   "astId": 5688,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "currencyDisplay",
+   "offset": 2,
+   "slot": "19",
+   "type": "t_enum(CurrencyDisplay)26084"
+  },
+  {
+   "astId": 5694,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "proposalHasVoted",
+   "offset": 0,
+   "slot": "20",
+   "type": "t_mapping(t_uint256,t_mapping(t_address,t_bool))"
+  },
+  {
+   "astId": 5700,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "proposalVoteChoice",
+   "offset": 0,
+   "slot": "21",
+   "type": "t_mapping(t_uint256,t_mapping(t_address,t_bool))"
+  },
+  {
+   "astId": 5704,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "isMainOwner",
+   "offset": 0,
+   "slot": "22",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 5706,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "mainBranchId",
+   "offset": 0,
+   "slot": "23",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 5709,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "StaffAgentStore",
+   "offset": 0,
+   "slot": "24",
+   "type": "t_contract(IStaffAgentStore)21707"
+  },
+  {
+   "astId": 5711,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "agent",
+   "offset": 0,
+   "slot": "25",
+   "type": "t_address"
+  },
+  {
+   "astId": 5713,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "iqrFactorySc",
+   "offset": 0,
+   "slot": "26",
+   "type": "t_address"
+  },
+  {
+   "astId": 5715,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "netCafeFactorySc",
+   "offset": 0,
+   "slot": "27",
+   "type": "t_address"
+  },
+  {
+   "astId": 5717,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "robotFactorySc",
+   "offset": 0,
+   "slot": "28",
+   "type": "t_address"
+  },
+  {
+   "astId": 5719,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "enhancedAgentSc",
+   "offset": 0,
+   "slot": "29",
+   "type": "t_address"
+  },
+  {
+   "astId": 5721,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "bootstrapOperator",
+   "offset": 0,
+   "slot": "30",
+   "type": "t_address"
+  },
+  {
+   "astId": 5725,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "mBranchIdToHistoryTrack",
+   "offset": 0,
+   "slot": "31",
+   "type": "t_mapping(t_uint256,t_address)"
+  },
+  {
+   "astId": 5727,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "historyTrackingIMP",
+   "offset": 0,
+   "slot": "32",
+   "type": "t_address"
+  },
+  {
+   "astId": 5729,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "freeGasSc",
+   "offset": 0,
+   "slot": "33",
+   "type": "t_address"
+  },
+  {
+   "astId": 5731,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "branchAccessManager",
+   "offset": 0,
+   "slot": "34",
+   "type": "t_address"
+  },
+  {
+   "astId": 5735,
+   "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "35",
+   "type": "t_array(t_uint256)49_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_uint256)49_storage": {
+   "encoding": "inplace",
+   "label": "uint256[49]",
+   "numberOfBytes": "1568",
+   "base": "t_uint256"
+  },
+  "t_array(t_uint256)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "uint256[]",
+   "numberOfBytes": "32",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_bytes_storage": {
+   "encoding": "bytes",
+   "label": "bytes",
+   "numberOfBytes": "32"
+  },
+  "t_contract(IStaffAgentStore)21707": {
+   "encoding": "inplace",
+   "label": "contract IStaffAgentStore",
+   "numberOfBytes": "20"
+  },
+  "t_enum(Currency)26111": {
+   "encoding": "inplace",
+   "label": "enum Currency",
+   "numberOfBytes": "1"
+  },
+  "t_enum(CurrencyDisplay)26084": {
+   "encoding": "inplace",
+   "label": "enum CurrencyDisplay",
+   "numberOfBytes": "1"
+  },
+  "t_enum(PaymentMethod)26119": {
+   "encoding": "inplace",
+   "label": "enum PaymentMethod",
+   "numberOfBytes": "1"
+  },
+  "t_enum(PaymentOrder)26114": {
+   "encoding": "inplace",
+   "label": "enum PaymentOrder",
+   "numberOfBytes": "1"
+  },
+  "t_enum(ProposalStatus)27302": {
+   "encoding": "inplace",
+   "label": "enum ProposalStatus",
+   "numberOfBytes": "1"
+  },
+  "t_enum(ProposalType)27309": {
+   "encoding": "inplace",
+   "label": "enum ProposalType",
+   "numberOfBytes": "1"
+  },
+  "t_mapping(t_address,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_mapping(t_address,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_enum(PaymentMethod)26119,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_enum(PaymentMethod)26119",
+   "label": "mapping(enum PaymentMethod => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_uint256,t_address)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_mapping(t_address,t_bool))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(address => bool))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_bool)"
+  },
+  "t_mapping(t_uint256,t_struct(Branch)27202_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct Branch)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Branch)27202_storage"
+  },
+  "t_mapping(t_uint256,t_struct(Notification)27285_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct Notification)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Notification)27285_storage"
+  },
+  "t_mapping(t_uint256,t_struct(Proposal)27255_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct Proposal)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Proposal)27255_storage"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(Branch)27202_storage": {
+   "encoding": "inplace",
+   "label": "struct Branch",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 27195,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "branchId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27197,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "name",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27199,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "active",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27201,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "isMain",
+     "offset": 1,
+     "slot": "2",
+     "type": "t_bool"
+    }
+   ]
+  },
+  "t_struct(Notification)27285_storage": {
+   "encoding": "inplace",
+   "label": "struct Notification",
+   "numberOfBytes": "256",
+   "members": [
+    {
+     "astId": 27270,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "notificationId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27272,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "branchId",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27274,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "recipient",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_address"
+    },
+    {
+     "astId": 27276,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "title",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27278,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "message",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27280,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "proposalId",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27282,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "isRead",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27284,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(PaymentInfo)27296_storage": {
+   "encoding": "inplace",
+   "label": "struct PaymentInfo",
+   "numberOfBytes": "160",
+   "members": [
+    {
+     "astId": 27287,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "bankAccount",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27289,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "nameAccount",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27291,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "nameOfBank",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27293,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "taxCode",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27295,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "wallet",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_struct(Proposal)27255_storage": {
+   "encoding": "inplace",
+   "label": "struct Proposal",
+   "numberOfBytes": "352",
+   "members": [
+    {
+     "astId": 27230,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "proposalId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27232,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "proposer",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 27235,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "proposalType",
+     "offset": 20,
+     "slot": "1",
+     "type": "t_enum(ProposalType)27309"
+    },
+    {
+     "astId": 27237,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "branchId",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27239,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "oldData",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_bytes_storage"
+    },
+    {
+     "astId": 27241,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "newData",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bytes_storage"
+    },
+    {
+     "astId": 27244,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "status",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_enum(ProposalStatus)27302"
+    },
+    {
+     "astId": 27246,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "votesFor",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27248,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "votesAgainst",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27250,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "totalVoters",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27252,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27254,
+     "contract": "contracts/branch/BranchManagement.sol:BranchManagement",
+     "label": "executedAt",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

@@ -1,0 +1,153 @@
+{
+ "storage": [
+  {
+   "astId": 208724,
+   "contract": "contracts/system/StaffAgentStore.sol:StaffAgentStore",
+   "label": "isManagement",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 208728,
+   "contract": "contracts/system/StaffAgentStore.sol:StaffAgentStore",
+   "label": "isBranchManagement",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 208732,
+   "contract": "contracts/system/StaffAgentStore.sol:StaffAgentStore",
+   "label": "mUserToAgent",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_mapping(t_address,t_address)"
+  },
+  {
+   "astId": 208736,
+   "contract": "contracts/system/StaffAgentStore.sol:StaffAgentStore",
+   "label": "mUserToBranchId",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 208738,
+   "contract": "contracts/system/StaffAgentStore.sol:StaffAgentStore",
+   "label": "iqrFactory",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_address"
+  },
+  {
+   "astId": 208740,
+   "contract": "contracts/system/StaffAgentStore.sol:StaffAgentStore",
+   "label": "enhancedAgent",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_address"
+  },
+  {
+   "astId": 208745,
+   "contract": "contracts/system/StaffAgentStore.sol:StaffAgentStore",
+   "label": "mCoOwnerToAgent",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_mapping(t_address,t_array(t_address)dyn_storage)"
+  },
+  {
+   "astId": 208752,
+   "contract": "contracts/system/StaffAgentStore.sol:StaffAgentStore",
+   "label": "mCoOwnerToAgentToBranchIds",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_mapping(t_address,t_mapping(t_address,t_array(t_uint256)dyn_storage))"
+  },
+  {
+   "astId": 208756,
+   "contract": "contracts/system/StaffAgentStore.sol:StaffAgentStore",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_array(t_uint256)48_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_address)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "address[]",
+   "numberOfBytes": "32",
+   "base": "t_address"
+  },
+  "t_array(t_uint256)48_storage": {
+   "encoding": "inplace",
+   "label": "uint256[48]",
+   "numberOfBytes": "1536",
+   "base": "t_uint256"
+  },
+  "t_array(t_uint256)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "uint256[]",
+   "numberOfBytes": "32",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_mapping(t_address,t_address)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_mapping(t_address,t_array(t_address)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => address[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_address)dyn_storage"
+  },
+  "t_mapping(t_address,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_mapping(t_address,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_address,t_mapping(t_address,t_array(t_uint256)dyn_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(address => uint256[]))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+  },
+  "t_mapping(t_address,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

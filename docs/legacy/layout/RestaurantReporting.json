@@ -1,0 +1,732 @@
+{
+ "storage": [
+  {
+   "astId": 68059,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "MANAGEMENT",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_contract(IManagement)24819"
+  },
+  {
+   "astId": 68062,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "branchAccessManager",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_contract(IBranchAccessManager)22929"
+  },
+  {
+   "astId": 68064,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "agent",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_address"
+  },
+  {
+   "astId": 68066,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "branchId",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 68078,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "previousPeriodData",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68084,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dishRankingHistory",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 68088,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyNewCustomers",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68092,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyFemaleCustomers",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68096,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyDineInOrders",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68100,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyTakeAwayOrders",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68104,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyDineInRevenue",
+   "offset": 0,
+   "slot": "10",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68108,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyTakeAwayRevenue",
+   "offset": 0,
+   "slot": "11",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68112,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailySingleCustomers",
+   "offset": 0,
+   "slot": "12",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68116,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyCoupleCustomers",
+   "offset": 0,
+   "slot": "13",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68120,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyTripleCustomers",
+   "offset": 0,
+   "slot": "14",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68124,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyGroupCustomers",
+   "offset": 0,
+   "slot": "15",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68130,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyAgeGroups",
+   "offset": 0,
+   "slot": "16",
+   "type": "t_mapping(t_uint256,t_mapping(t_uint8,t_uint256))"
+  },
+  {
+   "astId": 68136,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyAgeGroups",
+   "offset": 0,
+   "slot": "17",
+   "type": "t_mapping(t_uint256,t_mapping(t_uint8,t_uint256))"
+  },
+  {
+   "astId": 68142,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyServiceRatings",
+   "offset": 0,
+   "slot": "18",
+   "type": "t_mapping(t_uint256,t_mapping(t_uint8,t_uint256))"
+  },
+  {
+   "astId": 68148,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyFoodRatings",
+   "offset": 0,
+   "slot": "19",
+   "type": "t_mapping(t_uint256,t_mapping(t_uint8,t_uint256))"
+  },
+  {
+   "astId": 68154,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyServiceRatings",
+   "offset": 0,
+   "slot": "20",
+   "type": "t_mapping(t_uint256,t_mapping(t_uint8,t_uint256))"
+  },
+  {
+   "astId": 68160,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyFoodRatings",
+   "offset": 0,
+   "slot": "21",
+   "type": "t_mapping(t_uint256,t_mapping(t_uint8,t_uint256))"
+  },
+  {
+   "astId": 68164,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyNewCustomers",
+   "offset": 0,
+   "slot": "22",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68168,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyFemaleCustomers",
+   "offset": 0,
+   "slot": "23",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68172,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyDineInOrders",
+   "offset": 0,
+   "slot": "24",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68176,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyTakeAwayOrders",
+   "offset": 0,
+   "slot": "25",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68180,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyDineInRevenue",
+   "offset": 0,
+   "slot": "26",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68184,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyTakeAwayRevenue",
+   "offset": 0,
+   "slot": "27",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68188,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlySingleCustomers",
+   "offset": 0,
+   "slot": "28",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68192,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyCoupleCustomers",
+   "offset": 0,
+   "slot": "29",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68196,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyTripleCustomers",
+   "offset": 0,
+   "slot": "30",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68200,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyGroupCustomers",
+   "offset": 0,
+   "slot": "31",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68204,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dishRanking",
+   "offset": 0,
+   "slot": "32",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 68208,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dishIsNew",
+   "offset": 0,
+   "slot": "33",
+   "type": "t_mapping(t_string_memory_ptr,t_bool)"
+  },
+  {
+   "astId": 68214,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dishDailyRevenue",
+   "offset": 0,
+   "slot": "34",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 68220,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dishDailyOrders",
+   "offset": 0,
+   "slot": "35",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 68226,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dishMonthlyRevenue",
+   "offset": 0,
+   "slot": "36",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 68232,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dishMonthlyOrders",
+   "offset": 0,
+   "slot": "37",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 68236,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyRevenue",
+   "offset": 0,
+   "slot": "38",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68240,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyOrders",
+   "offset": 0,
+   "slot": "39",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68244,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyCustomers",
+   "offset": 0,
+   "slot": "40",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68248,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyRevenue",
+   "offset": 0,
+   "slot": "41",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68252,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyOrders",
+   "offset": 0,
+   "slot": "42",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68256,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyCustomers",
+   "offset": 0,
+   "slot": "43",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68260,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dishTotalRevenue",
+   "offset": 0,
+   "slot": "44",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 68264,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dishTotalOrders",
+   "offset": 0,
+   "slot": "45",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 68268,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dishStartTime",
+   "offset": 0,
+   "slot": "46",
+   "type": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  {
+   "astId": 68270,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "totalCustomersAllTime",
+   "offset": 0,
+   "slot": "47",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 68272,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "totalOrdersAllTime",
+   "offset": 0,
+   "slot": "48",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 68274,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "totalRevenueAllTime",
+   "offset": 0,
+   "slot": "49",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 68276,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "serviceStartTime",
+   "offset": 0,
+   "slot": "50",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 68280,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "mRevenueTarget",
+   "offset": 0,
+   "slot": "51",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68284,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "revenueTargets",
+   "offset": 0,
+   "slot": "52",
+   "type": "t_array(t_struct(Target)27108_storage)dyn_storage"
+  },
+  {
+   "astId": 68288,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "yearlyOrders",
+   "offset": 0,
+   "slot": "53",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68292,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "yearlyRevenues",
+   "offset": 0,
+   "slot": "54",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68297,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "orderCreatedTimes",
+   "offset": 0,
+   "slot": "55",
+   "type": "t_mapping(t_string_memory_ptr,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 68301,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "orderCreatedTimesSet",
+   "offset": 0,
+   "slot": "56",
+   "type": "t_mapping(t_string_memory_ptr,t_bool)"
+  },
+  {
+   "astId": 68305,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyReturningCustomersOneTime",
+   "offset": 0,
+   "slot": "57",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68309,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailyReturningCustomersFromTwoTimes",
+   "offset": 0,
+   "slot": "58",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68313,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyReturningCustomersOneTime",
+   "offset": 0,
+   "slot": "59",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68317,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "monthlyReturningCustomersFromTwoTimes",
+   "offset": 0,
+   "slot": "60",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 68322,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailySoldDishCodes",
+   "offset": 0,
+   "slot": "61",
+   "type": "t_mapping(t_uint256,t_array(t_string_storage)dyn_storage)"
+  },
+  {
+   "astId": 68328,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dailySoldDishSeen",
+   "offset": 0,
+   "slot": "62",
+   "type": "t_mapping(t_uint256,t_mapping(t_string_memory_ptr,t_bool))"
+  },
+  {
+   "astId": 68334,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dashboardDishYearlyRevenue",
+   "offset": 0,
+   "slot": "63",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 68340,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dashboardDishYearlyOrders",
+   "offset": 0,
+   "slot": "64",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 68346,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dashboardDishMonthlyRevenue",
+   "offset": 0,
+   "slot": "65",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 68352,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dashboardDishMonthlyOrders",
+   "offset": 0,
+   "slot": "66",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 68357,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dashboardDailyTopDishCodes",
+   "offset": 0,
+   "slot": "67",
+   "type": "t_mapping(t_uint256,t_array(t_string_storage)dyn_storage)"
+  },
+  {
+   "astId": 68362,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dashboardWeeklyTopDishCodes",
+   "offset": 0,
+   "slot": "68",
+   "type": "t_mapping(t_uint256,t_array(t_string_storage)dyn_storage)"
+  },
+  {
+   "astId": 68367,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dashboardMonthlyTopDishCodes",
+   "offset": 0,
+   "slot": "69",
+   "type": "t_mapping(t_uint256,t_array(t_string_storage)dyn_storage)"
+  },
+  {
+   "astId": 68372,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "dashboardYearlyTopDishCodes",
+   "offset": 0,
+   "slot": "70",
+   "type": "t_mapping(t_uint256,t_array(t_string_storage)dyn_storage)"
+  },
+  {
+   "astId": 68376,
+   "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "71",
+   "type": "t_array(t_uint256)42_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_string_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "string[]",
+   "numberOfBytes": "32",
+   "base": "t_string_storage"
+  },
+  "t_array(t_struct(Target)27108_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Target[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Target)27108_storage"
+  },
+  "t_array(t_uint256)42_storage": {
+   "encoding": "inplace",
+   "label": "uint256[42]",
+   "numberOfBytes": "1344",
+   "base": "t_uint256"
+  },
+  "t_array(t_uint256)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "uint256[]",
+   "numberOfBytes": "32",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_contract(IBranchAccessManager)22929": {
+   "encoding": "inplace",
+   "label": "contract IBranchAccessManager",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IManagement)24819": {
+   "encoding": "inplace",
+   "label": "contract IManagement",
+   "numberOfBytes": "20"
+  },
+  "t_mapping(t_string_memory_ptr,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_string_memory_ptr,t_mapping(t_uint256,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => mapping(uint256 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_uint256)"
+  },
+  "t_mapping(t_string_memory_ptr,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_uint256,t_array(t_string_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => string[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_string_storage)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_mapping(t_string_memory_ptr,t_bool))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(string => bool))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_string_memory_ptr,t_bool)"
+  },
+  "t_mapping(t_uint256,t_mapping(t_uint8,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(uint8 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint8,t_uint256)"
+  },
+  "t_mapping(t_uint256,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_uint8,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_uint8",
+   "label": "mapping(uint8 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_string_memory_ptr": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(Target)27108_storage": {
+   "encoding": "inplace",
+   "label": "struct Target",
+   "numberOfBytes": "64",
+   "members": [
+    {
+     "astId": 27105,
+     "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+     "label": "year",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27107,
+     "contract": "contracts/iqr/RestaurantReporting.sol:RestaurantReporting",
+     "label": "revenueTarget",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  },
+  "t_uint8": {
+   "encoding": "inplace",
+   "label": "uint8",
+   "numberOfBytes": "1"
+  }
+ }
+}

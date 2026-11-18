@@ -1,0 +1,317 @@
+{
+ "storage": [
+  {
+   "astId": 113955,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "agent",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_address"
+  },
+  {
+   "astId": 113957,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "branchId",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 113960,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "moduleRegistry",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_contract(IBranchModuleRegistryV3)131771"
+  },
+  {
+   "astId": 113963,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "accessManager",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_contract(IBranchAccessManagerV3)131809"
+  },
+  {
+   "astId": 113966,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "netCafeFactory",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_address"
+  },
+  {
+   "astId": 114449,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_array(t_uint256)44_storage"
+  },
+  {
+   "astId": 124195,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "onlineStationCount",
+   "offset": 0,
+   "slot": "49",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 124225,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "stations",
+   "offset": 0,
+   "slot": "50",
+   "type": "t_mapping(t_bytes32,t_struct(Station)124220_storage)"
+  },
+  {
+   "astId": 124229,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "userToPcId",
+   "offset": 0,
+   "slot": "51",
+   "type": "t_mapping(t_address,t_bytes32)"
+  },
+  {
+   "astId": 124232,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "userContract",
+   "offset": 0,
+   "slot": "52",
+   "type": "t_contract(INetCafeUserProfileV3)124099"
+  },
+  {
+   "astId": 124235,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "sessionContract",
+   "offset": 0,
+   "slot": "53",
+   "type": "t_contract(INetCafeSessionReadV3)124126"
+  },
+  {
+   "astId": 124238,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "managementContract",
+   "offset": 0,
+   "slot": "54",
+   "type": "t_contract(INetCafeManagementMetaV3)124175"
+  },
+  {
+   "astId": 124241,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "economyVault",
+   "offset": 0,
+   "slot": "55",
+   "type": "t_contract(IEconomyVaultV3)131861"
+  },
+  {
+   "astId": 125236,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "lastHeartbeatAt",
+   "offset": 0,
+   "slot": "56",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 125240,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "57",
+   "type": "t_array(t_uint256)41_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_uint256)41_storage": {
+   "encoding": "inplace",
+   "label": "uint256[41]",
+   "numberOfBytes": "1312",
+   "base": "t_uint256"
+  },
+  "t_array(t_uint256)44_storage": {
+   "encoding": "inplace",
+   "label": "uint256[44]",
+   "numberOfBytes": "1408",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_bytes32": {
+   "encoding": "inplace",
+   "label": "bytes32",
+   "numberOfBytes": "32"
+  },
+  "t_contract(IBranchAccessManagerV3)131809": {
+   "encoding": "inplace",
+   "label": "contract IBranchAccessManagerV3",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IBranchModuleRegistryV3)131771": {
+   "encoding": "inplace",
+   "label": "contract IBranchModuleRegistryV3",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IEconomyVaultV3)131861": {
+   "encoding": "inplace",
+   "label": "contract IEconomyVaultV3",
+   "numberOfBytes": "20"
+  },
+  "t_contract(INetCafeManagementMetaV3)124175": {
+   "encoding": "inplace",
+   "label": "contract INetCafeManagementMetaV3",
+   "numberOfBytes": "20"
+  },
+  "t_contract(INetCafeSessionReadV3)124126": {
+   "encoding": "inplace",
+   "label": "contract INetCafeSessionReadV3",
+   "numberOfBytes": "20"
+  },
+  "t_contract(INetCafeUserProfileV3)124099": {
+   "encoding": "inplace",
+   "label": "contract INetCafeUserProfileV3",
+   "numberOfBytes": "20"
+  },
+  "t_mapping(t_address,t_bytes32)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => bytes32)",
+   "numberOfBytes": "32",
+   "value": "t_bytes32"
+  },
+  "t_mapping(t_bytes32,t_struct(Station)124220_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct NetCafeStationV3.Station)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Station)124220_storage"
+  },
+  "t_mapping(t_bytes32,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(Station)124220_storage": {
+   "encoding": "inplace",
+   "label": "struct NetCafeStationV3.Station",
+   "numberOfBytes": "352",
+   "members": [
+    {
+     "astId": 124197,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+     "label": "pcId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 124199,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+     "label": "resourceId",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 124201,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+     "label": "name",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 124203,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+     "label": "groupId",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 124205,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+     "label": "balanceVND",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 124207,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+     "label": "currentUserAddress",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_address"
+    },
+    {
+     "astId": 124209,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+     "label": "currentSession",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_address"
+    },
+    {
+     "astId": 124211,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+     "label": "currentUserName",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 124213,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+     "label": "online",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_bool"
+    },
+    {
+     "astId": 124215,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+     "label": "lastActiveAt",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 124217,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+     "label": "maintenance",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_bool"
+    },
+    {
+     "astId": 124219,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeStationV3.sol:NetCafeStationV3",
+     "label": "remoteControl",
+     "offset": 1,
+     "slot": "10",
+     "type": "t_bool"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

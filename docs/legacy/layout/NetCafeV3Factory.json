@@ -1,0 +1,267 @@
+{
+ "storage": [
+  {
+   "astId": 130439,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+   "label": "sharedRegistries",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_struct(SharedRegistries)130404_storage"
+  },
+  {
+   "astId": 130442,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+   "label": "userBeacon",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 130445,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+   "label": "managementBeacon",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 130448,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+   "label": "sessionBeacon",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 130451,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+   "label": "topUpBeacon",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 130454,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+   "label": "spendBeacon",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 130457,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+   "label": "stationBeacon",
+   "offset": 0,
+   "slot": "10",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 130461,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+   "label": "moduleProvisioners",
+   "offset": 0,
+   "slot": "11",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 130468,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+   "label": "_branchContracts",
+   "offset": 0,
+   "slot": "12",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_struct(NetCafeV3BranchContracts)130436_storage))"
+  },
+  {
+   "astId": 130471,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+   "label": "dashboardBeacon",
+   "offset": 0,
+   "slot": "13",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 130473,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+   "label": "dashboardFacade",
+   "offset": 0,
+   "slot": "14",
+   "type": "t_address"
+  },
+  {
+   "astId": 131751,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "15",
+   "type": "t_array(t_uint256)37_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_uint256)37_storage": {
+   "encoding": "inplace",
+   "label": "uint256[37]",
+   "numberOfBytes": "1184",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_contract(UpgradeableBeacon)211857": {
+   "encoding": "inplace",
+   "label": "contract UpgradeableBeacon",
+   "numberOfBytes": "20"
+  },
+  "t_mapping(t_address,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_struct(NetCafeV3BranchContracts)130436_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => struct NetCafeV3Factory.NetCafeV3BranchContracts))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_struct(NetCafeV3BranchContracts)130436_storage)"
+  },
+  "t_mapping(t_uint256,t_struct(NetCafeV3BranchContracts)130436_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct NetCafeV3Factory.NetCafeV3BranchContracts)",
+   "numberOfBytes": "32",
+   "value": "t_struct(NetCafeV3BranchContracts)130436_storage"
+  },
+  "t_struct(NetCafeV3BranchContracts)130436_storage": {
+   "encoding": "inplace",
+   "label": "struct NetCafeV3Factory.NetCafeV3BranchContracts",
+   "numberOfBytes": "224",
+   "members": [
+    {
+     "astId": 130421,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+     "label": "userContract",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 130423,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+     "label": "management",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 130425,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+     "label": "session",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_address"
+    },
+    {
+     "astId": 130427,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+     "label": "topUp",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_address"
+    },
+    {
+     "astId": 130429,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+     "label": "spend",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_address"
+    },
+    {
+     "astId": 130431,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+     "label": "station",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_address"
+    },
+    {
+     "astId": 130433,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+     "label": "exists",
+     "offset": 20,
+     "slot": "5",
+     "type": "t_bool"
+    },
+    {
+     "astId": 130435,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+     "label": "dashboard",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_address"
+    }
+   ]
+  },
+  "t_struct(SharedRegistries)130404_storage": {
+   "encoding": "inplace",
+   "label": "struct NetCafeV3Factory.SharedRegistries",
+   "numberOfBytes": "160",
+   "members": [
+    {
+     "astId": 130395,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+     "label": "moduleRegistry",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 130397,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+     "label": "accessManager",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 130399,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+     "label": "resourceRegistry",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_address"
+    },
+    {
+     "astId": 130401,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+     "label": "paymentRegistry",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_address"
+    },
+    {
+     "astId": 130403,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeV3Factory.sol:NetCafeV3Factory",
+     "label": "economyVault",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_address"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

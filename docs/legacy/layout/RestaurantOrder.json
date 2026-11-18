@@ -1,0 +1,2172 @@
+{
+ "storage": [
+  {
+   "astId": 212310,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "_status",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 47040,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "__gap_oz_v4_storage",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 47043,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "ACCESS_MANAGEMENT",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_contract(IBranchAccessManager)22929"
+  },
+  {
+   "astId": 47046,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "BRANCH_REGISTRY",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_contract(IBranchResourceRegistry)23301"
+  },
+  {
+   "astId": 47049,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "PAYMENT_REGISTRY",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_contract(IBranchPaymentRegistry)23001"
+  },
+  {
+   "astId": 47052,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "MANAGEMENT",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_contract(IManagement)24819"
+  },
+  {
+   "astId": 47055,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "SCUsdt",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_contract(IERC20)211935"
+  },
+  {
+   "astId": 47057,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "merchant",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_address"
+  },
+  {
+   "astId": 47059,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "MasterPool",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_address"
+  },
+  {
+   "astId": 47061,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "_taxPercent",
+   "offset": 20,
+   "slot": "8",
+   "type": "t_uint8"
+  },
+  {
+   "astId": 47064,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "currentReservationRule",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_struct(ReservationRule)27418_storage"
+  },
+  {
+   "astId": 47069,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mIdToReservations",
+   "offset": 0,
+   "slot": "12",
+   "type": "t_mapping(t_bytes32,t_struct(Reservation)27448_storage)"
+  },
+  {
+   "astId": 47074,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mTableToSessionIds",
+   "offset": 0,
+   "slot": "13",
+   "type": "t_mapping(t_uint256,t_array(t_bytes32)dyn_storage)"
+  },
+  {
+   "astId": 47079,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mSessionToTableMerge",
+   "offset": 0,
+   "slot": "14",
+   "type": "t_mapping(t_bytes32,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 47084,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mSessionToOrderIds",
+   "offset": 0,
+   "slot": "15",
+   "type": "t_mapping(t_bytes32,t_array(t_bytes32)dyn_storage)"
+  },
+  {
+   "astId": 47090,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "sessionOrders",
+   "offset": 0,
+   "slot": "16",
+   "type": "t_mapping(t_bytes32,t_array(t_struct(Order)26449_storage)dyn_storage)"
+  },
+  {
+   "astId": 47096,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mSessionToCourses",
+   "offset": 0,
+   "slot": "17",
+   "type": "t_mapping(t_bytes32,t_array(t_struct(SimpleCourse)26439_storage)dyn_storage)"
+  },
+  {
+   "astId": 47103,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mSessionToIdToCourse",
+   "offset": 0,
+   "slot": "18",
+   "type": "t_mapping(t_bytes32,t_mapping(t_uint256,t_struct(SimpleCourse)26439_storage))"
+  },
+  {
+   "astId": 47109,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mSessionToCoursePrice",
+   "offset": 0,
+   "slot": "19",
+   "type": "t_mapping(t_bytes32,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 47113,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mOrderIdToPaymentId",
+   "offset": 0,
+   "slot": "20",
+   "type": "t_mapping(t_bytes32,t_bytes32)"
+  },
+  {
+   "astId": 47118,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mIdToSession",
+   "offset": 0,
+   "slot": "21",
+   "type": "t_mapping(t_bytes32,t_struct(Session)27411_storage)"
+  },
+  {
+   "astId": 47124,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mSessionToPayment",
+   "offset": 0,
+   "slot": "22",
+   "type": "t_mapping(t_bytes32,t_array(t_struct(Payment)26640_storage)dyn_storage)"
+  },
+  {
+   "astId": 47130,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mSessionToPaymentInformation",
+   "offset": 0,
+   "slot": "23",
+   "type": "t_mapping(t_bytes32,t_array(t_struct(PaymentInformation)26658_storage)dyn_storage)"
+  },
+  {
+   "astId": 47135,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "customerReservations",
+   "offset": 0,
+   "slot": "24",
+   "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)"
+  },
+  {
+   "astId": 47138,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "allReservationIds",
+   "offset": 0,
+   "slot": "25",
+   "type": "t_array(t_bytes32)dyn_storage"
+  },
+  {
+   "astId": 47143,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mIdToPayment",
+   "offset": 0,
+   "slot": "26",
+   "type": "t_mapping(t_bytes32,t_struct(Payment)26640_storage)"
+  },
+  {
+   "astId": 47148,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mIdToPaymentInformation",
+   "offset": 0,
+   "slot": "27",
+   "type": "t_mapping(t_bytes32,t_struct(PaymentInformation)26658_storage)"
+  },
+  {
+   "astId": 47154,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentCourses",
+   "offset": 0,
+   "slot": "28",
+   "type": "t_mapping(t_bytes32,t_array(t_struct(SimpleCourse)26439_storage)dyn_storage)"
+  },
+  {
+   "astId": 47159,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "reviews",
+   "offset": 0,
+   "slot": "29",
+   "type": "t_mapping(t_bytes32,t_struct(Review)26669_storage)"
+  },
+  {
+   "astId": 47165,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mDishCodeToReviews",
+   "offset": 0,
+   "slot": "30",
+   "type": "t_mapping(t_string_memory_ptr,t_array(t_struct(DishReview)26686_storage)dyn_storage)"
+  },
+  {
+   "astId": 47171,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "customerDishCounts",
+   "offset": 0,
+   "slot": "31",
+   "type": "t_mapping(t_address,t_mapping(t_string_memory_ptr,t_uint256))"
+  },
+  {
+   "astId": 47175,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "usedTxIds",
+   "offset": 0,
+   "slot": "32",
+   "type": "t_mapping(t_string_memory_ptr,t_bool)"
+  },
+  {
+   "astId": 47181,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mOrderIdToCourses",
+   "offset": 0,
+   "slot": "33",
+   "type": "t_mapping(t_bytes32,t_array(t_struct(SimpleCourse)26439_storage)dyn_storage)"
+  },
+  {
+   "astId": 47185,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "orderPrimaryStaff",
+   "offset": 0,
+   "slot": "34",
+   "type": "t_mapping(t_bytes32,t_address)"
+  },
+  {
+   "astId": 47190,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "orderStaffHistory",
+   "offset": 0,
+   "slot": "35",
+   "type": "t_mapping(t_bytes32,t_array(t_address)dyn_storage)"
+  },
+  {
+   "astId": 47196,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "orderStaffShare",
+   "offset": 0,
+   "slot": "36",
+   "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint8))"
+  },
+  {
+   "astId": 47202,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "pendingTransfers",
+   "offset": 0,
+   "slot": "37",
+   "type": "t_mapping(t_bytes32,t_array(t_struct(TransferRequest)26236_storage)dyn_storage)"
+  },
+  {
+   "astId": 47208,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "hasTransferRequest",
+   "offset": 0,
+   "slot": "38",
+   "type": "t_mapping(t_bytes32,t_mapping(t_address,t_bool))"
+  },
+  {
+   "astId": 47213,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "staffActiveOrders",
+   "offset": 0,
+   "slot": "39",
+   "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)"
+  },
+  {
+   "astId": 47217,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "orderAcknowledged",
+   "offset": 0,
+   "slot": "40",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 47223,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "orderHistories",
+   "offset": 0,
+   "slot": "41",
+   "type": "t_mapping(t_bytes32,t_array(t_struct(OrderHistory)26252_storage)dyn_storage)"
+  },
+  {
+   "astId": 47225,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "orderHistoryCounter",
+   "offset": 0,
+   "slot": "42",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 47228,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "allPaymentIds",
+   "offset": 0,
+   "slot": "43",
+   "type": "t_array(t_bytes32)dyn_storage"
+  },
+  {
+   "astId": 47232,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentHistory",
+   "offset": 0,
+   "slot": "44",
+   "type": "t_array(t_struct(Payment)26640_storage)dyn_storage"
+  },
+  {
+   "astId": 47236,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentInfoHistory",
+   "offset": 0,
+   "slot": "45",
+   "type": "t_array(t_struct(PaymentInformation)26658_storage)dyn_storage"
+  },
+  {
+   "astId": 47241,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "customerProfiles",
+   "offset": 0,
+   "slot": "46",
+   "type": "t_mapping(t_bytes32,t_struct(CustomerProfile)26287_storage)"
+  },
+  {
+   "astId": 47246,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mTimeToGroupFeature",
+   "offset": 0,
+   "slot": "47",
+   "type": "t_mapping(t_uint256,t_struct(GroupFeature)48529_storage)"
+  },
+  {
+   "astId": 47250,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "allOrders",
+   "offset": 0,
+   "slot": "48",
+   "type": "t_array(t_struct(Order)26449_storage)dyn_storage"
+  },
+  {
+   "astId": 47253,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "noti",
+   "offset": 0,
+   "slot": "49",
+   "type": "t_contract(INoti)24882"
+  },
+  {
+   "astId": 47259,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mDishReviewIndex",
+   "offset": 0,
+   "slot": "50",
+   "type": "t_mapping(t_string_memory_ptr,t_mapping(t_bytes32,t_uint256))"
+  },
+  {
+   "astId": 47262,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "Report",
+   "offset": 0,
+   "slot": "51",
+   "type": "t_contract(IRestaurantReporting)26079"
+  },
+  {
+   "astId": 47268,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "reviewsByDate",
+   "offset": 0,
+   "slot": "52",
+   "type": "t_mapping(t_uint256,t_array(t_struct(Review)26669_storage)dyn_storage)"
+  },
+  {
+   "astId": 47273,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "mOrderIdToOrder",
+   "offset": 0,
+   "slot": "53",
+   "type": "t_mapping(t_bytes32,t_struct(Order)26449_storage)"
+  },
+  {
+   "astId": 47275,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "iqrAgentSC",
+   "offset": 0,
+   "slot": "54",
+   "type": "t_address"
+  },
+  {
+   "astId": 47277,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "agent",
+   "offset": 0,
+   "slot": "55",
+   "type": "t_address"
+  },
+  {
+   "astId": 47279,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "revenueSC",
+   "offset": 0,
+   "slot": "56",
+   "type": "t_address"
+  },
+  {
+   "astId": 47282,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "POINTS",
+   "offset": 0,
+   "slot": "57",
+   "type": "t_contract(IPoint)25853"
+  },
+  {
+   "astId": 47298,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentPointsUsed",
+   "offset": 0,
+   "slot": "58",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 47304,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "reviewsByMonth",
+   "offset": 0,
+   "slot": "59",
+   "type": "t_mapping(t_uint256,t_array(t_struct(Review)26669_storage)dyn_storage)"
+  },
+  {
+   "astId": 47308,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "numberOfVisit",
+   "offset": 0,
+   "slot": "60",
+   "type": "t_mapping(t_address,t_uint256)"
+  },
+  {
+   "astId": 47314,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentHistories",
+   "offset": 0,
+   "slot": "61",
+   "type": "t_mapping(t_bytes32,t_array(t_struct(OrderHistory)26252_storage)dyn_storage)"
+  },
+  {
+   "astId": 47317,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "ICARD_VISA",
+   "offset": 0,
+   "slot": "62",
+   "type": "t_contract(ICardTokenManager)24836"
+  },
+  {
+   "astId": 47322,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentWalletUsed",
+   "offset": 0,
+   "slot": "63",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 47327,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentPointsRefunded",
+   "offset": 0,
+   "slot": "64",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 47331,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentWalletRefunded",
+   "offset": 0,
+   "slot": "65",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 47336,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentRewardVoucherCode",
+   "offset": 0,
+   "slot": "66",
+   "type": "t_mapping(t_bytes32,t_string_storage)"
+  },
+  {
+   "astId": 47341,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentDiscountPromotionId",
+   "offset": 0,
+   "slot": "67",
+   "type": "t_mapping(t_bytes32,t_bytes32)"
+  },
+  {
+   "astId": 47345,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentRewardVoucherInstanceId",
+   "offset": 0,
+   "slot": "68",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 47350,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "orderStatusCount",
+   "offset": 0,
+   "slot": "69",
+   "type": "t_mapping(t_uint8,t_uint256)"
+  },
+  {
+   "astId": 47371,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "dashboardPaymentBuckets",
+   "offset": 0,
+   "slot": "70",
+   "type": "t_mapping(t_uint8,t_mapping(t_uint256,t_struct(DashboardPaymentBucket)47364_storage))"
+  },
+  {
+   "astId": 47375,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "dashboardPaymentHistoryIndex",
+   "offset": 0,
+   "slot": "71",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 47379,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "dashboardPaymentHistoryKnown",
+   "offset": 0,
+   "slot": "72",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 47383,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "dashboardPaymentIndexedStatus",
+   "offset": 0,
+   "slot": "73",
+   "type": "t_mapping(t_bytes32,t_uint8)"
+  },
+  {
+   "astId": 47387,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "orderIndexPlusOne",
+   "offset": 0,
+   "slot": "74",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 47391,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "sessionOrderIndexPlusOne",
+   "offset": 0,
+   "slot": "75",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 47396,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "orderIdsByStatus",
+   "offset": 0,
+   "slot": "76",
+   "type": "t_mapping(t_uint8,t_array(t_bytes32)dyn_storage)"
+  },
+  {
+   "astId": 47400,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "orderStatusIndexPlusOne",
+   "offset": 0,
+   "slot": "77",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 47404,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "pendingTransferIndexPlusOne",
+   "offset": 0,
+   "slot": "78",
+   "type": "t_mapping(t_bytes32,t_uint256)"
+  },
+  {
+   "astId": 47410,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "staffActiveOrderIndexPlusOne",
+   "offset": 0,
+   "slot": "79",
+   "type": "t_mapping(t_address,t_mapping(t_bytes32,t_uint256))"
+  },
+  {
+   "astId": 47416,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "orderCourseIndexPlusOne",
+   "offset": 0,
+   "slot": "80",
+   "type": "t_mapping(t_bytes32,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 47422,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentCourseIndexPlusOne",
+   "offset": 0,
+   "slot": "81",
+   "type": "t_mapping(t_bytes32,t_mapping(t_uint256,t_uint256))"
+  },
+  {
+   "astId": 47428,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "sessionPaymentIndexPlusOne",
+   "offset": 0,
+   "slot": "82",
+   "type": "t_mapping(t_bytes32,t_mapping(t_bytes32,t_uint256))"
+  },
+  {
+   "astId": 47432,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "pendingTransferIndexesReady",
+   "offset": 0,
+   "slot": "83",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 47436,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "staffActiveOrderIndexesReady",
+   "offset": 0,
+   "slot": "84",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 47440,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "orderCourseIndexesReady",
+   "offset": 0,
+   "slot": "85",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 47444,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentCourseIndexesReady",
+   "offset": 0,
+   "slot": "86",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 47448,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "sessionPaymentIndexesReady",
+   "offset": 0,
+   "slot": "87",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  },
+  {
+   "astId": 47451,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "enableOrderDismissBroadcast",
+   "offset": 0,
+   "slot": "88",
+   "type": "t_bool"
+  },
+  {
+   "astId": 47455,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentPromoCustomer",
+   "offset": 0,
+   "slot": "89",
+   "type": "t_mapping(t_bytes32,t_address)"
+  },
+  {
+   "astId": 47459,
+   "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+   "label": "paymentDiscountReleased",
+   "offset": 0,
+   "slot": "90",
+   "type": "t_mapping(t_bytes32,t_bool)"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_address)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "address[]",
+   "numberOfBytes": "32",
+   "base": "t_address"
+  },
+  "t_array(t_bytes32)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "bytes32[]",
+   "numberOfBytes": "32",
+   "base": "t_bytes32"
+  },
+  "t_array(t_string_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "string[]",
+   "numberOfBytes": "32",
+   "base": "t_string_storage"
+  },
+  "t_array(t_struct(DishReview)26686_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct DishReview[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(DishReview)26686_storage"
+  },
+  "t_array(t_struct(OptionSelected)27193_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct OptionSelected[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(OptionSelected)27193_storage"
+  },
+  "t_array(t_struct(Order)26449_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Order[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Order)26449_storage"
+  },
+  "t_array(t_struct(OrderHistory)26252_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct OrderHistory[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(OrderHistory)26252_storage"
+  },
+  "t_array(t_struct(Payment)26640_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Payment[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Payment)26640_storage"
+  },
+  "t_array(t_struct(PaymentInformation)26658_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct PaymentInformation[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(PaymentInformation)26658_storage"
+  },
+  "t_array(t_struct(Review)26669_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct Review[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(Review)26669_storage"
+  },
+  "t_array(t_struct(SimpleCourse)26439_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct SimpleCourse[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(SimpleCourse)26439_storage"
+  },
+  "t_array(t_struct(TransferRequest)26236_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct TransferRequest[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(TransferRequest)26236_storage"
+  },
+  "t_array(t_uint256)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "uint256[]",
+   "numberOfBytes": "32",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_bytes32": {
+   "encoding": "inplace",
+   "label": "bytes32",
+   "numberOfBytes": "32"
+  },
+  "t_contract(IBranchAccessManager)22929": {
+   "encoding": "inplace",
+   "label": "contract IBranchAccessManager",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IBranchPaymentRegistry)23001": {
+   "encoding": "inplace",
+   "label": "contract IBranchPaymentRegistry",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IBranchResourceRegistry)23301": {
+   "encoding": "inplace",
+   "label": "contract IBranchResourceRegistry",
+   "numberOfBytes": "20"
+  },
+  "t_contract(ICardTokenManager)24836": {
+   "encoding": "inplace",
+   "label": "contract ICardTokenManager",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IERC20)211935": {
+   "encoding": "inplace",
+   "label": "contract IERC20",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IManagement)24819": {
+   "encoding": "inplace",
+   "label": "contract IManagement",
+   "numberOfBytes": "20"
+  },
+  "t_contract(INoti)24882": {
+   "encoding": "inplace",
+   "label": "contract INoti",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IPoint)25853": {
+   "encoding": "inplace",
+   "label": "contract IPoint",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IRestaurantReporting)26079": {
+   "encoding": "inplace",
+   "label": "contract IRestaurantReporting",
+   "numberOfBytes": "20"
+  },
+  "t_enum(COURSE_STATUS)26183": {
+   "encoding": "inplace",
+   "label": "enum COURSE_STATUS",
+   "numberOfBytes": "1"
+  },
+  "t_enum(CustomerType)26131": {
+   "encoding": "inplace",
+   "label": "enum CustomerType",
+   "numberOfBytes": "1"
+  },
+  "t_enum(HistoryAction)26214": {
+   "encoding": "inplace",
+   "label": "enum HistoryAction",
+   "numberOfBytes": "1"
+  },
+  "t_enum(ORDER_STATUS)26199": {
+   "encoding": "inplace",
+   "label": "enum ORDER_STATUS",
+   "numberOfBytes": "1"
+  },
+  "t_enum(PAYMENT_STATUS)26178": {
+   "encoding": "inplace",
+   "label": "enum PAYMENT_STATUS",
+   "numberOfBytes": "1"
+  },
+  "t_enum(PaymentType)26122": {
+   "encoding": "inplace",
+   "label": "enum PaymentType",
+   "numberOfBytes": "1"
+  },
+  "t_enum(SESSION_STATUS)26161": {
+   "encoding": "inplace",
+   "label": "enum SESSION_STATUS",
+   "numberOfBytes": "1"
+  },
+  "t_enum(SessionType)26127": {
+   "encoding": "inplace",
+   "label": "enum SessionType",
+   "numberOfBytes": "1"
+  },
+  "t_enum(TransferStatus)26220": {
+   "encoding": "inplace",
+   "label": "enum TransferStatus",
+   "numberOfBytes": "1"
+  },
+  "t_mapping(t_address,t_array(t_bytes32)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => bytes32[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_bytes32)dyn_storage"
+  },
+  "t_mapping(t_address,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_address,t_mapping(t_bytes32,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(bytes32 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_bytes32,t_uint256)"
+  },
+  "t_mapping(t_address,t_mapping(t_string_memory_ptr,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(string => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_string_memory_ptr,t_uint256)"
+  },
+  "t_mapping(t_address,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_address,t_uint8)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint8)",
+   "numberOfBytes": "32",
+   "value": "t_uint8"
+  },
+  "t_mapping(t_bytes32,t_address)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_mapping(t_bytes32,t_array(t_address)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => address[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_address)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_array(t_bytes32)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => bytes32[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_bytes32)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_array(t_struct(Order)26449_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct Order[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(Order)26449_storage)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_array(t_struct(OrderHistory)26252_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct OrderHistory[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(OrderHistory)26252_storage)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_array(t_struct(Payment)26640_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct Payment[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(Payment)26640_storage)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_array(t_struct(PaymentInformation)26658_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct PaymentInformation[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(PaymentInformation)26658_storage)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_array(t_struct(SimpleCourse)26439_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct SimpleCourse[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(SimpleCourse)26439_storage)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_array(t_struct(TransferRequest)26236_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct TransferRequest[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(TransferRequest)26236_storage)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_mapping(t_bytes32,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_bytes32,t_bytes32)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => bytes32)",
+   "numberOfBytes": "32",
+   "value": "t_bytes32"
+  },
+  "t_mapping(t_bytes32,t_mapping(t_address,t_bool))": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => mapping(address => bool))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_bool)"
+  },
+  "t_mapping(t_bytes32,t_mapping(t_address,t_uint8))": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => mapping(address => uint8))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_address,t_uint8)"
+  },
+  "t_mapping(t_bytes32,t_mapping(t_bytes32,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => mapping(bytes32 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_bytes32,t_uint256)"
+  },
+  "t_mapping(t_bytes32,t_mapping(t_uint256,t_struct(SimpleCourse)26439_storage))": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => mapping(uint256 => struct SimpleCourse))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_struct(SimpleCourse)26439_storage)"
+  },
+  "t_mapping(t_bytes32,t_mapping(t_uint256,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => mapping(uint256 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_uint256)"
+  },
+  "t_mapping(t_bytes32,t_string_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => string)",
+   "numberOfBytes": "32",
+   "value": "t_string_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(CustomerProfile)26287_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct CustomerProfile)",
+   "numberOfBytes": "32",
+   "value": "t_struct(CustomerProfile)26287_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(Order)26449_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct Order)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Order)26449_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(Payment)26640_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct Payment)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Payment)26640_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(PaymentInformation)26658_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct PaymentInformation)",
+   "numberOfBytes": "32",
+   "value": "t_struct(PaymentInformation)26658_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(Reservation)27448_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct Reservation)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Reservation)27448_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(Review)26669_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct Review)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Review)26669_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(Session)27411_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct Session)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Session)27411_storage"
+  },
+  "t_mapping(t_bytes32,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_bytes32,t_uint8)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => uint8)",
+   "numberOfBytes": "32",
+   "value": "t_uint8"
+  },
+  "t_mapping(t_string_memory_ptr,t_array(t_struct(DishReview)26686_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => struct DishReview[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(DishReview)26686_storage)dyn_storage"
+  },
+  "t_mapping(t_string_memory_ptr,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_string_memory_ptr,t_mapping(t_bytes32,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => mapping(bytes32 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_bytes32,t_uint256)"
+  },
+  "t_mapping(t_string_memory_ptr,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_string_memory_ptr",
+   "label": "mapping(string => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_uint256,t_array(t_bytes32)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => bytes32[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_bytes32)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_array(t_struct(Review)26669_storage)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct Review[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_struct(Review)26669_storage)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_struct(DashboardPaymentBucket)47364_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct RestaurantOrder.DashboardPaymentBucket)",
+   "numberOfBytes": "32",
+   "value": "t_struct(DashboardPaymentBucket)47364_storage"
+  },
+  "t_mapping(t_uint256,t_struct(GroupFeature)48529_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct RestaurantOrder.GroupFeature)",
+   "numberOfBytes": "32",
+   "value": "t_struct(GroupFeature)48529_storage"
+  },
+  "t_mapping(t_uint256,t_struct(SimpleCourse)26439_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct SimpleCourse)",
+   "numberOfBytes": "32",
+   "value": "t_struct(SimpleCourse)26439_storage"
+  },
+  "t_mapping(t_uint256,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_uint8,t_array(t_bytes32)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint8",
+   "label": "mapping(uint8 => bytes32[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_bytes32)dyn_storage"
+  },
+  "t_mapping(t_uint8,t_mapping(t_uint256,t_struct(DashboardPaymentBucket)47364_storage))": {
+   "encoding": "mapping",
+   "key": "t_uint8",
+   "label": "mapping(uint8 => mapping(uint256 => struct RestaurantOrder.DashboardPaymentBucket))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_struct(DashboardPaymentBucket)47364_storage)"
+  },
+  "t_mapping(t_uint8,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_uint8",
+   "label": "mapping(uint8 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_string_memory_ptr": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(CustomerProfile)26287_storage": {
+   "encoding": "inplace",
+   "label": "struct CustomerProfile",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 26278,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "customerID",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26280,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "gender",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint8"
+    },
+    {
+     "astId": 26282,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "ageGroup",
+     "offset": 1,
+     "slot": "1",
+     "type": "t_uint8"
+    },
+    {
+     "astId": 26284,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "firstVisit",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26286,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "visitCount",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(DashboardPaymentBucket)47364_storage": {
+   "encoding": "inplace",
+   "label": "struct RestaurantOrder.DashboardPaymentBucket",
+   "numberOfBytes": "160",
+   "members": [
+    {
+     "astId": 47352,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "revenue",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 47354,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "successfulOrders",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 47356,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "cancelledOrders",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 47359,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "customers",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_array(t_address)dyn_storage"
+    },
+    {
+     "astId": 47363,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "customerSeen",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_mapping(t_address,t_bool)"
+    }
+   ]
+  },
+  "t_struct(DishReview)26686_storage": {
+   "encoding": "inplace",
+   "label": "struct DishReview",
+   "numberOfBytes": "256",
+   "members": [
+    {
+     "astId": 26671,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "nameCustomer",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26673,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "dishCode",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26675,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "dishStar",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint8"
+    },
+    {
+     "astId": 26677,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "contribution",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26679,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26681,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "paymentId",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26683,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "isShow",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 26685,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "id",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_bytes32"
+    }
+   ]
+  },
+  "t_struct(GroupFeature)48529_storage": {
+   "encoding": "inplace",
+   "label": "struct RestaurantOrder.GroupFeature",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 48521,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "time",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 48523,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "isDineIn",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_bool"
+    },
+    {
+     "astId": 48525,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "groupSize",
+     "offset": 1,
+     "slot": "1",
+     "type": "t_uint8"
+    },
+    {
+     "astId": 48528,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "customerIDs",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_array(t_bytes32)dyn_storage"
+    }
+   ]
+  },
+  "t_struct(OptionSelected)27193_storage": {
+   "encoding": "inplace",
+   "label": "struct OptionSelected",
+   "numberOfBytes": "64",
+   "members": [
+    {
+     "astId": 27189,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "optionName",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27192,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "selectedFeatureNames",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_array(t_string_storage)dyn_storage"
+    }
+   ]
+  },
+  "t_struct(Order)26449_storage": {
+   "encoding": "inplace",
+   "label": "struct Order",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 26441,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26443,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "sessionId",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26445,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26448,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "status",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_enum(ORDER_STATUS)26199"
+    }
+   ]
+  },
+  "t_struct(OrderHistory)26252_storage": {
+   "encoding": "inplace",
+   "label": "struct OrderHistory",
+   "numberOfBytes": "192",
+   "members": [
+    {
+     "astId": 26238,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26240,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "orderId",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26242,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26245,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "action",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_enum(HistoryAction)26214"
+    },
+    {
+     "astId": 26247,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "actor",
+     "offset": 1,
+     "slot": "3",
+     "type": "t_address"
+    },
+    {
+     "astId": 26249,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "details",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26251,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "targetStaff",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_address"
+    }
+   ]
+  },
+  "t_struct(Payment)26640_storage": {
+   "encoding": "inplace",
+   "label": "struct Payment",
+   "numberOfBytes": "448",
+   "members": [
+    {
+     "astId": 26611,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26613,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "sessionId",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26616,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "orderIds",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_array(t_bytes32)dyn_storage"
+    },
+    {
+     "astId": 26618,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "foodCharge",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26620,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "tax",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26622,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "tip",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26624,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "discountAmount",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26626,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "discountCode",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26629,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "status",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_enum(PAYMENT_STATUS)26178"
+    },
+    {
+     "astId": 26631,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26633,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "method",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26635,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "total",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26637,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "deductedInvoiceAmount",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26639,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "refundedAmount",
+     "offset": 0,
+     "slot": "13",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(PaymentInformation)26658_storage": {
+   "encoding": "inplace",
+   "label": "struct PaymentInformation",
+   "numberOfBytes": "224",
+   "members": [
+    {
+     "astId": 26642,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26644,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "customer",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 26647,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "typePayment",
+     "offset": 20,
+     "slot": "1",
+     "type": "t_enum(PaymentType)26122"
+    },
+    {
+     "astId": 26649,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "staffConfirm",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_address"
+    },
+    {
+     "astId": 26651,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "staffCancel",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_address"
+    },
+    {
+     "astId": 26653,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "reasonConfirm",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26655,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "transferAmount",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26657,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "oldTotal",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Reservation)27448_storage": {
+   "encoding": "inplace",
+   "label": "struct Reservation",
+   "numberOfBytes": "416",
+   "members": [
+    {
+     "astId": 27420,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "reservationId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 27422,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "reservationTime",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27424,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "depositAmount",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27426,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "isCheckIn",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27428,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "name",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27430,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "phone",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 27432,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "numPeople",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27435,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "customerType",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_enum(CustomerType)26131"
+    },
+    {
+     "astId": 27437,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "penaltyFee",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27439,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "refund",
+     "offset": 0,
+     "slot": "9",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27441,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "invoiceDeductedAmount",
+     "offset": 0,
+     "slot": "10",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27443,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "remainingDeposit",
+     "offset": 0,
+     "slot": "11",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27445,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "isConfirm",
+     "offset": 0,
+     "slot": "12",
+     "type": "t_bool"
+    },
+    {
+     "astId": 27447,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "isCancel",
+     "offset": 1,
+     "slot": "12",
+     "type": "t_bool"
+    }
+   ]
+  },
+  "t_struct(ReservationRule)27418_storage": {
+   "encoding": "inplace",
+   "label": "struct ReservationRule",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 27413,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "gracePeriod",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27415,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "penaltyPercent",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27417,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "minDeposit",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Review)26669_storage": {
+   "encoding": "inplace",
+   "label": "struct Review",
+   "numberOfBytes": "160",
+   "members": [
+    {
+     "astId": 26660,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "nameCustomer",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26662,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "overalStar",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint8"
+    },
+    {
+     "astId": 26664,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "contribution",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26666,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26668,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "paymentId",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bytes32"
+    }
+   ]
+  },
+  "t_struct(Session)27411_storage": {
+   "encoding": "inplace",
+   "label": "struct Session",
+   "numberOfBytes": "160",
+   "members": [
+    {
+     "astId": 27396,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "sessionId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 27398,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "tableId",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 27400,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "customer",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_address"
+    },
+    {
+     "astId": 27403,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "status",
+     "offset": 20,
+     "slot": "2",
+     "type": "t_enum(SESSION_STATUS)26161"
+    },
+    {
+     "astId": 27405,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "creator",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_address"
+    },
+    {
+     "astId": 27408,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "typeSession",
+     "offset": 20,
+     "slot": "3",
+     "type": "t_enum(SessionType)26127"
+    },
+    {
+     "astId": 27410,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "reservationId",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bytes32"
+    }
+   ]
+  },
+  "t_struct(SimpleCourse)26439_storage": {
+   "encoding": "inplace",
+   "label": "struct SimpleCourse",
+   "numberOfBytes": "288",
+   "members": [
+    {
+     "astId": 26419,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26421,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "dishCode",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26423,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "dishName",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26425,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "dishPrice",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26427,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "quantity",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26430,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "status",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_enum(COURSE_STATUS)26183"
+    },
+    {
+     "astId": 26432,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "imgUrl",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26434,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "note",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 26438,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "optionsSelected",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_array(t_struct(OptionSelected)27193_storage)dyn_storage"
+    }
+   ]
+  },
+  "t_struct(TransferRequest)26236_storage": {
+   "encoding": "inplace",
+   "label": "struct TransferRequest",
+   "numberOfBytes": "224",
+   "members": [
+    {
+     "astId": 26222,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "requestId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26224,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "orderId",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 26226,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "fromStaff",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_address"
+    },
+    {
+     "astId": 26228,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "toStaff",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_address"
+    },
+    {
+     "astId": 26230,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 26233,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "status",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_enum(TransferStatus)26220"
+    },
+    {
+     "astId": 26235,
+     "contract": "contracts/iqr/RestaurantOrder.sol:RestaurantOrder",
+     "label": "reason",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  },
+  "t_uint8": {
+   "encoding": "inplace",
+   "label": "uint8",
+   "numberOfBytes": "1"
+  }
+ }
+}

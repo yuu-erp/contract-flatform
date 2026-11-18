@@ -1,0 +1,284 @@
+{
+ "storage": [
+  {
+   "astId": 113955,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "agent",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_address"
+  },
+  {
+   "astId": 113957,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "branchId",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 113960,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "moduleRegistry",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_contract(IBranchModuleRegistryV3)131771"
+  },
+  {
+   "astId": 113963,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "accessManager",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_contract(IBranchAccessManagerV3)131809"
+  },
+  {
+   "astId": 113966,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "netCafeFactory",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_address"
+  },
+  {
+   "astId": 114449,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_array(t_uint256)44_storage"
+  },
+  {
+   "astId": 123545,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "economyVault",
+   "offset": 0,
+   "slot": "49",
+   "type": "t_contract(IEconomyVaultV3)131861"
+  },
+  {
+   "astId": 123548,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "loyaltyPoints",
+   "offset": 0,
+   "slot": "50",
+   "type": "t_contract(IPoint)25853"
+  },
+  {
+   "astId": 123554,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "spendCounter",
+   "offset": 0,
+   "slot": "51",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 123559,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "spendHistories",
+   "offset": 0,
+   "slot": "52",
+   "type": "t_mapping(t_uint256,t_struct(SpendHistory)123542_storage)"
+  },
+  {
+   "astId": 123564,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "spendHistoryOfUser",
+   "offset": 0,
+   "slot": "53",
+   "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+  },
+  {
+   "astId": 123568,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "dailyManualRevenue",
+   "offset": 0,
+   "slot": "54",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 123572,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "monthlyManualRevenue",
+   "offset": 0,
+   "slot": "55",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 123576,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "yearlyManualRevenue",
+   "offset": 0,
+   "slot": "56",
+   "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  {
+   "astId": 124078,
+   "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "57",
+   "type": "t_array(t_uint256)42_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_uint256)42_storage": {
+   "encoding": "inplace",
+   "label": "uint256[42]",
+   "numberOfBytes": "1344",
+   "base": "t_uint256"
+  },
+  "t_array(t_uint256)44_storage": {
+   "encoding": "inplace",
+   "label": "uint256[44]",
+   "numberOfBytes": "1408",
+   "base": "t_uint256"
+  },
+  "t_array(t_uint256)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "uint256[]",
+   "numberOfBytes": "32",
+   "base": "t_uint256"
+  },
+  "t_bytes32": {
+   "encoding": "inplace",
+   "label": "bytes32",
+   "numberOfBytes": "32"
+  },
+  "t_contract(IBranchAccessManagerV3)131809": {
+   "encoding": "inplace",
+   "label": "contract IBranchAccessManagerV3",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IBranchModuleRegistryV3)131771": {
+   "encoding": "inplace",
+   "label": "contract IBranchModuleRegistryV3",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IEconomyVaultV3)131861": {
+   "encoding": "inplace",
+   "label": "contract IEconomyVaultV3",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IPoint)25853": {
+   "encoding": "inplace",
+   "label": "contract IPoint",
+   "numberOfBytes": "20"
+  },
+  "t_enum(SpendType)123522": {
+   "encoding": "inplace",
+   "label": "enum NetCafeSpendV3.SpendType",
+   "numberOfBytes": "1"
+  },
+  "t_mapping(t_address,t_array(t_uint256)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => uint256[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_uint256)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_struct(SpendHistory)123542_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct NetCafeSpendV3.SpendHistory)",
+   "numberOfBytes": "32",
+   "value": "t_struct(SpendHistory)123542_storage"
+  },
+  "t_mapping(t_uint256,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_struct(SpendHistory)123542_storage": {
+   "encoding": "inplace",
+   "label": "struct NetCafeSpendV3.SpendHistory",
+   "numberOfBytes": "288",
+   "members": [
+    {
+     "astId": 123524,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 123526,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+     "label": "userWallet",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 123528,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+     "label": "amountVND",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 123531,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+     "label": "spendType",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_enum(SpendType)123522"
+    },
+    {
+     "astId": 123533,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+     "label": "fromTime",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 123535,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+     "label": "toTime",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 123537,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+     "label": "createdAt",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 123539,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+     "label": "refId",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 123541,
+     "contract": "contracts/net_repo/contracts/v3/NetCafeSpendV3.sol:NetCafeSpendV3",
+     "label": "ledgerId",
+     "offset": 0,
+     "slot": "8",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

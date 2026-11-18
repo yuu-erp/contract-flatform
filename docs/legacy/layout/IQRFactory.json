@@ -1,0 +1,302 @@
+{
+ "storage": [
+  {
+   "astId": 29124,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "version",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_string_storage"
+  },
+  {
+   "astId": 29130,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "agentIQRContracts",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_address))"
+  },
+  {
+   "astId": 29134,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "agentBranchManagement",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_mapping(t_address,t_address)"
+  },
+  {
+   "astId": 29137,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "deployedContracts",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_array(t_address)dyn_storage"
+  },
+  {
+   "astId": 29139,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "enhancedAgent",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_address"
+  },
+  {
+   "astId": 29141,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "MANAGEMENT",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_address"
+  },
+  {
+   "astId": 29143,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "ORDER",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_address"
+  },
+  {
+   "astId": 29145,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "REPORT",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_address"
+  },
+  {
+   "astId": 29147,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "TIMEKEEPING",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_address"
+  },
+  {
+   "astId": 29149,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "cardVisa",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_address"
+  },
+  {
+   "astId": 29151,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "noti",
+   "offset": 0,
+   "slot": "10",
+   "type": "t_address"
+  },
+  {
+   "astId": 29153,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "revenueManager",
+   "offset": 0,
+   "slot": "11",
+   "type": "t_address"
+  },
+  {
+   "astId": 29155,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "StaffAgentStore",
+   "offset": 0,
+   "slot": "12",
+   "type": "t_address"
+  },
+  {
+   "astId": 29157,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "POINTS",
+   "offset": 0,
+   "slot": "13",
+   "type": "t_address"
+  },
+  {
+   "astId": 29159,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "branchAccessManager",
+   "offset": 0,
+   "slot": "14",
+   "type": "t_address"
+  },
+  {
+   "astId": 29161,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "branchResourceRegistry",
+   "offset": 0,
+   "slot": "15",
+   "type": "t_address"
+  },
+  {
+   "astId": 29163,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "branchPaymentRegistry",
+   "offset": 0,
+   "slot": "16",
+   "type": "t_address"
+  },
+  {
+   "astId": 29165,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "freeGasSc",
+   "offset": 0,
+   "slot": "17",
+   "type": "t_address"
+  },
+  {
+   "astId": 29168,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "ManagementBeacon",
+   "offset": 0,
+   "slot": "18",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 29171,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "OrderBeacon",
+   "offset": 0,
+   "slot": "19",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 29174,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "ReportBeacon",
+   "offset": 0,
+   "slot": "20",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 29177,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "TimekeepingBeacon",
+   "offset": 0,
+   "slot": "21",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 29181,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "isAdminIqr",
+   "offset": 0,
+   "slot": "22",
+   "type": "t_mapping(t_address,t_bool)"
+  },
+  {
+   "astId": 29184,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "lastUpdateIqr",
+   "offset": 0,
+   "slot": "23",
+   "type": "t_struct(LastUpdateData)20917_storage"
+  },
+  {
+   "astId": 29187,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "AgentIqrBeacon",
+   "offset": 0,
+   "slot": "25",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 29191,
+   "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "26",
+   "type": "t_array(t_uint256)45_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_address)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "address[]",
+   "numberOfBytes": "32",
+   "base": "t_address"
+  },
+  "t_array(t_uint256)45_storage": {
+   "encoding": "inplace",
+   "label": "uint256[45]",
+   "numberOfBytes": "1440",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_contract(UpgradeableBeacon)211857": {
+   "encoding": "inplace",
+   "label": "contract UpgradeableBeacon",
+   "numberOfBytes": "20"
+  },
+  "t_mapping(t_address,t_address)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_mapping(t_address,t_bool)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => bool)",
+   "numberOfBytes": "32",
+   "value": "t_bool"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_address))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => address))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_address)"
+  },
+  "t_mapping(t_uint256,t_address)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(LastUpdateData)20917_storage": {
+   "encoding": "inplace",
+   "label": "struct LastUpdateData",
+   "numberOfBytes": "64",
+   "members": [
+    {
+     "astId": 20914,
+     "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+     "label": "admin",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 20916,
+     "contract": "contracts/iqr/IQRFactory.sol:IQRFactory",
+     "label": "updateAt",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

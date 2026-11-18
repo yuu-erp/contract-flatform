@@ -1,0 +1,279 @@
+{
+ "storage": [
+  {
+   "astId": 206275,
+   "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+   "label": "version",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_string_storage"
+  },
+  {
+   "astId": 206280,
+   "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+   "label": "agentRevenues",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_mapping(t_address,t_struct(AgentRevenue)20833_storage)"
+  },
+  {
+   "astId": 206283,
+   "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+   "label": "agentList",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_array(t_address)dyn_storage"
+  },
+  {
+   "astId": 206287,
+   "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+   "label": "revenueRecords",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_array(t_struct(RevenueRecord)20844_storage)dyn_storage"
+  },
+  {
+   "astId": 206290,
+   "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+   "label": "systemRevenue",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_struct(Revenue)20820_storage"
+  },
+  {
+   "astId": 206295,
+   "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+   "label": "dailyRevenue",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_mapping(t_uint256,t_struct(Revenue)20820_storage)"
+  },
+  {
+   "astId": 206300,
+   "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+   "label": "monthlyRevenue",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_mapping(t_uint256,t_struct(Revenue)20820_storage)"
+  },
+  {
+   "astId": 206305,
+   "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+   "label": "yearlyRevenue",
+   "offset": 0,
+   "slot": "10",
+   "type": "t_mapping(t_uint256,t_struct(Revenue)20820_storage)"
+  },
+  {
+   "astId": 206307,
+   "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+   "label": "enhancedAgent",
+   "offset": 0,
+   "slot": "11",
+   "type": "t_address"
+  },
+  {
+   "astId": 208707,
+   "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "12",
+   "type": "t_array(t_uint256)50_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_address)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "address[]",
+   "numberOfBytes": "32",
+   "base": "t_address"
+  },
+  "t_array(t_struct(RevenueRecord)20844_storage)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "struct RevenueRecord[]",
+   "numberOfBytes": "32",
+   "base": "t_struct(RevenueRecord)20844_storage"
+  },
+  "t_array(t_uint256)50_storage": {
+   "encoding": "inplace",
+   "label": "uint256[50]",
+   "numberOfBytes": "1600",
+   "base": "t_uint256"
+  },
+  "t_mapping(t_address,t_struct(AgentRevenue)20833_storage)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => struct AgentRevenue)",
+   "numberOfBytes": "32",
+   "value": "t_struct(AgentRevenue)20833_storage"
+  },
+  "t_mapping(t_uint256,t_struct(Revenue)20820_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct Revenue)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Revenue)20820_storage"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(AgentRevenue)20833_storage": {
+   "encoding": "inplace",
+   "label": "struct AgentRevenue",
+   "numberOfBytes": "192",
+   "members": [
+    {
+     "astId": 20822,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "agent",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 20824,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "iqr",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20826,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "loyalty",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20828,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "netCafe",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20830,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "total",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20832,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "lastUpdated",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(Revenue)20820_storage": {
+   "encoding": "inplace",
+   "label": "struct Revenue",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 20813,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "iqr",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20815,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "loyalty",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20817,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "netCafe",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20819,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "total",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(RevenueRecord)20844_storage": {
+   "encoding": "inplace",
+   "label": "struct RevenueRecord",
+   "numberOfBytes": "128",
+   "members": [
+    {
+     "astId": 20835,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "agent",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 20837,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "moduleType",
+     "offset": 20,
+     "slot": "0",
+     "type": "t_uint8"
+    },
+    {
+     "astId": 20839,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "amount",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20841,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20843,
+     "contract": "contracts/system/RevenueManager.sol:RevenueManager",
+     "label": "metadata",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  },
+  "t_uint8": {
+   "encoding": "inplace",
+   "label": "uint8",
+   "numberOfBytes": "1"
+  }
+ }
+}

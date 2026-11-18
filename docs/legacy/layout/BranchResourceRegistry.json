@@ -1,0 +1,483 @@
+{
+ "storage": [
+  {
+   "astId": 164464,
+   "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+   "label": "accessManager",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_contract(IBranchAccessManager)22929"
+  },
+  {
+   "astId": 182735,
+   "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+   "label": "_areas",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(Area)182689_storage)))"
+  },
+  {
+   "astId": 182742,
+   "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+   "label": "_areaIds",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_array(t_bytes32)dyn_storage))"
+  },
+  {
+   "astId": 182751,
+   "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+   "label": "_resources",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(Resource)182711_storage)))"
+  },
+  {
+   "astId": 182760,
+   "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+   "label": "_tableData",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(TableData)182726_storage)))"
+  },
+  {
+   "astId": 182768,
+   "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+   "label": "_tableResourceIdsByNumber",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_uint256,t_bytes32)))"
+  },
+  {
+   "astId": 182775,
+   "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+   "label": "_resourceIds",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_array(t_bytes32)dyn_storage))"
+  },
+  {
+   "astId": 182778,
+   "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+   "label": "branchAuditTrail",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_contract(IBranchAuditTrail)22951"
+  },
+  {
+   "astId": 187530,
+   "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_array(t_uint256)49_storage"
+  },
+  {
+   "astId": 187538,
+   "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+   "label": "areaIndexPlusOne",
+   "offset": 0,
+   "slot": "57",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_bytes32,t_uint256)))"
+  },
+  {
+   "astId": 187546,
+   "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+   "label": "resourceIndexPlusOne",
+   "offset": 0,
+   "slot": "58",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_bytes32,t_uint256)))"
+  },
+  {
+   "astId": 187554,
+   "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+   "label": "childAreaCount",
+   "offset": 0,
+   "slot": "59",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_bytes32,t_uint256)))"
+  },
+  {
+   "astId": 187562,
+   "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+   "label": "resourceCountByArea",
+   "offset": 0,
+   "slot": "60",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_bytes32,t_uint256)))"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_bytes32)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "bytes32[]",
+   "numberOfBytes": "32",
+   "base": "t_bytes32"
+  },
+  "t_array(t_uint256)49_storage": {
+   "encoding": "inplace",
+   "label": "uint256[49]",
+   "numberOfBytes": "1568",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_bytes32": {
+   "encoding": "inplace",
+   "label": "bytes32",
+   "numberOfBytes": "32"
+  },
+  "t_contract(IBranchAccessManager)22929": {
+   "encoding": "inplace",
+   "label": "contract IBranchAccessManager",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IBranchAuditTrail)22951": {
+   "encoding": "inplace",
+   "label": "contract IBranchAuditTrail",
+   "numberOfBytes": "20"
+  },
+  "t_enum(ResourceType)182666": {
+   "encoding": "inplace",
+   "label": "enum BranchResourceRegistry.ResourceType",
+   "numberOfBytes": "1"
+  },
+  "t_enum(TABLE_STATUS)182676": {
+   "encoding": "inplace",
+   "label": "enum BranchResourceRegistry.TABLE_STATUS",
+   "numberOfBytes": "1"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_array(t_bytes32)dyn_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => bytes32[]))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_array(t_bytes32)dyn_storage)"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(Area)182689_storage)))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => mapping(bytes32 => struct BranchResourceRegistry.Area)))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(Area)182689_storage))"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(Resource)182711_storage)))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => mapping(bytes32 => struct BranchResourceRegistry.Resource)))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(Resource)182711_storage))"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(TableData)182726_storage)))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => mapping(bytes32 => struct BranchResourceRegistry.TableData)))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(TableData)182726_storage))"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_bytes32,t_uint256)))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => mapping(bytes32 => uint256)))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_mapping(t_bytes32,t_uint256))"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_uint256,t_bytes32)))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => mapping(uint256 => bytes32)))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_mapping(t_uint256,t_bytes32))"
+  },
+  "t_mapping(t_bytes32,t_struct(Area)182689_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct BranchResourceRegistry.Area)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Area)182689_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(Resource)182711_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct BranchResourceRegistry.Resource)",
+   "numberOfBytes": "32",
+   "value": "t_struct(Resource)182711_storage"
+  },
+  "t_mapping(t_bytes32,t_struct(TableData)182726_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct BranchResourceRegistry.TableData)",
+   "numberOfBytes": "32",
+   "value": "t_struct(TableData)182726_storage"
+  },
+  "t_mapping(t_bytes32,t_uint256)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => uint256)",
+   "numberOfBytes": "32",
+   "value": "t_uint256"
+  },
+  "t_mapping(t_uint256,t_array(t_bytes32)dyn_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => bytes32[])",
+   "numberOfBytes": "32",
+   "value": "t_array(t_bytes32)dyn_storage"
+  },
+  "t_mapping(t_uint256,t_bytes32)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => bytes32)",
+   "numberOfBytes": "32",
+   "value": "t_bytes32"
+  },
+  "t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(Area)182689_storage))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(bytes32 => struct BranchResourceRegistry.Area))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_bytes32,t_struct(Area)182689_storage)"
+  },
+  "t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(Resource)182711_storage))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(bytes32 => struct BranchResourceRegistry.Resource))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_bytes32,t_struct(Resource)182711_storage)"
+  },
+  "t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(TableData)182726_storage))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(bytes32 => struct BranchResourceRegistry.TableData))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_bytes32,t_struct(TableData)182726_storage)"
+  },
+  "t_mapping(t_uint256,t_mapping(t_bytes32,t_uint256))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(bytes32 => uint256))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_bytes32,t_uint256)"
+  },
+  "t_mapping(t_uint256,t_mapping(t_uint256,t_bytes32))": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => mapping(uint256 => bytes32))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_bytes32)"
+  },
+  "t_string_storage": {
+   "encoding": "bytes",
+   "label": "string",
+   "numberOfBytes": "32"
+  },
+  "t_struct(Area)182689_storage": {
+   "encoding": "inplace",
+   "label": "struct BranchResourceRegistry.Area",
+   "numberOfBytes": "160",
+   "members": [
+    {
+     "astId": 182678,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 182680,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "branchId",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 182682,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "parentAreaId",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 182684,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "name",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 182686,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "active",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_bool"
+    },
+    {
+     "astId": 182688,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "exists",
+     "offset": 1,
+     "slot": "4",
+     "type": "t_bool"
+    }
+   ]
+  },
+  "t_struct(Resource)182711_storage": {
+   "encoding": "inplace",
+   "label": "struct BranchResourceRegistry.Resource",
+   "numberOfBytes": "224",
+   "members": [
+    {
+     "astId": 182691,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "id",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 182693,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "branchId",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 182695,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "areaId",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 182698,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "resourceType",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_enum(ResourceType)182666"
+    },
+    {
+     "astId": 182700,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "name",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 182702,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "metadataURI",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_string_storage"
+    },
+    {
+     "astId": 182704,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "active",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 182706,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "supportsNet",
+     "offset": 1,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 182708,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "supportsOrdering",
+     "offset": 2,
+     "slot": "6",
+     "type": "t_bool"
+    },
+    {
+     "astId": 182710,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "exists",
+     "offset": 3,
+     "slot": "6",
+     "type": "t_bool"
+    }
+   ]
+  },
+  "t_struct(TableData)182726_storage": {
+   "encoding": "inplace",
+   "label": "struct BranchResourceRegistry.TableData",
+   "numberOfBytes": "192",
+   "members": [
+    {
+     "astId": 182713,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "number",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 182715,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "numPeople",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 182717,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "occupiedSeats",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 182720,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "status",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_enum(TABLE_STATUS)182676"
+    },
+    {
+     "astId": 182723,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "sessionIds",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_array(t_bytes32)dyn_storage"
+    },
+    {
+     "astId": 182725,
+     "contract": "contracts/shared/BranchResourceRegistry.sol:BranchResourceRegistry",
+     "label": "parentTableId",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

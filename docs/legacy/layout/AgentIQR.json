@@ -1,0 +1,334 @@
+{
+ "storage": [
+  {
+   "astId": 28086,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "ManagementBeacon",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 28089,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "OrderBeacon",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 28092,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "ReportBeacon",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 28095,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "TimekeepingBeacon",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 28097,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "agent",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_address"
+  },
+  {
+   "astId": 28099,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "branchId",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 28101,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "totalOrders",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 28103,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "totalRevenue",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 28105,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "completedOrders",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_uint256"
+  },
+  {
+   "astId": 28107,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "isActive",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_bool"
+  },
+  {
+   "astId": 28109,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "branchResourceRegistry",
+   "offset": 1,
+   "slot": "9",
+   "type": "t_address"
+  },
+  {
+   "astId": 28111,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "branchPaymentRegistry",
+   "offset": 0,
+   "slot": "10",
+   "type": "t_address"
+  },
+  {
+   "astId": 28116,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "orders",
+   "offset": 0,
+   "slot": "11",
+   "type": "t_mapping(t_bytes32,t_struct(AgentOrder)20811_storage)"
+  },
+  {
+   "astId": 28119,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "orderIds",
+   "offset": 0,
+   "slot": "12",
+   "type": "t_array(t_bytes32)dyn_storage"
+  },
+  {
+   "astId": 28121,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "ORDER",
+   "offset": 0,
+   "slot": "13",
+   "type": "t_address"
+  },
+  {
+   "astId": 28123,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "MANAGEMENT",
+   "offset": 0,
+   "slot": "14",
+   "type": "t_address"
+  },
+  {
+   "astId": 28130,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "mAgentToIQR",
+   "offset": 0,
+   "slot": "15",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_struct(IQRContracts)20655_storage))"
+  },
+  {
+   "astId": 28132,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "enhancedAgent",
+   "offset": 0,
+   "slot": "16",
+   "type": "t_address"
+  },
+  {
+   "astId": 28134,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "iqrFactory",
+   "offset": 0,
+   "slot": "17",
+   "type": "t_address"
+  },
+  {
+   "astId": 28136,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "revenueManager",
+   "offset": 0,
+   "slot": "18",
+   "type": "t_address"
+  },
+  {
+   "astId": 28140,
+   "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "19",
+   "type": "t_array(t_uint256)47_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_bytes32)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "bytes32[]",
+   "numberOfBytes": "32",
+   "base": "t_bytes32"
+  },
+  "t_array(t_uint256)47_storage": {
+   "encoding": "inplace",
+   "label": "uint256[47]",
+   "numberOfBytes": "1504",
+   "base": "t_uint256"
+  },
+  "t_bool": {
+   "encoding": "inplace",
+   "label": "bool",
+   "numberOfBytes": "1"
+  },
+  "t_bytes32": {
+   "encoding": "inplace",
+   "label": "bytes32",
+   "numberOfBytes": "32"
+  },
+  "t_contract(UpgradeableBeacon)211857": {
+   "encoding": "inplace",
+   "label": "contract UpgradeableBeacon",
+   "numberOfBytes": "20"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_struct(IQRContracts)20655_storage))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => struct IQRContracts))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_struct(IQRContracts)20655_storage)"
+  },
+  "t_mapping(t_bytes32,t_struct(AgentOrder)20811_storage)": {
+   "encoding": "mapping",
+   "key": "t_bytes32",
+   "label": "mapping(bytes32 => struct AgentOrder)",
+   "numberOfBytes": "32",
+   "value": "t_struct(AgentOrder)20811_storage"
+  },
+  "t_mapping(t_uint256,t_struct(IQRContracts)20655_storage)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => struct IQRContracts)",
+   "numberOfBytes": "32",
+   "value": "t_struct(IQRContracts)20655_storage"
+  },
+  "t_struct(AgentOrder)20811_storage": {
+   "encoding": "inplace",
+   "label": "struct AgentOrder",
+   "numberOfBytes": "96",
+   "members": [
+    {
+     "astId": 20806,
+     "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+     "label": "paymentId",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_bytes32"
+    },
+    {
+     "astId": 20808,
+     "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+     "label": "amount",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_uint256"
+    },
+    {
+     "astId": 20810,
+     "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+     "label": "timestamp",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_uint256"
+    }
+   ]
+  },
+  "t_struct(IQRContracts)20655_storage": {
+   "encoding": "inplace",
+   "label": "struct IQRContracts",
+   "numberOfBytes": "256",
+   "members": [
+    {
+     "astId": 20640,
+     "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+     "label": "AgentIQR",
+     "offset": 0,
+     "slot": "0",
+     "type": "t_address"
+    },
+    {
+     "astId": 20642,
+     "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+     "label": "Management",
+     "offset": 0,
+     "slot": "1",
+     "type": "t_address"
+    },
+    {
+     "astId": 20644,
+     "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+     "label": "Order",
+     "offset": 0,
+     "slot": "2",
+     "type": "t_address"
+    },
+    {
+     "astId": 20646,
+     "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+     "label": "Report",
+     "offset": 0,
+     "slot": "3",
+     "type": "t_address"
+    },
+    {
+     "astId": 20648,
+     "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+     "label": "TimeKeeping",
+     "offset": 0,
+     "slot": "4",
+     "type": "t_address"
+    },
+    {
+     "astId": 20650,
+     "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+     "label": "owner",
+     "offset": 0,
+     "slot": "5",
+     "type": "t_address"
+    },
+    {
+     "astId": 20652,
+     "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+     "label": "StaffAgentStore",
+     "offset": 0,
+     "slot": "6",
+     "type": "t_address"
+    },
+    {
+     "astId": 20654,
+     "contract": "contracts/iqr/AgentIQR.sol:AgentIQR",
+     "label": "Points",
+     "offset": 0,
+     "slot": "7",
+     "type": "t_address"
+    }
+   ]
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

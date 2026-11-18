@@ -1,0 +1,77 @@
+{
+ "storage": [
+  {
+   "astId": 174520,
+   "contract": "contracts/shared/BranchDashboard.sol:BranchDashboard",
+   "label": "moduleRegistry",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_contract(BranchModuleRegistry)181149"
+  },
+  {
+   "astId": 174523,
+   "contract": "contracts/shared/BranchDashboard.sol:BranchDashboard",
+   "label": "accessManager",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_contract(IBranchAccessManager)22929"
+  },
+  {
+   "astId": 174526,
+   "contract": "contracts/shared/BranchDashboard.sol:BranchDashboard",
+   "label": "netCafeFactory",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_contract(NetCafeV3Factory)131752"
+  },
+  {
+   "astId": 174529,
+   "contract": "contracts/shared/BranchDashboard.sol:BranchDashboard",
+   "label": "iqrFactory",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_contract(IBranchDashboardIqrFactoryRead)174302"
+  },
+  {
+   "astId": 180412,
+   "contract": "contracts/shared/BranchDashboard.sol:BranchDashboard",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_array(t_uint256)44_storage"
+  }
+ ],
+ "types": {
+  "t_array(t_uint256)44_storage": {
+   "encoding": "inplace",
+   "label": "uint256[44]",
+   "numberOfBytes": "1408",
+   "base": "t_uint256"
+  },
+  "t_contract(BranchModuleRegistry)181149": {
+   "encoding": "inplace",
+   "label": "contract BranchModuleRegistry",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IBranchAccessManager)22929": {
+   "encoding": "inplace",
+   "label": "contract IBranchAccessManager",
+   "numberOfBytes": "20"
+  },
+  "t_contract(IBranchDashboardIqrFactoryRead)174302": {
+   "encoding": "inplace",
+   "label": "contract IBranchDashboardIqrFactoryRead",
+   "numberOfBytes": "20"
+  },
+  "t_contract(NetCafeV3Factory)131752": {
+   "encoding": "inplace",
+   "label": "contract NetCafeV3Factory",
+   "numberOfBytes": "20"
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

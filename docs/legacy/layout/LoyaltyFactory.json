@@ -1,0 +1,111 @@
+{
+ "storage": [
+  {
+   "astId": 77092,
+   "contract": "contracts/loyalty/LoyaltyFactory.sol:LoyaltyFactory",
+   "label": "loyaltyBeacon",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 77099,
+   "contract": "contracts/loyalty/LoyaltyFactory.sol:LoyaltyFactory",
+   "label": "agentLoyaltyContracts",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_mapping(t_address,t_mapping(t_uint256,t_address))"
+  },
+  {
+   "astId": 77102,
+   "contract": "contracts/loyalty/LoyaltyFactory.sol:LoyaltyFactory",
+   "label": "deployedContracts",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_array(t_address)dyn_storage"
+  },
+  {
+   "astId": 77104,
+   "contract": "contracts/loyalty/LoyaltyFactory.sol:LoyaltyFactory",
+   "label": "enhancedAgent",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_address"
+  },
+  {
+   "astId": 77106,
+   "contract": "contracts/loyalty/LoyaltyFactory.sol:LoyaltyFactory",
+   "label": "freeGasSc",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_address"
+  },
+  {
+   "astId": 77108,
+   "contract": "contracts/loyalty/LoyaltyFactory.sol:LoyaltyFactory",
+   "label": "publicfullDB",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_address"
+  },
+  {
+   "astId": 77110,
+   "contract": "contracts/loyalty/LoyaltyFactory.sol:LoyaltyFactory",
+   "label": "economyVault",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_address"
+  },
+  {
+   "astId": 77114,
+   "contract": "contracts/loyalty/LoyaltyFactory.sol:LoyaltyFactory",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_array(t_uint256)49_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_address)dyn_storage": {
+   "encoding": "dynamic_array",
+   "label": "address[]",
+   "numberOfBytes": "32",
+   "base": "t_address"
+  },
+  "t_array(t_uint256)49_storage": {
+   "encoding": "inplace",
+   "label": "uint256[49]",
+   "numberOfBytes": "1568",
+   "base": "t_uint256"
+  },
+  "t_contract(UpgradeableBeacon)211857": {
+   "encoding": "inplace",
+   "label": "contract UpgradeableBeacon",
+   "numberOfBytes": "20"
+  },
+  "t_mapping(t_address,t_mapping(t_uint256,t_address))": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => mapping(uint256 => address))",
+   "numberOfBytes": "32",
+   "value": "t_mapping(t_uint256,t_address)"
+  },
+  "t_mapping(t_uint256,t_address)": {
+   "encoding": "mapping",
+   "key": "t_uint256",
+   "label": "mapping(uint256 => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}

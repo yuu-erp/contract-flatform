@@ -1,0 +1,122 @@
+{
+ "storage": [
+  {
+   "astId": 5078,
+   "contract": "contracts/branch/BMFactory.sol:BMFactory",
+   "label": "branchManagementBeacon",
+   "offset": 0,
+   "slot": "0",
+   "type": "t_contract(UpgradeableBeacon)211857"
+  },
+  {
+   "astId": 5082,
+   "contract": "contracts/branch/BMFactory.sol:BMFactory",
+   "label": "agentBranchManagement",
+   "offset": 0,
+   "slot": "1",
+   "type": "t_mapping(t_address,t_address)"
+  },
+  {
+   "astId": 5084,
+   "contract": "contracts/branch/BMFactory.sol:BMFactory",
+   "label": "enhancedAgent",
+   "offset": 0,
+   "slot": "2",
+   "type": "t_address"
+  },
+  {
+   "astId": 5086,
+   "contract": "contracts/branch/BMFactory.sol:BMFactory",
+   "label": "BRANCH_MANAGEMENT_IMP",
+   "offset": 0,
+   "slot": "3",
+   "type": "t_address"
+  },
+  {
+   "astId": 5088,
+   "contract": "contracts/branch/BMFactory.sol:BMFactory",
+   "label": "HISTORY_TRACKING_IMP",
+   "offset": 0,
+   "slot": "4",
+   "type": "t_address"
+  },
+  {
+   "astId": 5090,
+   "contract": "contracts/branch/BMFactory.sol:BMFactory",
+   "label": "freeGasSc",
+   "offset": 0,
+   "slot": "5",
+   "type": "t_address"
+  },
+  {
+   "astId": 5092,
+   "contract": "contracts/branch/BMFactory.sol:BMFactory",
+   "label": "StaffAgentStore",
+   "offset": 0,
+   "slot": "6",
+   "type": "t_address"
+  },
+  {
+   "astId": 5094,
+   "contract": "contracts/branch/BMFactory.sol:BMFactory",
+   "label": "iqrFactory",
+   "offset": 0,
+   "slot": "7",
+   "type": "t_address"
+  },
+  {
+   "astId": 5096,
+   "contract": "contracts/branch/BMFactory.sol:BMFactory",
+   "label": "netCafeFactory",
+   "offset": 0,
+   "slot": "8",
+   "type": "t_address"
+  },
+  {
+   "astId": 5098,
+   "contract": "contracts/branch/BMFactory.sol:BMFactory",
+   "label": "robotFactory",
+   "offset": 0,
+   "slot": "9",
+   "type": "t_address"
+  },
+  {
+   "astId": 5102,
+   "contract": "contracts/branch/BMFactory.sol:BMFactory",
+   "label": "__gap",
+   "offset": 0,
+   "slot": "10",
+   "type": "t_array(t_uint256)47_storage"
+  }
+ ],
+ "types": {
+  "t_address": {
+   "encoding": "inplace",
+   "label": "address",
+   "numberOfBytes": "20"
+  },
+  "t_array(t_uint256)47_storage": {
+   "encoding": "inplace",
+   "label": "uint256[47]",
+   "numberOfBytes": "1504",
+   "base": "t_uint256"
+  },
+  "t_contract(UpgradeableBeacon)211857": {
+   "encoding": "inplace",
+   "label": "contract UpgradeableBeacon",
+   "numberOfBytes": "20"
+  },
+  "t_mapping(t_address,t_address)": {
+   "encoding": "mapping",
+   "key": "t_address",
+   "label": "mapping(address => address)",
+   "numberOfBytes": "32",
+   "value": "t_address"
+  },
+  "t_uint256": {
+   "encoding": "inplace",
+   "label": "uint256",
+   "numberOfBytes": "32"
+  }
+ }
+}
