@@ -1,6 +1,7 @@
 out/
 cache/
 broadcast/
+deployments/*-31337.json
 node_modules/
 .env
 .env.*

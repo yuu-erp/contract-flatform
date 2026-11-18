@@ -13,6 +13,8 @@ meta-platform/
 │   └── interfaces/          interface dùng chéo giữa các khối
 ├── test/                    test, cùng cấu trúc với src/ (mục 3)
 ├── script/                  script Foundry deploy/cấu hình (chỉ local/devnet)
+├── abi/                     ABI JSON thuần cho client, sinh bằng `make abi` (commit)
+├── deployments/             `platform-<chainid>.json` do script deploy ghi (file anvil 31337 không commit)
 ├── scripts/                 công cụ kiểm tra và tiện ích (Python/Bash)
 ├── storage-layouts/         snapshot storage layout để chặn nâng cấp làm hỏng dữ liệu
 ├── docs/                    tài liệu nghiệp vụ, kiến trúc, đặc tả (mục 5)
@@ -94,6 +96,7 @@ Interface công khai của mọi contract (`I<Tên>.sol`): hàm, event, lỗi, s
 | `e2e/` | kịch bản đầu cuối qua nhiều contract (tạo agent → bật dịch vụ → nghiệp vụ → dừng → chỉ đọc) | Kiểm các khối nối với nhau đúng, như người dùng thật đi qua |
 | `layout/` | harness `<Tên>Layout.sol`: khai báo struct storage namespaced như biến thường | Cho `scripts/storage_layout.py` in và so layout từng trường |
 | `utils/` | `BaseTest.sol` (vai trò mẫu, `deployProxy`, `installMockFullDB`), `MockFullDB.sol`, `MockServiceModule.sol` | Hạ tầng test dùng chung |
+| `script/` | test script deploy (`DeployPlatform`, `SetPlatformAdmin`) | Script chạy được trong test, không cần chain |
 
 Khung `Scaffold` đã xoá (2026-11-18) khi có khối thật đầu tiên. Harness layout của core ở `test/layout/CoreLayouts.sol`; `test/utils/PlatformFixture.sol` dựng sẵn PlatformAccess → HistoryIndex → AgentRegistry cho test.
 
@@ -116,7 +119,9 @@ Giữa các module, khi NET hay IQR cần báo cho Loyalty, nó gọi qua `inter
 
 | Thư mục / file | Chứa gì | Mục đích |
 |---|---|---|
-| `script/` | `Deploy*.s.sol` | Deploy và nối quyền trên anvil/devnet. Không chứa khoá, không chạy lên chain thật trừ khi người dùng giao |
+| `script/` | `DeployPlatform.s.sol`, `SetPlatformAdmin.s.sol` | Deploy tầng quản trị và cấp/thu admin. Không chứa khoá. Người dùng tự chạy `make deploy` / `make set-admin` |
+| `abi/` | `PlatformAccess.json`, `AgentRegistry.json`, `BranchRegistry.json`, `HistoryIndex.json` | Mảng ABI thuần (`make abi`), client copy. Không có bytecode |
+| `deployments/` | `platform-<chainid>.json` | Địa chỉ proxy, impl, owner, admin sau deploy. `*-31337.json` (anvil) nằm trong `.gitignore` |
 | `scripts/check_deps.sh` | kiểm luật mục 4 | Giữ kiến trúc không bị xói mòn |
 | `scripts/storage_layout.py` | `check` / `snapshot` layout | Chặn nâng cấp làm lệch storage (lỗi hệ cũ phải có `rescueAdminAccess`) |
 | `scripts/legacy/` | `inventory.py`, `check_docs.py` | Kiểm kê hệ cũ meta-iqr (GĐ0), chỉ đọc |
@@ -127,5 +132,5 @@ Giữa các module, khi NET hay IQR cần báo cho Loyalty, nó gọi qua `inter
 | `tasks/` | file bàn giao (`00-*` GĐ0, `10-*` tầng vận hành…) | Quy trình Claude lập kế hoạch/review, Cursor triển khai (`documents/WORKFLOW.md`) |
 | `lib/` | submodule `forge-std` v1.16.2, `openzeppelin-contracts-upgradeable` v5.6.1 | Không sửa; nâng version bằng `forge install` + ghi lý do |
 | `.github/workflows/ci.yml` | chạy `make ci` | Mọi thay đổi phải qua: fmt, build, sizes, deps, layout, test, gas snapshot |
-| `Makefile` | `build`, `test`, `fmt`, `sizes`, `deps`, `layout`, `snapshot`, `ci`, `legacy-inventory` | Một bộ lệnh chuẩn cho người và agent |
+| `Makefile` | `build`, `test`, `fmt`, `sizes`, `deps`, `layout`, `snapshot`, `ci`, `legacy-inventory`, `abi`, `deploy`, `deploy-local`, `set-admin` | Một bộ lệnh chuẩn cho người và agent. `deploy` và `set-admin` chỉ người dùng chạy |
 | `.gas-snapshot` | gas từng test | `forge snapshot --check` báo khi gas thay đổi ngoài ý muốn |

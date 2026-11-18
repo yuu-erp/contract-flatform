@@ -36,6 +36,7 @@ Hai track dùng chung `documents/tech-debt.md` và `documents/work-log.md`: ch�
 - Contract UUPS mới: thêm dòng `impl` vào `storage-layouts/contracts.txt`; mỗi struct namespaced thêm harness `test/layout/` + dòng `harness`, rồi `python3 scripts/storage_layout.py snapshot`.
 - Test dựng tầng quản trị qua `test/utils/PlatformFixture.sol`; FullDB giả lập bằng `installMockFullDB()` (cài `MockFullDB` vào `0x…0107`).
 - Chỉ chạy test liên quan: `forge test --match-path 'test/<module>/**'`.
+- `make abi` xuất ABI client vào `abi/`. `make deploy` / `make set-admin` chỉ người dùng chạy (đọc `.env`, gửi giao dịch). `make deploy-local` chỉ cho anvil.
 - Mỗi module mới phải có: đặc tả trong `docs/modules/<module>.md`, unit test, invariant test nếu chạm tiền, ngân sách gas.
 
 ## Quy ước

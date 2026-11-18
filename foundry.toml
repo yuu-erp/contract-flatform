@@ -16,7 +16,10 @@ via_ir = false
 bytecode_hash = "none"
 cbor_metadata = false
 extra_output = ["storageLayout"]
-fs_permissions = [{ access = "read", path = "./storage-layouts" }]
+fs_permissions = [
+    { access = "read", path = "./storage-layouts" },
+    { access = "read-write", path = "./deployments" },
+]
 
 [profile.default.fuzz]
 runs = 256
@@ -40,3 +43,6 @@ bracket_spacing = false
 int_types = "long"
 quote_style = "double"
 number_underscore = "thousands"
+
+[rpc_endpoints]
+platform = "${RPC_URL}"
