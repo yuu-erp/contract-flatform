@@ -1,0 +1,140 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct Ledger.LedgerStorage"
+ ],
+ [
+  "s.agents",
+  0,
+  0,
+  "contract IAgentRegistry"
+ ],
+ [
+  "s.branches",
+  1,
+  0,
+  "contract IBranchRegistry"
+ ],
+ [
+  "s.settings",
+  2,
+  0,
+  "contract ISalesSettings"
+ ],
+ [
+  "s.history",
+  3,
+  0,
+  "contract IHistoryIndex"
+ ],
+ [
+  "s.posters",
+  4,
+  0,
+  "mapping(address => uint8)"
+ ],
+ [
+  "s.entries",
+  5,
+  0,
+  "mapping(bytes32 => struct ILedger.Entry)"
+ ],
+ [
+  "s.portions",
+  6,
+  0,
+  "mapping(bytes32 => struct ILedger.Portion[])"
+ ],
+ [
+  "s.wallets",
+  7,
+  0,
+  "mapping(uint64 => mapping(address => struct ILedger.Portion[]))"
+ ],
+ [
+  "s.liability",
+  8,
+  0,
+  "mapping(uint64 => uint256)"
+ ],
+ [
+  "s.rollups",
+  9,
+  0,
+  "mapping(uint256 => uint256[32])"
+ ],
+ [
+  "entryRow",
+  10,
+  0,
+  "struct ILedger.Entry"
+ ],
+ [
+  "entryRow.kind",
+  10,
+  0,
+  "enum ILedger.EntryKind"
+ ],
+ [
+  "entryRow.method",
+  10,
+  1,
+  "uint8"
+ ],
+ [
+  "entryRow.service",
+  10,
+  2,
+  "uint16"
+ ],
+ [
+  "entryRow.taxBps",
+  10,
+  4,
+  "uint16"
+ ],
+ [
+  "entryRow.branchId",
+  10,
+  6,
+  "uint64"
+ ],
+ [
+  "entryRow.customer",
+  11,
+  0,
+  "address"
+ ],
+ [
+  "entryRow.amount",
+  12,
+  0,
+  "uint128"
+ ],
+ [
+  "entryRow.refunded",
+  12,
+  16,
+  "uint128"
+ ],
+ [
+  "portionRow",
+  13,
+  0,
+  "struct ILedger.Portion"
+ ],
+ [
+  "portionRow.branchId",
+  13,
+  0,
+  "uint64"
+ ],
+ [
+  "portionRow.amount",
+  13,
+  8,
+  "uint128"
+ ]
+]

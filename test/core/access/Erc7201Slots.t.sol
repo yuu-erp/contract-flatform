@@ -49,4 +49,9 @@ contract Erc7201SlotsTest is PlatformFixture {
         bytes32 v = vm.load(address(sales), _slot("metaplatform.core.payment.settings"));
         assertEq(address(uint160(uint256(v))), address(registry));
     }
+
+    function test_ledgerSlot() public view {
+        bytes32 v = vm.load(address(ledger), _slot("metaplatform.core.ledger"));
+        assertEq(address(uint160(uint256(v))), address(registry));
+    }
 }
