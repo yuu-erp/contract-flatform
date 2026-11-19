@@ -12,12 +12,17 @@ import {FullDBCodec} from "../../libraries/FullDBCodec.sol";
 
 /// @title Ledger
 /// @notice Sổ cái tiền của nền tảng. Xem `ILedger` và docs/08-dong-tien-va-doanh-thu.md.
-///         Task này: khung, poster, nạp ví, bộ đếm ngày ba cấp, ghi FullDB.
+///         Ghi nạp ví, trừ ví, bán trực tiếp và điều chỉnh doanh thu; giữ túi ví theo chi nhánh, bộ đếm ngày ba cấp
+///         (nền tảng, agent, chi nhánh) và ghi FullDB.
 contract Ledger is PlatformAccessed, ILedger {
     uint8 public constant EVENT_VERSION = 1;
     uint256 public constant MAX_BUCKETS = 16;
     uint256 public constant MAX_RANGE_DAYS = 93;
     uint256 public constant MAX_REASON_BYTES = 200;
+    /// @notice For EntryKind.Adjust the `method` field of Entry, LedgerRecord and Posted holds the direction
+    ///         (ADJUST_UP / ADJUST_DOWN), not a payment method.
+    uint8 public constant ADJUST_UP = 1;
+    uint8 public constant ADJUST_DOWN = 2;
     uint8 public constant SCOPE_PLATFORM = 0;
     uint8 public constant SCOPE_AGENT = 1;
     uint8 public constant SCOPE_BRANCH = 2;
@@ -251,6 +256,7 @@ contract Ledger is PlatformAccessed, ILedger {
         (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.Adjust);
         if (amount == 0) revert ZeroAmount();
         if (bytes(reason).length == 0 || bytes(reason).length > MAX_REASON_BYTES) revert InvalidReason();
+        uint8 dir = increase ? ADJUST_UP : ADJUST_DOWN;
         uint256 metric = M.serviceMetric(service, increase ? M.ADJ_UP : M.ADJ_DOWN);
         $.branches.requireWritable(ctx.branchId, service);
 
@@ -263,7 +269,7 @@ contract Ledger is PlatformAccessed, ILedger {
             branchId: ctx.branchId,
             customer: address(0),
             service: service,
-            method: 0,
+            method: dir,
             amount: amount,
             discount: 0,
             tax: 0,
@@ -277,7 +283,7 @@ contract Ledger is PlatformAccessed, ILedger {
         _bump($, agentId, ctx.branchId, d, metric, amount);
         $.entries[ctx.refId] = Entry({
             kind: EntryKind.Adjust,
-            method: 0,
+            method: dir,
             service: service,
             taxBps: 0,
             branchId: ctx.branchId,

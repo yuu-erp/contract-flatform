@@ -97,7 +97,7 @@ contract LedgerSaleTest is PlatformFixture {
         vm.expectRevert(abi.encodeWithSelector(M.InvalidService.selector, uint16(4)));
         poster.directSale(c, address(0), 4, CASH, 1000, 0);
         vm.prank(stranger);
-        vm.expectRevert();
+        vm.expectRevert(abi.encodeWithSelector(ILedger.NotPoster.selector, stranger, ILedger.EntryKind.DirectSale));
         ledger.directSale(c, address(0), IQR, CASH, 1000, 0);
     }
 
@@ -122,7 +122,7 @@ contract LedgerSaleTest is PlatformFixture {
     function test_adjust_byService() public {
         bytes32 r = _ref();
         vm.expectEmit(true, true, true, true);
-        emit ILedger.Posted(1, a, b1, r, ILedger.EntryKind.Adjust, address(0), NET, 0, 5000, 0, actor, 0);
+        emit ILedger.Posted(1, a, b1, r, ILedger.EntryKind.Adjust, address(0), NET, 1, 5000, 0, actor, 0);
         poster.adjust(_ctx(r), NET, true, 5000, "bu gio may loi");
         _allScopes(M.serviceMetric(NET, M.ADJ_UP), 5000);
         _allScopes(M.serviceMetric(NET, M.ADJ_DOWN), 0);
@@ -137,6 +137,10 @@ contract LedgerSaleTest is PlatformFixture {
         assertEq(e.service, NET);
         assertEq(e.amount, 5000);
         assertEq(e.branchId, b1);
+        assertEq(e.method, ledger.ADJUST_UP());
+        bytes32 r2 = _ref();
+        poster.adjust(_ctx(r2), NET, false, 700, "tru nham");
+        assertEq(ledger.entryOf(r2).method, ledger.ADJUST_DOWN());
     }
 
     function test_adjust_neverTouchesWalletOrCash() public {
@@ -173,10 +177,10 @@ contract LedgerSaleTest is PlatformFixture {
         ledger.adjust(_ctx(_ref()), NET, true, 1, "x");
     }
 
-    function _records(uint8 kind) internal view returns (bytes[] memory) {
+    function _records(ILedger.EntryKind kind) internal view returns (bytes[] memory) {
         IHistoryIndex.Query memory q;
         q.filters = new IHistoryIndex.Term[](1);
-        q.filters[0] = IHistoryIndex.Term("K", kind == 3 ? "3" : "6");
+        q.filters[0] = IHistoryIndex.Term("K", vm.toString(uint256(kind)));
         q.sortSlot = -1;
         q.limit = 10;
         return historyIndex.search(a, "ledger", q).data;
@@ -187,7 +191,7 @@ contract LedgerSaleTest is PlatformFixture {
         sales.setBranchTax(b1, NET, 1000);
         bytes32 r1 = _ref();
         poster.directSale(_ctx(r1), alice, NET, CASH, 11_000, 500);
-        bytes[] memory d = _records(3);
+        bytes[] memory d = _records(ILedger.EntryKind.DirectSale);
         assertEq(d.length, 1);
         ILedger.LedgerRecord memory s = abi.decode(d[0], (ILedger.LedgerRecord));
         assertEq(s.refId, r1);
@@ -199,12 +203,25 @@ contract LedgerSaleTest is PlatformFixture {
 
         bytes32 r2 = _ref();
         poster.adjust(_ctx(r2), NET, false, 300, "tru nham");
-        d = _records(6);
+        d = _records(ILedger.EntryKind.Adjust);
         assertEq(d.length, 1);
         ILedger.LedgerRecord memory j = abi.decode(d[0], (ILedger.LedgerRecord));
         assertEq(j.refId, r2);
         assertEq(j.reason, "tru nham");
         assertEq(j.tax, 0);
         assertEq(j.amount, 300);
+        assertEq(j.method, ledger.ADJUST_DOWN());
+
+        bytes32 r3 = _ref();
+        vm.expectEmit(true, true, true, true);
+        emit ILedger.Posted(1, a, b1, r3, ILedger.EntryKind.Adjust, address(0), NET, 1, 40, 0, actor, 0);
+        poster.adjust(_ctx(r3), NET, true, 40, "cong them");
+        d = _records(ILedger.EntryKind.Adjust);
+        assertEq(d.length, 2);
+        ILedger.LedgerRecord memory x = abi.decode(d[0], (ILedger.LedgerRecord));
+        ILedger.LedgerRecord memory y = abi.decode(d[1], (ILedger.LedgerRecord));
+        (ILedger.LedgerRecord memory up, ILedger.LedgerRecord memory down) = x.refId == r3 ? (x, y) : (y, x);
+        assertEq(up.method, ledger.ADJUST_UP());
+        assertEq(down.method, ledger.ADJUST_DOWN());
     }
 }
