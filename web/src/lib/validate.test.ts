@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { validateBranchForm, type BranchFormValues } from './validate'
+import { moduleGrantError, validateBranchForm, type BranchFormValues } from './validate'
 
 const VALID: BranchFormValues = {
   domain: 'cafe-q1',
@@ -39,5 +39,17 @@ describe('validateBranchForm', () => {
 
   it('cho phép toạ độ rỗng và SĐT rỗng', () => {
     expect(validateBranchForm({ ...VALID, longlat: '', phone: '' })).toEqual({})
+  })
+})
+
+describe('moduleGrantError', () => {
+  it('từ chối rỗng và Loyalty một mình', () => {
+    expect(moduleGrantError({ net: false, iqr: false, loyalty: false })).toBeTruthy()
+    expect(moduleGrantError({ net: false, iqr: false, loyalty: true })).toBeTruthy()
+  })
+
+  it('nhận NET+IQR và đủ ba module', () => {
+    expect(moduleGrantError({ net: true, iqr: true, loyalty: false })).toBeNull()
+    expect(moduleGrantError({ net: true, iqr: true, loyalty: true })).toBeNull()
   })
 })

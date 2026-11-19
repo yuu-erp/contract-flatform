@@ -76,5 +76,11 @@
   6,
   0,
   "uint256"
+ ],
+ [
+  "agentRow.allowedServices",
+  7,
+  0,
+  "uint16"
  ]
 ]

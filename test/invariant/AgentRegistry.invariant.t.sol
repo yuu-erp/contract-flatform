@@ -37,7 +37,7 @@ contract AgentHandler is Test {
 
     function create(uint256 w) external {
         vm.prank(admin);
-        try registry.createAgent(_wallet(w), IAgentRegistry.AgentProfile("Shop", "", "", "")) {
+        try registry.createAgent(_wallet(w), 7, IAgentRegistry.AgentProfile("Shop", "", "", "")) {
             ++created;
         } catch {}
     }

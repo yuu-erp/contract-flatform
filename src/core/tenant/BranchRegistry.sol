@@ -7,6 +7,7 @@ import {IBranchRegistry} from "../../interfaces/IBranchRegistry.sol";
 import {IAgentRegistry} from "../../interfaces/IAgentRegistry.sol";
 import {IHistoryIndex} from "../../interfaces/IHistoryIndex.sol";
 import {FullDBCodec} from "../../libraries/FullDBCodec.sol";
+import {ServiceMask} from "../../libraries/ServiceMask.sol";
 import {TextRules} from "../../libraries/TextRules.sol";
 
 /// @title BranchRegistry
@@ -20,7 +21,6 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
     uint16 public constant SERVICE_NET = 1;
     uint16 public constant SERVICE_IQR = 2;
     uint16 public constant SERVICE_LOYALTY = 4;
-    uint16 internal constant SERVICE_ALL = 7;
     uint16 public constant MAX_TAX_BPS = 10_000;
     int16 public constant MIN_TZ = -720;
     int16 public constant MAX_TZ = 840;
@@ -78,6 +78,7 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
         BranchesStorage storage $ = _b();
         if (!$.agents.isAgentActive(agentId)) revert AgentNotActive(agentId);
         _checkServices(init.services);
+        _checkGranted(agentId, init.services);
         _checkTimezone(init.tzOffsetMinutes);
         _checkProfile(init.profile);
         bytes32 dh = _claimDomain(init.domain, 0);
@@ -151,6 +152,7 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
     function setBranchServices(uint64 branchId, uint16 services) external onlyPlatformAdmin whenNotPaused {
         Branch storage br = _editable(branchId);
         _checkServices(services);
+        _checkGranted(br.agentId, services);
         uint16 old = br.services;
         br.services = services;
         br.updatedAt = uint64(block.timestamp);
@@ -298,14 +300,17 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
     }
 
     function isServiceEnabled(uint64 branchId, uint16 service) external view returns (bool) {
-        return _b().branches[branchId].services & service == service && _isSingleService(service);
+        Branch storage br = _b().branches[branchId];
+        if (!_isSingleService(service) || (br.services & service) != service || br.agentId == 0) return false;
+        return (_b().agents.getAgent(br.agentId).allowedServices & service) == service;
     }
 
     function requireWritable(uint64 branchId, uint16 service) external view {
         Branch storage br = _b().branches[branchId];
         if (br.status != BranchStatus.Active) revert BranchNotActive(branchId);
-        if (!_isSingleService(service) || br.services & service == 0) revert ServiceNotEnabled(branchId, service);
-        _b().agents.requireAgentWritable(br.agentId); // gồm cả kiểm pause toàn hệ
+        if (!_isSingleService(service) || (br.services & service) == 0) revert ServiceNotEnabled(branchId, service);
+        uint16 allowed = _b().agents.requireAgentWritable(br.agentId); // gồm cả kiểm pause toàn hệ
+        if ((allowed & service) == 0) revert ServiceNotAllowed(br.agentId, service);
     }
 
     function taxOf(uint64 branchId, uint16 service) external view returns (uint16) {
@@ -381,8 +386,13 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
 
     /// @dev R1: khác 0, chỉ các bit đã biết; có LOYALTY thì phải có NET hoặc IQR.
     function _checkServices(uint16 s) private pure {
-        if (s == 0 || s & ~SERVICE_ALL != 0) revert InvalidServices(s);
-        if (s & SERVICE_LOYALTY != 0 && s & (SERVICE_NET | SERVICE_IQR) == 0) revert InvalidServices(s);
+        if (!ServiceMask.isValid(s)) revert InvalidServices(s);
+    }
+
+    /// @dev Trần module của agent: chi nhánh không được bật bit nào ngoài tập đã cấp.
+    function _checkGranted(uint64 agentId, uint16 services) private view {
+        uint16 allowed = _b().agents.getAgent(agentId).allowedServices;
+        if (!ServiceMask.within(services, allowed)) revert ServiceNotAllowed(agentId, services);
     }
 
     function _isSingleService(uint16 s) private pure returns (bool) {

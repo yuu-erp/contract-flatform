@@ -12,13 +12,22 @@ import {
 import { useContracts } from '@/hooks/use-contracts'
 import { explainPlatformError } from '@/lib/errors'
 import { toAddress } from '@/lib/address'
-import { servicesFromForm, validateAgentForm, validateBranchForm, type AgentFormValues, type BranchFormValues } from '@/lib/validate'
+import { serviceLabels, servicesFromForm, validateAgentForm, validateBranchForm, type AgentFormValues, type BranchFormValues } from '@/lib/validate'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Field } from '@/components/field'
 
-const EMPTY_AGENT: AgentFormValues = { owner: '', storeName: '', storeAddress: '', storePhone: '', note: '' }
+const EMPTY_AGENT: AgentFormValues = {
+  owner: '',
+  storeName: '',
+  storeAddress: '',
+  storePhone: '',
+  note: '',
+  net: true,
+  iqr: true,
+  loyalty: true,
+}
 const EMPTY_BRANCH: BranchFormValues = {
   domain: '',
   name: '',
@@ -76,6 +85,7 @@ function CreateAgentForm() {
       }
       await create.mutateAsync({
         owner,
+        allowedServices: servicesFromForm(values),
         profile: {
           storeName: values.storeName,
           storeAddress: values.storeAddress,
@@ -107,6 +117,13 @@ function CreateAgentForm() {
       </Field>
       <Field label="Ghi chú" error={errors.note}>
         <Textarea value={values.note} onChange={(event) => setValues({ ...values, note: event.target.value })} />
+      </Field>
+      <Field label="Module được cấp" error={errors.services} hint="Chi nhánh của agent chỉ bật được các module này.">
+        <div className="flex gap-4 text-sm">
+          <label className="flex items-center gap-2"><input type="checkbox" checked={values.net} onChange={(event) => setValues({ ...values, net: event.target.checked })} />NET</label>
+          <label className="flex items-center gap-2"><input type="checkbox" checked={values.iqr} onChange={(event) => setValues({ ...values, iqr: event.target.checked })} />IQR</label>
+          <label className="flex items-center gap-2"><input type="checkbox" checked={values.loyalty} onChange={(event) => setValues({ ...values, loyalty: event.target.checked })} />Loyalty</label>
+        </div>
       </Field>
       <Button type="submit" disabled={create.isPending}>{create.isPending ? 'Đang gửi…' : 'Tạo agent'}</Button>
     </form>
@@ -201,8 +218,14 @@ function AgentList() {
       </div>
       {page.isError ? <p className="text-sm text-destructive">{explainPlatformError(page.error)}</p> : null}
       <SimpleTable
-        headers={['#', 'Tên', 'Ví chủ', 'SĐT']}
-        rows={(page.data?.rows ?? []).map((row) => [row.id, row.storeName || '—', formatWalletAddress(row.owner), row.storePhone || '—'])}
+        headers={['#', 'Tên', 'Ví chủ', 'SĐT', 'Module']}
+        rows={(page.data?.rows ?? []).map((row) => [
+          row.id,
+          row.storeName || '—',
+          formatWalletAddress(row.owner),
+          row.storePhone || '—',
+          serviceLabels(row.allowedServices) || '—',
+        ])}
       />
     </section>
   )

@@ -45,6 +45,19 @@
   },
   {
     "type": "function",
+    "name": "MAX_MIGRATE",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "MAX_NOTE",
     "inputs": [],
     "outputs": [
@@ -176,6 +189,11 @@
         "internalType": "address"
       },
       {
+        "name": "allowedServices",
+        "type": "uint16",
+        "internalType": "uint16"
+      },
+      {
         "name": "profile",
         "type": "tuple",
         "internalType": "struct IAgentRegistry.AgentProfile",
@@ -280,6 +298,11 @@
             "name": "profileDocId",
             "type": "uint256",
             "internalType": "uint256"
+          },
+          {
+            "name": "allowedServices",
+            "type": "uint16",
+            "internalType": "uint16"
           }
         ]
       }
@@ -406,6 +429,24 @@
   },
   {
     "type": "function",
+    "name": "migrateAllowedServices",
+    "inputs": [
+      {
+        "name": "ids",
+        "type": "uint64[]",
+        "internalType": "uint64[]"
+      },
+      {
+        "name": "masks",
+        "type": "uint16[]",
+        "internalType": "uint16[]"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "platformAccess",
     "inputs": [],
     "outputs": [
@@ -458,7 +499,13 @@
         "internalType": "uint64"
       }
     ],
-    "outputs": [],
+    "outputs": [
+      {
+        "name": "allowedServices",
+        "type": "uint16",
+        "internalType": "uint16"
+      }
+    ],
     "stateMutability": "view"
   },
   {
@@ -474,6 +521,24 @@
         "name": "reason",
         "type": "string",
         "internalType": "string"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setAgentServices",
+    "inputs": [
+      {
+        "name": "agentId",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "allowedServices",
+        "type": "uint16",
+        "internalType": "uint16"
       }
     ],
     "outputs": [],
@@ -582,6 +647,12 @@
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"
+      },
+      {
+        "name": "allowedServices",
+        "type": "uint16",
+        "indexed": false,
+        "internalType": "uint16"
       }
     ],
     "anonymous": false
@@ -669,6 +740,37 @@
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "AgentServicesChanged",
+    "inputs": [
+      {
+        "name": "version",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "uint8"
+      },
+      {
+        "name": "agentId",
+        "type": "uint64",
+        "indexed": true,
+        "internalType": "uint64"
+      },
+      {
+        "name": "oldServices",
+        "type": "uint16",
+        "indexed": false,
+        "internalType": "uint16"
+      },
+      {
+        "name": "newServices",
+        "type": "uint16",
+        "indexed": false,
+        "internalType": "uint16"
       }
     ],
     "anonymous": false
@@ -829,6 +931,17 @@
   },
   {
     "type": "error",
+    "name": "InvalidServices",
+    "inputs": [
+      {
+        "name": "services",
+        "type": "uint16",
+        "internalType": "uint16"
+      }
+    ]
+  },
+  {
+    "type": "error",
     "name": "InvalidStatusTransition",
     "inputs": [
       {
@@ -846,6 +959,11 @@
   {
     "type": "error",
     "name": "InvalidStoreName",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "MigrateBatchInvalid",
     "inputs": []
   },
   {

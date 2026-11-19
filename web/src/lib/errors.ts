@@ -21,6 +21,7 @@ const MESSAGES: Record<string, string> = {
   InvalidDomain: 'Domain phải là chữ thường, 3–253 ký tự a–z, 0–9, dấu chấm hoặc gạch ngang.',
   DomainTaken: 'Domain này đã thuộc chi nhánh khác.',
   InvalidServices: 'Phải bật NET hoặc IQR. Loyalty chỉ bật kèm một trong hai.',
+  ServiceNotAllowed: 'Chi nhánh chỉ được dùng module đã cấp cho agent.',
   InvalidTimezone: 'Múi giờ phải từ -720 đến 840 phút so với UTC.',
   InvalidBranchName: 'Tên chi nhánh phải từ 1 đến 100 byte UTF-8.',
   InvalidLonglat: 'Toạ độ chỉ gồm chữ số, dấu chấm, phẩy, gạch ngang và khoảng trắng, tối đa 40 ký tự.',

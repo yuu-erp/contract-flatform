@@ -3,7 +3,7 @@ import { toAddress } from '@/lib/address'
 import { agentRegistryABI } from './abi'
 import { asNumber, asRecord, asString, unwrapValue } from './normalize'
 
-const AGENT_FIELDS = ['id', 'owner', 'pendingOwner', 'status', 'createdAt', 'updatedAt', 'profileDocId'] as const
+const AGENT_FIELDS = ['id', 'owner', 'pendingOwner', 'status', 'createdAt', 'updatedAt', 'profileDocId', 'allowedServices'] as const
 const PROFILE_FIELDS = ['storeName', 'storeAddress', 'note', 'storePhone'] as const
 const RECORD_FIELDS = ['version', 'agentId', 'owner', 'profile', 'updatedAt'] as const
 
@@ -15,6 +15,7 @@ export type AgentView = {
   createdAt: number
   updatedAt: number
   profileDocId: string
+  allowedServices: number
 }
 
 export type AgentProfileInput = {
@@ -36,6 +37,7 @@ function toAgent(value: unknown): AgentView {
     createdAt: asNumber(record.createdAt),
     updatedAt: asNumber(record.updatedAt),
     profileDocId: asString(record.profileDocId),
+    allowedServices: asNumber(record.allowedServices),
   }
 }
 
@@ -95,11 +97,11 @@ export class AgentRegistryContract extends MtnContract {
     return toProfile(record.profile)
   }
 
-  public async createAgent(owner: string, profile: AgentProfileInput): Promise<void> {
+  public async createAgent(owner: string, allowedServices: number, profile: AgentProfileInput): Promise<void> {
     await this.sendTransaction({
       functionName: agentRegistryABI.createAgent.name,
       abiData: agentRegistryABI.createAgent,
-      inputData: { owner, profile },
+      inputData: { owner, allowedServices: String(allowedServices), profile },
       feeType: 'sc',
     })
   }

@@ -1,6 +1,6 @@
 # Lệnh chuẩn của meta-platform. CI chạy `make ci`.
 # `deploy`, `deploy-agent-access` và `set-admin` chỉ người dùng chạy (đọc .env, có --broadcast). Agent không chạy các target đó.
-.PHONY: build test fmt sizes layout deps snapshot snapshot-update ci legacy-inventory abi deploy deploy-agent-access deploy-local set-admin
+.PHONY: build test fmt sizes layout deps snapshot snapshot-update ci legacy-inventory abi deploy deploy-agent-access deploy-local set-admin upgrade-allowed-services
 
 build:
 	forge build
@@ -56,6 +56,11 @@ deploy-agent-access:
 # Chỉ người dùng chạy. Cần PRIVATE_KEY (owner), ACCESS_PROXY, ADMIN, ALLOW=true|false.
 set-admin:
 	forge script script/SetPlatformAdmin.s.sol --rpc-url platform --broadcast
+
+# Chỉ người dùng chạy. Cần PRIVATE_KEY (owner) trong .env. Nâng AgentRegistry (kèm migrateAllowedServices)
+# rồi BranchRegistry. Đọc/ghi deployments/platform-<chainid>.json. Không chạy trong CI.
+upgrade-allowed-services:
+	forge script script/UpgradeAllowedServices.s.sol --rpc-url platform --broadcast
 
 # Chỉ anvil local. Khoá dưới đây là tài khoản #0 mặc định của anvil — không dùng trên chain thật.
 # Đặt MockFullDB vào precompile 0x…0107 rồi mới chạy script (HistoryIndex mặc định trỏ precompile đó).

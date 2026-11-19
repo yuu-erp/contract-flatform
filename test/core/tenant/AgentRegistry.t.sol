@@ -8,6 +8,7 @@ import {IAgentRegistry} from "../../../src/interfaces/IAgentRegistry.sol";
 import {IHistoryIndex} from "../../../src/interfaces/IHistoryIndex.sol";
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import {IPlatformAccess} from "../../../src/interfaces/IPlatformAccess.sol";
+import {Initializable} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 contract AgentRegistryTest is PlatformFixture {
     // ─── tạo ────────────────────────────────────────────────────────────
@@ -15,8 +16,8 @@ contract AgentRegistryTest is PlatformFixture {
     function test_createAgent() public {
         vm.prank(platformAdmin);
         vm.expectEmit(address(registry));
-        emit IAgentRegistry.AgentCreated(1, 1, agentOwner, 1);
-        uint64 id = registry.createAgent(agentOwner, _profile("Cyber Q1"));
+        emit IAgentRegistry.AgentCreated(1, 1, agentOwner, 1, NET | IQR | LOYALTY);
+        uint64 id = registry.createAgent(agentOwner, NET | IQR | LOYALTY, _profile("Cyber Q1"));
 
         assertEq(id, 1);
         assertEq(registry.agentCount(), 1);
@@ -29,6 +30,7 @@ contract AgentRegistryTest is PlatformFixture {
         assertEq(a.owner, agentOwner);
         assertEq(uint8(a.status), uint8(IAgentRegistry.AgentStatus.Active));
         assertEq(a.createdAt, block.timestamp);
+        assertEq(a.allowedServices, NET | IQR | LOYALTY);
 
         IAgentRegistry.AgentProfileRecord memory r = registry.getAgentProfile(1);
         assertEq(r.agentId, 1);
@@ -37,45 +39,83 @@ contract AgentRegistryTest is PlatformFixture {
         assertEq(r.profile.storePhone, "+84 28 1234 5678");
     }
 
-    function test_createAgent_onlyAdmin() public {
-        vm.prank(platformOwner); // owner KHÔNG phải admin: tách vai
-        vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformAdmin.selector, platformOwner));
-        registry.createAgent(agentOwner, _profile("x"));
+    function test_createAgent_rejectsInvalidGrant() public {
+        vm.startPrank(platformAdmin);
+        vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.InvalidServices.selector, uint16(0)));
+        registry.createAgent(agentOwner, 0, _profile("x"));
+        vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.InvalidServices.selector, LOYALTY));
+        registry.createAgent(agentOwner, LOYALTY, _profile("x"));
+        vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.InvalidServices.selector, uint16(8)));
+        registry.createAgent(agentOwner, 8, _profile("x"));
+        vm.stopPrank();
+    }
+
+    function test_setAgentServices() public {
+        uint64 id = _createAgent(agentOwner);
+        vm.prank(platformAdmin);
+        registry.setAgentServices(id, NET | LOYALTY);
+        assertEq(registry.getAgent(id).allowedServices, NET | LOYALTY);
+        assertEq(registry.requireAgentWritable(id), NET | LOYALTY);
 
         vm.prank(agentOwner);
         vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformAdmin.selector, agentOwner));
-        registry.createAgent(agentOwner, _profile("x"));
+        registry.setAgentServices(id, NET);
+
+        vm.startPrank(platformAdmin);
+        registry.deleteAgent(id, "x");
+        vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.AgentDeleted.selector, id));
+        registry.setAgentServices(id, NET);
+        vm.stopPrank();
+    }
+
+    function test_setAgentServices_sameValueEmitsNothing() public {
+        uint64 id = _createAgent(agentOwner);
+        vm.recordLogs();
+        vm.prank(platformAdmin);
+        registry.setAgentServices(id, NET | IQR | LOYALTY);
+        assertEq(vm.getRecordedLogs().length, 0);
+        assertEq(registry.getAgent(id).allowedServices, NET | IQR | LOYALTY);
+    }
+
+    function test_createAgent_onlyAdmin() public {
+        vm.prank(platformOwner); // owner KHÔNG phải admin: tách vai
+        vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformAdmin.selector, platformOwner));
+        registry.createAgent(agentOwner, NET | IQR | LOYALTY, _profile("x"));
+
+        vm.prank(agentOwner);
+        vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformAdmin.selector, agentOwner));
+        registry.createAgent(agentOwner, NET | IQR | LOYALTY, _profile("x"));
     }
 
     function test_createAgent_oneWalletOneAgent() public {
         _createAgent(agentOwner);
         vm.prank(platformAdmin);
         vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.OwnerAlreadyHasAgent.selector, agentOwner, 1));
-        registry.createAgent(agentOwner, _profile("Cyber Q2"));
+        registry.createAgent(agentOwner, NET | IQR | LOYALTY, _profile("Cyber Q2"));
     }
 
     /// Vai trò agent không trùng tầng quản trị: ví owner/admin nền tảng không làm chủ agent.
     function test_createAgent_rejectsPlatformRoles() public {
         vm.startPrank(platformAdmin);
         vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.OwnerIsPlatformRole.selector, platformOwner));
-        registry.createAgent(platformOwner, _profile("x"));
+        registry.createAgent(platformOwner, NET | IQR | LOYALTY, _profile("x"));
         vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.OwnerIsPlatformRole.selector, platformAdmin2));
-        registry.createAgent(platformAdmin2, _profile("x"));
+        registry.createAgent(platformAdmin2, NET | IQR | LOYALTY, _profile("x"));
         vm.stopPrank();
     }
 
     function test_createAgent_validatesProfile() public {
         vm.startPrank(platformAdmin);
         vm.expectRevert(IAgentRegistry.ZeroAddress.selector);
-        registry.createAgent(address(0), _profile("x"));
+        registry.createAgent(address(0), NET | IQR | LOYALTY, _profile("x"));
         vm.expectRevert(IAgentRegistry.InvalidStoreName.selector);
-        registry.createAgent(agentOwner, _profile(""));
+        registry.createAgent(agentOwner, NET | IQR | LOYALTY, _profile(""));
         vm.expectRevert(IAgentRegistry.InvalidStoreName.selector);
-        registry.createAgent(agentOwner, _profile(string(new bytes(101))));
+        registry.createAgent(agentOwner, NET | IQR | LOYALTY, _profile(string(new bytes(101))));
         IAgentRegistry.AgentProfile memory p = _profile("x");
         p.note = string(new bytes(501));
         vm.expectRevert(IAgentRegistry.FieldTooLong.selector);
-        registry.createAgent(agentOwner, p);
+        registry.createAgent(agentOwner, NET | IQR | LOYALTY, p);
         vm.stopPrank();
     }
 
@@ -83,18 +123,18 @@ contract AgentRegistryTest is PlatformFixture {
         IAgentRegistry.AgentProfile memory p = _profile("x");
         vm.startPrank(platformAdmin);
         p.storePhone = "0901-234.567";
-        uint64 id = registry.createAgent(agentOwner, p);
+        uint64 id = registry.createAgent(agentOwner, NET | IQR | LOYALTY, p);
         assertEq(registry.getAgentProfile(id).profile.storePhone, "0901-234.567");
 
         p.storePhone = ""; // không bắt buộc
-        registry.createAgent(customer, p);
+        registry.createAgent(customer, NET | IQR | LOYALTY, p);
 
         p.storePhone = "0901abc";
         vm.expectRevert(IAgentRegistry.InvalidPhone.selector);
-        registry.createAgent(customer2, p);
+        registry.createAgent(customer2, NET | IQR | LOYALTY, p);
         p.storePhone = "+84 (28) 1234 5678 99"; // 21 ký tự
         vm.expectRevert(IAgentRegistry.InvalidPhone.selector);
-        registry.createAgent(customer2, p);
+        registry.createAgent(customer2, NET | IQR | LOYALTY, p);
         vm.stopPrank();
     }
 
@@ -112,7 +152,7 @@ contract AgentRegistryTest is PlatformFixture {
         access.pause();
         vm.prank(platformAdmin);
         vm.expectRevert(PausableUpgradeable.EnforcedPause.selector);
-        registry.createAgent(agentOwner, _profile("x"));
+        registry.createAgent(agentOwner, NET | IQR | LOYALTY, _profile("x"));
     }
 
     function test_createAgent_writesAudit() public {
@@ -134,7 +174,7 @@ contract AgentRegistryTest is PlatformFixture {
         fulldb.setFailWrites(true);
         vm.prank(platformAdmin);
         vm.expectRevert();
-        registry.createAgent(agentOwner, _profile("x"));
+        registry.createAgent(agentOwner, NET | IQR | LOYALTY, _profile("x"));
         assertEq(registry.agentCount(), 0);
     }
 
@@ -268,7 +308,7 @@ contract AgentRegistryTest is PlatformFixture {
         vm.startPrank(platformAdmin);
         registry.suspendAgent(id, "x");
         registry.deleteAgent(id, "x");
-        uint64 id2 = registry.createAgent(agentOwner, _profile("Cyber moi"));
+        uint64 id2 = registry.createAgent(agentOwner, NET | IQR | LOYALTY, _profile("Cyber moi"));
         vm.stopPrank();
         assertEq(id2, 2);
         assertEq(registry.agentIdOf(agentOwner), 2);
@@ -300,6 +340,7 @@ contract AgentRegistryTest is PlatformFixture {
         registry.acceptAgentOwner(id);
 
         assertEq(registry.getAgent(id).owner, coOwner);
+        assertEq(registry.getAgentProfile(id).owner, coOwner);
         assertEq(registry.getAgent(id).pendingOwner, address(0));
         assertEq(registry.agentIdOf(coOwner), id);
         assertEq(registry.agentIdOf(agentOwner), 0);
@@ -369,11 +410,68 @@ contract AgentRegistryTest is PlatformFixture {
         registry.upgradeToAndCall(impl, "");
     }
 
+    function test_migrateAllowedServices_fillsZerosSkipsDeletedAndSet() public {
+        uint64 live = _createAgent(agentOwner);
+        uint64 gone = _createAgent(customer);
+        uint64 set = _createAgent(coOwner);
+        vm.prank(platformAdmin);
+        registry.deleteAgent(gone, "x");
+        _zeroAllowed(live);
+        _zeroAllowed(gone);
+
+        uint64[] memory ids = new uint64[](3);
+        ids[0] = live;
+        ids[1] = gone;
+        ids[2] = set;
+        uint16[] memory masks = new uint16[](3);
+        masks[0] = NET | IQR;
+        masks[1] = 0;
+        masks[2] = NET;
+
+        address impl = address(new AgentRegistry());
+        vm.prank(platformOwner);
+        registry.upgradeToAndCall(impl, abi.encodeCall(AgentRegistry.migrateAllowedServices, (ids, masks)));
+
+        assertEq(registry.getAgent(live).allowedServices, NET | IQR);
+        assertEq(registry.getAgent(gone).allowedServices, 0);
+        assertEq(registry.getAgent(set).allowedServices, NET | IQR | LOYALTY);
+    }
+
+    function test_migrateAllowedServices_rejectsBadBatch() public {
+        uint64 id = _createAgent(agentOwner);
+        _zeroAllowed(id);
+        address impl = address(new AgentRegistry());
+
+        uint64[] memory ids = new uint64[](1);
+        ids[0] = id;
+        uint16[] memory mismatch = new uint16[](2);
+        vm.prank(platformOwner);
+        vm.expectRevert(IAgentRegistry.MigrateBatchInvalid.selector);
+        registry.upgradeToAndCall(impl, abi.encodeCall(AgentRegistry.migrateAllowedServices, (ids, mismatch)));
+
+        uint16[] memory bad = new uint16[](1);
+        bad[0] = 0;
+        vm.prank(platformOwner);
+        vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.InvalidServices.selector, uint16(0)));
+        registry.upgradeToAndCall(impl, abi.encodeCall(AgentRegistry.migrateAllowedServices, (ids, bad)));
+        assertEq(registry.getAgent(id).allowedServices, 0);
+    }
+
     function test_view_unknownAgent() public {
         vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.AgentNotFound.selector, 1));
         registry.getAgent(1);
         assertFalse(registry.isAgentActive(1));
         vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.AgentNotActive.selector, 1));
         registry.requireAgentWritable(1);
+    }
+
+    /// @dev `allowedServices` chiếm trọn slot +4 của phần tử mapping `agents` (namespace slot 1). Ghi 0 cả slot.
+    function _zeroAllowed(uint64 agentId) internal {
+        bytes32 base = keccak256(
+            abi.encode(
+                uint256(agentId), uint256(0xedf803923c55a0f16904cf3e37d276888338928655d01abb49352257aa4c9f00) + 1
+            )
+        );
+        vm.store(address(registry), bytes32(uint256(base) + 4), bytes32(0));
     }
 }

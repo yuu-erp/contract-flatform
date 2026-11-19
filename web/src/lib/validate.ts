@@ -11,6 +11,9 @@ export type AgentFormValues = {
   storeAddress: string
   storePhone: string
   note: string
+  net: boolean
+  iqr: boolean
+  loyalty: boolean
 }
 
 export type AgentFormContext = {
@@ -74,7 +77,17 @@ export function validateAgentForm(values: AgentFormValues, context?: AgentFormCo
   if (!PHONE.test(values.storePhone)) {
     errors.storePhone = 'SĐT chỉ gồm chữ số và + - . ( ) hoặc khoảng trắng, tối đa 20 ký tự.'
   }
+  const serviceError = moduleGrantError(values)
+  if (serviceError) errors.services = serviceError
   return errors
+}
+
+/** Trần module lúc tạo agent, cùng luật với dịch vụ chi nhánh. */
+export function moduleGrantError(values: { net: boolean; iqr: boolean; loyalty: boolean }): string | null {
+  if (!values.net && !values.iqr) {
+    return 'Phải cấp NET hoặc IQR. Loyalty chỉ cấp kèm một trong hai.'
+  }
+  return null
 }
 
 /** Luật BranchInit: domain, dịch vụ, múi giờ, hồ sơ. */
@@ -97,7 +110,8 @@ export function validateBranchForm(values: BranchFormValues): Record<string, str
   if (!LONGLAT.test(values.longlat)) {
     errors.longlat = 'Toạ độ dạng lat,long hoặc rỗng. Chỉ gồm chữ số, dấu chấm, phẩy, gạch ngang và khoảng trắng, tối đa 40 ký tự.'
   }
-  if (!values.net && !values.iqr) {
+  const serviceError = moduleGrantError(values)
+  if (serviceError) {
     errors.services = 'Phải bật NET hoặc IQR. Loyalty chỉ bật kèm một trong hai.'
   }
   const tz = Number(values.tzOffsetMinutes)
@@ -107,6 +121,14 @@ export function validateBranchForm(values: BranchFormValues): Record<string, str
   return errors
 }
 
-export function servicesFromForm(values: Pick<BranchFormValues, 'net' | 'iqr' | 'loyalty'>): number {
+export function servicesFromForm(values: { net: boolean; iqr: boolean; loyalty: boolean }): number {
   return (values.net ? 1 : 0) | (values.iqr ? 2 : 0) | (values.loyalty ? 4 : 0)
+}
+
+export function serviceLabels(mask: number): string {
+  const names: string[] = []
+  if (mask & 1) names.push('NET')
+  if (mask & 2) names.push('IQR')
+  if (mask & 4) names.push('Loyalty')
+  return names.join(', ')
 }

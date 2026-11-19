@@ -1521,6 +1521,22 @@
   },
   {
     "type": "error",
+    "name": "ServiceNotAllowed",
+    "inputs": [
+      {
+        "name": "agentId",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "services",
+        "type": "uint16",
+        "internalType": "uint16"
+      }
+    ]
+  },
+  {
+    "type": "error",
     "name": "ServiceNotEnabled",
     "inputs": [
       {

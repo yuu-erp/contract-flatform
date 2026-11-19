@@ -82,6 +82,44 @@ contract BranchRegistryTest is PlatformFixture {
         branches.createBranch(agentId, _branchInit("a.vn", s));
     }
 
+    /// Agent chỉ được cấp NET và Loyalty thì chi nhánh không bật được IQR.
+    function test_branchServices_stayInsideAgentGrant() public {
+        uint64 limited = _createAgent(customer, NET | LOYALTY);
+        uint64 b = _createBranch(limited, "net.vn", NET | LOYALTY);
+
+        vm.startPrank(platformAdmin);
+        vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.ServiceNotAllowed.selector, limited, IQR));
+        branches.createBranch(limited, _branchInit("iqr.vn", IQR));
+        vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.ServiceNotAllowed.selector, limited, NET | IQR));
+        branches.setBranchServices(b, NET | IQR);
+        vm.stopPrank();
+
+        assertTrue(branches.isServiceEnabled(b, NET));
+        assertTrue(branches.isServiceEnabled(b, LOYALTY));
+        assertFalse(branches.isServiceEnabled(b, IQR));
+
+        MockServiceModule net = new MockServiceModule(branches, NET);
+        net.write(b);
+        MockServiceModule iqr = new MockServiceModule(branches, IQR);
+        vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.ServiceNotEnabled.selector, b, IQR));
+        iqr.write(b);
+    }
+
+    /// Thu hẹp trần sau khi chi nhánh đã bật module: bit còn trên chi nhánh nhưng không ghi được nữa.
+    function test_branchServices_shrinkGrantBlocksModule() public {
+        uint64 b = _createBranch(agentId, "a.vn", NET | IQR);
+        vm.prank(platformAdmin);
+        registry.setAgentServices(agentId, NET);
+
+        assertTrue(branches.isServiceEnabled(b, NET));
+        assertFalse(branches.isServiceEnabled(b, IQR));
+        MockServiceModule net = new MockServiceModule(branches, NET);
+        net.write(b);
+        MockServiceModule iqr = new MockServiceModule(branches, IQR);
+        vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.ServiceNotAllowed.selector, agentId, IQR));
+        iqr.write(b);
+    }
+
     /// R3: domain bắt buộc, chữ thường, duy nhất.
     function test_domain_rules() public {
         _createBranch(agentId, "q1.cyber.vn", NET);

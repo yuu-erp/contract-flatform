@@ -152,9 +152,9 @@ export function useCreateAgent() {
   const contracts = useContracts()
   const refresh = useRefresh()
   return useMutation({
-    mutationFn: async (input: { owner: string; profile: AgentProfileInput }) => {
+    mutationFn: async (input: { owner: string; allowedServices: number; profile: AgentProfileInput }) => {
       if (!contracts) throw new Error('Chưa có ví hoặc địa chỉ contract')
-      await contracts.agents.createAgent(toAddress(input.owner), input.profile)
+      await contracts.agents.createAgent(toAddress(input.owner), input.allowedServices, input.profile)
     },
     onSuccess: refresh,
   })

@@ -131,7 +131,7 @@ Kiểm domain → `branchIdCount++` → lưu `BranchInfo` (tên, địa chỉ, S
 **Storage (`TenantRegistry`):**
 
 ```text
-Agent   { uint64 id; address owner; address pendingOwner; AgentStatus status; uint64 createdAt; uint64 updatedAt; uint256 profileDocId; }   ✅ (AgentRegistry)
+Agent   { uint64 id; address owner; address pendingOwner; AgentStatus status; uint64 createdAt; uint64 updatedAt; uint256 profileDocId; uint16 allowedServices; }   ✅ (AgentRegistry)
 AgentStatus = None | Active | Suspended | Deleted                                                                                  ✅
 Branch  { uint64 id; uint64 agentId; BranchStatus status; uint16 services; bool isMain; int16 tzOffsetMinutes; bytes32 domainHash; uint64 createdAt; uint64 updatedAt; uint256 profileDocId; }   ✅ (BranchRegistry)
 BranchStatus = None | Active | Suspended | Deleted                                                                                                   ✅
@@ -157,18 +157,27 @@ branchTax[branchId][service]     → uint16 bps + 1, 0 = chưa đặt (mức ri�
 
 | # | Luật | Kiểm ở |
 |---|---|---|
-| R1 | Tổ hợp dịch vụ hợp lệ: `services ≠ 0`; có `LOYALTY` thì phải có `NET` hoặc `IQR` | `TenantRegistry._validateServices` |
-| R2 | Mỗi chi nhánh tự chọn dịch vụ, **không** còn ràng buộc theo chi nhánh chính như hệ cũ | — |
+| R1 | Tổ hợp dịch vụ hợp lệ: `services ≠ 0`; có `LOYALTY` thì phải có `NET` hoặc `IQR`. `createAgent` cấp `allowedServices` theo luật này. Chi nhánh chỉ được bật tập con của trần đó | `ServiceMask`, `AgentRegistry.createAgent` / `setAgentServices`, `BranchRegistry._checkGranted` |
+| R2 | Mỗi chi nhánh tự chọn dịch vụ trong trần của agent, **không** còn ràng buộc theo chi nhánh chính như hệ cũ | `createBranch`, `setBranchServices` |
 | R3 | Domain bắt buộc, **chữ thường** (`a–z 0–9 - .`, 3–253 ký tự), duy nhất toàn hệ (so `keccak256`); đổi domain hoặc xoá chi nhánh thì nhả hash cũ | `createBranch`, `setBranchDomain`, `deleteBranch` ✅ |
 | R4 | Chỉ `PLATFORM_ADMIN` tạo, sửa, tạm dừng chi nhánh và đổi dịch vụ. Thuế là ngoại lệ: chỉ `AGENT_OWNER` đặt (mục 6.2) | `PlatformOperator`, `TenantRegistry` |
 | R5 | **Chỉ đọc khi dừng:** agent `Suspended`, hoặc chi nhánh `Suspended`, hoặc dịch vụ không bật → **mọi hàm ghi** của module ở chi nhánh đó revert, kể cả khách tiêu số dư, đóng phiên, thanh toán. View vẫn chạy bình thường. Dữ liệu không bị xoá hay sửa | `requireWritable(branchId, service)`, gọi đầu mọi hàm ghi của module |
 | R6 | Một ví chỉ làm chủ một agent; ví chủ không được là ví admin nền tảng | `createAgent`, `acceptAgentOwner` |
 | R7 | **Không xoá dữ liệu.** `deleteAgent` / `deleteBranch` là xoá mềm: sang `Deleted` (trạng thái cuối), mọi dữ liệu vẫn đọc được, mọi hàm ghi revert như R5. Xoá agent nhả ví chủ; xoá chi nhánh nhả domain. Chi nhánh chính chỉ xoá được sau khi agent đã xoá (trước đó phải `setMainBranch` sang chi nhánh khác). `deleteBranch` vẫn gọi được khi agent đã xoá, để nhả domain | `AgentRegistry.deleteAgent`, `BranchRegistry.deleteBranch` ✅ |
 | R8 | Tắt một dịch vụ trên chi nhánh: dữ liệu dịch vụ đó vẫn còn, chuyển chỉ đọc theo R5. Bật lại thì ghi tiếp | `setBranchServices` |
-| R9 | Đổi ví chủ hai bước: admin đề xuất `pendingOwner`, ví mới `acceptAgentOwner`; vai trò `AGENT_OWNER` chuyển nguyên tử | `proposeAgentOwner`, `acceptAgentOwner` |
-| R10 | Mỗi thao tác vận hành ghi một bản audit vào FullDB (`mp1_platform_audit`, nhãn `G<agentId>`, `X<action>`, `R<actor>`) và phát event | `AgentRegistry._audit` ✅ |
+| R9 | Đổi ví chủ hai bước: admin đề xuất `pendingOwner`, ví mới `acceptAgentOwner`; vai trò `AGENT_OWNER` chuyển nguyên tử. `acceptAgentOwner` ghi lại hồ sơ FullDB với `owner` mới (`history.replace`) | `proposeAgentOwner`, `acceptAgentOwner` |
+| R10 | Mỗi thao tác vận hành ghi một bản audit vào FullDB (`mp1_platform_audit`, nhãn `G<agentId>`, `X<action>`, `R<actor>`) và phát event. `migrateAllowedServices` không audit (gas của giao dịch nâng cấp) | `AgentRegistry._audit` ✅ |
 
 **Chú ý R5:** khi dừng agent đang có phiên NET mở, phiên đó không đóng được và không trừ tiền tiếp, nên tiền khách đứng yên. Mở lại thì heartbeat tiếp theo sẽ tính cả khoảng thời gian bị dừng. Đặc tả NET phải quy định không tính tiền khoảng thời gian bị dừng (ghi vào đặc tả NET).
+
+### 2.4.1 Nâng cấp v2 (`allowedServices`)
+
+Agent tạo trước khi có trường `allowedServices` đọc ra 0. Để 0 thì mọi chi nhánh gặp `ServiceNotAllowed` ngay sau khi `BranchRegistry` mới chạy. Vì vậy nâng cấp điền trần **trong cùng giao dịch** với implementation mới:
+
+1. `AgentRegistry`: `upgradeToAndCall(impl, migrateAllowedServices(ids, masks))`. `migrateAllowedServices` là `reinitializer(2)` nên chỉ chạy một lần, tối đa 200 agent. Mask hợp lệ (`ServiceMask.isValid`) chỉ ghi khi giá trị đang là 0 và agent chưa `Deleted`. Không audit FullDB.
+2. `BranchRegistry`: `upgradeToAndCall(impl, "")` **sau** AgentRegistry. Làm ngược lại thì `requireWritable` revert vì bản `AgentRegistry` cũ không trả về `uint16`.
+
+Script `script/UpgradeAllowedServices.s.sol` tự tính mask: OR `services` của chi nhánh chưa xoá theo `agentId`. Agent không có chi nhánh sống nhận `NET | IQR` (3). Nếu số agent sống lớn hơn 200, script revert trước khi nâng (không nâng một phần rồi hết lượt `reinitializer`). Người dùng chạy `make upgrade-allowed-services`.
 
 ### 2.5 Hàm (`PlatformOperator`, mỗi hàm một giao dịch, đều yêu cầu `PLATFORM_ADMIN`)
 
@@ -263,7 +272,7 @@ Theo yêu cầu người dùng (2026-11-18), **Claude tự triển khai** tầng
    Audit agent và chi nhánh dùng chung `PlatformAuditRecord` (`src/interfaces/IPlatformAudit.sol`), action có tiền tố `agent_` / `branch_`.
 5. `core/operator`: hoãn (mục 2.1).
 
-Hàm đã có của `AgentRegistry` (`src/interfaces/IAgentRegistry.sol`): `createAgent(owner, profile)`, `updateAgentProfile`, `suspendAgent(id, reason)`, `resumeAgent(id, reason)`, `deleteAgent(id, reason)`, `proposeAgentOwner`, `acceptAgentOwner`; view `getAgent`, `agentIdOf`, `agentCount`, `isAgentActive`, `requireAgentWritable`, `getAgentProfile`. Mọi hàm ghi yêu cầu hệ không pause. Lý do (`reason`) bắt buộc khi dừng/mở/xoá. Danh sách agent đọc qua `HistoryIndex.search(0, "platform_agents", …)`.
+Hàm đã có của `AgentRegistry` (`src/interfaces/IAgentRegistry.sol`): `createAgent(owner, allowedServices, profile)`, `setAgentServices(id, allowedServices)`, `updateAgentProfile`, `suspendAgent(id, reason)`, `resumeAgent(id, reason)`, `deleteAgent(id, reason)`, `proposeAgentOwner`, `acceptAgentOwner`; view `getAgent`, `agentIdOf`, `agentCount`, `isAgentActive`, `requireAgentWritable` (trả về trần module), `getAgentProfile`. Mọi hàm ghi yêu cầu hệ không pause. Lý do (`reason`) bắt buộc khi dừng/mở/xoá. Danh sách agent đọc qua `HistoryIndex.search(0, "platform_agents", …)`.
 
 Mỗi bước kèm test và kiểm layout.
 

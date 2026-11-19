@@ -61,6 +61,8 @@ interface IBranchRegistry {
     error BranchNotActive(uint64 branchId);
     error ServiceNotEnabled(uint64 branchId, uint16 service);
     error InvalidServices(uint16 services);
+    /// @notice Chi nhánh bật module không nằm trong trần `allowedServices` của agent.
+    error ServiceNotAllowed(uint64 agentId, uint16 services);
     error InvalidService(uint16 service);
     error InvalidDomain();
     error DomainTaken(bytes32 domainHash, uint64 branchId);

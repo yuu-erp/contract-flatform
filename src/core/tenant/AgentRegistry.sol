@@ -7,6 +7,7 @@ import {IAgentRegistry} from "../../interfaces/IAgentRegistry.sol";
 import {IHistoryIndex} from "../../interfaces/IHistoryIndex.sol";
 import {IPlatformAccess} from "../../interfaces/IPlatformAccess.sol";
 import {FullDBCodec} from "../../libraries/FullDBCodec.sol";
+import {ServiceMask} from "../../libraries/ServiceMask.sol";
 import {TextRules} from "../../libraries/TextRules.sol";
 
 /// @title AgentRegistry
@@ -20,6 +21,8 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
     uint256 public constant MAX_STORE_ADDRESS = 200;
     uint256 public constant MAX_NOTE = 500;
     uint256 public constant MAX_REASON = 200;
+    /// @notice Một lần `migrateAllowedServices` (và một lần `reinitializer(2)`) nhận tối đa từng này agent.
+    uint256 public constant MAX_MIGRATE = ServiceMask.MAX_MIGRATE;
 
     /// @custom:storage-location erc7201:metaplatform.core.tenant.agents
     struct AgentsStorage {
@@ -63,7 +66,7 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
 
     // ─── Ghi (PLATFORM_ADMIN) ───────────────────────────────────────────
 
-    function createAgent(address owner, AgentProfile calldata profile)
+    function createAgent(address owner, uint16 allowedServices, AgentProfile calldata profile)
         external
         onlyPlatformAdmin
         whenNotPaused
@@ -71,6 +74,7 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
     {
         _checkNewOwner(owner);
         _checkProfile(profile);
+        if (!ServiceMask.isValid(allowedServices)) revert InvalidServices(allowedServices);
         AgentsStorage storage $ = _a();
 
         agentId = ++$.agentCount;
@@ -89,13 +93,26 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
             status: AgentStatus.Active,
             createdAt: nowTs,
             updatedAt: nowTs,
-            profileDocId: docId
+            profileDocId: docId,
+            allowedServices: allowedServices
         });
         $.agentByOwner[owner] = agentId;
 
-        emit AgentCreated(EVENT_VERSION, agentId, owner, docId);
+        emit AgentCreated(EVENT_VERSION, agentId, owner, docId, allowedServices);
         emit AgentStatusChanged(EVENT_VERSION, agentId, AgentStatus.None, AgentStatus.Active, msg.sender, "");
-        _audit("create", agentId, "", abi.encode(owner, profile), "");
+        _audit("create", agentId, "", abi.encode(owner, allowedServices, profile), "");
+    }
+
+    function setAgentServices(uint64 agentId, uint16 allowedServices) external onlyPlatformAdmin whenNotPaused {
+        Agent storage ag = _existing(agentId);
+        if (ag.status == AgentStatus.Deleted) revert AgentDeleted(agentId);
+        if (!ServiceMask.isValid(allowedServices)) revert InvalidServices(allowedServices);
+        uint16 old = ag.allowedServices;
+        if (old == allowedServices) return;
+        ag.allowedServices = allowedServices;
+        ag.updatedAt = uint64(block.timestamp);
+        emit AgentServicesChanged(EVENT_VERSION, agentId, old, allowedServices);
+        _audit("services", agentId, abi.encode(old), abi.encode(allowedServices), "");
     }
 
     function updateAgentProfile(uint64 agentId, AgentProfile calldata profile)
@@ -168,8 +185,33 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
         ag.pendingOwner = address(0);
         ag.updatedAt = uint64(block.timestamp);
 
+        AgentProfileRecord memory rec =
+            abi.decode($.history.get(0, KIND_AGENTS(), ag.profileDocId), (AgentProfileRecord));
+        rec.owner = msg.sender;
+        rec.updatedAt = ag.updatedAt;
+        $.history.replace(0, KIND_AGENTS(), ag.profileDocId, abi.encode(rec));
+
         emit AgentOwnerTransferred(EVENT_VERSION, agentId, previous, msg.sender);
         _audit("owner_accept", agentId, abi.encode(previous), abi.encode(msg.sender), "");
+    }
+
+    /// @notice Chỉ gọi qua `upgradeToAndCall` của owner. `reinitializer` đứng trước `onlyPlatformOwner`
+    ///         để lần gọi sau revert `InvalidInitialization` với mọi người gọi.
+    ///         Không audit FullDB: một giao dịch nâng cấp không chịu gas ghi hồ sơ cho từng agent.
+    function migrateAllowedServices(uint64[] calldata ids, uint16[] calldata masks)
+        external
+        reinitializer(2)
+        onlyPlatformOwner
+    {
+        if (ids.length != masks.length || ids.length > MAX_MIGRATE) revert MigrateBatchInvalid();
+        for (uint256 i = 0; i < ids.length; ++i) {
+            Agent storage ag = _existing(ids[i]);
+            if (ag.status == AgentStatus.Deleted || ag.allowedServices != 0) continue;
+            if (!ServiceMask.isValid(masks[i])) revert InvalidServices(masks[i]);
+            ag.allowedServices = masks[i];
+            ag.updatedAt = uint64(block.timestamp);
+            emit AgentServicesChanged(EVENT_VERSION, ids[i], 0, masks[i]);
+        }
     }
 
     // ─── Đọc ────────────────────────────────────────────────────────────
@@ -190,9 +232,11 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
         return _a().agents[agentId].status == AgentStatus.Active;
     }
 
-    function requireAgentWritable(uint64 agentId) external view {
+    function requireAgentWritable(uint64 agentId) external view returns (uint16 allowedServices) {
         platformAccess().requireNotPaused();
-        if (_a().agents[agentId].status != AgentStatus.Active) revert AgentNotActive(agentId);
+        Agent storage ag = _a().agents[agentId];
+        if (ag.status != AgentStatus.Active) revert AgentNotActive(agentId);
+        allowedServices = ag.allowedServices;
     }
 
     function getAgentProfile(uint64 agentId) external view returns (AgentProfileRecord memory) {

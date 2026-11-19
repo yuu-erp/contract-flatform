@@ -76,9 +76,14 @@ abstract contract PlatformFixture is BaseTest {
         });
     }
 
+    /// @dev Trần đủ cả ba module, để test cũ tạo chi nhánh NET, IQR hoặc Loyalty được.
     function _createAgent(address owner) internal returns (uint64 id) {
+        id = _createAgent(owner, NET | IQR | LOYALTY);
+    }
+
+    function _createAgent(address owner, uint16 allowedServices) internal returns (uint64 id) {
         vm.prank(platformAdmin);
-        id = registry.createAgent(owner, _profile("Cyber Q1"));
+        id = registry.createAgent(owner, allowedServices, _profile("Cyber Q1"));
     }
 
     function _branchProfile(string memory name) internal pure returns (IBranchRegistry.BranchProfile memory) {

@@ -53,6 +53,7 @@ export function ProbeTab() {
   const [role, setRole] = useState(String(ROLE_STAFF))
   const [owner, setOwner] = useState('')
   const [storeName, setStoreName] = useState('Probe')
+  const [modules, setModules] = useState({ net: true, iqr: true, loyalty: true })
   const [branch, setBranch] = useState(EMPTY_BRANCH)
   const [agentId, setAgentId] = useState('1')
 
@@ -106,13 +107,14 @@ export function ProbeTab() {
       } else if (action === 'renounceRole') {
         await renounce.mutateAsync(Number(branchId))
       } else if (action === 'createAgent') {
-        const errors = validateAgentForm({ owner, storeName, storeAddress: '', storePhone: '', note: '' })
+        const errors = validateAgentForm({ owner, storeName, storeAddress: '', storePhone: '', note: '', ...modules })
         if (Object.keys(errors).length > 0) {
           toast.error(Object.values(errors)[0] ?? 'Form không hợp lệ.')
           return
         }
         await createAgent.mutateAsync({
           owner,
+          allowedServices: servicesFromForm(modules),
           profile: { storeName, storeAddress: '', note: '', storePhone: '' },
         })
       } else {
@@ -178,6 +180,13 @@ export function ProbeTab() {
         <>
           <Field label="Ví chủ"><Input value={owner} spellCheck={false} onChange={(event) => setOwner(event.target.value)} /></Field>
           <Field label="Tên cửa hàng"><Input value={storeName} onChange={(event) => setStoreName(event.target.value)} /></Field>
+          <Field label="Module được cấp">
+            <div className="flex gap-4 text-sm">
+              <label className="flex items-center gap-2"><input type="checkbox" checked={modules.net} onChange={(event) => setModules({ ...modules, net: event.target.checked })} />NET</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={modules.iqr} onChange={(event) => setModules({ ...modules, iqr: event.target.checked })} />IQR</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={modules.loyalty} onChange={(event) => setModules({ ...modules, loyalty: event.target.checked })} />Loyalty</label>
+            </div>
+          </Field>
         </>
       ) : null}
       {action === 'createBranch' ? (

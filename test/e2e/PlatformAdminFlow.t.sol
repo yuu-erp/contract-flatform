@@ -16,7 +16,7 @@ contract PlatformAdminFlowTest is PlatformFixture {
         // 1. Admin tạo hai agent
         uint64 a1 = _createAgent(agentOwner);
         vm.prank(platformAdmin2);
-        uint64 a2 = registry.createAgent(customer, _profile("Cyber Thu Duc"));
+        uint64 a2 = registry.createAgent(customer, NET | IQR | LOYALTY, _profile("Cyber Thu Duc"));
         assertEq(registry.agentCount(), 2);
 
         // 2. Owner gỡ một admin → admin đó mất quyền ngay
@@ -74,7 +74,7 @@ contract PlatformAdminFlowTest is PlatformFixture {
     function test_gas_createAgent() public {
         vm.prank(platformAdmin);
         uint256 g = gasleft();
-        registry.createAgent(agentOwner, _profile("Cyber Q1"));
+        registry.createAgent(agentOwner, NET | IQR | LOYALTY, _profile("Cyber Q1"));
         g -= gasleft();
         // MockFullDB đắt hơn precompile thật; con số chỉ để theo dõi xu hướng (gas snapshot).
         emit log_named_uint("createAgent gas (mock FullDB)", g);

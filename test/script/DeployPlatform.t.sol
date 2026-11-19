@@ -43,6 +43,7 @@ contract DeployPlatformTest is BaseTest {
         vm.prank(platformAdmin);
         uint64 id = agents.createAgent(
             agentOwner,
+            7,
             IAgentRegistry.AgentProfile({
                 storeName: "Cyber Q1", storeAddress: "1 Le Loi, Q1", note: "", storePhone: "+84 28 1234 5678"
             })
@@ -97,6 +98,7 @@ contract DeployPlatformTest is BaseTest {
         uint64 agentId = AgentRegistry(d.agentsProxy)
             .createAgent(
                 agentOwner,
+                7,
                 IAgentRegistry.AgentProfile({storeName: "Cyber Q1", storeAddress: "", note: "", storePhone: ""})
             );
         uint64 b = BranchRegistry(d.branchesProxy)
