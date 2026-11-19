@@ -102,7 +102,7 @@ Giới hạn: mỗi khách tối đa **16** "túi" chi nhánh có số dư > 0 (
 - **IQR**: chọn được cả hai kiểu. Chưa gồm thuế: hoá đơn = tổng món + `tổng · bps / 10000` (khách trả thêm). Đã gồm thuế: khách trả đúng giá, thuế = `tổng · bps / (10000 + bps)`.
 - **NET**: chỉ kiểu **đã gồm thuế** (giá giờ chơi niêm yết trọn gói), mặc định 0 %. Bật thuế để báo cáo cho chủ agent biết số thuế phải nộp trên doanh thu dịch vụ; không cộng thêm vào tiền khách trả. Mức áp dụng tuỳ loại hình (hộ kinh doanh nộp theo tỷ lệ doanh thu, doanh nghiệp tính VAT); chủ agent hỏi kế toán, hệ không đặt sẵn.
 - **Chốt thuế lúc bán:** mỗi bút toán doanh thu lưu mức `bps`, kiểu giá và số thuế tại thời điểm ghi. Đổi cài đặt không đổi số cũ.
-- Nạp ví **không** tính thuế; thuế phát sinh khi ghi nhận doanh thu (`WALLET_SPEND`, `DIRECT_SALE`). Hoàn/điều chỉnh tính thuế đảo theo bút toán gốc.
+- Nạp ví **không** tính thuế; thuế phát sinh khi ghi nhận doanh thu (`WALLET_SPEND`, `DIRECT_SALE`). Hoàn tính thuế đảo theo bút toán gốc (mức `bps` gốc, tổng thuế hoàn không vượt thuế gốc). Điều chỉnh (`ADJUST`) không có bút toán gốc nên **không ghi thuế**.
 - Làm tròn: thuế làm tròn xuống đến 1 đồng [Claude chọn].
 
 **Phương thức thanh toán:** `CASH`, `TRANSFER`, `CARD`, `WALLET` (xu chính).
@@ -162,7 +162,7 @@ Duyệt:   Manager xác nhận ca (hoặc ghi chú chênh lệch)      → Shift
 | Doanh thu (mỗi dịch vụ NET, IQR một bộ) | gộp, giảm trừ, hoàn, điều chỉnh tăng, điều chỉnh giảm, thuế |
 | Phục vụ tại chỗ (mỗi dịch vụ một bộ) | giá trị dịch vụ cung cấp **tại chi nhánh này** bằng tiền nạp ở chi nhánh khác |
 
-- Doanh thu thuần của một dịch vụ = gộp − giảm trừ − hoàn + điều chỉnh tăng − điều chỉnh giảm. Ví dụ "doanh thu NET toàn hệ tháng 11" = Σ công thức này trên bộ đếm `(nền tảng, ngày)` các ngày tháng 11; thay bằng `(agent, ngày)` hoặc `(chi nhánh, ngày)` để lọc.
+- Doanh thu thuần của một dịch vụ = gộp − hoàn + điều chỉnh tăng − điều chỉnh giảm (`GROSS − REFUND + ADJ_UP − ADJ_DOWN`); giảm trừ chỉ để tham khảo, có thể vượt số tiền. Ví dụ "doanh thu NET toàn hệ tháng 11" = Σ công thức này trên bộ đếm `(nền tảng, ngày)` các ngày tháng 11; thay bằng `(agent, ngày)` hoặc `(chi nhánh, ngày)` để lọc.
 - Mỗi chi nhánh xem được hai góc: **doanh thu ghi nhận** (theo chi nhánh nạp, câu 8) và **dịch vụ phục vụ tại chỗ** = doanh thu ghi nhận của chính nó do khách nạp tại chỗ + chỉ số "phục vụ tại chỗ".
 - Tiền thu không tách theo dịch vụ (ví dùng chung NET và IQR); chỉ tách theo phương thức. Bán trực tiếp IQR vẫn biết là IQR qua bút toán `DIRECT_SALE`.
 - Thuế: số thuế của từng bút toán doanh thu tính lúc ghi theo mục 4.4 và cộng vào chỉ số "thuế" của dịch vụ.
@@ -184,6 +184,18 @@ Duyệt:   Manager xác nhận ca (hoặc ghi chú chênh lệch)      → Shift
 
 **Giới hạn phải biết:** trên chain, view và FullDB **ai có RPC cũng đọc được**. Phân quyền xem ở bảng trên là luật **của app**, không phải bí mật. Xem câu hỏi mở 1.
 
+### 6.5 Quyết định khi cài đặt Ledger (T14, 2026-11-19)
+
+Chi tiết ở `docs/modules/core-ledger.md`.
+
+- Deploy không đăng ký poster; owner cấp quyền theo mask loại bút toán.
+- Túi ví: chi nhánh phục vụ trước, rồi theo thứ tự nạp đầu tiên, xoá túi rỗng bằng dịch trái, tối đa 16 túi.
+- Thuế theo mức của chi nhánh phục vụ, làm tròn xuống từng phần; hoàn dùng mức gốc.
+- Ngày: phần của chi nhánh nạp theo ngày chi nhánh nạp; `SERVED_HERE` theo ngày chi nhánh phục vụ; hoàn theo ngày hoàn.
+- Hướng điều chỉnh ghi ở `method` (`ADJUST_UP=1`, `ADJUST_DOWN=2`); `ADJUST` chỉ đụng doanh thu.
+- `refundSale` không kiểm lại phương thức thanh toán; hoàn ví cộng cho túi chi nhánh nạp kể cả khi chi nhánh đó đang dừng.
+- Số tiền hiệu dụng < 1e20 (giới hạn mã hoá FullDB).
+
 ## 7. Phí nền tảng
 
 - Cơ sở tính: **doanh thu thuần** của agent trong kỳ (tháng, theo giờ VN), đọc từ bộ đếm `(agent, ngày)`.
@@ -193,7 +205,7 @@ Duyệt:   Manager xác nhận ca (hoặc ghi chú chênh lệch)      → Shift
 ## 8. Chống gian lận và bất biến
 
 - Nạp, bán trực tiếp, hoàn đều bắt buộc gắn ca đang mở và người thao tác.
-- Tổng số dư ví khách của agent = Σ(nạp − trừ − hoàn nạp ± điều chỉnh ví) trên bộ đếm agent (invariant test).
+- Tổng số dư ví khách của agent = Σ(nạp − trừ − hoàn nạp + xu hoàn về túi) (không có điều chỉnh ví) trên bộ đếm agent (invariant test).
 - Σ bộ đếm chi nhánh = bộ đếm agent; Σ bộ đếm agent = bộ đếm nền tảng (invariant test).
 - `refId` không dùng hai lần; bút toán đảo chỉ đảo được một lần và không vượt số gốc.
 - Module (NET, IQR) chỉ ghi được loại bút toán của mình; số tiền trừ ví do module tính theo bảng giá on-chain, không nhận từ client.

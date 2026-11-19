@@ -155,4 +155,35 @@ contract LedgerTest is PlatformFixture {
         vm.expectRevert(PausableUpgradeable.EnforcedPause.selector);
         poster.topup(_ctx(bytes32(uint256(1)), b1), alice, CASH, 1);
     }
+
+    function test_topup_emitsPosted() public {
+        bytes32 r = bytes32(uint256(5));
+        vm.expectEmit(true, true, true, true);
+        emit ILedger.Posted(1, a, b1, r, ILedger.EntryKind.Topup, alice, 0, CASH, 1000, 0, actor, 0);
+        poster.topup(_ctx(r, b1), alice, CASH, 1000);
+    }
+
+    function test_setPoster_ownerSetsAndEmits() public {
+        address p2 = makeAddr("p2");
+        vm.expectEmit(true, false, false, true);
+        emit ILedger.PosterSet(1, p2, 0x06);
+        vm.prank(platformOwner);
+        ledger.setPoster(p2, 0x06);
+        assertEq(ledger.posterKinds(p2), 0x06);
+    }
+
+    function test_setPoster_zeroAddressReverts() public {
+        vm.prank(platformOwner);
+        vm.expectRevert(ILedger.ZeroAddress.selector);
+        ledger.setPoster(address(0), 0x7E);
+    }
+
+    function test_setPoster_maskZeroRevokes() public {
+        vm.prank(platformOwner);
+        ledger.setPoster(address(poster), 0);
+        assertEq(ledger.posterKinds(address(poster)), 0);
+        ILedger.Ctx memory c = _ctx(bytes32(uint256(1)), b1);
+        vm.expectRevert(abi.encodeWithSelector(ILedger.NotPoster.selector, address(poster), ILedger.EntryKind.Topup));
+        poster.topup(c, alice, CASH, 1);
+    }
 }

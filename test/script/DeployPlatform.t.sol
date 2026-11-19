@@ -7,6 +7,7 @@ import {SetPlatformAdmin} from "../../script/SetPlatformAdmin.s.sol";
 import {DeployAgentAccess} from "../../script/DeployAgentAccess.s.sol";
 import {AgentAccess} from "../../src/core/access/AgentAccess.sol";
 import {SalesSettings} from "../../src/core/payment/SalesSettings.sol";
+import {Ledger} from "../../src/core/ledger/Ledger.sol";
 import {IAgentAccess} from "../../src/interfaces/IAgentAccess.sol";
 import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
 import {PlatformAccess} from "../../src/core/access/PlatformAccess.sol";
@@ -48,6 +49,10 @@ contract DeployPlatformTest is BaseTest {
         assertTrue(history.isWriter(d.salesSettingsProxy));
         assertTrue(history.canWrite(d.salesSettingsProxy, "platform_audit"));
         assertFalse(history.canWrite(d.salesSettingsProxy, "platform_agents"));
+        assertTrue(history.isWriter(d.ledgerProxy));
+        assertTrue(history.canWrite(d.ledgerProxy, "ledger"));
+        assertFalse(history.canWrite(d.ledgerProxy, "platform_audit"));
+        assertEq(Ledger(d.ledgerProxy).KIND_LEDGER(), "ledger");
         // Nối AgentAccess và nguồn vai trò agent
         assertEq(agents.agentAccess(), d.agentAccessProxy);
         address[] memory sources = access.agentRoleSources();

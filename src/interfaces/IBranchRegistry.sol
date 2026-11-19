@@ -76,7 +76,6 @@ interface IBranchRegistry {
     error AgentDeleted(uint64 agentId);
     error CannotDeleteMainBranch(uint64 branchId);
     error AlreadyMainBranch(uint64 branchId);
-    error NotAgentOwner(address caller, uint64 agentId);
 
     event BranchCreated(
         uint8 version, uint64 indexed agentId, uint64 indexed branchId, uint16 services, bytes32 domainHash, bool isMain

@@ -33,11 +33,12 @@ contract UpgradeProxyTest is BaseTest {
         assertEq(up.keyOf("BranchRegistry"), "branches");
         assertEq(up.keyOf("AgentAccess"), "agentAccess");
         assertEq(up.keyOf("SalesSettings"), "salesSettings");
+        assertEq(up.keyOf("Ledger"), "ledger");
     }
 
     function test_keyOf_rejectsUnknown() public {
-        vm.expectRevert(bytes("CONTRACT khong hop le: Ledger"));
-        up.keyOf("Ledger");
+        vm.expectRevert(bytes("CONTRACT khong hop le: Foo"));
+        up.keyOf("Foo");
     }
 
     /// Nâng mọi proxy: implementation đổi, dữ liệu giữ nguyên.
@@ -50,11 +51,25 @@ contract UpgradeProxyTest is BaseTest {
                 IAgentRegistry.AgentProfile({storeName: "Cyber Q1", storeAddress: "", note: "", storePhone: ""})
             );
 
-        string[6] memory names =
-            ["PlatformAccess", "HistoryIndex", "AgentRegistry", "BranchRegistry", "AgentAccess", "SalesSettings"];
-        address[6] memory proxies =
-            [d.accessProxy, d.historyProxy, d.agentsProxy, d.branchesProxy, d.agentAccessProxy, d.salesSettingsProxy];
-        for (uint256 i; i < 6; ++i) {
+        string[7] memory names = [
+            "PlatformAccess",
+            "HistoryIndex",
+            "AgentRegistry",
+            "BranchRegistry",
+            "AgentAccess",
+            "SalesSettings",
+            "Ledger"
+        ];
+        address[7] memory proxies = [
+            d.accessProxy,
+            d.historyProxy,
+            d.agentsProxy,
+            d.branchesProxy,
+            d.agentAccessProxy,
+            d.salesSettingsProxy,
+            d.ledgerProxy
+        ];
+        for (uint256 i; i < 7; ++i) {
             address before = _impl(proxies[i]);
             address impl = up.upgrade(platformOwner, names[i], proxies[i], "");
             assertEq(_impl(proxies[i]), impl, names[i]);

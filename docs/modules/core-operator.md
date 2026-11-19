@@ -207,7 +207,7 @@ Hàm của chủ agent (nay ở `SalesSettings`, không còn ở `BranchRegistry
 
 ### 2.6 Event (schema có version)
 
-`AgentCreated(v, agentId, owner, mainBranchId)`, `BranchCreated(v, agentId, branchId, services, domainHash)`, `BranchServicesChanged`, `BranchDomainChanged`, `AgentStatusChanged(agentId, status, reason)`, `BranchStatusChanged`, `AgentOwnerProposed`, `AgentOwnerTransferred`, `TaxChanged`, `PlatformRoleChanged`.
+`AgentCreated(v, agentId, owner, mainBranchId)`, `BranchCreated(v, agentId, branchId, services, domainHash)`, `BranchServicesChanged`, `BranchDomainChanged`, `AgentStatusChanged(agentId, status, reason)`, `BranchStatusChanged`, `AgentOwnerProposed`, `AgentOwnerTransferred`, `PlatformRoleChanged`.
 
 ### 2.7 Máy trạng thái
 

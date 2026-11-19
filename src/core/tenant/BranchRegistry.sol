@@ -11,7 +11,7 @@ import {ServiceMask} from "../../libraries/ServiceMask.sol";
 import {TextRules} from "../../libraries/TextRules.sol";
 
 /// @title BranchRegistry
-/// @notice Chi nhánh, dịch vụ bật, domain, múi giờ, thuế. Một bộ contract cho mọi agent: tạo chi nhánh không deploy gì.
+/// @notice Chi nhánh, dịch vụ bật, domain, múi giờ. Một bộ contract cho mọi agent: tạo chi nhánh không deploy gì.
 ///         - PLATFORM_ADMIN: tạo/sửa/dừng/mở lại/xoá mềm chi nhánh, bật/tắt dịch vụ, đổi domain, chọn chi nhánh chính.
 ///         Thuế do `SalesSettings` quản lý (không còn ở đây).
 ///         Đặc tả: docs/modules/core-operator.md.

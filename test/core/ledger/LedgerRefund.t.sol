@@ -3,6 +3,7 @@ pragma solidity 0.8.28;
 
 import {PlatformFixture} from "../../utils/PlatformFixture.sol";
 import {ILedger} from "../../../src/interfaces/ILedger.sol";
+import {ISalesSettings} from "../../../src/interfaces/ISalesSettings.sol";
 import {IHistoryIndex} from "../../../src/interfaces/IHistoryIndex.sol";
 import {LedgerMetrics as M} from "../../../src/libraries/LedgerMetrics.sol";
 
@@ -92,7 +93,7 @@ contract LedgerRefundTest is PlatformFixture {
         vm.expectRevert(ILedger.ZeroAmount.selector);
         poster.refundTopup(_ctx(_ref(), b1), alice, CASH, 0);
         // TRANSFER not enabled by default
-        vm.expectRevert();
+        vm.expectRevert(abi.encodeWithSelector(ISalesSettings.MethodNotEnabled.selector, b1, TRANSFER));
         poster.refundTopup(_ctx(_ref(), b1), alice, TRANSFER, 10);
         // unknown customer: empty bucket
         vm.expectRevert(abi.encodeWithSelector(ILedger.InsufficientBalance.selector, 0, 10));
@@ -133,6 +134,43 @@ contract LedgerRefundTest is PlatformFixture {
         assertEq(_bal(b2), 30_000);
         assertEq(_bal(b1), 50_000);
         assertEq(ledger.walletLiability(a), 80_000);
+        vm.expectRevert(abi.encodeWithSelector(ILedger.RefundExceedsOriginal.selector, 0, 1));
+        poster.refundSale(_ctx(_ref(), b2), s, 1);
+    }
+
+    function test_refundSale_wallet_threeStepPartial() public {
+        _topup(b1, 50_000);
+        _topup(b2, 30_000);
+        bytes32 s = _spend(b2, 40_000); // [(b2,30k),(b1,10k)]; b2 bucket gone, b1 = 40k
+        uint256 rf = M.serviceMetric(NET, M.REFUND);
+
+        poster.refundSale(_ctx(_ref(), b2), s, 5000);
+        assertEq(_bal(b1), 45_000);
+        assertEq(_bal(b2), 0);
+        assertEq(_cell(2, b1, rf), 5000);
+        assertEq(_cell(2, b1, M.WALLET_CREDIT), 5000);
+        assertEq(_cell(2, b2, rf), 0);
+
+        poster.refundSale(_ctx(_ref(), b2), s, 15_000);
+        assertEq(_bal(b1), 50_000);
+        assertEq(_bal(b2), 10_000);
+        assertEq(_cell(2, b1, rf), 10_000);
+        assertEq(_cell(2, b1, M.WALLET_CREDIT), 10_000);
+        assertEq(_cell(2, b2, rf), 10_000);
+        assertEq(_cell(2, b2, M.WALLET_CREDIT), 10_000);
+
+        bytes32 last = _ref();
+        poster.refundSale(_ctx(last, b2), s, 20_000);
+        assertEq(_bal(b1), 50_000);
+        assertEq(_bal(b2), 30_000);
+        assertEq(_cell(2, b1, rf), 10_000);
+        assertEq(_cell(2, b2, rf), 30_000);
+        assertEq(_cell(2, b2, M.WALLET_CREDIT), 30_000);
+        assertEq(_cell(0, 0, rf), 40_000);
+        assertEq(ledger.entryOf(s).refunded, 40_000);
+        assertEq(ledger.entryOf(last).amount, 20_000);
+        assertEq(ledger.walletLiability(a), 80_000);
+
         vm.expectRevert(abi.encodeWithSelector(ILedger.RefundExceedsOriginal.selector, 0, 1));
         poster.refundSale(_ctx(_ref(), b2), s, 1);
     }
