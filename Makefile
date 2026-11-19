@@ -1,6 +1,6 @@
 # Lệnh chuẩn của meta-platform. CI chạy `make ci`.
 # `deploy`, `deploy-agent-access` và `set-admin` chỉ người dùng chạy (đọc .env, có --broadcast). Agent không chạy các target đó.
-.PHONY: build test fmt sizes layout deps snapshot snapshot-update ci legacy-inventory abi deploy deploy-agent-access deploy-local set-admin
+.PHONY: build test fmt sizes layout deps snapshot snapshot-update ci legacy-inventory abi deploy deploy-agent-access deploy-local set-admin upgrade upgrade-dry upgrade-local
 
 build:
 	forge build
@@ -57,6 +57,20 @@ deploy-agent-access:
 set-admin:
 	forge script script/SetPlatformAdmin.s.sol --rpc-url platform --broadcast
 
+# Chỉ người dùng chạy. Nâng một proxy lên implementation build từ mã hiện tại; ghi lại <key>Impl trong
+# deployments/platform-<chainid>.json. Cần PRIVATE_KEY (owner). Ví dụ: make upgrade CONTRACT=AgentRegistry
+# Target tự chạy kiểm storage layout trước. Hướng dẫn: docs/07-deploy-va-nang-cap.md.
+upgrade:
+	@test -n "$(CONTRACT)" || (echo "Thiếu CONTRACT=PlatformAccess|HistoryIndex|AgentRegistry|BranchRegistry|AgentAccess" && exit 1)
+	python3 scripts/storage_layout.py check
+	CONTRACT=$(CONTRACT) forge script script/UpgradeProxy.s.sol --rpc-url platform --broadcast
+
+# Mô phỏng `make upgrade` trên chain thật: không gửi giao dịch, không ghi file deployments.
+upgrade-dry:
+	@test -n "$(CONTRACT)" || (echo "Thiếu CONTRACT=..." && exit 1)
+	python3 scripts/storage_layout.py check
+	DRY_RUN=true CONTRACT=$(CONTRACT) forge script script/UpgradeProxy.s.sol --rpc-url platform
+
 # Chỉ anvil local. Khoá dưới đây là tài khoản #0 mặc định của anvil — không dùng trên chain thật.
 # Đặt MockFullDB vào precompile 0x…0107 rồi mới chạy script (HistoryIndex mặc định trỏ precompile đó).
 ANVIL_RPC = http://127.0.0.1:8545
@@ -64,3 +78,8 @@ ANVIL_KEY = 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 deploy-local:
 	cast rpc anvil_setCode 0x0000000000000000000000000000000000000107 $$(forge inspect MockFullDB deployedBytecode) --rpc-url $(ANVIL_RPC)
 	PRIVATE_KEY=$(ANVIL_KEY) forge script script/DeployPlatform.s.sol --rpc-url $(ANVIL_RPC) --broadcast
+
+# Chỉ anvil local: diễn tập nâng cấp trên hệ vừa `make deploy-local`.
+upgrade-local:
+	@test -n "$(CONTRACT)" || (echo "Thiếu CONTRACT=..." && exit 1)
+	PRIVATE_KEY=$(ANVIL_KEY) CONTRACT=$(CONTRACT) forge script script/UpgradeProxy.s.sol --rpc-url $(ANVIL_RPC) --broadcast

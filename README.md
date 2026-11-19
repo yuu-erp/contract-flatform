@@ -78,6 +78,7 @@ Phụ thuộc: `forge-std` v1.16.2, `openzeppelin-contracts-upgradeable` v5.6.1 
 | `AGENTS.md` | Quy tắc cho agent làm việc trong repo này |
 | `docs/01-nghiep-vu.md` | Nghiệp vụ từng dịch vụ, thực thể dữ liệu, luồng tiền |
 | `docs/02-kien-truc.md` | Nguyên tắc thiết kế, kiến trúc đích, quyết định còn mở |
+| `docs/07-deploy-va-nang-cap.md` | Deploy tầng quản trị, nâng cấp proxy, quay lại bản cũ |
 | `docs/03-chuyen-du-lieu.md` | Cách chuyển dữ liệu từ meta-iqr sang |
 | `docs/04-lo-trinh.md` | Giai đoạn, task, trạng thái |
 | `docs/05-luu-tru-du-lieu.md` | Dữ liệu nào ở storage, dữ liệu nào ở FullDB |
