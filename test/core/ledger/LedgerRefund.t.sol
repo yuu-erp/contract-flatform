@@ -68,11 +68,11 @@ contract LedgerRefundTest is PlatformFixture {
         _topup(b2, 30_000);
         bytes32 r = _ref();
         vm.expectRevert(abi.encodeWithSelector(ILedger.InsufficientBalance.selector, 30_000, 30_001));
-        poster.refundTopup(_ctx(r, b2), alice, CASH, 30_001);
+        poster.refundTopup(_ctx(r, b2), alice, CASH, 30_001, "refund");
 
         vm.expectEmit(true, true, true, true);
         emit ILedger.Posted(1, a, b2, r, ILedger.EntryKind.TopupRefund, alice, 0, CASH, 30_000, 0, actor, 0);
-        poster.refundTopup(_ctx(r, b2), alice, CASH, 30_000);
+        poster.refundTopup(_ctx(r, b2), alice, CASH, 30_000, "refund");
         ILedger.Portion[] memory bk = ledger.bucketsOf(a, alice);
         assertEq(bk.length, 1);
         assertEq(bk[0].branchId, b1);
@@ -89,15 +89,15 @@ contract LedgerRefundTest is PlatformFixture {
     function test_refundTopup_rejects() public {
         _topup(b1, 1000);
         vm.expectRevert(abi.encodeWithSelector(ILedger.InvalidMethod.selector, WALLET));
-        poster.refundTopup(_ctx(_ref(), b1), alice, WALLET, 10);
+        poster.refundTopup(_ctx(_ref(), b1), alice, WALLET, 10, "refund");
         vm.expectRevert(ILedger.ZeroAmount.selector);
-        poster.refundTopup(_ctx(_ref(), b1), alice, CASH, 0);
+        poster.refundTopup(_ctx(_ref(), b1), alice, CASH, 0, "refund");
         // TRANSFER not enabled by default
         vm.expectRevert(abi.encodeWithSelector(ISalesSettings.MethodNotEnabled.selector, b1, TRANSFER));
-        poster.refundTopup(_ctx(_ref(), b1), alice, TRANSFER, 10);
+        poster.refundTopup(_ctx(_ref(), b1), alice, TRANSFER, 10, "refund");
         // unknown customer: empty bucket
         vm.expectRevert(abi.encodeWithSelector(ILedger.InsufficientBalance.selector, 0, 10));
-        poster.refundTopup(_ctx(_ref(), b1), makeAddr("bob"), CASH, 10);
+        poster.refundTopup(_ctx(_ref(), b1), makeAddr("bob"), CASH, 10, "refund");
     }
 
     function test_refundSale_wallet_reverse() public {
@@ -107,7 +107,7 @@ contract LedgerRefundTest is PlatformFixture {
         // b2 bucket removed; b1 has 40k
         assertEq(_bal(b2), 0);
         bytes32 r = _ref();
-        poster.refundSale(_ctx(r, b2), s, 15_000);
+        poster.refundSale(_ctx(r, b2), s, 15_000, "refund");
         assertEq(_bal(b1), 40_000 + 10_000);
         assertEq(_bal(b2), 5000);
         assertEq(ledger.walletLiability(a), 80_000 - 40_000 + 15_000);
@@ -129,13 +129,13 @@ contract LedgerRefundTest is PlatformFixture {
         _topup(b1, 50_000);
         _topup(b2, 30_000);
         bytes32 s = _spend(b2, 40_000); // [(b2,30k),(b1,10k)]
-        poster.refundSale(_ctx(_ref(), b2), s, 15_000); // b1 10k, b2 5k
-        poster.refundSale(_ctx(_ref(), b2), s, 25_000); // b2 remaining 25k
+        poster.refundSale(_ctx(_ref(), b2), s, 15_000, "refund"); // b1 10k, b2 5k
+        poster.refundSale(_ctx(_ref(), b2), s, 25_000, "refund"); // b2 remaining 25k
         assertEq(_bal(b2), 30_000);
         assertEq(_bal(b1), 50_000);
         assertEq(ledger.walletLiability(a), 80_000);
         vm.expectRevert(abi.encodeWithSelector(ILedger.RefundExceedsOriginal.selector, 0, 1));
-        poster.refundSale(_ctx(_ref(), b2), s, 1);
+        poster.refundSale(_ctx(_ref(), b2), s, 1, "refund");
     }
 
     function test_refundSale_wallet_threeStepPartial() public {
@@ -144,14 +144,14 @@ contract LedgerRefundTest is PlatformFixture {
         bytes32 s = _spend(b2, 40_000); // [(b2,30k),(b1,10k)]; b2 bucket gone, b1 = 40k
         uint256 rf = M.serviceMetric(NET, M.REFUND);
 
-        poster.refundSale(_ctx(_ref(), b2), s, 5000);
+        poster.refundSale(_ctx(_ref(), b2), s, 5000, "refund");
         assertEq(_bal(b1), 45_000);
         assertEq(_bal(b2), 0);
         assertEq(_cell(2, b1, rf), 5000);
         assertEq(_cell(2, b1, M.WALLET_CREDIT), 5000);
         assertEq(_cell(2, b2, rf), 0);
 
-        poster.refundSale(_ctx(_ref(), b2), s, 15_000);
+        poster.refundSale(_ctx(_ref(), b2), s, 15_000, "refund");
         assertEq(_bal(b1), 50_000);
         assertEq(_bal(b2), 10_000);
         assertEq(_cell(2, b1, rf), 10_000);
@@ -160,7 +160,7 @@ contract LedgerRefundTest is PlatformFixture {
         assertEq(_cell(2, b2, M.WALLET_CREDIT), 10_000);
 
         bytes32 last = _ref();
-        poster.refundSale(_ctx(last, b2), s, 20_000);
+        poster.refundSale(_ctx(last, b2), s, 20_000, "refund");
         assertEq(_bal(b1), 50_000);
         assertEq(_bal(b2), 30_000);
         assertEq(_cell(2, b1, rf), 10_000);
@@ -172,7 +172,7 @@ contract LedgerRefundTest is PlatformFixture {
         assertEq(ledger.walletLiability(a), 80_000);
 
         vm.expectRevert(abi.encodeWithSelector(ILedger.RefundExceedsOriginal.selector, 0, 1));
-        poster.refundSale(_ctx(_ref(), b2), s, 1);
+        poster.refundSale(_ctx(_ref(), b2), s, 1, "refund");
     }
 
     function test_refundSale_wallet_readdsRemovedBucketAndCap() public {
@@ -185,15 +185,15 @@ contract LedgerRefundTest is PlatformFixture {
             _topup(b, 1);
         }
         vm.expectRevert(abi.encodeWithSelector(ILedger.TooManyBuckets.selector, a, alice));
-        poster.refundSale(_ctx(_ref(), b2), s, 100);
+        poster.refundSale(_ctx(_ref(), b2), s, 100, "refund");
     }
 
     function test_refundSale_partialTwice() public {
         bytes32 s = _sale(b1, IQR, 100_000);
-        poster.refundSale(_ctx(_ref(), b1), s, 60_000);
+        poster.refundSale(_ctx(_ref(), b1), s, 60_000, "refund");
         vm.expectRevert(abi.encodeWithSelector(ILedger.RefundExceedsOriginal.selector, 40_000, 40_001));
-        poster.refundSale(_ctx(_ref(), b1), s, 40_001);
-        poster.refundSale(_ctx(_ref(), b1), s, 40_000);
+        poster.refundSale(_ctx(_ref(), b1), s, 40_001, "refund");
+        poster.refundSale(_ctx(_ref(), b1), s, 40_000, "refund");
         assertEq(ledger.entryOf(s).refunded, 100_000);
         assertEq(_cell(2, b1, M.CASH_OUT), 100_000);
         assertEq(_cell(0, 0, M.serviceMetric(IQR, M.REFUND)), 100_000);
@@ -203,25 +203,25 @@ contract LedgerRefundTest is PlatformFixture {
     function test_refundSale_wrongBranch() public {
         bytes32 s = _sale(b1, IQR, 100_000);
         vm.expectRevert(abi.encodeWithSelector(ILedger.WrongBranch.selector, b1, b2));
-        poster.refundSale(_ctx(_ref(), b2), s, 1000);
+        poster.refundSale(_ctx(_ref(), b2), s, 1000, "refund");
     }
 
     function test_refundSale_unknownOrTopup() public {
         bytes32 unknown = keccak256("x");
         vm.expectRevert(abi.encodeWithSelector(ILedger.UnknownEntry.selector, unknown));
-        poster.refundSale(_ctx(_ref(), b1), unknown, 1);
+        poster.refundSale(_ctx(_ref(), b1), unknown, 1, "refund");
 
         bytes32 t = _ref();
         poster.topup(_ctx(t, b1), alice, CASH, 1000);
         vm.expectRevert(abi.encodeWithSelector(ILedger.UnknownEntry.selector, t));
-        poster.refundSale(_ctx(_ref(), b1), t, 1);
+        poster.refundSale(_ctx(_ref(), b1), t, 1, "refund");
 
         // refund of a refund
         bytes32 s = _sale(b1, IQR, 1000);
         bytes32 r = _ref();
-        poster.refundSale(_ctx(r, b1), s, 500);
+        poster.refundSale(_ctx(r, b1), s, 500, "refund");
         vm.expectRevert(abi.encodeWithSelector(ILedger.UnknownEntry.selector, r));
-        poster.refundSale(_ctx(_ref(), b1), r, 1);
+        poster.refundSale(_ctx(_ref(), b1), r, 1, "refund");
     }
 
     function test_refundSale_taxReverse() public {
@@ -231,7 +231,7 @@ contract LedgerRefundTest is PlatformFixture {
         bytes32 r = _ref();
         vm.expectEmit(true, true, true, true);
         emit ILedger.Posted(1, a, b1, r, ILedger.EntryKind.SaleRefund, address(0), IQR, CASH, 54_000, 4000, actor, 0);
-        poster.refundSale(_ctx(r, b1), s, 54_000);
+        poster.refundSale(_ctx(r, b1), s, 54_000, "refund");
         uint256 tr = M.serviceMetric(IQR, M.TAX_REFUND);
         assertEq(_cell(2, b1, tr), 4000);
         assertEq(_cell(1, a, tr), 4000);
@@ -245,7 +245,7 @@ contract LedgerRefundTest is PlatformFixture {
         _topup(b2, 30_000);
         bytes32 s = _spend(b2, 40_000); // 30k b2, 10k b1, tax bps 1000
         bytes32 r = _ref();
-        poster.refundSale(_ctx(r, b2), s, 15_000); // b1 10k tax 909, b2 5k tax 454
+        poster.refundSale(_ctx(r, b2), s, 15_000, "refund"); // b1 10k tax 909, b2 5k tax 454
         uint256 tr = M.serviceMetric(NET, M.TAX_REFUND);
         assertEq(_cell(2, b1, tr), 909);
         assertEq(_cell(2, b2, tr), 454);
@@ -253,11 +253,33 @@ contract LedgerRefundTest is PlatformFixture {
         assertEq(ledger.entryOf(s).taxBps, 1000);
     }
 
+    function test_refundSale_crossBranchServedHereRefund() public {
+        _topup(b1, 50_000);
+        bytes32 s = _spend(b2, 20_000); // funded by b1, served at b2
+        uint256 sh = M.serviceMetric(NET, M.SERVED_HERE);
+        uint256 shr = M.servedRefundMetric(NET);
+        assertEq(_cell(2, b2, sh), 20_000);
+        poster.refundSale(_ctx(_ref(), b2), s, 8000, "refund");
+        assertEq(_cell(2, b2, shr), 8000);
+        assertEq(_cell(2, b2, sh), 20_000);
+        assertEq(_cell(2, b1, shr), 0);
+        assertEq(_cell(1, a, shr), 0);
+        assertEq(_cell(0, 0, shr), 0);
+        assertEq(M.servedRefundMetric(IQR), 27);
+    }
+
+    function test_refundSale_sameBranchNoServedHereRefund() public {
+        _topup(b2, 10_000);
+        bytes32 s = _spend(b2, 5000);
+        poster.refundSale(_ctx(_ref(), b2), s, 5000, "refund");
+        assertEq(_cell(2, b2, M.servedRefundMetric(NET)), 0);
+    }
+
     function test_refund_countsOnRefundDay() public {
         bytes32 s = _sale(b1, IQR, 10_000);
         uint32 d0 = ledger.dayOf(b1, block.timestamp);
         vm.warp(block.timestamp + 1 days);
-        poster.refundSale(_ctx(_ref(), b1), s, 10_000);
+        poster.refundSale(_ctx(_ref(), b1), s, 10_000, "refund");
         uint256 rf = M.serviceMetric(IQR, M.REFUND);
         assertEq(ledger.rollup(2, b1, d0, d0 + 1)[0][rf], 0);
         assertEq(ledger.rollup(2, b1, d0, d0 + 1)[1][rf], 10_000);
@@ -266,7 +288,7 @@ contract LedgerRefundTest is PlatformFixture {
 
     function test_refund_writesFullDBWithOriginal() public {
         bytes32 s = _sale(b1, IQR, 10_000);
-        poster.refundSale(_ctx(_ref(), b1), s, 4000);
+        poster.refundSale(_ctx(_ref(), b1), s, 4000, "refund");
         IHistoryIndex.Query memory q;
         q.filters = new IHistoryIndex.Term[](1);
         q.filters[0] = IHistoryIndex.Term("K", "5");
@@ -279,13 +301,59 @@ contract LedgerRefundTest is PlatformFixture {
         assertEq(rec.amount, 4000);
     }
 
+    function test_refund_reasonValidated() public {
+        _topup(b1, 1000);
+        bytes32 s = _sale(b1, IQR, 10_000);
+        bytes memory long = new bytes(201);
+        for (uint256 i; i < 201; ++i) {
+            long[i] = "x";
+        }
+        vm.expectRevert(ILedger.InvalidReason.selector);
+        poster.refundTopup(_ctx(_ref(), b1), alice, CASH, 10, "");
+        vm.expectRevert(ILedger.InvalidReason.selector);
+        poster.refundTopup(_ctx(_ref(), b1), alice, CASH, 10, string(long));
+        vm.expectRevert(ILedger.InvalidReason.selector);
+        poster.refundSale(_ctx(_ref(), b1), s, 10, "");
+        vm.expectRevert(ILedger.InvalidReason.selector);
+        poster.refundSale(_ctx(_ref(), b1), s, 10, string(long));
+        // 200 byte hợp lệ
+        poster.refundSale(_ctx(_ref(), b1), s, 10, string(_pad(200)));
+    }
+
+    function _pad(uint256 len) internal pure returns (bytes memory b) {
+        b = new bytes(len);
+        for (uint256 i; i < len; ++i) {
+            b[i] = "y";
+        }
+    }
+
+    function _records(uint8 kind) internal view returns (IHistoryIndex.Page memory) {
+        IHistoryIndex.Query memory q;
+        q.filters = new IHistoryIndex.Term[](1);
+        q.filters[0] = IHistoryIndex.Term("K", kind == 4 ? "4" : "5");
+        q.sortSlot = -1;
+        q.limit = 10;
+        return historyIndex.search(a, "ledger", q);
+    }
+
+    function test_refund_recordCarriesReason() public {
+        _topup(b1, 1000);
+        bytes32 s = _sale(b1, IQR, 10_000);
+        poster.refundTopup(_ctx(_ref(), b1), alice, CASH, 10, "khach doi y");
+        poster.refundSale(_ctx(_ref(), b1), s, 10, "nhap sai");
+        ILedger.LedgerRecord memory t = abi.decode(_records(4).data[0], (ILedger.LedgerRecord));
+        ILedger.LedgerRecord memory r = abi.decode(_records(5).data[0], (ILedger.LedgerRecord));
+        assertEq(t.reason, "khach doi y");
+        assertEq(r.reason, "nhap sai");
+    }
+
     function test_refund_notPoster() public {
         bytes32 s = _sale(b1, IQR, 10_000);
         vm.expectRevert(abi.encodeWithSelector(ILedger.NotPoster.selector, address(this), ILedger.EntryKind.SaleRefund));
-        ledger.refundSale(_ctx(_ref(), b1), s, 1);
+        ledger.refundSale(_ctx(_ref(), b1), s, 1, "refund");
         vm.expectRevert(
             abi.encodeWithSelector(ILedger.NotPoster.selector, address(this), ILedger.EntryKind.TopupRefund)
         );
-        ledger.refundTopup(_ctx(_ref(), b1), alice, CASH, 1);
+        ledger.refundTopup(_ctx(_ref(), b1), alice, CASH, 1, "refund");
     }
 }

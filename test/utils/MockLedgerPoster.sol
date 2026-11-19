@@ -39,11 +39,19 @@ contract MockLedgerPoster {
         LEDGER.adjust(ctx, service, increase, amount, reason);
     }
 
-    function refundTopup(ILedger.Ctx calldata ctx, address customer, uint8 method, uint128 amount) external {
-        LEDGER.refundTopup(ctx, customer, method, amount);
+    function refundTopup(
+        ILedger.Ctx calldata ctx,
+        address customer,
+        uint8 method,
+        uint128 amount,
+        string calldata reason
+    ) external {
+        LEDGER.refundTopup(ctx, customer, method, amount, reason);
     }
 
-    function refundSale(ILedger.Ctx calldata ctx, bytes32 originalRefId, uint128 amount) external {
-        LEDGER.refundSale(ctx, originalRefId, amount);
+    function refundSale(ILedger.Ctx calldata ctx, bytes32 originalRefId, uint128 amount, string calldata reason)
+        external
+    {
+        LEDGER.refundSale(ctx, originalRefId, amount, reason);
     }
 }

@@ -142,6 +142,17 @@ contract LedgerTest is PlatformFixture {
         assertEq(ledger.rollup(0, 0, 0, 92).length, 93);
     }
 
+    function test_rollup_platformIgnoresId() public {
+        poster.topup(_ctx(bytes32(uint256(1)), b1), alice, CASH, 100_000);
+        uint32 d = _day();
+        uint256[32][] memory x = ledger.rollup(ledger.SCOPE_PLATFORM(), 5, d, d);
+        uint256[32][] memory y = ledger.rollup(ledger.SCOPE_PLATFORM(), 0, d, d);
+        assertEq(x[0][M.WALLET_TOPUP], 100_000);
+        for (uint256 i; i < 32; ++i) {
+            assertEq(x[0][i], y[0][i]);
+        }
+    }
+
     function test_setPoster_onlyOwner() public {
         vm.prank(platformAdmin);
         vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformOwner.selector, platformAdmin));

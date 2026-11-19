@@ -112,7 +112,7 @@ contract LedgerHandler is Test {
             x.branchId = p.branchId;
             amt = uint128(1 + (a % p.amount));
         }
-        try poster.refundTopup(x, cust, _method(m), amt) {
+        try poster.refundTopup(x, cust, _method(m), amt, "refund") {
             refIds.push(x.refId);
             ++okRefundTopup;
         } catch {}
@@ -138,7 +138,7 @@ contract LedgerHandler is Test {
         ILedger.Entry memory e = ledger.entryOf(orig);
         uint128 amt = a % 3 != 0 ? e.amount - e.refunded : _amount(a);
         if (amt == 0) amt = 1;
-        try poster.refundSale(x, orig, amt) {
+        try poster.refundSale(x, orig, amt, "refund") {
             refIds.push(x.refId);
             ++okRefundSale;
             if (e.kind == ILedger.EntryKind.WalletSpend) {
@@ -251,7 +251,7 @@ contract LedgerInvariantTest is PlatformFixture {
         );
     }
 
-    /// @dev Mọi chỉ số (trừ SERVED_HERE): tổng chi nhánh = agent = nền tảng.
+    /// @dev Mọi chỉ số (trừ SERVED_HERE và SERVED_HERE_REFUND, chỉ ở phạm vi chi nhánh): tổng chi nhánh = agent = nền tảng.
     function invariant_branchSumsEqualAgent() public view {
         uint256[32] memory ag = _sumDays(ledger.SCOPE_AGENT(), agentId);
         uint256[32] memory pl = _sumDays(ledger.SCOPE_PLATFORM(), 0);
@@ -267,7 +267,19 @@ contract LedgerInvariantTest is PlatformFixture {
             if (m == M.SERVICE_BASE + M.SERVED_HERE || m == M.SERVICE_BASE + M.SERVICE_STRIDE + M.SERVED_HERE) {
                 continue;
             }
+            if (m == M.servedRefundMetric(M.SERVICE_NET) || m == M.servedRefundMetric(M.SERVICE_IQR)) continue;
             assertEq(br[m], ag[m], "branches != agent");
+        }
+    }
+
+    /// @dev Mỗi dịch vụ ở cấp agent, cộng mọi ngày: thuế hoàn <= thuế, hoàn <= doanh thu gộp
+    ///      (hoàn chỉ áp lên bán/trừ ví, vốn đã ghi GROSS).
+    function invariant_refundsBoundedByBooked() public view {
+        uint256[32] memory t = _sumDays(ledger.SCOPE_AGENT(), agentId);
+        uint16[2] memory svc = [M.SERVICE_NET, M.SERVICE_IQR];
+        for (uint256 i; i < 2; ++i) {
+            assertLe(t[M.serviceMetric(svc[i], M.TAX_REFUND)], t[M.serviceMetric(svc[i], M.TAX)], "tax refund > tax");
+            assertLe(t[M.serviceMetric(svc[i], M.REFUND)], t[M.serviceMetric(svc[i], M.GROSS)], "refund > gross");
         }
     }
 

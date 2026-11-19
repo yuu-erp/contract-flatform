@@ -556,6 +556,11 @@
         "name": "amount",
         "type": "uint128",
         "internalType": "uint128"
+      },
+      {
+        "name": "reason",
+        "type": "string",
+        "internalType": "string"
       }
     ],
     "outputs": [],
@@ -606,6 +611,11 @@
         "name": "amount",
         "type": "uint128",
         "internalType": "uint128"
+      },
+      {
+        "name": "reason",
+        "type": "string",
+        "internalType": "string"
       }
     ],
     "outputs": [],

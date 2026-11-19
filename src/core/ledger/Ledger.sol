@@ -255,7 +255,7 @@ contract Ledger is PlatformAccessed, ILedger {
         LedgerStorage storage $ = _s();
         (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.Adjust);
         if (amount == 0) revert ZeroAmount();
-        if (bytes(reason).length == 0 || bytes(reason).length > MAX_REASON_BYTES) revert InvalidReason();
+        _requireReason(reason);
         uint8 dir = increase ? ADJUST_UP : ADJUST_DOWN;
         uint256 metric = M.serviceMetric(service, increase ? M.ADJ_UP : M.ADJ_DOWN);
         $.branches.requireWritable(ctx.branchId, service);
@@ -296,12 +296,35 @@ contract Ledger is PlatformAccessed, ILedger {
 
     /// @notice Return real money (CASH/TRANSFER/CARD) to a customer out of their bucket at `ctx.branchId`.
     ///         Capped by that bucket's balance. Poster needs the TopupRefund kind.
-    function refundTopup(Ctx calldata ctx, address customer, uint8 method, uint128 amount) external whenNotPaused {
+    function refundTopup(Ctx calldata ctx, address customer, uint8 method, uint128 amount, string calldata reason)
+        external
+        whenNotPaused
+    {
         LedgerStorage storage $ = _s();
         (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.TopupRefund);
         if (amount == 0) revert ZeroAmount();
+        _requireReason(reason);
         uint256 mi = _requireCashMethod($, ctx.branchId, method);
 
+        LedgerRecord memory r = LedgerRecord({
+            version: EVENT_VERSION,
+            kind: EntryKind.TopupRefund,
+            refId: ctx.refId,
+            originalRefId: bytes32(0),
+            agentId: agentId,
+            branchId: ctx.branchId,
+            customer: customer,
+            service: 0,
+            method: method,
+            amount: amount,
+            discount: 0,
+            tax: 0,
+            portions: new Portion[](0),
+            actor: ctx.actor,
+            shiftId: ctx.shiftId,
+            reason: reason,
+            timestamp: uint64(block.timestamp)
+        });
         _takeBucket($, agentId, customer, ctx.branchId, amount);
         $.liability[agentId] -= amount;
 
@@ -319,40 +342,21 @@ contract Ledger is PlatformAccessed, ILedger {
             amount: amount,
             refunded: 0
         });
-        _record(
-            $,
-            agentId,
-            d,
-            LedgerRecord({
-                version: EVENT_VERSION,
-                kind: EntryKind.TopupRefund,
-                refId: ctx.refId,
-                originalRefId: bytes32(0),
-                agentId: agentId,
-                branchId: ctx.branchId,
-                customer: customer,
-                service: 0,
-                method: method,
-                amount: amount,
-                discount: 0,
-                tax: 0,
-                portions: new Portion[](0),
-                actor: ctx.actor,
-                shiftId: ctx.shiftId,
-                reason: "",
-                timestamp: uint64(block.timestamp)
-            })
-        );
+        _record($, agentId, d, r);
     }
 
     /// @notice Refund part or all of a WalletSpend (coins return to the funding branches' buckets, last portion
     ///         first) or a DirectSale (real money out). The amount is capped by the original (`refunded + amount
     ///         <= original amount`); tax refunded is derived from the original's rate. Counted on the refund day.
     ///         Must be posted at the original's branch. Poster needs the SaleRefund kind.
-    function refundSale(Ctx calldata ctx, bytes32 originalRefId, uint128 amount) external whenNotPaused {
+    function refundSale(Ctx calldata ctx, bytes32 originalRefId, uint128 amount, string calldata reason)
+        external
+        whenNotPaused
+    {
         LedgerStorage storage $ = _s();
         (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.SaleRefund);
         if (amount == 0) revert ZeroAmount();
+        _requireReason(reason);
         Entry storage orig = $.entries[originalRefId];
         if (orig.kind != EntryKind.WalletSpend && orig.kind != EntryKind.DirectSale) {
             revert UnknownEntry(originalRefId);
@@ -361,14 +365,14 @@ contract Ledger is PlatformAccessed, ILedger {
         $.branches.requireWritable(ctx.branchId, orig.service);
         if (amount > orig.amount - orig.refunded) revert RefundExceedsOriginal(orig.amount - orig.refunded, amount);
 
-        LedgerRecord memory r = _refundRecord(ctx, agentId, originalRefId, amount);
+        LedgerRecord memory r = _refundRecord(ctx, agentId, originalRefId, amount, reason);
         uint32 d = M.day(block.timestamp, tz);
         if (orig.kind == EntryKind.DirectSale) {
             r.tax = uint128(uint256(amount) * orig.taxBps / (10_000 + uint256(orig.taxBps)));
             _bump($, agentId, ctx.branchId, d, M.CASH_OUT + M.methodIndex(orig.method), amount);
             _bumpRefund($, agentId, ctx.branchId, d, orig.service, amount, r.tax);
         } else {
-            _refundWallet($, r, orig);
+            _refundWallet($, r, orig, d);
         }
         orig.refunded += amount;
 
@@ -420,6 +424,7 @@ contract Ledger is PlatformAccessed, ILedger {
         returns (uint256[32][] memory out)
     {
         if (scope > SCOPE_BRANCH || fromDay > toDay || toDay - fromDay >= MAX_RANGE_DAYS) revert InvalidRange();
+        if (scope == SCOPE_PLATFORM) id = 0;
         LedgerStorage storage $ = _s();
         out = new uint256[32][](uint256(toDay) - fromDay + 1);
         for (uint256 i; i < out.length; ++i) {
@@ -443,6 +448,11 @@ contract Ledger is PlatformAccessed, ILedger {
         $.agents.requireAgentWritable(br.agentId);
         $.entries[ctx.refId].kind = kind;
         return (br.agentId, br.tzOffsetMinutes);
+    }
+
+    /// @dev Lý do bắt buộc 1–200 byte (adjust, refundTopup, refundSale).
+    function _requireReason(string calldata reason) private pure {
+        if (bytes(reason).length == 0 || bytes(reason).length > MAX_REASON_BYTES) revert InvalidReason();
     }
 
     /// @dev Phương thức tiền thật: CASH/TRANSFER/CARD (khác → InvalidMethod) và đang bật ở chi nhánh. Trả chỉ số phương thức.
@@ -477,11 +487,13 @@ contract Ledger is PlatformAccessed, ILedger {
     }
 
     /// @dev Bản ghi nền của một bút toán hoàn bán, sao từ gốc; `tax`/`portions` do người gọi điền.
-    function _refundRecord(Ctx calldata ctx, uint64 agentId, bytes32 originalRefId, uint128 amount)
-        private
-        view
-        returns (LedgerRecord memory r)
-    {
+    function _refundRecord(
+        Ctx calldata ctx,
+        uint64 agentId,
+        bytes32 originalRefId,
+        uint128 amount,
+        string calldata reason
+    ) private view returns (LedgerRecord memory r) {
         Entry storage orig = _s().entries[originalRefId];
         r = LedgerRecord({
             version: EVENT_VERSION,
@@ -499,7 +511,7 @@ contract Ledger is PlatformAccessed, ILedger {
             portions: new Portion[](0),
             actor: ctx.actor,
             shiftId: ctx.shiftId,
-            reason: "",
+            reason: reason,
             timestamp: uint64(block.timestamp)
         });
     }
@@ -521,7 +533,9 @@ contract Ledger is PlatformAccessed, ILedger {
     /// @dev Hoàn WalletSpend: duyệt phần của bút toán gốc từ cuối lên, bỏ qua phần đã hoàn (`orig.refunded`),
     ///      trả xu về túi chi nhánh nạp, ghi bộ đếm theo ngày hôm nay của chi nhánh đó. Điền `r.portions`, `r.tax`.
     ///      Số tiền đã được kiểm `<= orig.amount - orig.refunded` nên luôn đặt đủ.
-    function _refundWallet(LedgerStorage storage $, LedgerRecord memory r, Entry storage orig) private {
+    function _refundWallet(LedgerStorage storage $, LedgerRecord memory r, Entry storage orig, uint32 refundDay)
+        private
+    {
         Portion[] storage ps = $.portions[r.originalRefId];
         Portion[] memory parts = new Portion[](ps.length);
         uint256 n;
@@ -537,7 +551,7 @@ contract Ledger is PlatformAccessed, ILedger {
             skip = 0;
             uint128 x = avail < left ? avail : left;
             left -= x;
-            r.tax += _creditPart($, r, ps[i - 1].branchId, x, orig.taxBps);
+            r.tax += _creditPart($, r, ps[i - 1].branchId, x, orig.taxBps, refundDay);
             parts[n++] = Portion(ps[i - 1].branchId, x);
         }
         assembly {
@@ -548,16 +562,22 @@ contract Ledger is PlatformAccessed, ILedger {
     }
 
     /// @dev Trả `x` xu về túi chi nhánh nạp `from`, ghi WALLET_CREDIT/REFUND/TAX_REFUND theo ngày hôm nay của `from`.
+    ///      Phần chéo chi nhánh (`from` != chi nhánh phục vụ) cộng SERVED_HERE_REFUND ở chi nhánh phục vụ, ngày hoàn.
     ///      Trả thuế của phần này.
-    function _creditPart(LedgerStorage storage $, LedgerRecord memory r, uint64 from, uint128 x, uint16 bps)
-        private
-        returns (uint128 t)
-    {
+    function _creditPart(
+        LedgerStorage storage $,
+        LedgerRecord memory r,
+        uint64 from,
+        uint128 x,
+        uint16 bps,
+        uint32 refundDay
+    ) private returns (uint128 t) {
         _addBucket($, r.agentId, r.customer, from, x);
         uint32 d = M.day(block.timestamp, $.branches.getBranch(from).tzOffsetMinutes);
         t = uint128(uint256(x) * bps / (10_000 + uint256(bps)));
         _bump($, r.agentId, from, d, M.WALLET_CREDIT, x);
         _bumpRefund($, r.agentId, from, d, r.service, x, t);
+        if (from != r.branchId) _bumpBranch($, r.branchId, refundDay, M.servedRefundMetric(r.service), x);
     }
 
     /// @dev Chỉ phạm vi chi nhánh (ví dụ SERVED_HERE: chi nhánh phục vụ khác chi nhánh thu tiền).

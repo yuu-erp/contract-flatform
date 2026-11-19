@@ -16,6 +16,8 @@ library LedgerMetrics {
     uint256 internal constant WALLET_CREDIT = 9;
     uint256 internal constant SERVICE_BASE = 10;
     uint256 internal constant SERVICE_STRIDE = 8;
+    /// @dev Hoàn ví chéo chi nhánh: giảm phục vụ tại chỗ (chỉ phạm vi chi nhánh). NET → 26, IQR → 27.
+    uint256 internal constant SERVED_HERE_REFUND_BASE = 26;
 
     // Offset trong mỗi dịch vụ.
     uint256 internal constant GROSS = 0;
@@ -44,6 +46,13 @@ library LedgerMetrics {
     function serviceMetric(uint16 service, uint256 offset) internal pure returns (uint256) {
         if (service == SERVICE_NET) return SERVICE_BASE + offset;
         if (service == SERVICE_IQR) return SERVICE_BASE + SERVICE_STRIDE + offset;
+        revert InvalidService(service);
+    }
+
+    /// @notice Vị trí chỉ số SERVED_HERE_REFUND của một dịch vụ: NET → 26, IQR → 27; khác revert.
+    function servedRefundMetric(uint16 service) internal pure returns (uint256) {
+        if (service == SERVICE_NET) return SERVED_HERE_REFUND_BASE;
+        if (service == SERVICE_IQR) return SERVED_HERE_REFUND_BASE + 1;
         revert InvalidService(service);
     }
 

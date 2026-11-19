@@ -126,11 +126,13 @@ interface ILedger {
     function adjust(Ctx calldata ctx, uint16 service, bool increase, uint128 amount, string calldata reason) external;
 
     /// @notice Hoàn tiền thật cho khách từ túi của họ tại `ctx.branchId` (CASH/TRANSFER/CARD); chặn bởi số dư túi đó.
-    function refundTopup(Ctx calldata ctx, address customer, uint8 method, uint128 amount) external;
+    ///         `reason` bắt buộc, 1–200 byte (ghi vào FullDB).
+    function refundTopup(Ctx calldata ctx, address customer, uint8 method, uint128 amount, string calldata reason)
+        external;
 
     /// @notice Hoàn một bút toán WalletSpend (xu về túi chi nhánh nạp, từ phần cuối ngược lên) hoặc DirectSale
-    ///         (tiền thật ra). Chặn bởi gốc: `refunded + amount <= amount gốc`. Tính vào ngày hoàn.
-    function refundSale(Ctx calldata ctx, bytes32 originalRefId, uint128 amount) external;
+    ///         (tiền thật ra). Chặn bởi gốc: `refunded + amount <= amount gốc`. Tính vào ngày hoàn. `reason` bắt buộc, 1–200 byte.
+    function refundSale(Ctx calldata ctx, bytes32 originalRefId, uint128 amount, string calldata reason) external;
 
     function balanceOf(uint64 agentId, address customer) external view returns (uint128);
     function bucketsOf(uint64 agentId, address customer) external view returns (Portion[] memory);

@@ -3,7 +3,7 @@ pragma solidity 0.8.28;
 
 /// @title IBranchRegistry
 /// @notice Chi nhánh của agent: PLATFORM_ADMIN tạo, sửa, dừng, mở lại, xoá mềm, bật/tắt dịch vụ, đổi domain.
-///         Chủ agent (không phải admin) đặt thuế. Module gọi `requireWritable(branchId, service)` trước mọi hàm ghi.
+///         Thuế nằm ở SalesSettings, không ở đây. Module gọi `requireWritable(branchId, service)` trước mọi hàm ghi.
 ///         Đặc tả: docs/modules/core-operator.md.
 interface IBranchRegistry {
     /// @dev None: chưa tồn tại. Active: hoạt động. Suspended: chỉ đọc, mở lại được.
