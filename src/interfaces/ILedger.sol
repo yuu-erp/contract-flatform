@@ -78,7 +78,7 @@ interface ILedger {
     error InsufficientBalance(uint128 available, uint128 requested);
     error InvalidRange();
     error UnknownEntry(bytes32 refId);
-    error RefundExceedsOriginal(uint128 requested, uint128 remaining);
+    error RefundExceedsOriginal(uint128 remaining, uint128 requested);
     error WrongBranch(uint64 expected, uint64 actual);
     error InvalidService(uint16 service);
     error InvalidReason();
@@ -124,6 +124,13 @@ interface ILedger {
 
     /// @notice Điều chỉnh doanh thu của một dịch vụ (tăng/giảm), kèm lý do 1–200 byte. Không đụng ví hay tiền thu.
     function adjust(Ctx calldata ctx, uint16 service, bool increase, uint128 amount, string calldata reason) external;
+
+    /// @notice Hoàn tiền thật cho khách từ túi của họ tại `ctx.branchId` (CASH/TRANSFER/CARD); chặn bởi số dư túi đó.
+    function refundTopup(Ctx calldata ctx, address customer, uint8 method, uint128 amount) external;
+
+    /// @notice Hoàn một bút toán WalletSpend (xu về túi chi nhánh nạp, từ phần cuối ngược lên) hoặc DirectSale
+    ///         (tiền thật ra). Chặn bởi gốc: `refunded + amount <= amount gốc`. Tính vào ngày hoàn.
+    function refundSale(Ctx calldata ctx, bytes32 originalRefId, uint128 amount) external;
 
     function balanceOf(uint64 agentId, address customer) external view returns (uint128);
     function bucketsOf(uint64 agentId, address customer) external view returns (Portion[] memory);

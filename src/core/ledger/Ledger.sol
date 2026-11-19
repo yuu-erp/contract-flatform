@@ -294,6 +294,97 @@ contract Ledger is PlatformAccessed, ILedger {
         _record($, agentId, d, r);
     }
 
+    /// @notice Return real money (CASH/TRANSFER/CARD) to a customer out of their bucket at `ctx.branchId`.
+    ///         Capped by that bucket's balance. Poster needs the TopupRefund kind.
+    function refundTopup(Ctx calldata ctx, address customer, uint8 method, uint128 amount) external whenNotPaused {
+        LedgerStorage storage $ = _s();
+        (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.TopupRefund);
+        if (amount == 0) revert ZeroAmount();
+        uint256 mi = _requireCashMethod($, ctx.branchId, method);
+
+        _takeBucket($, agentId, customer, ctx.branchId, amount);
+        $.liability[agentId] -= amount;
+
+        uint32 d = M.day(block.timestamp, tz);
+        _bump($, agentId, ctx.branchId, d, M.CASH_OUT + mi, amount);
+        _bump($, agentId, ctx.branchId, d, M.WALLET_TOPUP_REFUND, amount);
+
+        $.entries[ctx.refId] = Entry({
+            kind: EntryKind.TopupRefund,
+            method: method,
+            service: 0,
+            taxBps: 0,
+            branchId: ctx.branchId,
+            customer: customer,
+            amount: amount,
+            refunded: 0
+        });
+        _record(
+            $,
+            agentId,
+            d,
+            LedgerRecord({
+                version: EVENT_VERSION,
+                kind: EntryKind.TopupRefund,
+                refId: ctx.refId,
+                originalRefId: bytes32(0),
+                agentId: agentId,
+                branchId: ctx.branchId,
+                customer: customer,
+                service: 0,
+                method: method,
+                amount: amount,
+                discount: 0,
+                tax: 0,
+                portions: new Portion[](0),
+                actor: ctx.actor,
+                shiftId: ctx.shiftId,
+                reason: "",
+                timestamp: uint64(block.timestamp)
+            })
+        );
+    }
+
+    /// @notice Refund part or all of a WalletSpend (coins return to the funding branches' buckets, last portion
+    ///         first) or a DirectSale (real money out). The amount is capped by the original (`refunded + amount
+    ///         <= original amount`); tax refunded is derived from the original's rate. Counted on the refund day.
+    ///         Must be posted at the original's branch. Poster needs the SaleRefund kind.
+    function refundSale(Ctx calldata ctx, bytes32 originalRefId, uint128 amount) external whenNotPaused {
+        LedgerStorage storage $ = _s();
+        (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.SaleRefund);
+        if (amount == 0) revert ZeroAmount();
+        Entry storage orig = $.entries[originalRefId];
+        if (orig.kind != EntryKind.WalletSpend && orig.kind != EntryKind.DirectSale) {
+            revert UnknownEntry(originalRefId);
+        }
+        if (orig.branchId != ctx.branchId) revert WrongBranch(orig.branchId, ctx.branchId);
+        $.branches.requireWritable(ctx.branchId, orig.service);
+        if (amount > orig.amount - orig.refunded) revert RefundExceedsOriginal(orig.amount - orig.refunded, amount);
+
+        LedgerRecord memory r = _refundRecord(ctx, agentId, originalRefId, amount);
+        uint32 d = M.day(block.timestamp, tz);
+        if (orig.kind == EntryKind.DirectSale) {
+            r.tax = uint128(uint256(amount) * orig.taxBps / (10_000 + uint256(orig.taxBps)));
+            _bump($, agentId, ctx.branchId, d, M.CASH_OUT + M.methodIndex(orig.method), amount);
+            _bumpRefund($, agentId, ctx.branchId, d, orig.service, amount, r.tax);
+        } else {
+            _refundWallet($, r, orig);
+        }
+        orig.refunded += amount;
+
+        $.entries[ctx.refId] = Entry({
+            kind: EntryKind.SaleRefund,
+            method: r.method,
+            service: r.service,
+            taxBps: orig.taxBps,
+            branchId: ctx.branchId,
+            customer: r.customer,
+            amount: amount,
+            refunded: 0
+        });
+        _record($, agentId, d, r);
+    }
+
     // ─── Đọc ────────────────────────────────────────────────────────────
 
     function balanceOf(uint64 agentId, address customer) external view returns (uint128 sum) {
@@ -385,6 +476,90 @@ contract Ledger is PlatformAccessed, ILedger {
         $.rollups[_key(SCOPE_BRANCH, branchId, d)][metric] += amount;
     }
 
+    /// @dev Bản ghi nền của một bút toán hoàn bán, sao từ gốc; `tax`/`portions` do người gọi điền.
+    function _refundRecord(Ctx calldata ctx, uint64 agentId, bytes32 originalRefId, uint128 amount)
+        private
+        view
+        returns (LedgerRecord memory r)
+    {
+        Entry storage orig = _s().entries[originalRefId];
+        r = LedgerRecord({
+            version: EVENT_VERSION,
+            kind: EntryKind.SaleRefund,
+            refId: ctx.refId,
+            originalRefId: originalRefId,
+            agentId: agentId,
+            branchId: ctx.branchId,
+            customer: orig.customer,
+            service: orig.service,
+            method: orig.method,
+            amount: amount,
+            discount: 0,
+            tax: 0,
+            portions: new Portion[](0),
+            actor: ctx.actor,
+            shiftId: ctx.shiftId,
+            reason: "",
+            timestamp: uint64(block.timestamp)
+        });
+    }
+
+    /// @dev REFUND và TAX_REFUND của dịch vụ ở ba phạm vi.
+    function _bumpRefund(
+        LedgerStorage storage $,
+        uint64 agentId,
+        uint64 branchId,
+        uint32 d,
+        uint16 service,
+        uint128 amount,
+        uint128 tax
+    ) private {
+        _bump($, agentId, branchId, d, M.serviceMetric(service, M.REFUND), amount);
+        _bump($, agentId, branchId, d, M.serviceMetric(service, M.TAX_REFUND), tax);
+    }
+
+    /// @dev Hoàn WalletSpend: duyệt phần của bút toán gốc từ cuối lên, bỏ qua phần đã hoàn (`orig.refunded`),
+    ///      trả xu về túi chi nhánh nạp, ghi bộ đếm theo ngày hôm nay của chi nhánh đó. Điền `r.portions`, `r.tax`.
+    ///      Số tiền đã được kiểm `<= orig.amount - orig.refunded` nên luôn đặt đủ.
+    function _refundWallet(LedgerStorage storage $, LedgerRecord memory r, Entry storage orig) private {
+        Portion[] storage ps = $.portions[r.originalRefId];
+        Portion[] memory parts = new Portion[](ps.length);
+        uint256 n;
+        uint128 skip = orig.refunded;
+        uint128 left = r.amount;
+        for (uint256 i = ps.length; i != 0 && left != 0; --i) {
+            uint128 avail = ps[i - 1].amount;
+            if (skip >= avail) {
+                skip -= avail;
+                continue;
+            }
+            avail -= skip;
+            skip = 0;
+            uint128 x = avail < left ? avail : left;
+            left -= x;
+            r.tax += _creditPart($, r, ps[i - 1].branchId, x, orig.taxBps);
+            parts[n++] = Portion(ps[i - 1].branchId, x);
+        }
+        assembly {
+            mstore(parts, n)
+        }
+        r.portions = parts;
+        $.liability[r.agentId] += r.amount;
+    }
+
+    /// @dev Trả `x` xu về túi chi nhánh nạp `from`, ghi WALLET_CREDIT/REFUND/TAX_REFUND theo ngày hôm nay của `from`.
+    ///      Trả thuế của phần này.
+    function _creditPart(LedgerStorage storage $, LedgerRecord memory r, uint64 from, uint128 x, uint16 bps)
+        private
+        returns (uint128 t)
+    {
+        _addBucket($, r.agentId, r.customer, from, x);
+        uint32 d = M.day(block.timestamp, $.branches.getBranch(from).tzOffsetMinutes);
+        t = uint128(uint256(x) * bps / (10_000 + uint256(bps)));
+        _bump($, r.agentId, from, d, M.WALLET_CREDIT, x);
+        _bumpRefund($, r.agentId, from, d, r.service, x, t);
+    }
+
     /// @dev Chỉ phạm vi chi nhánh (ví dụ SERVED_HERE: chi nhánh phục vụ khác chi nhánh thu tiền).
     function _bumpBranch(LedgerStorage storage $, uint64 branchId, uint32 d, uint256 metric, uint256 amount) private {
         $.rollups[_key(SCOPE_BRANCH, branchId, d)][metric] += amount;
@@ -404,6 +579,19 @@ contract Ledger is PlatformAccessed, ILedger {
         }
         if (n >= MAX_BUCKETS) revert TooManyBuckets(agentId, customer);
         list.push(Portion(branchId, amount));
+    }
+
+    /// @dev Trừ `amount` khỏi túi của `customer` ở `branchId`; vượt số dư túi (hoặc không có túi) → InsufficientBalance.
+    function _takeBucket(LedgerStorage storage $, uint64 agentId, address customer, uint64 branchId, uint128 amount)
+        private
+    {
+        Portion[] storage list = $.wallets[agentId][customer];
+        uint256 n = list.length;
+        uint256 i;
+        while (i < n && list[i].branchId != branchId) ++i;
+        uint128 have = i < n ? list[i].amount : 0;
+        if (amount > have) revert InsufficientBalance(have, amount);
+        _subBucket(list, i, amount);
     }
 
     /// @dev Trừ `amount` khỏi túi ở vị trí `i`; túi về 0 thì gỡ bằng dịch trái (giữ thứ tự nạp).
