@@ -1,6 +1,6 @@
 # 08. Dòng tiền, doanh thu và báo cáo
 
-Trạng thái: **thiết kế chờ duyệt** (2026-11-19). Đầu vào cho ADR 0022 (Ledger) và đặc tả `docs/modules/core-ledger.md`, `core-payment.md`.
+Trạng thái: **đã duyệt** (người dùng, 2026-11-19), bổ sung thuế và phương thức thanh toán (mục 4.4). Đầu vào cho ADR 0022 (Ledger) và đặc tả `docs/modules/core-ledger.md`, `core-payment.md`.
 Chỗ ghi **[Claude chọn]** là quyết định Claude đề xuất khi người dùng giao "tự trả lời, tôi duyệt"; người dùng sửa được.
 
 ## 1. Mục đích
@@ -66,14 +66,14 @@ Phương thức: `CASH`, `TRANSFER` (chuyển khoản/VietQR), `CARD`, `OTHER`. 
 | `DIRECT_SALE` IQR trả tiền mặt/thẻ/CK | Quỹ(B, pt) | Doanh thu(B, IQR) | +x tại B | +x cho B |
 | `TOPUP_REFUND` hoàn tiền nạp | Ví(khách, A) | Quỹ(A, pt) | −x tại A | 0 |
 | `SALE_REFUND` hoàn đơn/giờ chơi | Doanh thu(gốc) | Ví hoặc Quỹ (theo cách đã trả) | −x nếu trả tiền | −x |
-| `ADJUST` điều chỉnh thủ công | tuỳ | tuỳ | tuỳ | tuỳ |
+| `ADJUST` điều chỉnh thủ công (bắt buộc ghi dịch vụ NET/IQR) | tuỳ | tuỳ | tuỳ | tuỳ |
 
 Luật:
 - **Không sửa, không xoá bút toán.** Sai thì ghi bút toán đảo, trỏ `refId` gốc.
 - Hoàn tiền tính vào **ngày hoàn**, không sửa số của ngày gốc (như POS).
 - Số tiền khi hoàn/huỷ do contract lấy từ bút toán gốc, không nhận từ bên gọi (nguyên tắc 3).
 - Một đơn trả bằng nhiều cách (ví + tiền mặt) ghi **nhiều bút toán**, cùng mã đơn, mỗi bút toán một `refId` [Claude chọn].
-- `ADJUST` chỉ Manager trở lên, bắt buộc lý do, luôn hiện riêng trong báo cáo.
+- `ADJUST` chỉ Manager trở lên, bắt buộc lý do và dịch vụ (NET hoặc IQR), luôn hiện riêng trong báo cáo, tách theo dịch vụ.
 - Khuyến mãi và điểm thưởng ghi là **giảm trừ**: báo cáo có doanh thu gộp, giảm trừ, doanh thu thuần.
 
 ### 4.3 Trả lời 5 câu hỏi Ledger
@@ -87,6 +87,34 @@ Luật:
 | 5 | Danh tính khách | **Ví của khách** (địa chỉ). Tài khoản NET (username) và member trỏ về ví; session wallet trên máy trạm trỏ về ví qua `DelegateRegistry` | Ledger không cần biết dữ liệu cá nhân; khớp nguyên tắc 7 |
 
 Giới hạn: mỗi khách tối đa **16** "túi" chi nhánh có số dư > 0 (danh sách swap-pop), để vòng trừ tiền có trần (nguyên tắc 2).
+
+### 4.4 Cài đặt của agent: thuế và phương thức thanh toán
+
+Đặt trong contract mới **`SalesSettings`** (`core/payment`) [Claude chọn]: `BranchRegistry` còn ~820 byte trước trần 24 KB, và hệ deploy lại từ đầu nên chuyển thuế ra khỏi `BranchRegistry` không cần migrate. Chỉ **chủ agent** sửa (admin nền tảng không), agent và chi nhánh phải `Active`; mỗi thay đổi phát event và ghi audit.
+
+**Thuế** (mỗi dịch vụ NET, IQR):
+
+| Cài đặt | Cấp | Mặc định |
+|---|---|---|
+| Mức thuế `bps` (0–10000) | agent; chi nhánh ghi đè được, xoá ghi đè thì về mức agent (như hiện có ở `BranchRegistry`) | 0 |
+| Kiểu giá: **đã gồm thuế** / **chưa gồm thuế** | agent | đã gồm |
+
+- **IQR**: chọn được cả hai kiểu. Chưa gồm thuế: hoá đơn = tổng món + `tổng · bps / 10000` (khách trả thêm). Đã gồm thuế: khách trả đúng giá, thuế = `tổng · bps / (10000 + bps)`.
+- **NET**: chỉ kiểu **đã gồm thuế** (giá giờ chơi niêm yết trọn gói), mặc định 0 %. Bật thuế để báo cáo cho chủ agent biết số thuế phải nộp trên doanh thu dịch vụ; không cộng thêm vào tiền khách trả. Mức áp dụng tuỳ loại hình (hộ kinh doanh nộp theo tỷ lệ doanh thu, doanh nghiệp tính VAT); chủ agent hỏi kế toán, hệ không đặt sẵn.
+- **Chốt thuế lúc bán:** mỗi bút toán doanh thu lưu mức `bps`, kiểu giá và số thuế tại thời điểm ghi. Đổi cài đặt không đổi số cũ.
+- Nạp ví **không** tính thuế; thuế phát sinh khi ghi nhận doanh thu (`WALLET_SPEND`, `DIRECT_SALE`). Hoàn/điều chỉnh tính thuế đảo theo bút toán gốc.
+- Làm tròn: thuế làm tròn xuống đến 1 đồng [Claude chọn].
+
+**Phương thức thanh toán:** `CASH`, `TRANSFER`, `CARD`, `WALLET` (xu chính).
+
+| Cài đặt | Cấp | Mặc định |
+|---|---|---|
+| Tập phương thức được dùng | agent (bitmask) | `CASH \| WALLET` |
+| Tập con bật ở chi nhánh | chi nhánh, phải nằm trong tập của agent | bằng tập của agent |
+
+- `TOPUP` và `DIRECT_SALE` revert nếu phương thức chưa bật ở chi nhánh; `TOPUP` không nhận `WALLET`.
+- Thu hẹp tập của agent không xoá bit ở chi nhánh; bit ngoài tập agent ngừng dùng được (giống trần dịch vụ).
+- `TRANSFER` cần tài khoản nhận tiền: on-chain lưu hash số tài khoản và trạng thái; thông tin hiển thị để tạo VietQR lưu FullDB. Thuộc `core/payment`, làm cùng ca thu ngân.
 
 ## 5. Ca thu ngân và đối soát két
 
@@ -131,10 +159,13 @@ Duyệt:   Manager xác nhận ca (hoặc ghi chú chênh lệch)      → Shift
 |---|---|
 | Tiền thu | thu theo phương thức (4), chi/hoàn theo phương thức (4) |
 | Ví | nạp, trừ, hoàn nạp |
-| Doanh thu | gộp NET, gộp IQR, giảm trừ NET, giảm trừ IQR, hoàn NET, hoàn IQR |
-| Khác | điều chỉnh (+/−), doanh thu phục vụ chéo chi nhánh (tiền nạp nơi khác dùng ở đây) |
+| Doanh thu (mỗi dịch vụ NET, IQR một bộ) | gộp, giảm trừ, hoàn, điều chỉnh tăng, điều chỉnh giảm, thuế |
+| Phục vụ tại chỗ (mỗi dịch vụ một bộ) | giá trị dịch vụ cung cấp **tại chi nhánh này** bằng tiền nạp ở chi nhánh khác |
 
-- Thuế: giá đã gồm thuế [Claude chọn]; báo cáo tính phần thuế `gộp · bps / (10000 + bps)` theo mức thuế hiệu lực của chi nhánh ở `BranchRegistry`.
+- Doanh thu thuần của một dịch vụ = gộp − giảm trừ − hoàn + điều chỉnh tăng − điều chỉnh giảm. Ví dụ "doanh thu NET toàn hệ tháng 11" = Σ công thức này trên bộ đếm `(nền tảng, ngày)` các ngày tháng 11; thay bằng `(agent, ngày)` hoặc `(chi nhánh, ngày)` để lọc.
+- Mỗi chi nhánh xem được hai góc: **doanh thu ghi nhận** (theo chi nhánh nạp, câu 8) và **dịch vụ phục vụ tại chỗ** = doanh thu ghi nhận của chính nó do khách nạp tại chỗ + chỉ số "phục vụ tại chỗ".
+- Tiền thu không tách theo dịch vụ (ví dùng chung NET và IQR); chỉ tách theo phương thức. Bán trực tiếp IQR vẫn biết là IQR qua bút toán `DIRECT_SALE`.
+- Thuế: số thuế của từng bút toán doanh thu tính lúc ghi theo mục 4.4 và cộng vào chỉ số "thuế" của dịch vụ.
 
 ### 6.3 Đọc báo cáo
 
@@ -179,7 +210,8 @@ Duyệt:   Manager xác nhận ca (hoặc ghi chú chênh lệch)      → Shift
 
 | # | Phần | Phụ thuộc |
 |---|---|---|
-| 1 | `core/ledger`: tài khoản ví, bút toán, `refId`, bộ đếm 3 cấp, ghi FullDB, invariant | AgentAccess (quyền), BranchRegistry (tz, thuế) |
+| 0 | `SalesSettings`: thuế (chuyển từ `BranchRegistry`), kiểu giá, phương thức thanh toán | AgentRegistry, BranchRegistry |
+| 1 | `core/ledger`: tài khoản ví, bút toán, `refId`, bộ đếm 3 cấp, ghi FullDB, invariant | AgentAccess (quyền), BranchRegistry (tz), SalesSettings (thuế) |
 | 2 | `core/payment`: ca thu ngân, nạp/hoàn qua ca, bán trực tiếp | 1 |
 | 3 | `core/delegate`: session wallet → ví khách | — |
 | 4 | NET, IQR ghi doanh thu qua Ledger | 1–3 |
@@ -188,4 +220,4 @@ Duyệt:   Manager xác nhận ca (hoặc ghi chú chênh lệch)      → Shift
 
 ## 11. Câu hỏi mở cho người dùng
 
-1. **Doanh thu công khai?** Trên chain ai cũng đọc được số liệu của mọi agent (kể cả đối thủ). Chọn: (a) chấp nhận công khai, app chỉ lọc theo vai; (b) mã hoá chi tiết bút toán ở FullDB, bộ đếm vẫn công khai; (c) số liệu nhạy cảm để off-chain. Claude nghiêng về **(a) cho đợt đầu**, ghi rủi ro, chốt cùng ADR 0026.
+1. **Doanh thu công khai?** Trên chain ai cũng đọc được số liệu của mọi agent (kể cả đối thủ). Chọn: (a) chấp nhận công khai, app chỉ lọc theo vai; (b) mã hoá chi tiết bút toán ở FullDB, bộ đếm vẫn công khai; (c) số liệu nhạy cảm để off-chain. Claude nghiêng về **(a) cho đợt đầu**, ghi rủi ro, chốt cùng ADR 0026. Người dùng duyệt thiết kế (2026-11-19) mà chưa chọn khác → **làm theo (a)**, xem lại khi viết ADR 0026.
