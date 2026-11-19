@@ -101,7 +101,7 @@ Giới hạn: mỗi khách tối đa **16** "túi" chi nhánh có số dư > 0 (
 
 - **IQR**: chọn được cả hai kiểu. Chưa gồm thuế: hoá đơn = tổng món + `tổng · bps / 10000` (khách trả thêm). Đã gồm thuế: khách trả đúng giá, thuế = `tổng · bps / (10000 + bps)`.
 - **NET**: chỉ kiểu **đã gồm thuế** (giá giờ chơi niêm yết trọn gói), mặc định 0 %. Bật thuế để báo cáo cho chủ agent biết số thuế phải nộp trên doanh thu dịch vụ; không cộng thêm vào tiền khách trả. Mức áp dụng tuỳ loại hình (hộ kinh doanh nộp theo tỷ lệ doanh thu, doanh nghiệp tính VAT); chủ agent hỏi kế toán, hệ không đặt sẵn.
-- **Chốt thuế lúc bán:** mỗi bút toán doanh thu lưu mức `bps`, kiểu giá và số thuế tại thời điểm ghi. Đổi cài đặt không đổi số cũ.
+- **Chốt thuế lúc bán:** mỗi bút toán doanh thu lưu mức `bps` (`Entry.taxBps`); số thuế nằm trong bản ghi FullDB và event `Posted`. Kiểu giá chỉ ảnh hưởng cách poster tính số tiền khách trả (`paid`); Ledger luôn tách thuế `paid · bps / (10000 + bps)` từ `paid`. Đổi cài đặt không đổi số cũ.
 - Nạp ví **không** tính thuế; thuế phát sinh khi ghi nhận doanh thu (`WALLET_SPEND`, `DIRECT_SALE`). Hoàn tính thuế đảo theo bút toán gốc (mức `bps` gốc, tổng thuế hoàn không vượt thuế gốc). Điều chỉnh (`ADJUST`) không có bút toán gốc nên **không ghi thuế**.
 - Làm tròn: thuế làm tròn xuống đến 1 đồng [Claude chọn].
 
@@ -160,10 +160,10 @@ Duyệt:   Manager xác nhận ca (hoặc ghi chú chênh lệch)      → Shift
 | Tiền thu | thu theo phương thức (4), chi/hoàn theo phương thức (4) |
 | Ví | nạp, trừ, hoàn nạp |
 | Doanh thu (mỗi dịch vụ NET, IQR một bộ) | gộp, giảm trừ, hoàn, điều chỉnh tăng, điều chỉnh giảm, thuế |
-| Phục vụ tại chỗ (mỗi dịch vụ một bộ) | giá trị dịch vụ cung cấp **tại chi nhánh này** bằng tiền nạp ở chi nhánh khác |
+| Phục vụ tại chỗ (mỗi dịch vụ một bộ) | giá trị dịch vụ cung cấp **tại chi nhánh này** bằng tiền nạp ở chi nhánh khác (`SERVED_HERE`), và phần đã hoàn của nó (`SERVED_HERE_REFUND`, chỉ ở cấp chi nhánh, ngày hoàn) |
 
 - Doanh thu thuần của một dịch vụ = gộp − hoàn + điều chỉnh tăng − điều chỉnh giảm (`GROSS − REFUND + ADJ_UP − ADJ_DOWN`); giảm trừ chỉ để tham khảo, có thể vượt số tiền. Ví dụ "doanh thu NET toàn hệ tháng 11" = Σ công thức này trên bộ đếm `(nền tảng, ngày)` các ngày tháng 11; thay bằng `(agent, ngày)` hoặc `(chi nhánh, ngày)` để lọc.
-- Mỗi chi nhánh xem được hai góc: **doanh thu ghi nhận** (theo chi nhánh nạp, câu 8) và **dịch vụ phục vụ tại chỗ** = doanh thu ghi nhận của chính nó do khách nạp tại chỗ + chỉ số "phục vụ tại chỗ".
+- Mỗi chi nhánh xem được hai góc: **doanh thu ghi nhận** (theo chi nhánh nạp, câu 8) và **dịch vụ phục vụ tại chỗ** = doanh thu ghi nhận của chính nó do khách nạp tại chỗ + chỉ số "phục vụ tại chỗ" thuần (`SERVED_HERE − SERVED_HERE_REFUND`). Hoàn ví chéo chi nhánh chỉ cộng `SERVED_HERE_REFUND` ở chi nhánh phục vụ, không bao giờ trừ `SERVED_HERE`.
 - Tiền thu không tách theo dịch vụ (ví dùng chung NET và IQR); chỉ tách theo phương thức. Bán trực tiếp IQR vẫn biết là IQR qua bút toán `DIRECT_SALE`.
 - Thuế: số thuế của từng bút toán doanh thu tính lúc ghi theo mục 4.4 và cộng vào chỉ số "thuế" của dịch vụ.
 

@@ -7,7 +7,7 @@ Code: `src/core/ledger/Ledger.sol`, `src/interfaces/ILedger.sol`, `src/libraries
 ## 1. Mô hình poster
 
 - Ledger **không** nhận lệnh từ người dùng hay từ app. Chỉ "poster" (module dịch vụ: `core/payment`, NET, IQR ở các kế hoạch sau) gọi được các hàm ghi.
-- `PLATFORM_OWNER` gọi `setPoster(poster, kindsMask)`; bit `1 << uint8(EntryKind)` cho phép loại bút toán đó (Topup=1, WalletSpend=2, DirectSale=3, TopupRefund=4, SaleRefund=5, Adjust=6). Mask `0` thu hồi quyền. `poster = address(0)` bị từ chối (`ZeroAddress`). Phát `PosterSet(1, poster, mask)`.
+- `PLATFORM_OWNER` gọi `setPoster(poster, kindsMask)`; bit `1 << uint8(EntryKind)` cho phép loại bút toán đó (Topup=1, WalletSpend=2, DirectSale=3, TopupRefund=4, SaleRefund=5, Adjust=6). Mask `0` thu hồi quyền. `poster = address(0)` bị từ chối (`ZeroAddress`). Phát `PosterSet(1, poster, mask)` và **không** ghi audit FullDB (quyết định tiết kiệm byte cho Ledger).
 - Gọi sai loại: `NotPoster(caller, kind)`.
 - **Deploy không đăng ký poster nào** (`docs/07-deploy-va-nang-cap.md`). Poster thật được cấp khi module tương ứng triển khai. Test dùng `MockLedgerPoster` (chuyển tiếp nguyên văn sáu hàm ghi, mask `0x7E`).
 - Mọi hàm ghi đi qua cùng một cổng (`_newEntry`): kiểm mask poster, `refId != 0` (`ZeroRefId`), `refId` chưa dùng (`RefIdUsed`, dùng chung cho mọi loại), chi nhánh `Active` (`BranchNotActive`), agent ghi được (`requireAgentWritable`). `Ctx = {refId, branchId, actor, shiftId}`: `branchId` là chi nhánh ghi nhận/phục vụ.
@@ -20,8 +20,8 @@ Code: `src/core/ledger/Ledger.sol`, `src/interfaces/ILedger.sol`, `src/libraries
 | `Topup` | `topup(ctx, customer, method, amount)` | `amount>0`, `customer != 0`, `method` ∈ CASH/TRANSFER/CARD (`InvalidMethod`), phương thức bật ở chi nhánh, tối đa 16 túi (`TooManyBuckets`) | cộng túi chi nhánh `ctx.branchId`; `CASH_IN+m`, `WALLET_TOPUP` |
 | `WalletSpend` | `walletSpend(ctx, customer, service, amount, discount)` | `amount>0`, `customer != 0`, dịch vụ NET/IQR (`InvalidService`), dịch vụ bật ở chi nhánh phục vụ, WALLET bật, đủ số dư (`InsufficientBalance`, kiểm trước mọi thay đổi) | trừ túi; `WALLET_SPEND`, `GROSS`, `TAX`, `DISCOUNT`; `SERVED_HERE` nếu chi nhánh nạp khác chi nhánh phục vụ |
 | `DirectSale` | `directSale(ctx, customer, service, method, amount, discount)` | `amount>0`, NET/IQR, dịch vụ bật, `method` ∈ CASH/TRANSFER/CARD và bật; `customer` có thể là 0 | `CASH_IN+m`, `GROSS`, `TAX`, `DISCOUNT` |
-| `TopupRefund` | `refundTopup(ctx, customer, method, amount)` | `amount>0`, method CASH/TRANSFER/CARD và bật; chặn bởi **số dư túi** của `ctx.branchId` | trừ túi; `CASH_OUT+m`, `WALLET_TOPUP_REFUND` |
-| `SaleRefund` | `refundSale(ctx, originalRefId, amount)` | gốc phải là WalletSpend/DirectSale (`UnknownEntry`), `ctx.branchId` khớp chi nhánh gốc (`WrongBranch`), `refunded + amount <= gốc` (`RefundExceedsOriginal(remaining, requested)`) | xem mục 3 |
+| `TopupRefund` | `refundTopup(ctx, customer, method, amount, reason)` | `amount>0`, `reason` 1–200 byte (`InvalidReason`), method CASH/TRANSFER/CARD và bật; chặn bởi **số dư túi** của `ctx.branchId` | trừ túi; `CASH_OUT+m`, `WALLET_TOPUP_REFUND` |
+| `SaleRefund` | `refundSale(ctx, originalRefId, amount, reason)` | `reason` 1–200 byte (`InvalidReason`), gốc phải là WalletSpend/DirectSale (`UnknownEntry`), `ctx.branchId` khớp chi nhánh gốc (`WrongBranch`), `refunded + amount <= gốc` (`RefundExceedsOriginal(remaining, requested)`) | xem mục 3 |
 | `Adjust` | `adjust(ctx, service, increase, amount, reason)` | `amount>0`, NET/IQR, dịch vụ bật, `reason` 1–200 byte (`InvalidReason`) | `ADJ_UP` hoặc `ADJ_DOWN` ở ba cấp; **chỉ đụng doanh thu** |
 
 Ghi chú:
@@ -29,6 +29,7 @@ Ghi chú:
 - `discount` chỉ để thống kê, không kiểm so với `amount` (có thể lớn hơn).
 - **Hướng của `Adjust`** nằm ở trường `method` của `Entry`, `LedgerRecord` và `Posted`: `Ledger.ADJUST_UP = 1`, `Ledger.ADJUST_DOWN = 2` (không phải phương thức thanh toán). Adjust không có bút toán gốc nên **không ghi thuế**, không đụng ví, tiền thu hay `TAX`.
 - `refundSale` **không** kiểm lại phương thức thanh toán (phương thức gốc có thể đã bị tắt sau đó). Bút toán hoàn lưu `method` = phương thức gốc (WALLET với hoàn ví) và `taxBps` gốc.
+- **Lý do bắt buộc khi hoàn**: `refundTopup` và `refundSale` đòi `reason` 1–200 byte như `adjust` (cùng kiểm tra, `InvalidReason`), lưu vào `LedgerRecord.reason` ở FullDB.
 - Số tiền hiệu dụng phải `< 1e20` vì `FullDBCodec.toPadded` (mã hoá số vào FullDB).
 
 ## 3. Túi ví
@@ -42,7 +43,7 @@ Ghi chú:
 
 ## 4. Bộ đếm ngày
 
-`rollup(scope, id, fromDay, toDay)` trả `uint256[32][]` (mỗi ngày một hàng), tối đa `MAX_RANGE_DAYS = 93` ngày (`InvalidRange`). `scope`: 0 nền tảng (`id` bỏ qua), 1 agent, 2 chi nhánh. Mọi bút toán cộng đồng thời ba cấp.
+`rollup(scope, id, fromDay, toDay)` trả `uint256[32][]` (mỗi ngày một hàng), tối đa `MAX_RANGE_DAYS = 93` ngày (`InvalidRange`). `scope`: 0 nền tảng (`id` bị bỏ qua, coi như 0), 1 agent, 2 chi nhánh. Mọi bút toán cộng đồng thời ba cấp.
 
 | Chỉ số | Vị trí | Ý nghĩa |
 |---|---|---|
@@ -53,18 +54,21 @@ Ghi chú:
 | `WALLET_TOPUP_REFUND` | 8 | xu hoàn lại cho khách thành tiền thật |
 | `WALLET_CREDIT` | 9 | xu hoàn về túi (hoàn WalletSpend) |
 | `SERVICE_BASE + s·8 + off` | NET: 10–17, IQR: 18–25 | doanh thu từng dịch vụ (bảng dưới) |
-| 26–31 | | dự trữ |
+| `SERVED_HERE_REFUND` | NET: 26, IQR: 27 | hoàn phần phục vụ tại chỗ (chỉ cấp chi nhánh) |
+| 28–31 | | dự trữ |
 
 Offset trong mỗi dịch vụ: `GROSS` 0, `DISCOUNT` 1, `REFUND` 2, `ADJ_UP` 3, `ADJ_DOWN` 4, `TAX` 5, `TAX_REFUND` 6, `SERVED_HERE` 7.
+
+**Phục vụ tại chỗ thuần** (chi nhánh) = `SERVED_HERE − SERVED_HERE_REFUND`.
 
 **Doanh thu thuần** của một dịch vụ = `GROSS − REFUND + ADJ_UP − ADJ_DOWN`. `DISCOUNT` chỉ để tham khảo (giá đã nằm trong `GROSS`; có thể lớn hơn `amount`, không trừ lần nữa). Thuế còn lại = `TAX − TAX_REFUND`.
 
 Quy tắc ngày (ngày kinh doanh = `floor((ts + tzOffsetMinutes·60) / 86400)` của chi nhánh ghi nhận; `dayOf(branchId, ts)`):
 
 - Chỉ số theo phần ví (`WALLET_SPEND`, `GROSS`, `TAX`, `DISCOUNT`) tính theo **ngày của chi nhánh nạp A**, ở cấp nền tảng/agent/chi nhánh A.
-- `SERVED_HERE` ghi ở cấp chi nhánh phục vụ B, theo **ngày của B**, chỉ khi A ≠ B.
+- `SERVED_HERE` ghi ở cấp chi nhánh phục vụ B, theo **ngày của B**, chỉ khi A ≠ B. Hoàn một phần chéo chi nhánh **không** trừ `SERVED_HERE`; nó cộng `SERVED_HERE_REFUND` ở B, ngày hoàn của B (phần cùng chi nhánh không cộng gì).
 - Mọi bút toán hoàn (`REFUND`, `TAX_REFUND`, `CASH_OUT`, `WALLET_CREDIT`) tính vào **ngày hoàn**, theo múi giờ chi nhánh hoàn/credit tương ứng, không sửa ngày của gốc.
-- Bất biến: với mọi chỉ số trừ `SERVED_HERE`, Σ chi nhánh = agent = nền tảng (một agent).
+- Bất biến: với mọi chỉ số trừ `SERVED_HERE` và `SERVED_HERE_REFUND`, Σ chi nhánh = agent = nền tảng (một agent).
 
 ## 5. Thuế
 
@@ -81,15 +85,16 @@ Quy tắc ngày (ngày kinh doanh = `floor((ts + tzOffsetMinutes·60) / 86400)` 
 
 - `Posted(version=1, agentId, branchId, refId, kind, customer, service, method, amount, tax, actor, shiftId)`, `PosterSet`.
 - FullDB: kind `ledger`, nhãn `B` (chi nhánh), `K` (loại), `S` (người thao tác), `W` (ví khách, nếu có), `C` (ca, nếu ≠ 0); giá trị `timestamp`, `amount`, `day`; thân `abi.encode(LedgerRecord)` (có `originalRefId`, `portions`, `reason`). Phần của bút toán hoàn chỉ ghi trong FullDB, không ghi `portions` storage.
+- **Nguồn dựng lại bộ đếm là bản ghi FullDB**, không phải event `Posted` (event thiếu `originalRefId`, `discount`, `portions`).
 - Bút toán không sửa/xoá.
 
 ## 8. Kích thước và gas
 
-Đo ngày 2026-11-19 (`forge build --sizes`, solc 0.8.28, optimizer 200):
+Đo ngày 2026-11-19 (sau đợt sửa cuối) (`forge build --sizes`, solc 0.8.28, optimizer 200):
 
 | Contract | Runtime | Giới hạn | Còn lại |
 |---|---|---|---|
-| `Ledger` | 23,690 B | 24,576 B | 886 B |
+| `Ledger` | 24,403 B | 24,576 B | 173 B |
 | `SalesSettings` | 11,297 B | 24,576 B | 13,279 B |
 
 **Ledger gần trần**: mọi thay đổi thêm mã phải chuyển phần dựng `LedgerRecord` + gọi `HistoryIndex.append` sang một library `public` trước.
@@ -111,4 +116,10 @@ Ngân sách: mọi hàm ghi < 1.5M gas (hiện ≤ 1.42M). Ảnh chụp gas test
 ## 9. Kiểm thử
 
 - Unit: `test/core/ledger/*.t.sol`, `test/libraries/LedgerMetrics.t.sol`.
-- Bất biến `test/invariant/Ledger.invariant.t.sol` (handler gọi ngẫu nhiên sáu hàm ghi, 3 chi nhánh khác múi giờ, 3 khách, warp ≤ 3 ngày; lời gọi sai bị nuốt): nợ ví = Σ túi; dòng xu theo ngày = nợ ví; Σ chi nhánh = agent = nền tảng (trừ `SERVED_HERE`); `refunded ≤ amount`; ≤ 16 túi và không túi 0. Profile mặc định 64 lượt × 64 sâu; `ci` 256 × 128 xanh.
+- Bất biến `test/invariant/Ledger.invariant.t.sol` (handler gọi ngẫu nhiên sáu hàm ghi, 3 chi nhánh khác múi giờ, 3 khách, warp ≤ 3 ngày; lời gọi sai bị nuốt): nợ ví = Σ túi; dòng xu theo ngày = nợ ví; Σ chi nhánh = agent = nền tảng (trừ `SERVED_HERE`, `SERVED_HERE_REFUND`); mỗi dịch vụ ở cấp agent `Σ TAX_REFUND ≤ Σ TAX` và `Σ REFUND ≤ Σ GROSS`; `refunded ≤ amount`; ≤ 16 túi và không túi 0. Profile mặc định 64 lượt × 64 sâu; `ci` 256 × 128 xanh.
+
+## 10. Để sau
+
+- Hoàn ví có thể bị chặn bởi `TooManyBuckets` khi túi của chi nhánh nạp A đã bị xoá và khách đang giữ 16 túi khác.
+- Mặt nạ poster theo **loại bút toán**, không theo dịch vụ: poster NET có bit WalletSpend vẫn ghi được IQR. Khi đăng ký poster thật, thêm mặt nạ dịch vụ theo từng poster.
+- Thêm getter `ADJUST_UP` / `ADJUST_DOWN` vào `ILedger` khi viết poster đầu tiên.
