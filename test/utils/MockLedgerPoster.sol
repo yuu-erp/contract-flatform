@@ -21,4 +21,21 @@ contract MockLedgerPoster {
     {
         LEDGER.walletSpend(ctx, customer, service, amount, discount);
     }
+
+    function directSale(
+        ILedger.Ctx calldata ctx,
+        address customer,
+        uint16 service,
+        uint8 method,
+        uint128 amount,
+        uint128 discount
+    ) external {
+        LEDGER.directSale(ctx, customer, service, method, amount, discount);
+    }
+
+    function adjust(ILedger.Ctx calldata ctx, uint16 service, bool increase, uint128 amount, string calldata reason)
+        external
+    {
+        LEDGER.adjust(ctx, service, increase, amount, reason);
+    }
 }

@@ -17,6 +17,7 @@ contract Ledger is PlatformAccessed, ILedger {
     uint8 public constant EVENT_VERSION = 1;
     uint256 public constant MAX_BUCKETS = 16;
     uint256 public constant MAX_RANGE_DAYS = 93;
+    uint256 public constant MAX_REASON_BYTES = 200;
     uint8 public constant SCOPE_PLATFORM = 0;
     uint8 public constant SCOPE_AGENT = 1;
     uint8 public constant SCOPE_BRANCH = 2;
@@ -87,8 +88,7 @@ contract Ledger is PlatformAccessed, ILedger {
         (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.Topup);
         if (amount == 0) revert ZeroAmount();
         if (customer == address(0)) revert ZeroAddress();
-        uint256 mi = M.methodIndex(method); // CASH/TRANSFER/CARD, khác → InvalidMethod
-        $.settings.requireMethod(ctx.branchId, method);
+        uint256 mi = _requireCashMethod($, ctx.branchId, method);
 
         _addBucket($, agentId, customer, ctx.branchId, amount);
         $.liability[agentId] += amount;
@@ -186,6 +186,108 @@ contract Ledger is PlatformAccessed, ILedger {
         _record($, agentId, d, r);
     }
 
+    /// @notice Direct sale with real money (CASH/TRANSFER/CARD) at `ctx.branchId`; no wallet involved.
+    ///         Tax is carved out of `amount` at the branch/service rate; `discount` is informational.
+    ///         `customer` may be zero. Poster needs the DirectSale kind.
+    function directSale(
+        Ctx calldata ctx,
+        address customer,
+        uint16 service,
+        uint8 method,
+        uint128 amount,
+        uint128 discount
+    ) external whenNotPaused {
+        LedgerStorage storage $ = _s();
+        (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.DirectSale);
+        if (amount == 0) revert ZeroAmount();
+        M.serviceMetric(service, M.GROSS); // chỉ NET/IQR, khác → InvalidService
+        $.branches.requireWritable(ctx.branchId, service);
+        uint256 mi = _requireCashMethod($, ctx.branchId, method);
+
+        LedgerRecord memory r = LedgerRecord({
+            version: EVENT_VERSION,
+            kind: EntryKind.DirectSale,
+            refId: ctx.refId,
+            originalRefId: bytes32(0),
+            agentId: agentId,
+            branchId: ctx.branchId,
+            customer: customer,
+            service: service,
+            method: method,
+            amount: amount,
+            discount: discount,
+            tax: 0,
+            portions: new Portion[](0),
+            actor: ctx.actor,
+            shiftId: ctx.shiftId,
+            reason: "",
+            timestamp: uint64(block.timestamp)
+        });
+        uint16 bps = $.settings.taxOf(ctx.branchId, service);
+        r.tax = uint128(uint256(amount) * bps / (10_000 + uint256(bps)));
+        uint32 d = M.day(block.timestamp, tz);
+        _bookSale($, r, mi, d);
+
+        $.entries[ctx.refId] = Entry({
+            kind: EntryKind.DirectSale,
+            method: method,
+            service: service,
+            taxBps: bps,
+            branchId: ctx.branchId,
+            customer: customer,
+            amount: amount,
+            refunded: 0
+        });
+        _record($, agentId, d, r);
+    }
+
+    /// @notice Adjust a service's revenue counters up or down (never wallet, never cash), with a 1–200 byte reason.
+    ///         Tax is not computed for adjustments. Poster needs the Adjust kind.
+    function adjust(Ctx calldata ctx, uint16 service, bool increase, uint128 amount, string calldata reason)
+        external
+        whenNotPaused
+    {
+        LedgerStorage storage $ = _s();
+        (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.Adjust);
+        if (amount == 0) revert ZeroAmount();
+        if (bytes(reason).length == 0 || bytes(reason).length > MAX_REASON_BYTES) revert InvalidReason();
+        uint256 metric = M.serviceMetric(service, increase ? M.ADJ_UP : M.ADJ_DOWN);
+        $.branches.requireWritable(ctx.branchId, service);
+
+        LedgerRecord memory r = LedgerRecord({
+            version: EVENT_VERSION,
+            kind: EntryKind.Adjust,
+            refId: ctx.refId,
+            originalRefId: bytes32(0),
+            agentId: agentId,
+            branchId: ctx.branchId,
+            customer: address(0),
+            service: service,
+            method: 0,
+            amount: amount,
+            discount: 0,
+            tax: 0,
+            portions: new Portion[](0),
+            actor: ctx.actor,
+            shiftId: ctx.shiftId,
+            reason: reason,
+            timestamp: uint64(block.timestamp)
+        });
+        uint32 d = M.day(block.timestamp, tz);
+        _bump($, agentId, ctx.branchId, d, metric, amount);
+        $.entries[ctx.refId] = Entry({
+            kind: EntryKind.Adjust,
+            method: 0,
+            service: service,
+            taxBps: 0,
+            branchId: ctx.branchId,
+            customer: address(0),
+            amount: amount,
+            refunded: 0
+        });
+        _record($, agentId, d, r);
+    }
+
     // ─── Đọc ────────────────────────────────────────────────────────────
 
     function balanceOf(uint64 agentId, address customer) external view returns (uint128 sum) {
@@ -244,6 +346,24 @@ contract Ledger is PlatformAccessed, ILedger {
         $.agents.requireAgentWritable(br.agentId);
         $.entries[ctx.refId].kind = kind;
         return (br.agentId, br.tzOffsetMinutes);
+    }
+
+    /// @dev Phương thức tiền thật: CASH/TRANSFER/CARD (khác → InvalidMethod) và đang bật ở chi nhánh. Trả chỉ số phương thức.
+    function _requireCashMethod(LedgerStorage storage $, uint64 branchId, uint8 method)
+        private
+        view
+        returns (uint256 mi)
+    {
+        mi = M.methodIndex(method);
+        $.settings.requireMethod(branchId, method);
+    }
+
+    /// @dev Bộ đếm bán trực tiếp ở ba phạm vi: tiền thu theo phương thức, GROSS, TAX, DISCOUNT (nếu có).
+    function _bookSale(LedgerStorage storage $, LedgerRecord memory r, uint256 mi, uint32 d) private {
+        _bump($, r.agentId, r.branchId, d, M.CASH_IN + mi, r.amount);
+        _bump($, r.agentId, r.branchId, d, M.serviceMetric(r.service, M.GROSS), r.amount);
+        _bump($, r.agentId, r.branchId, d, M.serviceMetric(r.service, M.TAX), r.tax);
+        if (r.discount != 0) _bump($, r.agentId, r.branchId, d, M.serviceMetric(r.service, M.DISCOUNT), r.discount);
     }
 
     function _key(uint8 scope, uint64 id, uint32 d) private pure returns (uint256) {
