@@ -15,4 +15,10 @@ contract MockLedgerPoster {
     function topup(ILedger.Ctx calldata ctx, address customer, uint8 method, uint128 amount) external {
         LEDGER.topup(ctx, customer, method, amount);
     }
+
+    function walletSpend(ILedger.Ctx calldata ctx, address customer, uint16 service, uint128 amount, uint128 discount)
+        external
+    {
+        LEDGER.walletSpend(ctx, customer, service, amount, discount);
+    }
 }

@@ -78,7 +78,7 @@ contract LedgerTest is PlatformFixture {
 
         vm.prank(platformAdmin);
         branches.suspendBranch(b1, "test");
-        vm.expectRevert();
+        vm.expectRevert(abi.encodeWithSelector(ILedger.BranchNotActive.selector, b1));
         poster.topup(c, alice, CASH, 1);
     }
 

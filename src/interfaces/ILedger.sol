@@ -107,6 +107,10 @@ interface ILedger {
     /// @notice Nạp xu cho khách bằng tiền thật (CASH/TRANSFER/CARD) tại chi nhánh `ctx.branchId`.
     function topup(Ctx calldata ctx, address customer, uint8 method, uint128 amount) external;
 
+    /// @notice Trừ ví khi dùng dịch vụ NET/IQR tại chi nhánh phục vụ `ctx.branchId`: túi chi nhánh đó trước, rồi
+    ///         các túi còn lại theo thứ tự nạp. Doanh thu ghi cho chi nhánh nạp, thuế theo chi nhánh phục vụ.
+    function walletSpend(Ctx calldata ctx, address customer, uint16 service, uint128 amount, uint128 discount) external;
+
     function balanceOf(uint64 agentId, address customer) external view returns (uint128);
     function bucketsOf(uint64 agentId, address customer) external view returns (Portion[] memory);
     function walletLiability(uint64 agentId) external view returns (uint256);

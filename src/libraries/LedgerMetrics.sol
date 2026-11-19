@@ -27,6 +27,8 @@ library LedgerMetrics {
     uint256 internal constant TAX_REFUND = 6;
     uint256 internal constant SERVED_HERE = 7;
 
+    uint8 internal constant WALLET = 8;
+
     uint16 internal constant SERVICE_NET = 1;
     uint16 internal constant SERVICE_IQR = 2;
 
