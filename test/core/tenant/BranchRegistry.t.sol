@@ -359,96 +359,6 @@ contract BranchRegistryTest is PlatformFixture {
         branches.requireWritable(99, NET);
     }
 
-    // ─── thuế (mục 6.2) ─────────────────────────────────────────────────
-
-    function test_tax_fourCases() public {
-        uint64 b = _createBranch(agentId, "a.vn", NET | IQR);
-        vm.startPrank(agentOwner);
-        // 1. chỉ mặc định
-        branches.setAgentTax(agentId, IQR, 800);
-        assertEq(branches.taxOf(b, IQR), 800);
-        // 2. có mức riêng
-        branches.setBranchTax(b, IQR, 1000);
-        assertEq(branches.taxOf(b, IQR), 1000);
-        // 3. mức riêng 0 %
-        branches.setBranchTax(b, IQR, 0);
-        assertEq(branches.taxOf(b, IQR), 0);
-        (bool isSet, uint16 bps) = branches.branchTaxOf(b, IQR);
-        assertTrue(isSet);
-        assertEq(bps, 0);
-        // 4. xoá mức riêng → về mặc định
-        branches.clearBranchTax(b, IQR);
-        assertEq(branches.taxOf(b, IQR), 800);
-        vm.stopPrank();
-        // dịch vụ khác độc lập
-        assertEq(branches.taxOf(b, NET), 0);
-    }
-
-    function test_tax_onlyAgentOwner() public {
-        uint64 b = _createBranch(agentId, "a.vn", NET);
-        vm.prank(platformAdmin);
-        vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.NotAgentOwner.selector, platformAdmin, agentId));
-        branches.setAgentTax(agentId, NET, 100);
-        vm.prank(platformOwner);
-        vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.NotAgentOwner.selector, platformOwner, agentId));
-        branches.setBranchTax(b, NET, 100);
-        // chủ agent khác
-        uint64 other = _createAgent(customer);
-        vm.prank(customer);
-        vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.NotAgentOwner.selector, customer, agentId));
-        branches.setBranchTax(b, NET, 100);
-        assertTrue(other != agentId);
-    }
-
-    function test_tax_rules() public {
-        uint64 b = _createBranch(agentId, "a.vn", NET);
-        vm.startPrank(agentOwner);
-        vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.TaxTooHigh.selector, uint16(10_001)));
-        branches.setAgentTax(agentId, NET, 10_001);
-        vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.InvalidService.selector, LOYALTY));
-        branches.setAgentTax(agentId, LOYALTY, 100);
-        branches.setAgentTax(agentId, NET, 10_000);
-        vm.stopPrank();
-
-        // agent hoặc chi nhánh dừng → không đổi thuế (R5)
-        vm.prank(platformAdmin);
-        branches.suspendBranch(b, "x");
-        vm.prank(agentOwner);
-        vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.BranchNotActive.selector, b));
-        branches.setBranchTax(b, NET, 1);
-        vm.prank(platformAdmin);
-        registry.suspendAgent(agentId, "x");
-        vm.prank(agentOwner);
-        vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.AgentNotActive.selector, agentId));
-        branches.setAgentTax(agentId, NET, 1);
-    }
-
-    function test_tax_emits() public {
-        uint64 b = _createBranch(agentId, "a.vn", NET);
-        vm.startPrank(agentOwner);
-        branches.setAgentTax(agentId, NET, 500);
-        vm.expectEmit(address(branches));
-        emit IBranchRegistry.TaxChanged(1, agentId, b, NET, 500, 700, true, agentOwner);
-        branches.setBranchTax(b, NET, 700);
-        vm.expectEmit(address(branches));
-        emit IBranchRegistry.TaxChanged(1, agentId, b, NET, 700, 500, false, agentOwner);
-        branches.clearBranchTax(b, NET);
-        vm.stopPrank();
-    }
-
-    function test_tax_followsOwnerChange() public {
-        _createBranch(agentId, "a.vn", NET);
-        vm.prank(platformAdmin);
-        registry.proposeAgentOwner(agentId, coOwner);
-        vm.prank(coOwner);
-        registry.acceptAgentOwner(agentId);
-        vm.prank(agentOwner);
-        vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.NotAgentOwner.selector, agentOwner, agentId));
-        branches.setAgentTax(agentId, NET, 1);
-        vm.prank(coOwner);
-        branches.setAgentTax(agentId, NET, 1);
-    }
-
     // ─── nâng cấp, view ─────────────────────────────────────────────────
 
     function test_upgrade_onlyPlatformOwner() public {
@@ -463,8 +373,6 @@ contract BranchRegistryTest is PlatformFixture {
     function test_view_unknownBranch() public {
         vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.BranchNotFound.selector, 1));
         branches.getBranch(1);
-        vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.BranchNotFound.selector, 1));
-        branches.taxOf(1, NET);
         assertFalse(branches.isServiceEnabled(1, NET));
     }
 
@@ -510,32 +418,6 @@ contract BranchRegistryTest is PlatformFixture {
         branches.setBranchServices(b, NET | IQR);
         assertEq(vm.getRecordedLogs().length, 0, "khong event, khong audit");
         assertEq(branches.getBranch(b).updatedAt, updatedAt);
-    }
-
-    /// Audit thuế chi nhánh ghi `(service, isSet, bps)` với bps thật, không phải giá trị cộng 1 nội bộ.
-    function test_tax_branchAuditEncoding() public {
-        uint64 b = _createBranch(agentId, "b.vn", NET | IQR);
-        vm.startPrank(agentOwner);
-        branches.setBranchTax(b, IQR, 1000);
-        PlatformAuditRecord memory r = _lastAudit("branch_tax");
-        (uint16 s0, bool set0, uint16 bps0) = abi.decode(r.before, (uint16, bool, uint16));
-        (uint16 s1, bool set1, uint16 bps1) = abi.decode(r.after_, (uint16, bool, uint16));
-        assertEq(s0, IQR);
-        assertFalse(set0);
-        assertEq(bps0, 0);
-        assertEq(s1, IQR);
-        assertTrue(set1);
-        assertEq(bps1, 1000);
-
-        branches.clearBranchTax(b, IQR);
-        vm.stopPrank();
-        r = _lastAudit("branch_tax");
-        (, set0, bps0) = abi.decode(r.before, (uint16, bool, uint16));
-        (, set1, bps1) = abi.decode(r.after_, (uint16, bool, uint16));
-        assertTrue(set0);
-        assertEq(bps0, 1000);
-        assertFalse(set1);
-        assertEq(bps1, 0);
     }
 
     /// Audit sửa hồ sơ: `before` và `after_` cùng là `BranchProfileRecord` đã mã hoá.

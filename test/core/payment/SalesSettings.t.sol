@@ -5,6 +5,7 @@ import {PlatformFixture} from "../../utils/PlatformFixture.sol";
 import {ISalesSettings} from "../../../src/interfaces/ISalesSettings.sol";
 import {IAgentAccess} from "../../../src/interfaces/IAgentAccess.sol";
 import {IHistoryIndex} from "../../../src/interfaces/IHistoryIndex.sol";
+import {PlatformAuditRecord} from "../../../src/interfaces/IPlatformAudit.sol";
 
 contract SalesSettingsTest is PlatformFixture {
     uint64 internal a;
@@ -86,6 +87,54 @@ contract SalesSettingsTest is PlatformFixture {
         vm.expectRevert(abi.encodeWithSelector(ISalesSettings.BranchNotActive.selector, b1));
         sales.setBranchPaymentMethods(b1, 1);
         vm.stopPrank();
+    }
+
+    function test_tax_followsOwnerChange() public {
+        vm.prank(platformAdmin);
+        registry.proposeAgentOwner(a, coOwner);
+        vm.prank(coOwner);
+        registry.acceptAgentOwner(a);
+        vm.prank(agentOwner);
+        vm.expectRevert();
+        sales.setAgentTax(a, IQR, 1);
+        vm.prank(coOwner);
+        sales.setAgentTax(a, IQR, 1);
+        assertEq(sales.agentTaxOf(a, IQR), 1);
+    }
+
+    /// Audit thuế chi nhánh ghi `(service, isSet, bps)` với bps thật, không phải giá trị cộng 1 nội bộ.
+    function test_tax_branchAuditEncoding() public {
+        vm.startPrank(agentOwner);
+        sales.setBranchTax(b1, IQR, 1000);
+        PlatformAuditRecord memory r = _lastAudit("sales_tax");
+        (uint16 s0, bool set0, uint16 bps0) = abi.decode(r.before, (uint16, bool, uint16));
+        (uint16 s1, bool set1, uint16 bps1) = abi.decode(r.after_, (uint16, bool, uint16));
+        assertEq(s0, IQR);
+        assertFalse(set0);
+        assertEq(bps0, 0);
+        assertEq(s1, IQR);
+        assertTrue(set1);
+        assertEq(bps1, 1000);
+
+        sales.clearBranchTax(b1, IQR);
+        vm.stopPrank();
+        r = _lastAudit("sales_tax");
+        (, set0, bps0) = abi.decode(r.before, (uint16, bool, uint16));
+        (, set1, bps1) = abi.decode(r.after_, (uint16, bool, uint16));
+        assertTrue(set0);
+        assertEq(bps0, 1000);
+        assertFalse(set1);
+        assertEq(bps1, 0);
+    }
+
+    function _lastAudit(string memory action) internal view returns (PlatformAuditRecord memory) {
+        IHistoryIndex.Query memory q;
+        q.filters = new IHistoryIndex.Term[](1);
+        q.filters[0] = IHistoryIndex.Term("X", action);
+        q.sortSlot = -1;
+        q.limit = 100;
+        IHistoryIndex.Page memory p = historyIndex.search(0, "platform_audit", q);
+        return abi.decode(p.data[p.data.length - 1], (PlatformAuditRecord));
     }
 
     function test_tax_requiresWritableAgent() public {

@@ -84,19 +84,6 @@
   },
   {
     "type": "function",
-    "name": "MAX_TAX_BPS",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
     "name": "MAX_TZ",
     "inputs": [],
     "outputs": [
@@ -220,30 +207,6 @@
   },
   {
     "type": "function",
-    "name": "agentTaxOf",
-    "inputs": [
-      {
-        "name": "agentId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "service",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
     "name": "branchByDomain",
     "inputs": [
       {
@@ -311,53 +274,6 @@
       }
     ],
     "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "branchTaxOf",
-    "inputs": [
-      {
-        "name": "branchId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "service",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "isSet",
-        "type": "bool",
-        "internalType": "bool"
-      },
-      {
-        "name": "bps",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "clearBranchTax",
-    "inputs": [
-      {
-        "name": "branchId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "service",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -729,29 +645,6 @@
   },
   {
     "type": "function",
-    "name": "setAgentTax",
-    "inputs": [
-      {
-        "name": "agentId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "service",
-        "type": "uint16",
-        "internalType": "uint16"
-      },
-      {
-        "name": "bps",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
     "name": "setBranchDomain",
     "inputs": [
       {
@@ -779,29 +672,6 @@
       },
       {
         "name": "services",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "setBranchTax",
-    "inputs": [
-      {
-        "name": "branchId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "service",
-        "type": "uint16",
-        "internalType": "uint16"
-      },
-      {
-        "name": "bps",
         "type": "uint16",
         "internalType": "uint16"
       }
@@ -857,30 +727,6 @@
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "taxOf",
-    "inputs": [
-      {
-        "name": "branchId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "service",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ],
-    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -1201,61 +1047,6 @@
   },
   {
     "type": "event",
-    "name": "TaxChanged",
-    "inputs": [
-      {
-        "name": "version",
-        "type": "uint8",
-        "indexed": false,
-        "internalType": "uint8"
-      },
-      {
-        "name": "agentId",
-        "type": "uint64",
-        "indexed": true,
-        "internalType": "uint64"
-      },
-      {
-        "name": "branchId",
-        "type": "uint64",
-        "indexed": true,
-        "internalType": "uint64"
-      },
-      {
-        "name": "service",
-        "type": "uint16",
-        "indexed": false,
-        "internalType": "uint16"
-      },
-      {
-        "name": "oldBps",
-        "type": "uint16",
-        "indexed": false,
-        "internalType": "uint16"
-      },
-      {
-        "name": "newBps",
-        "type": "uint16",
-        "indexed": false,
-        "internalType": "uint16"
-      },
-      {
-        "name": "isSet",
-        "type": "bool",
-        "indexed": false,
-        "internalType": "bool"
-      },
-      {
-        "name": "by",
-        "type": "address",
-        "indexed": false,
-        "internalType": "address"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
     "name": "Upgraded",
     "inputs": [
       {
@@ -1429,17 +1220,6 @@
   },
   {
     "type": "error",
-    "name": "InvalidService",
-    "inputs": [
-      {
-        "name": "service",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ]
-  },
-  {
-    "type": "error",
     "name": "InvalidServices",
     "inputs": [
       {
@@ -1546,17 +1326,6 @@
       },
       {
         "name": "service",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ]
-  },
-  {
-    "type": "error",
-    "name": "TaxTooHigh",
-    "inputs": [
-      {
-        "name": "bps",
         "type": "uint16",
         "internalType": "uint16"
       }

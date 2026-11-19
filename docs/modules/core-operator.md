@@ -101,7 +101,8 @@ Kiểm domain → `branchIdCount++` → lưu `BranchInfo` (tên, địa chỉ, S
 | ✅ `PlatformAccessed` | `core/access` | Lớp cha abstract cho mọi contract khác: modifier `onlyPlatformOwner`, `onlyPlatformAdmin`, `whenNotPaused`; quyền nâng cấp UUPS = `PLATFORM_OWNER`. **Hỏi owner từ một `PlatformAccess` duy nhất**, không kế thừa `Ownable` riêng, để cả hệ chỉ có một owner (đổi một chỗ là đổi toàn hệ) |
 | ✅ `HistoryIndex` | `core/history` | Cổng duy nhất vào FullDB. Writer do owner đăng ký (`setWriter`) và chỉ ghi được các kind owner cấp (`setWriterKind`). Địa chỉ FullDB cố định từ `initialize`, không có `setFullDB` |
 | ✅ `AgentRegistry` | `core/tenant` | Agent: tạo, sửa hồ sơ, dừng, mở lại, xoá mềm, đổi ví chủ. View cho module: `requireAgentWritable(agentId)` |
-| ✅ `BranchRegistry` | `core/tenant` | Chi nhánh, dịch vụ, domain, múi giờ, chi nhánh chính, thuế. View `requireWritable(branchId, service)`. **23,0 KB, sát trần 24 KB**: thêm tính năng thì tách thuế ra `TaxRegistry` |
+| ✅ `BranchRegistry` | `core/tenant` | Chi nhánh, dịch vụ, domain, múi giờ, chi nhánh chính. View `requireWritable(branchId, service)`. **Thuế đã chuyển sang `SalesSettings`** (T14, `docs/modules/core-sales-settings.md`): BranchRegistry không còn hàm/event thuế; hai trường storage `agentTax`, `branchTaxPlusOne` giữ nguyên chỗ nhưng không dùng |
+| ✅ `SalesSettings` | `core/payment` | Thuế (mặc định agent + mức riêng chi nhánh), kiểu giá, phương thức thanh toán. API thuế (`setAgentTax`, `setBranchTax`, `clearBranchTax`, `taxOf`, `agentTaxOf`, `branchTaxOf`, `TaxChanged`) chuyển từ `BranchRegistry` sang đây, cùng chữ ký |
 | `AgentAccess` | `core/access` | Vai trò **bên trong** agent (co-owner, quản lý, nhân viên), gắn `(agentId, branchId)`. Thuộc bước "luồng agent" |
 | `PlatformOperator` | `core/operator` | **Hoãn.** Mỗi registry tự kiểm `PLATFORM_ADMIN` nên không cần cổng riêng. Chỉ thêm nếu cần gom "tạo agent + chi nhánh chính" vào một giao dịch |
 | `Registry` | `core/registry` | Địa chỉ các contract core và module |
@@ -188,7 +189,7 @@ Hệ mới deploy từ đầu: mọi agent nhận `allowedServices` hợp lệ n
 | `suspendBranch(branchId, reason)` / `resumeBranch(branchId)` | R5, R7 |
 | `proposeAgentOwner(agentId, newOwner)` / `acceptAgentOwner(agentId)` (ví mới gọi) | R6, R9 |
 
-Hàm của chủ agent (`TenantRegistry`, yêu cầu `AGENT_OWNER` của đúng agent, agent phải `Active`):
+Hàm của chủ agent (nay ở `SalesSettings`, không còn ở `BranchRegistry`; yêu cầu `AGENT_OWNER` của đúng agent, agent phải `Active`):
 
 | Hàm | Việc |
 |---|---|
@@ -196,7 +197,7 @@ Hàm của chủ agent (`TenantRegistry`, yêu cầu `AGENT_OWNER` của đúng 
 | `setBranchTax(branchId, service, bps)` | đặt mức riêng cho một chi nhánh |
 | `clearBranchTax(branchId, service)` | bỏ mức riêng, chi nhánh quay về mức mặc định |
 
-`TenantRegistry` cho module (view):
+`TenantRegistry` cho module (view; `taxOf` nay đọc từ `SalesSettings`):
 - `requireWritable(branchId, service)`: mục tiêu ≤ 2 SLOAD;
 - `agentOf(branchId)`;
 - `getAgent`, `getBranch`;

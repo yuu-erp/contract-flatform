@@ -6,6 +6,7 @@ import {DeployPlatform} from "../../script/DeployPlatform.s.sol";
 import {SetPlatformAdmin} from "../../script/SetPlatformAdmin.s.sol";
 import {DeployAgentAccess} from "../../script/DeployAgentAccess.s.sol";
 import {AgentAccess} from "../../src/core/access/AgentAccess.sol";
+import {SalesSettings} from "../../src/core/payment/SalesSettings.sol";
 import {IAgentAccess} from "../../src/interfaces/IAgentAccess.sol";
 import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
 import {PlatformAccess} from "../../src/core/access/PlatformAccess.sol";
@@ -44,6 +45,9 @@ contract DeployPlatformTest is BaseTest {
         assertTrue(history.canWrite(d.agentAccessProxy, "platform_audit"));
         assertFalse(history.canWrite(d.agentAccessProxy, "platform_agents"));
         assertFalse(history.canWrite(d.agentAccessProxy, "platform_branches"));
+        assertTrue(history.isWriter(d.salesSettingsProxy));
+        assertTrue(history.canWrite(d.salesSettingsProxy, "platform_audit"));
+        assertFalse(history.canWrite(d.salesSettingsProxy, "platform_agents"));
         // Nối AgentAccess và nguồn vai trò agent
         assertEq(agents.agentAccess(), d.agentAccessProxy);
         address[] memory sources = access.agentRoleSources();
@@ -66,6 +70,17 @@ contract DeployPlatformTest is BaseTest {
         );
         assertEq(id, 1);
         assertEq(agents.getAgentProfile(1).profile.storePhone, "+84 28 1234 5678");
+        vm.prank(platformAdmin);
+        uint64 b = branches.createBranch(
+            id,
+            IBranchRegistry.BranchInit({
+                domain: "q1.cyber.vn",
+                services: 1,
+                tzOffsetMinutes: 420,
+                profile: IBranchRegistry.BranchProfile({name: "Q1", location: "", longlat: "", phone: "", note: ""})
+            })
+        );
+        assertEq(SalesSettings(d.salesSettingsProxy).paymentMethodsOf(b), 9);
     }
 
     function test_deploy_zeroAdminAddsNobody() public {

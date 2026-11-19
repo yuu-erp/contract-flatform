@@ -1,6 +1,6 @@
 # Hướng dẫn deploy và nâng cấp proxy
 
-Áp dụng cho tầng quản trị: `PlatformAccess`, `HistoryIndex`, `AgentRegistry`, `BranchRegistry`, `AgentAccess`.
+Áp dụng cho tầng quản trị: `PlatformAccess`, `HistoryIndex`, `AgentRegistry`, `BranchRegistry`, `AgentAccess`, `SalesSettings`.
 Mọi lệnh có `--broadcast` (`make deploy`, `make upgrade`, `make set-admin`) **chỉ người giữ khoá chạy**. Agent (Claude, Cursor) không chạy các lệnh này.
 
 ## 1. Tổng quan
@@ -14,6 +14,7 @@ Mỗi contract là một proxy `ERC1967Proxy` trỏ tới một implementation U
 | `AgentRegistry` | `agentsProxy`, `agentsImpl` | `PLATFORM_OWNER` |
 | `BranchRegistry` | `branchesProxy`, `branchesImpl` | `PLATFORM_OWNER` |
 | `AgentAccess` | `agentAccessProxy`, `agentAccessImpl` | `PLATFORM_OWNER` |
+| `SalesSettings` | `salesSettingsProxy`, `salesSettingsImpl` | `PLATFORM_OWNER` |
 
 File `deployments/platform-<chainid>.json` là nguồn địa chỉ cho script và cho web (`web/src/config.ts`). Commit file này sau mỗi lần deploy/nâng cấp trên chain thật.
 
@@ -75,7 +76,7 @@ make deploy
 
 Script `script/DeployPlatform.s.sol` làm, trong cùng một lượt broadcast:
 
-1. Deploy 5 implementation và 5 proxy theo thứ tự `PlatformAccess` → `HistoryIndex` → `AgentRegistry` → `BranchRegistry` → `AgentAccess`.
+1. Deploy 6 implementation và 6 proxy theo thứ tự `PlatformAccess` → `HistoryIndex` → `AgentRegistry` → `BranchRegistry` → `AgentAccess` → `SalesSettings`.
 2. Đăng ký writer của `HistoryIndex` và kind được ghi:
 
    | Writer | Kind |
@@ -83,6 +84,7 @@ Script `script/DeployPlatform.s.sol` làm, trong cùng một lượt broadcast:
    | `AgentRegistry` | `platform_agents`, `platform_audit` |
    | `BranchRegistry` | `platform_branches`, `platform_audit` |
    | `AgentAccess` | `platform_audit` |
+   | `SalesSettings` | `platform_audit` |
 
 3. `AgentRegistry.setAgentAccess(agentAccessProxy)`.
 4. `PlatformAccess.setAgentRoleSources([agentsProxy, agentAccessProxy])`.
@@ -159,7 +161,7 @@ Kỳ vọng: owner đúng ví của bạn; nguồn vai trò là `[AGENTS, AA]`; 
    make upgrade CONTRACT=AgentRegistry
    ```
 
-   Target tự chạy `storage_layout.py check`, deploy implementation mới, gọi `upgradeToAndCall(impl, UPGRADE_CALL)` trên proxy và ghi `agentsImpl` mới vào file deployments. Tên hợp lệ: `PlatformAccess`, `HistoryIndex`, `AgentRegistry`, `BranchRegistry`, `AgentAccess`.
+   Target tự chạy `storage_layout.py check`, deploy implementation mới, gọi `upgradeToAndCall(impl, UPGRADE_CALL)` trên proxy và ghi `agentsImpl` mới vào file deployments. Tên hợp lệ: `PlatformAccess`, `HistoryIndex`, `AgentRegistry`, `BranchRegistry`, `AgentAccess`, `SalesSettings`.
 
 5. Kiểm implementation đã đổi:
 

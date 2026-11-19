@@ -43,6 +43,7 @@ abi:
 	forge inspect BranchRegistry abi --json > abi/BranchRegistry.json
 	forge inspect HistoryIndex abi --json > abi/HistoryIndex.json
 	forge inspect AgentAccess abi --json > abi/AgentAccess.json
+	forge inspect SalesSettings abi --json > abi/SalesSettings.json
 
 # Chỉ người dùng chạy. Cần PRIVATE_KEY và RPC_URL trong .env (foundry nạp .env; rpc "platform" = ${RPC_URL}).
 deploy:
@@ -61,7 +62,7 @@ set-admin:
 # deployments/platform-<chainid>.json. Cần PRIVATE_KEY (owner). Ví dụ: make upgrade CONTRACT=AgentRegistry
 # Target tự chạy kiểm storage layout trước. Hướng dẫn: docs/07-deploy-va-nang-cap.md.
 upgrade:
-	@test -n "$(CONTRACT)" || (echo "Thiếu CONTRACT=PlatformAccess|HistoryIndex|AgentRegistry|BranchRegistry|AgentAccess" && exit 1)
+	@test -n "$(CONTRACT)" || (echo "Thiếu CONTRACT=PlatformAccess|HistoryIndex|AgentRegistry|BranchRegistry|AgentAccess|SalesSettings" && exit 1)
 	python3 scripts/storage_layout.py check
 	CONTRACT=$(CONTRACT) forge script script/UpgradeProxy.s.sol --rpc-url platform --broadcast
 

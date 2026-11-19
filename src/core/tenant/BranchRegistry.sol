@@ -13,7 +13,7 @@ import {TextRules} from "../../libraries/TextRules.sol";
 /// @title BranchRegistry
 /// @notice Chi nhánh, dịch vụ bật, domain, múi giờ, thuế. Một bộ contract cho mọi agent: tạo chi nhánh không deploy gì.
 ///         - PLATFORM_ADMIN: tạo/sửa/dừng/mở lại/xoá mềm chi nhánh, bật/tắt dịch vụ, đổi domain, chọn chi nhánh chính.
-///         - Chủ agent (`AgentRegistry`): đặt thuế. Admin không đặt thuế.
+///         Thuế do `SalesSettings` quản lý (không còn ở đây).
 ///         Đặc tả: docs/modules/core-operator.md.
 contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
     uint8 public constant EVENT_VERSION = 1;
@@ -21,7 +21,6 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
     uint16 public constant SERVICE_NET = 1;
     uint16 public constant SERVICE_IQR = 2;
     uint16 public constant SERVICE_LOYALTY = 4;
-    uint16 public constant MAX_TAX_BPS = 10_000;
     int16 public constant MIN_TZ = -720;
     int16 public constant MAX_TZ = 840;
     uint256 public constant MAX_NAME = 100;
@@ -38,8 +37,8 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
         mapping(bytes32 => uint64) branchByDomainHash;
         mapping(uint64 => uint64) mainBranchOf; // agentId → branchId
         mapping(uint64 => uint32) branchCountOf; // agentId → số chi nhánh (kể cả đã xoá)
-        mapping(uint64 => mapping(uint16 => uint16)) agentTax; // agentId → service → bps
-        mapping(uint64 => mapping(uint16 => uint16)) branchTaxPlusOne; // branchId → service → bps + 1; 0 = chưa đặt
+        mapping(uint64 => mapping(uint16 => uint16)) agentTax; // không dùng, thuế ở SalesSettings
+        mapping(uint64 => mapping(uint16 => uint16)) branchTaxPlusOne; // không dùng, thuế ở SalesSettings
     }
 
     // keccak256(abi.encode(uint256(keccak256("metaplatform.core.tenant.branches")) - 1)) & ~bytes32(uint256(0xff))
@@ -216,49 +215,6 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
         _audit("delete", agentId, branchId, abi.encode(from), abi.encode(BranchStatus.Deleted), reason);
     }
 
-    // ─── Ghi (chủ agent): thuế ──────────────────────────────────────────
-
-    function setAgentTax(uint64 agentId, uint16 service, uint16 bps) external whenNotPaused {
-        _onlyAgentOwnerWritable(agentId);
-        _checkTax(service, bps);
-        BranchesStorage storage $ = _b();
-        uint16 old = $.agentTax[agentId][service];
-        $.agentTax[agentId][service] = bps;
-        emit TaxChanged(EVENT_VERSION, agentId, 0, service, old, bps, true, msg.sender);
-        _audit("tax", agentId, 0, abi.encode(service, old), abi.encode(service, bps), "");
-    }
-
-    function setBranchTax(uint64 branchId, uint16 service, uint16 bps) external whenNotPaused {
-        uint64 agentId = _taxableBranch(branchId);
-        _checkTax(service, bps);
-        BranchesStorage storage $ = _b();
-        uint16 oldPlus = $.branchTaxPlusOne[branchId][service];
-        $.branchTaxPlusOne[branchId][service] = bps + 1;
-        emit TaxChanged(
-            EVENT_VERSION, agentId, branchId, service, _effective(oldPlus, agentId, service), bps, true, msg.sender
-        );
-        _audit("tax", agentId, branchId, _branchTaxState(service, oldPlus), _branchTaxState(service, bps + 1), "");
-    }
-
-    function clearBranchTax(uint64 branchId, uint16 service) external whenNotPaused {
-        uint64 agentId = _taxableBranch(branchId);
-        _checkTax(service, 0);
-        BranchesStorage storage $ = _b();
-        uint16 oldPlus = $.branchTaxPlusOne[branchId][service];
-        delete $.branchTaxPlusOne[branchId][service];
-        emit TaxChanged(
-            EVENT_VERSION,
-            agentId,
-            branchId,
-            service,
-            _effective(oldPlus, agentId, service),
-            $.agentTax[agentId][service],
-            false,
-            msg.sender
-        );
-        _audit("tax", agentId, branchId, _branchTaxState(service, oldPlus), _branchTaxState(service, 0), "");
-    }
-
     // ─── Đọc ────────────────────────────────────────────────────────────
 
     function agentRegistry() external view returns (address) {
@@ -315,20 +271,6 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
         if ((allowed & service) == 0) revert ServiceNotAllowed(br.agentId, service);
     }
 
-    function taxOf(uint64 branchId, uint16 service) external view returns (uint16) {
-        Branch storage br = _existing(branchId);
-        return _effective(_b().branchTaxPlusOne[branchId][service], br.agentId, service);
-    }
-
-    function agentTaxOf(uint64 agentId, uint16 service) external view returns (uint16) {
-        return _b().agentTax[agentId][service];
-    }
-
-    function branchTaxOf(uint64 branchId, uint16 service) external view returns (bool isSet, uint16 bps) {
-        uint16 plus = _b().branchTaxPlusOne[branchId][service];
-        return plus == 0 ? (false, 0) : (true, plus - 1);
-    }
-
     // ─── Nội bộ ─────────────────────────────────────────────────────────
 
     function _existing(uint64 branchId) private view returns (Branch storage br) {
@@ -360,35 +302,6 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
         br.updatedAt = uint64(block.timestamp);
         emit BranchStatusChanged(EVENT_VERSION, branchId, from, to, msg.sender, reason);
         _audit(action, br.agentId, branchId, abi.encode(from), abi.encode(to), reason);
-    }
-
-    function _onlyAgentOwnerWritable(uint64 agentId) private view {
-        IAgentRegistry agents = _b().agents;
-        agents.requireAgentWritable(agentId);
-        if (agents.getAgent(agentId).owner != msg.sender) revert NotAgentOwner(msg.sender, agentId);
-    }
-
-    /// @dev Thuế chi nhánh: chủ agent, agent Active, chi nhánh Active (R5).
-    function _taxableBranch(uint64 branchId) private view returns (uint64 agentId) {
-        Branch storage br = _existing(branchId);
-        agentId = br.agentId;
-        _onlyAgentOwnerWritable(agentId);
-        if (br.status != BranchStatus.Active) revert BranchNotActive(branchId);
-    }
-
-    /// @dev Audit thuế chi nhánh: `(service, isSet, bps)` với bps thật (không cộng 1). Thuế agent: `(service, bps)`.
-    function _branchTaxState(uint16 service, uint16 plusOne) private pure returns (bytes memory) {
-        return plusOne == 0 ? abi.encode(service, false, uint16(0)) : abi.encode(service, true, plusOne - 1);
-    }
-
-    function _effective(uint16 branchPlusOne, uint64 agentId, uint16 service) private view returns (uint16) {
-        return branchPlusOne != 0 ? branchPlusOne - 1 : _b().agentTax[agentId][service];
-    }
-
-    /// @dev Thuế chỉ cho NET và IQR (Loyalty không có thuế).
-    function _checkTax(uint16 service, uint16 bps) private pure {
-        if (service != SERVICE_NET && service != SERVICE_IQR) revert InvalidService(service);
-        if (bps > MAX_TAX_BPS) revert TaxTooHigh(bps);
     }
 
     /// @dev R1: khác 0, chỉ các bit đã biết; có LOYALTY thì phải có NET hoặc IQR.

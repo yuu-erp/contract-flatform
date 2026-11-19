@@ -63,7 +63,6 @@ interface IBranchRegistry {
     error InvalidServices(uint16 services);
     /// @notice Chi nhánh bật module không nằm trong trần `allowedServices` của agent.
     error ServiceNotAllowed(uint64 agentId, uint16 services);
-    error InvalidService(uint16 service);
     error InvalidDomain();
     error DomainTaken(bytes32 domainHash, uint64 branchId);
     error InvalidTimezone(int16 tzOffsetMinutes);
@@ -78,7 +77,6 @@ interface IBranchRegistry {
     error CannotDeleteMainBranch(uint64 branchId);
     error AlreadyMainBranch(uint64 branchId);
     error NotAgentOwner(address caller, uint64 agentId);
-    error TaxTooHigh(uint16 bps);
 
     event BranchCreated(
         uint8 version, uint64 indexed agentId, uint64 indexed branchId, uint16 services, bytes32 domainHash, bool isMain
@@ -91,23 +89,11 @@ interface IBranchRegistry {
         uint8 version, uint64 indexed branchId, BranchStatus from, BranchStatus to, address indexed by, string reason
     );
     event MainBranchChanged(uint8 version, uint64 indexed agentId, uint64 oldBranchId, uint64 newBranchId);
-    /// @notice branchId = 0: mức mặc định của agent. isSet = false: mức riêng chi nhánh bị xoá (về mặc định).
-    event TaxChanged(
-        uint8 version,
-        uint64 indexed agentId,
-        uint64 indexed branchId,
-        uint16 service,
-        uint16 oldBps,
-        uint16 newBps,
-        bool isSet,
-        address by
-    );
 
     // ─── Hằng ──────────────────────────────────────────────────────────
     function SERVICE_NET() external view returns (uint16);
     function SERVICE_IQR() external view returns (uint16);
     function SERVICE_LOYALTY() external view returns (uint16);
-    function MAX_TAX_BPS() external view returns (uint16);
     function KIND_BRANCHES() external pure returns (string memory);
 
     // ─── Ghi (PLATFORM_ADMIN) ───────────────────────────────────────────
@@ -122,11 +108,6 @@ interface IBranchRegistry {
     function resumeBranch(uint64 branchId, string calldata reason) external;
     /// @notice Xoá mềm: Deleted (vĩnh viễn), giữ dữ liệu, nhả domain. Không xoá chi nhánh chính khi agent chưa bị xoá.
     function deleteBranch(uint64 branchId, string calldata reason) external;
-
-    // ─── Ghi (chủ agent) ────────────────────────────────────────────────
-    function setAgentTax(uint64 agentId, uint16 service, uint16 bps) external;
-    function setBranchTax(uint64 branchId, uint16 service, uint16 bps) external;
-    function clearBranchTax(uint64 branchId, uint16 service) external;
 
     // ─── Đọc ────────────────────────────────────────────────────────────
     function agentRegistry() external view returns (address);
@@ -143,8 +124,4 @@ interface IBranchRegistry {
     function isServiceEnabled(uint64 branchId, uint16 service) external view returns (bool);
     /// @notice Revert nếu hệ pause, agent không Active, chi nhánh không Active hoặc dịch vụ không bật (R5).
     function requireWritable(uint64 branchId, uint16 service) external view;
-    /// @notice Mức thuế hiệu lực: riêng chi nhánh nếu đã đặt, không thì mặc định của agent.
-    function taxOf(uint64 branchId, uint16 service) external view returns (uint16 bps);
-    function agentTaxOf(uint64 agentId, uint16 service) external view returns (uint16 bps);
-    function branchTaxOf(uint64 branchId, uint16 service) external view returns (bool isSet, uint16 bps);
 }

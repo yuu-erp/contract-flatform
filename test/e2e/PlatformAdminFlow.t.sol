@@ -89,11 +89,11 @@ contract PlatformAdminFlowTest is PlatformFixture {
 
         // Chủ agent: thuế mặc định IQR 8 %, riêng Q3 10 %
         vm.startPrank(agentOwner);
-        branches.setAgentTax(a, IQR, 800);
-        branches.setBranchTax(q3, IQR, 1000);
+        sales.setAgentTax(a, IQR, 800);
+        sales.setBranchTax(q3, IQR, 1000);
         vm.stopPrank();
-        assertEq(branches.taxOf(q1, IQR), 800);
-        assertEq(branches.taxOf(q3, IQR), 1000);
+        assertEq(sales.taxOf(q1, IQR), 800);
+        assertEq(sales.taxOf(q3, IQR), 1000);
 
         // Module ghi ở cả hai chi nhánh
         MockServiceModule net = new MockServiceModule(branches, NET);
