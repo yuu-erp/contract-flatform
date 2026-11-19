@@ -1,0 +1,56 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct SalesSettings.SettingsStorage"
+ ],
+ [
+  "s.agents",
+  0,
+  0,
+  "contract IAgentRegistry"
+ ],
+ [
+  "s.branches",
+  1,
+  0,
+  "contract IBranchRegistry"
+ ],
+ [
+  "s.history",
+  2,
+  0,
+  "contract IHistoryIndex"
+ ],
+ [
+  "s.agentTax",
+  3,
+  0,
+  "mapping(uint64 => mapping(uint16 => uint16))"
+ ],
+ [
+  "s.branchTaxPlusOne",
+  4,
+  0,
+  "mapping(uint64 => mapping(uint16 => uint16))"
+ ],
+ [
+  "s.taxExclusive",
+  5,
+  0,
+  "mapping(uint64 => mapping(uint16 => bool))"
+ ],
+ [
+  "s.agentMethods",
+  6,
+  0,
+  "mapping(uint64 => uint8)"
+ ],
+ [
+  "s.branchMethods",
+  7,
+  0,
+  "mapping(uint64 => uint8)"
+ ]
+]

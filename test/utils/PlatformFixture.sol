@@ -8,6 +8,7 @@ import {HistoryIndex} from "../../src/core/history/HistoryIndex.sol";
 import {AgentRegistry} from "../../src/core/tenant/AgentRegistry.sol";
 import {BranchRegistry} from "../../src/core/tenant/BranchRegistry.sol";
 import {AgentAccess} from "../../src/core/access/AgentAccess.sol";
+import {SalesSettings} from "../../src/core/payment/SalesSettings.sol";
 import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
 import {IAgentRegistry} from "../../src/interfaces/IAgentRegistry.sol";
 
@@ -21,6 +22,7 @@ abstract contract PlatformFixture is BaseTest {
     AgentRegistry internal registry;
     BranchRegistry internal branches;
     AgentAccess internal agentAccess;
+    SalesSettings internal sales;
 
     uint16 internal constant NET = 1;
     uint16 internal constant IQR = 2;
@@ -62,10 +64,22 @@ abstract contract PlatformFixture is BaseTest {
             )
         );
 
+        sales = SalesSettings(
+            deployProxy(
+                address(new SalesSettings()),
+                abi.encodeCall(
+                    SalesSettings.initialize,
+                    (address(access), address(registry), address(branches), address(historyIndex))
+                )
+            )
+        );
+
         vm.startPrank(platformOwner);
         historyIndex.setWriter(address(registry), true);
         historyIndex.setWriter(address(branches), true);
         historyIndex.setWriter(address(agentAccess), true);
+        historyIndex.setWriter(address(sales), true);
+        historyIndex.setWriterKind(address(sales), "platform_audit", true);
         historyIndex.setWriterKind(address(registry), "platform_agents", true);
         historyIndex.setWriterKind(address(registry), "platform_audit", true);
         historyIndex.setWriterKind(address(branches), "platform_branches", true);

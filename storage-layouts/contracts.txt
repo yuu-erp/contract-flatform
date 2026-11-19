@@ -5,9 +5,11 @@ impl    src/core/history/HistoryIndex.sol:HistoryIndex
 impl    src/core/tenant/AgentRegistry.sol:AgentRegistry
 impl    src/core/tenant/BranchRegistry.sol:BranchRegistry
 impl    src/core/access/AgentAccess.sol:AgentAccess
+impl    src/core/payment/SalesSettings.sol:SalesSettings
 harness test/layout/CoreLayouts.sol:PlatformAccessLayout
 harness test/layout/CoreLayouts.sol:PlatformAccessedLayout
 harness test/layout/CoreLayouts.sol:HistoryIndexLayout
 harness test/layout/CoreLayouts.sol:AgentRegistryLayout
 harness test/layout/CoreLayouts.sol:BranchRegistryLayout
 harness test/layout/CoreLayouts.sol:AgentAccessLayout
+harness test/layout/CoreLayouts.sol:SalesSettingsLayout
