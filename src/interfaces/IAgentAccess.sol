@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.28;
 
+import {IAgentRoleSource} from "./IAgentRoleSource.sol";
+
 /// @title IAgentAccess
 /// @notice Vai trò cấp chi nhánh của agent: quản lý (Manager) và nhân viên (Staff).
 ///         - Chủ agent (`AgentRegistry.Agent.owner`) có toàn quyền trên mọi chi nhánh của agent; vai trò này
@@ -8,7 +10,7 @@ pragma solidity 0.8.28;
 ///         - Chủ agent cấp/thu Manager và Staff. Manager cấp/thu Staff trong chi nhánh của mình.
 ///         - Tầng quản trị nền tảng (PLATFORM_OWNER/ADMIN) không cấp vai trò agent và không được nhận vai trò agent.
 ///         Đặc tả: docs/modules/core-access.md.
-interface IAgentAccess {
+interface IAgentAccess is IAgentRoleSource {
     /// @dev Thứ tự là thứ bậc: so sánh `>=` để kiểm "ít nhất vai trò X". `Owner` không bao giờ lưu.
     enum Role {
         None,
@@ -82,6 +84,9 @@ interface IAgentAccess {
     function requireRole(uint64 branchId, address account, Role minRole) external view;
     function getMember(uint64 branchId, address account) external view returns (Member memory);
     function memberCountOf(uint64 branchId) external view returns (uint256);
+    /// @notice Số chi nhánh của `agentId` mà ví đang là thành viên (Manager/Staff), kể cả chi nhánh đã dừng/xoá.
+    ///         `AgentRegistry` dùng để từ chối đổi chủ agent sang một thành viên của chính agent đó.
+    function membershipCountInAgent(uint64 agentId, address account) external view returns (uint256);
     function membersOf(uint64 branchId, uint256 offset, uint256 limit) external view returns (MemberView[] memory);
     function branchCountOfAccount(address account) external view returns (uint256);
     function branchesOfAccount(address account, uint256 offset, uint256 limit) external view returns (uint64[] memory);

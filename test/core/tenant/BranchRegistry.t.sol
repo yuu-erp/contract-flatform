@@ -467,4 +467,88 @@ contract BranchRegistryTest is PlatformFixture {
         branches.taxOf(1, NET);
         assertFalse(branches.isServiceEnabled(1, NET));
     }
+
+    // ─── review 2026-11-19 ──────────────────────────────────────────────
+
+    function _lastAudit(string memory action) internal view returns (PlatformAuditRecord memory) {
+        IHistoryIndex.Query memory q;
+        q.filters = new IHistoryIndex.Term[](1);
+        q.filters[0] = IHistoryIndex.Term("X", action);
+        q.sortSlot = -1;
+        q.limit = 100;
+        IHistoryIndex.Page memory p = historyIndex.search(0, "platform_audit", q);
+        return abi.decode(p.data[p.data.length - 1], (PlatformAuditRecord));
+    }
+
+    /// isServiceEnabled là view cấu hình: `false` khi chi nhánh hoặc agent đã xoá; Suspended vẫn `true`.
+    function test_isServiceEnabled_falseWhenDeleted() public {
+        uint64 main = _createBranch(agentId, "main.vn", NET);
+        uint64 b = _createBranch(agentId, "b.vn", NET | IQR);
+
+        vm.prank(platformAdmin);
+        branches.suspendBranch(b, "sua");
+        assertTrue(branches.isServiceEnabled(b, NET), "Suspended van la cau hinh bat");
+        vm.prank(platformAdmin);
+        branches.deleteBranch(b, "dong");
+        assertFalse(branches.isServiceEnabled(b, NET));
+
+        assertTrue(branches.isServiceEnabled(main, NET));
+        vm.prank(platformAdmin);
+        registry.suspendAgent(agentId, "no");
+        assertTrue(branches.isServiceEnabled(main, NET), "agent Suspended van la cau hinh bat");
+        vm.prank(platformAdmin);
+        registry.deleteAgent(agentId, "dong");
+        assertFalse(branches.isServiceEnabled(main, NET));
+    }
+
+    function test_setBranchServices_unchangedIsNoop() public {
+        uint64 b = _createBranch(agentId, "b.vn", NET | IQR);
+        uint64 updatedAt = branches.getBranch(b).updatedAt;
+        vm.warp(block.timestamp + 100);
+        vm.recordLogs();
+        vm.prank(platformAdmin);
+        branches.setBranchServices(b, NET | IQR);
+        assertEq(vm.getRecordedLogs().length, 0, "khong event, khong audit");
+        assertEq(branches.getBranch(b).updatedAt, updatedAt);
+    }
+
+    /// Audit thuế chi nhánh ghi `(service, isSet, bps)` với bps thật, không phải giá trị cộng 1 nội bộ.
+    function test_tax_branchAuditEncoding() public {
+        uint64 b = _createBranch(agentId, "b.vn", NET | IQR);
+        vm.startPrank(agentOwner);
+        branches.setBranchTax(b, IQR, 1000);
+        PlatformAuditRecord memory r = _lastAudit("branch_tax");
+        (uint16 s0, bool set0, uint16 bps0) = abi.decode(r.before, (uint16, bool, uint16));
+        (uint16 s1, bool set1, uint16 bps1) = abi.decode(r.after_, (uint16, bool, uint16));
+        assertEq(s0, IQR);
+        assertFalse(set0);
+        assertEq(bps0, 0);
+        assertEq(s1, IQR);
+        assertTrue(set1);
+        assertEq(bps1, 1000);
+
+        branches.clearBranchTax(b, IQR);
+        vm.stopPrank();
+        r = _lastAudit("branch_tax");
+        (, set0, bps0) = abi.decode(r.before, (uint16, bool, uint16));
+        (, set1, bps1) = abi.decode(r.after_, (uint16, bool, uint16));
+        assertTrue(set0);
+        assertEq(bps0, 1000);
+        assertFalse(set1);
+        assertEq(bps1, 0);
+    }
+
+    /// Audit sửa hồ sơ: `before` và `after_` cùng là `BranchProfileRecord` đã mã hoá.
+    function test_updateBranchProfile_auditIsFullRecord() public {
+        uint64 b = _createBranch(agentId, "b.vn", NET);
+        vm.prank(platformAdmin);
+        branches.updateBranchProfile(b, _branchProfile("Ten moi"));
+        PlatformAuditRecord memory r = _lastAudit("branch_update");
+        IBranchRegistry.BranchProfileRecord memory before_ = abi.decode(r.before, (IBranchRegistry.BranchProfileRecord));
+        IBranchRegistry.BranchProfileRecord memory after_ = abi.decode(r.after_, (IBranchRegistry.BranchProfileRecord));
+        assertEq(before_.profile.name, "Chi nhanh");
+        assertEq(after_.profile.name, "Ten moi");
+        assertEq(after_.domain, "b.vn");
+        assertEq(after_.branchId, b);
+    }
 }

@@ -5,8 +5,6 @@ pragma solidity 0.8.28;
 /// @notice Bitmask module dùng chung: NET = 1, IQR = 2, LOYALTY = 4.
 ///         Một tập hợp lệ khác 0, chỉ gồm các bit đã biết, và có LOYALTY thì phải có NET hoặc IQR.
 library ServiceMask {
-    /// @dev Một lần migrateAllowedServices. Script nâng cấp dùng cùng hằng, vì reinitializer chỉ chạy một lần.
-    uint256 internal constant MAX_MIGRATE = 200;
     uint16 internal constant NET = 1;
     uint16 internal constant IQR = 2;
     uint16 internal constant LOYALTY = 4;

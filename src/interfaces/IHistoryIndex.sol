@@ -45,6 +45,7 @@ interface IHistoryIndex {
 
     error ZeroAddress();
     error NotWriter(address caller);
+    error KindNotAllowed(address writer, string kind);
     error InvalidKind();
     error TooManyTerms(uint256 max);
     error TooManyValues(uint256 max);
@@ -56,6 +57,7 @@ interface IHistoryIndex {
 
     event FullDBSet(uint8 version, address indexed fullDB);
     event WriterSet(uint8 version, address indexed writer, bool allowed);
+    event WriterKindSet(uint8 version, address indexed writer, bytes32 indexed kindHash, string kind, bool allowed);
     event HistoryAppended(
         uint8 version, uint64 indexed agentId, bytes32 indexed kindHash, uint256 docId, bytes32 dataHash
     );
@@ -68,9 +70,13 @@ interface IHistoryIndex {
     function MAX_LIMIT() external view returns (uint256);
 
     function fullDB() external view returns (address);
-    function setFullDB(address fullDB_) external;
+    /// @notice Bật/tắt writer (công tắc tổng). Writer còn cần `setWriterKind` cho từng kind mới ghi được.
     function setWriter(address writer, bool allowed) external;
     function isWriter(address account) external view returns (bool);
+    /// @notice Cấp/thu quyền ghi một kind (mọi agentId) cho writer. Chỉ PLATFORM_OWNER.
+    function setWriterKind(address writer, string calldata kind, bool allowed) external;
+    /// @notice `true` nếu writer đang bật và được ghi kind này.
+    function canWrite(address writer, string calldata kind) external view returns (bool);
 
     function dbName(uint64 agentId, string calldata kind) external pure returns (string memory);
 

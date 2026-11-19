@@ -6,22 +6,26 @@ import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Own
 import {Ownable2StepUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import {IPlatformAccess} from "../../interfaces/IPlatformAccess.sol";
+import {IAgentRoleSource} from "../../interfaces/IAgentRoleSource.sol";
 
 /// @title PlatformAccess
 /// @notice Tầng quản trị hệ thống. Chỉ có hai vai trò:
 ///         - PLATFORM_OWNER: owner của OZ `Ownable2StepUpgradeable` (đổi hai bước, không cho renounce);
 ///           thêm/bớt admin, pause toàn hệ, nâng cấp contract.
 ///         - PLATFORM_ADMIN: nhiều ví (tối đa MAX_ADMINS); vận hành agent và chi nhánh.
-///         Một ví không giữ cả hai vai. Vai trò của agent nằm ở tầng agent, không ở đây.
+///         Một ví không giữ cả hai vai. Vai trò của agent nằm ở tầng agent, không ở đây; trước khi cấp vai nền tảng,
+///         contract hỏi các `agentRoleSources` (AgentRegistry, AgentAccess) để ví đang giữ vai agent bị từ chối.
 ///         Owner và pause lưu trong namespace ERC-7201 của OZ; danh sách admin ở `metaplatform.core.access`.
 contract PlatformAccess is UUPSUpgradeable, Ownable2StepUpgradeable, PausableUpgradeable, IPlatformAccess {
     uint8 public constant EVENT_VERSION = 1;
     uint256 public constant MAX_ADMINS = 50;
+    uint256 public constant MAX_ROLE_SOURCES = 4;
 
     /// @custom:storage-location erc7201:metaplatform.core.access
     struct AccessStorage {
         address[] admins;
         mapping(address => uint256) adminIndexPlusOne; // 0 = không phải admin
+        IAgentRoleSource[] agentRoleSources; // hỏi trước khi cấp vai nền tảng
     }
 
     // keccak256(abi.encode(uint256(keccak256("metaplatform.core.access")) - 1)) & ~bytes32(uint256(0xff))
@@ -55,13 +59,17 @@ contract PlatformAccess is UUPSUpgradeable, Ownable2StepUpgradeable, PausableUpg
     }
 
     function transferOwnership(address newOwner) public override(Ownable2StepUpgradeable, IPlatformAccess) onlyOwner {
-        if (newOwner != address(0) && _s().adminIndexPlusOne[newOwner] != 0) revert OwnerCannotBeAdmin();
+        if (newOwner != address(0)) {
+            if (_s().adminIndexPlusOne[newOwner] != 0) revert OwnerCannotBeAdmin();
+            _requireNoAgentRole(newOwner);
+        }
         super.transferOwnership(newOwner);
     }
 
     function acceptOwnership() public override(Ownable2StepUpgradeable, IPlatformAccess) {
-        // Kiểm lại lúc nhận, phòng trường hợp quy tắc bị lách sau khi đề xuất.
+        // Kiểm lại lúc nhận: từ lúc đề xuất, ví có thể đã nhận vai trò admin hoặc vai trò agent.
         if (_s().adminIndexPlusOne[msg.sender] != 0) revert OwnerCannotBeAdmin();
+        _requireNoAgentRole(msg.sender);
         super.acceptOwnership();
     }
 
@@ -78,6 +86,7 @@ contract PlatformAccess is UUPSUpgradeable, Ownable2StepUpgradeable, PausableUpg
         if (account == owner() || account == pendingOwner()) revert OwnerCannotBeAdmin();
         if ($.adminIndexPlusOne[account] != 0) revert AlreadyAdmin(account);
         if ($.admins.length >= MAX_ADMINS) revert TooManyAdmins(MAX_ADMINS);
+        _requireNoAgentRole(account);
         $.admins.push(account);
         $.adminIndexPlusOne[account] = $.admins.length;
         emit PlatformAdminAdded(EVENT_VERSION, account, msg.sender);
@@ -114,6 +123,35 @@ contract PlatformAccess is UUPSUpgradeable, Ownable2StepUpgradeable, PausableUpg
         page = new address[](end - offset);
         for (uint256 i = offset; i < end; ++i) {
             page[i - offset] = all[i];
+        }
+    }
+
+    // ─── Nguồn vai trò agent ────────────────────────────────────────────
+
+    /// @notice Thay toàn bộ danh sách nguồn (tối đa MAX_ROLE_SOURCES). Chỉ owner. Không kiểm lại ví đã cấp trước đó.
+    function setAgentRoleSources(address[] calldata sources) external onlyOwner {
+        if (sources.length > MAX_ROLE_SOURCES) revert TooManyRoleSources(MAX_ROLE_SOURCES);
+        IAgentRoleSource[] storage list = _s().agentRoleSources;
+        while (list.length > 0) list.pop(); // ≤ MAX_ROLE_SOURCES
+        for (uint256 i; i < sources.length; ++i) {
+            if (sources[i] == address(0)) revert ZeroAddress();
+            list.push(IAgentRoleSource(sources[i]));
+        }
+        emit AgentRoleSourcesSet(EVENT_VERSION, sources, msg.sender);
+    }
+
+    function agentRoleSources() external view returns (address[] memory out) {
+        IAgentRoleSource[] storage list = _s().agentRoleSources;
+        out = new address[](list.length);
+        for (uint256 i; i < list.length; ++i) {
+            out[i] = address(list[i]);
+        }
+    }
+
+    function _requireNoAgentRole(address account) private view {
+        IAgentRoleSource[] storage list = _s().agentRoleSources;
+        for (uint256 i; i < list.length; ++i) {
+            if (list[i].holdsAgentRole(account)) revert AccountHasAgentRole(account);
         }
     }
 

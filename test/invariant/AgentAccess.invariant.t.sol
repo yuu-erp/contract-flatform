@@ -55,10 +55,11 @@ contract AgentAccessHandler is Test {
 
 contract AgentAccessInvariantTest is PlatformFixture {
     AgentAccessHandler internal handler;
+    uint64 internal agentId;
 
     function setUp() public override {
         super.setUp();
-        uint64 agentId = _createAgent(agentOwner);
+        agentId = _createAgent(agentOwner);
         uint64 b1 = _createBranch(agentId, "a.vn", NET);
         uint64 b2 = _createBranch(agentId, "b.vn", NET);
         handler = new AgentAccessHandler(agentAccess, agentOwner, b1, b2);
@@ -94,6 +95,16 @@ contract AgentAccessInvariantTest is PlatformFixture {
             for (uint256 k; k < mine.length; ++k) {
                 assertTrue(agentAccess.roleOf(mine[k], a) != IAgentAccess.Role.None);
             }
+        }
+    }
+
+    /// @dev Bộ đếm thành viên theo agent khớp danh sách chi nhánh của ví (một agent); `holdsAgentRole` khớp danh sách.
+    function invariant_membershipCountMatchesBranches() public view {
+        for (uint256 ai; ai < 5; ++ai) {
+            address a = handler.account(ai);
+            uint256 n = agentAccess.branchCountOfAccount(a);
+            assertEq(agentAccess.membershipCountInAgent(agentId, a), n);
+            assertEq(agentAccess.holdsAgentRole(a), n != 0);
         }
     }
 

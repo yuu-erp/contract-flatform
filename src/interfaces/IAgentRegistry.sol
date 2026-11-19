@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.28;
 
+import {IAgentRoleSource} from "./IAgentRoleSource.sol";
+
 /// @title IAgentRegistry
 /// @notice Agent (chủ cửa hàng thuê dịch vụ) ở tầng quản trị: chỉ PLATFORM_ADMIN tạo, sửa, dừng, xoá.
 ///         Dữ liệu nghiệp vụ của agent không bị đụng tới: "xoá" là xoá mềm, mọi thứ vẫn đọc được.
 ///         Đặc tả: docs/modules/core-operator.md.
-interface IAgentRegistry {
+interface IAgentRegistry is IAgentRoleSource {
     /// @dev None: chưa tồn tại. Active: hoạt động. Suspended: tạm dừng, chỉ đọc, mở lại được.
     ///      Deleted: đã xoá mềm, chỉ đọc vĩnh viễn, không mở lại.
     enum AgentStatus {
@@ -59,8 +61,8 @@ interface IAgentRegistry {
     error NoPendingOwner(uint64 agentId);
     error EmptyReason();
     error InvalidServices(uint16 services);
-    /// @notice `ids` và `masks` lệch độ dài, hoặc dài hơn `MAX_MIGRATE`.
-    error MigrateBatchInvalid();
+    /// @notice Ví mới đang là Manager/Staff của một chi nhánh thuộc chính agent này; phải rời chi nhánh trước.
+    error OwnerIsAgentMember(address owner, uint64 agentId);
 
     event AgentCreated(
         uint8 version, uint64 indexed agentId, address indexed owner, uint256 profileDocId, uint16 allowedServices
@@ -73,6 +75,7 @@ interface IAgentRegistry {
     event AgentOwnerProposed(
         uint8 version, uint64 indexed agentId, address indexed currentOwner, address indexed newOwner
     );
+    event AgentAccessSet(uint8 version, address indexed agentAccess);
     event AgentOwnerTransferred(
         uint8 version, uint64 indexed agentId, address indexed previousOwner, address indexed newOwner
     );
@@ -80,6 +83,11 @@ interface IAgentRegistry {
     // Tên kind FullDB
     function KIND_AGENTS() external pure returns (string memory);
     function KIND_AUDIT() external pure returns (string memory);
+
+    // ─── Cấu hình (PLATFORM_OWNER) ──────────────────────────────────────
+    /// @notice Nối AgentAccess để `proposeAgentOwner`/`acceptAgentOwner` kiểm ví mới không là thành viên của agent.
+    function setAgentAccess(address agentAccess_) external;
+    function agentAccess() external view returns (address);
 
     // ─── Ghi (PLATFORM_ADMIN) ───────────────────────────────────────────
     /// @notice `allowedServices` là trần module của agent. Chi nhánh chỉ được bật một tập con hợp lệ.
@@ -97,8 +105,6 @@ interface IAgentRegistry {
     function proposeAgentOwner(uint64 agentId, address newOwner) external;
     /// @notice Đổi ví chủ bước 2: ví mới gọi. Hồ sơ FullDB đổi `owner` trong cùng giao dịch.
     function acceptAgentOwner(uint64 agentId) external;
-    /// @notice Điền trần cho agent đang có `allowedServices == 0`, trong cùng giao dịch nâng cấp. Chỉ chạy một lần (`reinitializer(2)`).
-    function migrateAllowedServices(uint64[] calldata ids, uint16[] calldata masks) external;
 
     // ─── Đọc ────────────────────────────────────────────────────────────
     function getAgent(uint64 agentId) external view returns (Agent memory);

@@ -488,4 +488,32 @@ contract AgentAccessTest is PlatformFixture {
         vm.prank(platformOwner);
         agentAccess.upgradeToAndCall(impl, "");
     }
+
+    /// Bộ đếm thành viên theo agent tăng/giảm đúng qua cấp, đổi vai, thu, tự rời; tách theo agent.
+    function test_membershipCountInAgent() public {
+        uint64 other = _createAgent(coOwner);
+        uint64 ob = _createBranch(other, "other.vn", NET);
+
+        _grant(agentOwner, b1, staff, STAFF);
+        _grant(agentOwner, b2, staff, STAFF);
+        _grant(coOwner, ob, staff, STAFF);
+        assertEq(agentAccess.membershipCountInAgent(agentId, staff), 2);
+        assertEq(agentAccess.membershipCountInAgent(other, staff), 1);
+        assertTrue(agentAccess.holdsAgentRole(staff));
+
+        _grant(agentOwner, b1, staff, MANAGER); // đổi vai không đổi số
+        assertEq(agentAccess.membershipCountInAgent(agentId, staff), 2);
+
+        vm.prank(agentOwner);
+        agentAccess.revokeRole(b1, staff);
+        assertEq(agentAccess.membershipCountInAgent(agentId, staff), 1);
+        vm.prank(staff);
+        agentAccess.renounceRole(b2);
+        assertEq(agentAccess.membershipCountInAgent(agentId, staff), 0);
+        assertTrue(agentAccess.holdsAgentRole(staff), "con o agent khac");
+        vm.prank(staff);
+        agentAccess.renounceRole(ob);
+        assertEq(agentAccess.membershipCountInAgent(other, staff), 0);
+        assertFalse(agentAccess.holdsAgentRole(staff));
+    }
 }

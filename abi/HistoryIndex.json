@@ -160,6 +160,30 @@
   },
   {
     "type": "function",
+    "name": "canWrite",
+    "inputs": [
+      {
+        "name": "writer",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "kind",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "dbName",
     "inputs": [
       {
@@ -424,12 +448,17 @@
   },
   {
     "type": "function",
-    "name": "setFullDB",
+    "name": "setWriter",
     "inputs": [
       {
-        "name": "fullDB_",
+        "name": "writer",
         "type": "address",
         "internalType": "address"
+      },
+      {
+        "name": "allowed",
+        "type": "bool",
+        "internalType": "bool"
       }
     ],
     "outputs": [],
@@ -437,12 +466,17 @@
   },
   {
     "type": "function",
-    "name": "setWriter",
+    "name": "setWriterKind",
     "inputs": [
       {
         "name": "writer",
         "type": "address",
         "internalType": "address"
+      },
+      {
+        "name": "kind",
+        "type": "string",
+        "internalType": "string"
       },
       {
         "name": "allowed",
@@ -592,6 +626,43 @@
   },
   {
     "type": "event",
+    "name": "WriterKindSet",
+    "inputs": [
+      {
+        "name": "version",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "uint8"
+      },
+      {
+        "name": "writer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "kindHash",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "kind",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "allowed",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "WriterSet",
     "inputs": [
       {
@@ -688,6 +759,22 @@
     "type": "error",
     "name": "InvalidTermPart",
     "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "KindNotAllowed",
+    "inputs": [
+      {
+        "name": "writer",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "kind",
+        "type": "string",
+        "internalType": "string"
+      }
+    ]
   },
   {
     "type": "error",

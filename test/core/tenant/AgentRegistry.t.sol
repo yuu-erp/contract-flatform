@@ -8,7 +8,6 @@ import {IAgentRegistry} from "../../../src/interfaces/IAgentRegistry.sol";
 import {IHistoryIndex} from "../../../src/interfaces/IHistoryIndex.sol";
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import {IPlatformAccess} from "../../../src/interfaces/IPlatformAccess.sol";
-import {Initializable} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 contract AgentRegistryTest is PlatformFixture {
     // ─── tạo ────────────────────────────────────────────────────────────
@@ -410,53 +409,6 @@ contract AgentRegistryTest is PlatformFixture {
         registry.upgradeToAndCall(impl, "");
     }
 
-    function test_migrateAllowedServices_fillsZerosSkipsDeletedAndSet() public {
-        uint64 live = _createAgent(agentOwner);
-        uint64 gone = _createAgent(customer);
-        uint64 set = _createAgent(coOwner);
-        vm.prank(platformAdmin);
-        registry.deleteAgent(gone, "x");
-        _zeroAllowed(live);
-        _zeroAllowed(gone);
-
-        uint64[] memory ids = new uint64[](3);
-        ids[0] = live;
-        ids[1] = gone;
-        ids[2] = set;
-        uint16[] memory masks = new uint16[](3);
-        masks[0] = NET | IQR;
-        masks[1] = 0;
-        masks[2] = NET;
-
-        address impl = address(new AgentRegistry());
-        vm.prank(platformOwner);
-        registry.upgradeToAndCall(impl, abi.encodeCall(AgentRegistry.migrateAllowedServices, (ids, masks)));
-
-        assertEq(registry.getAgent(live).allowedServices, NET | IQR);
-        assertEq(registry.getAgent(gone).allowedServices, 0);
-        assertEq(registry.getAgent(set).allowedServices, NET | IQR | LOYALTY);
-    }
-
-    function test_migrateAllowedServices_rejectsBadBatch() public {
-        uint64 id = _createAgent(agentOwner);
-        _zeroAllowed(id);
-        address impl = address(new AgentRegistry());
-
-        uint64[] memory ids = new uint64[](1);
-        ids[0] = id;
-        uint16[] memory mismatch = new uint16[](2);
-        vm.prank(platformOwner);
-        vm.expectRevert(IAgentRegistry.MigrateBatchInvalid.selector);
-        registry.upgradeToAndCall(impl, abi.encodeCall(AgentRegistry.migrateAllowedServices, (ids, mismatch)));
-
-        uint16[] memory bad = new uint16[](1);
-        bad[0] = 0;
-        vm.prank(platformOwner);
-        vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.InvalidServices.selector, uint16(0)));
-        registry.upgradeToAndCall(impl, abi.encodeCall(AgentRegistry.migrateAllowedServices, (ids, bad)));
-        assertEq(registry.getAgent(id).allowedServices, 0);
-    }
-
     function test_view_unknownAgent() public {
         vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.AgentNotFound.selector, 1));
         registry.getAgent(1);
@@ -465,13 +417,33 @@ contract AgentRegistryTest is PlatformFixture {
         registry.requireAgentWritable(1);
     }
 
-    /// @dev `allowedServices` chiếm trọn slot +4 của phần tử mapping `agents` (namespace slot 1). Ghi 0 cả slot.
-    function _zeroAllowed(uint64 agentId) internal {
-        bytes32 base = keccak256(
-            abi.encode(
-                uint256(agentId), uint256(0xedf803923c55a0f16904cf3e37d276888338928655d01abb49352257aa4c9f00) + 1
-            )
-        );
-        vm.store(address(registry), bytes32(uint256(base) + 4), bytes32(0));
+    /// Audit sửa hồ sơ: `before` và `after_` cùng là `AgentProfileRecord` đã mã hoá.
+    function test_updateAgentProfile_auditIsFullRecord() public {
+        uint64 id = _createAgent(agentOwner);
+        vm.prank(platformAdmin);
+        registry.updateAgentProfile(id, _profile("Ten moi"));
+
+        IHistoryIndex.Query memory q;
+        q.filters = new IHistoryIndex.Term[](1);
+        q.filters[0] = IHistoryIndex.Term("X", "agent_update");
+        q.sortSlot = -1;
+        q.limit = 10;
+        IHistoryIndex.Page memory p = historyIndex.search(0, "platform_audit", q);
+        assertEq(p.total, 1);
+        PlatformAuditRecord memory r = abi.decode(p.data[0], (PlatformAuditRecord));
+        IAgentRegistry.AgentProfileRecord memory b = abi.decode(r.before, (IAgentRegistry.AgentProfileRecord));
+        IAgentRegistry.AgentProfileRecord memory a = abi.decode(r.after_, (IAgentRegistry.AgentProfileRecord));
+        assertEq(b.profile.storeName, "Cyber Q1");
+        assertEq(a.profile.storeName, "Ten moi");
+        assertEq(a.owner, agentOwner);
+        assertEq(a.agentId, id);
+    }
+
+    function test_noMigrateAllowedServices() public {
+        (bool ok,) = address(registry)
+            .call(
+                abi.encodeWithSignature("migrateAllowedServices(uint64[],uint16[])", new uint64[](0), new uint16[](0))
+            );
+        assertFalse(ok);
     }
 }

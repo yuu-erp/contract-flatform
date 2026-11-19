@@ -97,7 +97,7 @@ Interface công khai của mọi contract (`I<Tên>.sol`): hàm, event, lỗi, s
 | `e2e/` | kịch bản đầu cuối qua nhiều contract (tạo agent → bật dịch vụ → nghiệp vụ → dừng → chỉ đọc) | Kiểm các khối nối với nhau đúng, như người dùng thật đi qua |
 | `layout/` | harness `<Tên>Layout.sol`: khai báo struct storage namespaced như biến thường | Cho `scripts/storage_layout.py` in và so layout từng trường |
 | `utils/` | `BaseTest.sol` (vai trò mẫu, `deployProxy`, `installMockFullDB`), `MockFullDB.sol`, `MockServiceModule.sol` | Hạ tầng test dùng chung |
-| `script/` | test script deploy và nâng cấp (`DeployPlatform`, `DeployAgentAccess`, `SetPlatformAdmin`, `UpgradeAllowedServices`) | Script chạy được trong test, không cần chain |
+| `script/` | test script deploy và nâng cấp (`DeployPlatform`, `DeployAgentAccess`, `SetPlatformAdmin`) | Script chạy được trong test, không cần chain |
 
 Khung `Scaffold` đã xoá (2026-11-18) khi có khối thật đầu tiên. Harness layout của core ở `test/layout/CoreLayouts.sol`; `test/utils/PlatformFixture.sol` dựng sẵn PlatformAccess → HistoryIndex → AgentRegistry → BranchRegistry → AgentAccess cho test.
 
@@ -120,7 +120,7 @@ Giữa các module, khi NET hay IQR cần báo cho Loyalty, nó gọi qua `inter
 
 | Thư mục / file | Chứa gì | Mục đích |
 |---|---|---|
-| `script/` | `DeployPlatform.s.sol`, `DeployAgentAccess.s.sol`, `SetPlatformAdmin.s.sol`, `UpgradeAllowedServices.s.sol` | Deploy tầng quản trị, thêm AgentAccess vào hệ đã deploy, cấp/thu admin, nâng AgentRegistry rồi BranchRegistry và điền `allowedServices`. Không chứa khoá. Người dùng tự chạy `make deploy` / `make deploy-agent-access` / `make set-admin` / `make upgrade-allowed-services` |
+| `script/` | `DeployPlatform.s.sol`, `DeployAgentAccess.s.sol`, `SetPlatformAdmin.s.sol` | Deploy tầng quản trị, thêm AgentAccess vào hệ đã deploy, cấp/thu admin. Không chứa khoá. Người dùng tự chạy `make deploy` / `make deploy-agent-access` / `make set-admin` |
 | `abi/` | `PlatformAccess.json`, `AgentRegistry.json`, `BranchRegistry.json`, `HistoryIndex.json`, `AgentAccess.json` | Mảng ABI thuần (`make abi`), client copy. Không có bytecode |
 | `deployments/` | `platform-<chainid>.json` | Địa chỉ proxy, impl, owner, admin sau deploy. `*-31337.json` (anvil) nằm trong `.gitignore` |
 | `web/` | Vite + React, `pnpm` | Trang thử luồng vai trò (admin, chủ agent, quản lý, nhân viên, user). ABI và địa chỉ đọc từ `abi/` và `deployments/`, không chép. `node_modules/` và `dist/` không commit |
@@ -134,5 +134,5 @@ Giữa các module, khi NET hay IQR cần báo cho Loyalty, nó gọi qua `inter
 | `tasks/` | file bàn giao (`00-*` GĐ0, `10-*` tầng vận hành…) | Quy trình Claude lập kế hoạch/review, Cursor triển khai (`documents/WORKFLOW.md`) |
 | `lib/` | submodule `forge-std` v1.16.2, `openzeppelin-contracts-upgradeable` v5.6.1 | Không sửa; nâng version bằng `forge install` + ghi lý do |
 | `.github/workflows/ci.yml` | chạy `make ci` | Mọi thay đổi phải qua: fmt, build, sizes, deps, layout, test, gas snapshot |
-| `Makefile` | `build`, `test`, `fmt`, `sizes`, `deps`, `layout`, `snapshot`, `ci`, `legacy-inventory`, `abi`, `deploy`, `deploy-local`, `set-admin`, `upgrade-allowed-services` | Một bộ lệnh chuẩn cho người và agent. `deploy`, `set-admin` và `upgrade-allowed-services` chỉ người dùng chạy |
+| `Makefile` | `build`, `test`, `fmt`, `sizes`, `deps`, `layout`, `snapshot`, `ci`, `legacy-inventory`, `abi`, `deploy`, `deploy-local`, `set-admin` | Một bộ lệnh chuẩn cho người và agent. `deploy` và `set-admin` chỉ người dùng chạy |
 | `.gas-snapshot` | gas từng test | `forge snapshot --check` báo khi gas thay đổi ngoài ý muốn |

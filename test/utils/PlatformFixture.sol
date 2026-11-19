@@ -12,7 +12,8 @@ import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
 import {IAgentRegistry} from "../../src/interfaces/IAgentRegistry.sol";
 
 /// @notice Dựng tầng quản trị như khi deploy thật: PlatformAccess → HistoryIndex → AgentRegistry → BranchRegistry,
-///         → AgentAccess; owner đăng ký ba contract làm writer và thêm hai admin.
+///         → AgentAccess; owner đăng ký ba contract làm writer (kèm kind được ghi), nối AgentAccess vào AgentRegistry,
+///         đặt nguồn vai trò agent cho PlatformAccess và thêm hai admin.
 abstract contract PlatformFixture is BaseTest {
     MockFullDB internal fulldb;
     PlatformAccess internal access;
@@ -65,6 +66,16 @@ abstract contract PlatformFixture is BaseTest {
         historyIndex.setWriter(address(registry), true);
         historyIndex.setWriter(address(branches), true);
         historyIndex.setWriter(address(agentAccess), true);
+        historyIndex.setWriterKind(address(registry), "platform_agents", true);
+        historyIndex.setWriterKind(address(registry), "platform_audit", true);
+        historyIndex.setWriterKind(address(branches), "platform_branches", true);
+        historyIndex.setWriterKind(address(branches), "platform_audit", true);
+        historyIndex.setWriterKind(address(agentAccess), "platform_audit", true);
+        registry.setAgentAccess(address(agentAccess));
+        address[] memory sources = new address[](2);
+        sources[0] = address(registry);
+        sources[1] = address(agentAccess);
+        access.setAgentRoleSources(sources);
         access.addPlatformAdmin(platformAdmin);
         access.addPlatformAdmin(platformAdmin2);
         vm.stopPrank();

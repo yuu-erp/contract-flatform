@@ -119,12 +119,10 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
         bytes memory before = $.history.get(br.agentId, KIND_BRANCHES(), br.profileDocId);
         string memory domain = abi.decode(before, (BranchProfileRecord)).domain;
         br.updatedAt = uint64(block.timestamp);
-        $.history
-            .replace(
-                br.agentId, KIND_BRANCHES(), br.profileDocId, _profileRecord(br.agentId, branchId, domain, profile)
-            );
+        bytes memory after_ = _profileRecord(br.agentId, branchId, domain, profile);
+        $.history.replace(br.agentId, KIND_BRANCHES(), br.profileDocId, after_);
         emit BranchProfileUpdated(EVENT_VERSION, br.agentId, branchId, br.profileDocId);
-        _audit("update", br.agentId, branchId, before, abi.encode(profile), "");
+        _audit("update", br.agentId, branchId, before, after_, "");
     }
 
     function setBranchDomain(uint64 branchId, string calldata domain) external onlyPlatformAdmin whenNotPaused {
@@ -154,6 +152,7 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
         _checkServices(services);
         _checkGranted(br.agentId, services);
         uint16 old = br.services;
+        if (old == services) return; // không đổi
         br.services = services;
         br.updatedAt = uint64(block.timestamp);
         emit BranchServicesChanged(EVENT_VERSION, branchId, old, services);
@@ -238,7 +237,7 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
         emit TaxChanged(
             EVENT_VERSION, agentId, branchId, service, _effective(oldPlus, agentId, service), bps, true, msg.sender
         );
-        _audit("tax", agentId, branchId, abi.encode(service, oldPlus), abi.encode(service, bps + 1), "");
+        _audit("tax", agentId, branchId, _branchTaxState(service, oldPlus), _branchTaxState(service, bps + 1), "");
     }
 
     function clearBranchTax(uint64 branchId, uint16 service) external whenNotPaused {
@@ -257,7 +256,7 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
             false,
             msg.sender
         );
-        _audit("tax", agentId, branchId, abi.encode(service, oldPlus), abi.encode(service, uint16(0)), "");
+        _audit("tax", agentId, branchId, _branchTaxState(service, oldPlus), _branchTaxState(service, 0), "");
     }
 
     // ─── Đọc ────────────────────────────────────────────────────────────
@@ -302,7 +301,10 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
     function isServiceEnabled(uint64 branchId, uint16 service) external view returns (bool) {
         Branch storage br = _b().branches[branchId];
         if (!_isSingleService(service) || (br.services & service) != service || br.agentId == 0) return false;
-        return (_b().agents.getAgent(br.agentId).allowedServices & service) == service;
+        if (br.status == BranchStatus.Deleted) return false;
+        IAgentRegistry.Agent memory ag = _b().agents.getAgent(br.agentId);
+        if (ag.status == IAgentRegistry.AgentStatus.Deleted) return false;
+        return (ag.allowedServices & service) == service;
     }
 
     function requireWritable(uint64 branchId, uint16 service) external view {
@@ -372,6 +374,11 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
         agentId = br.agentId;
         _onlyAgentOwnerWritable(agentId);
         if (br.status != BranchStatus.Active) revert BranchNotActive(branchId);
+    }
+
+    /// @dev Audit thuế chi nhánh: `(service, isSet, bps)` với bps thật (không cộng 1). Thuế agent: `(service, bps)`.
+    function _branchTaxState(uint16 service, uint16 plusOne) private pure returns (bytes memory) {
+        return plusOne == 0 ? abi.encode(service, false, uint16(0)) : abi.encode(service, true, plusOne - 1);
     }
 
     function _effective(uint16 branchPlusOne, uint64 agentId, uint16 service) private view returns (uint16) {

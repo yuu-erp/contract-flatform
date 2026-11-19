@@ -138,6 +138,8 @@ interface IBranchRegistry {
     function agentOf(uint64 branchId) external view returns (uint64);
     function branchByDomainHash(bytes32 domainHash) external view returns (uint64);
     function branchByDomain(string calldata domain) external view returns (uint64);
+    /// @notice Cấu hình: dịch vụ (một bit) bật trên chi nhánh và nằm trong trần của agent. `false` nếu chi nhánh hoặc
+    ///         agent đã `Deleted`. **Không** xét pause hay `Suspended`: để quyết định ghi, dùng `requireWritable`.
     function isServiceEnabled(uint64 branchId, uint16 service) external view returns (bool);
     /// @notice Revert nếu hệ pause, agent không Active, chi nhánh không Active hoặc dịch vụ không bật (R5).
     function requireWritable(uint64 branchId, uint16 service) external view;

@@ -4,8 +4,8 @@ pragma solidity 0.8.28;
 import {PlatformAccessed} from "../access/PlatformAccessed.sol";
 import {PlatformAuditing} from "../history/PlatformAuditing.sol";
 import {IAgentRegistry} from "../../interfaces/IAgentRegistry.sol";
+import {IAgentAccess} from "../../interfaces/IAgentAccess.sol";
 import {IHistoryIndex} from "../../interfaces/IHistoryIndex.sol";
-import {IPlatformAccess} from "../../interfaces/IPlatformAccess.sol";
 import {FullDBCodec} from "../../libraries/FullDBCodec.sol";
 import {ServiceMask} from "../../libraries/ServiceMask.sol";
 import {TextRules} from "../../libraries/TextRules.sol";
@@ -21,8 +21,6 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
     uint256 public constant MAX_STORE_ADDRESS = 200;
     uint256 public constant MAX_NOTE = 500;
     uint256 public constant MAX_REASON = 200;
-    /// @notice Một lần `migrateAllowedServices` (và một lần `reinitializer(2)`) nhận tối đa từng này agent.
-    uint256 public constant MAX_MIGRATE = ServiceMask.MAX_MIGRATE;
 
     /// @custom:storage-location erc7201:metaplatform.core.tenant.agents
     struct AgentsStorage {
@@ -30,6 +28,7 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
         uint64 agentCount;
         mapping(uint64 => Agent) agents;
         mapping(address => uint64) agentByOwner; // chỉ agent chưa xoá
+        IAgentAccess agentAccess; // để từ chối đổi chủ sang thành viên chi nhánh của chính agent
     }
 
     // keccak256(abi.encode(uint256(keccak256("metaplatform.core.tenant.agents")) - 1)) & ~bytes32(uint256(0xff))
@@ -64,6 +63,19 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
         return _a().history;
     }
 
+    function agentAccess() external view returns (address) {
+        return address(_a().agentAccess);
+    }
+
+    // ─── Cấu hình (PLATFORM_OWNER) ──────────────────────────────────────
+
+    /// @notice AgentAccess deploy sau AgentRegistry nên nối bằng setter. Chưa nối thì chưa có thành viên nào để kiểm.
+    function setAgentAccess(address agentAccess_) external onlyPlatformOwner {
+        if (agentAccess_ == address(0)) revert ZeroAddress();
+        _a().agentAccess = IAgentAccess(agentAccess_);
+        emit AgentAccessSet(EVENT_VERSION, agentAccess_);
+    }
+
     // ─── Ghi (PLATFORM_ADMIN) ───────────────────────────────────────────
 
     function createAgent(address owner, uint16 allowedServices, AgentProfile calldata profile)
@@ -72,7 +84,7 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
         whenNotPaused
         returns (uint64 agentId)
     {
-        _checkNewOwner(owner);
+        _checkNewOwner(owner, 0);
         _checkProfile(profile);
         if (!ServiceMask.isValid(allowedServices)) revert InvalidServices(allowedServices);
         AgentsStorage storage $ = _a();
@@ -127,10 +139,11 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
 
         bytes memory before = $.history.get(0, KIND_AGENTS(), ag.profileDocId);
         ag.updatedAt = uint64(block.timestamp);
-        $.history.replace(0, KIND_AGENTS(), ag.profileDocId, _profileRecord(agentId, ag.owner, profile));
+        bytes memory after_ = _profileRecord(agentId, ag.owner, profile);
+        $.history.replace(0, KIND_AGENTS(), ag.profileDocId, after_);
 
         emit AgentProfileUpdated(EVENT_VERSION, agentId, ag.profileDocId);
-        _audit("update", agentId, before, abi.encode(profile), "");
+        _audit("update", agentId, before, after_, "");
     }
 
     function suspendAgent(uint64 agentId, string calldata reason) external onlyPlatformAdmin whenNotPaused {
@@ -159,7 +172,7 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
     function proposeAgentOwner(uint64 agentId, address newOwner) external onlyPlatformAdmin whenNotPaused {
         Agent storage ag = _existing(agentId);
         if (ag.status == AgentStatus.Deleted) revert AgentDeleted(agentId);
-        if (newOwner != address(0)) _checkNewOwner(newOwner);
+        if (newOwner != address(0)) _checkNewOwner(newOwner, agentId);
 
         address prevPending = ag.pendingOwner;
         ag.pendingOwner = newOwner;
@@ -174,8 +187,9 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
         if (ag.status == AgentStatus.Deleted) revert AgentDeleted(agentId);
         if (ag.pendingOwner == address(0)) revert NoPendingOwner(agentId);
         if (msg.sender != ag.pendingOwner) revert NotPendingOwner(msg.sender);
-        // Kiểm lại: từ lúc đề xuất, ví mới có thể đã thành chủ agent khác hoặc nhận vai trò nền tảng.
-        _checkNewOwner(msg.sender);
+        // Kiểm lại: từ lúc đề xuất, ví mới có thể đã thành chủ agent khác, nhận vai trò nền tảng
+        // hoặc được cấp vai trò trong một chi nhánh của chính agent này.
+        _checkNewOwner(msg.sender, agentId);
 
         AgentsStorage storage $ = _a();
         address previous = ag.owner;
@@ -195,25 +209,6 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
         _audit("owner_accept", agentId, abi.encode(previous), abi.encode(msg.sender), "");
     }
 
-    /// @notice Chỉ gọi qua `upgradeToAndCall` của owner. `reinitializer` đứng trước `onlyPlatformOwner`
-    ///         để lần gọi sau revert `InvalidInitialization` với mọi người gọi.
-    ///         Không audit FullDB: một giao dịch nâng cấp không chịu gas ghi hồ sơ cho từng agent.
-    function migrateAllowedServices(uint64[] calldata ids, uint16[] calldata masks)
-        external
-        reinitializer(2)
-        onlyPlatformOwner
-    {
-        if (ids.length != masks.length || ids.length > MAX_MIGRATE) revert MigrateBatchInvalid();
-        for (uint256 i = 0; i < ids.length; ++i) {
-            Agent storage ag = _existing(ids[i]);
-            if (ag.status == AgentStatus.Deleted || ag.allowedServices != 0) continue;
-            if (!ServiceMask.isValid(masks[i])) revert InvalidServices(masks[i]);
-            ag.allowedServices = masks[i];
-            ag.updatedAt = uint64(block.timestamp);
-            emit AgentServicesChanged(EVENT_VERSION, ids[i], 0, masks[i]);
-        }
-    }
-
     // ─── Đọc ────────────────────────────────────────────────────────────
 
     function getAgent(uint64 agentId) external view returns (Agent memory) {
@@ -226,6 +221,11 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
 
     function agentCount() external view returns (uint64) {
         return _a().agentCount;
+    }
+
+    /// @notice Nguồn vai trò cho `PlatformAccess`: ví đang là chủ một agent chưa xoá.
+    function holdsAgentRole(address account) external view returns (bool) {
+        return _a().agentByOwner[account] != 0;
     }
 
     function isAgentActive(uint64 agentId) external view returns (bool) {
@@ -269,11 +269,18 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
     }
 
     /// @dev Một ví một agent; ví nền tảng (owner, pending owner, admin) không được làm chủ agent.
-    function _checkNewOwner(address owner) private view {
+    ///      Đổi chủ (`agentId` ≠ 0): ví mới không được đang là Manager/Staff của chính agent đó, nếu không vai trò
+    ///      cũ bị che khi làm chủ rồi "sống lại" khi quyền chủ chuyển đi. Thành viên phải rời chi nhánh trước.
+    function _checkNewOwner(address owner, uint64 agentId) private view {
         if (owner == address(0)) revert ZeroAddress();
         if (_isPlatformRole(owner)) revert OwnerIsPlatformRole(owner);
-        uint64 existing = _a().agentByOwner[owner];
+        AgentsStorage storage $ = _a();
+        uint64 existing = $.agentByOwner[owner];
         if (existing != 0) revert OwnerAlreadyHasAgent(owner, existing);
+        IAgentAccess aa = $.agentAccess;
+        if (agentId != 0 && address(aa) != address(0) && aa.membershipCountInAgent(agentId, owner) != 0) {
+            revert OwnerIsAgentMember(owner, agentId);
+        }
     }
 
     function _checkProfile(AgentProfile calldata p) private pure {

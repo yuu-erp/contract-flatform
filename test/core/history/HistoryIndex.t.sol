@@ -26,8 +26,10 @@ contract HistoryIndexTest is BaseTest {
                 address(new HistoryIndex()), abi.encodeCall(HistoryIndex.initialize, (address(access), address(0)))
             )
         );
-        vm.prank(platformOwner);
+        vm.startPrank(platformOwner);
         hi.setWriter(writer, true);
+        hi.setWriterKind(writer, "topups", true);
+        vm.stopPrank();
     }
 
     // ─── helpers ────────────────────────────────────────────────────────
@@ -78,13 +80,73 @@ contract HistoryIndexTest is BaseTest {
         assertFalse(hi.isWriter(writer));
     }
 
-    function test_setFullDB_onlyOwner() public {
-        vm.prank(stranger);
-        vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformOwner.selector, stranger));
-        hi.setFullDB(stranger);
+    /// Địa chỉ FullDB cố định từ initialize: đổi kho giữa chừng làm `dbReady`/`docUsed` và mọi `profileDocId` sai.
+    function test_noSetFullDB() public {
         vm.prank(platformOwner);
+        (bool ok,) = address(hi).call(abi.encodeWithSignature("setFullDB(address)", stranger));
+        assertFalse(ok);
+        assertEq(hi.fullDB(), FULLDB_PRECOMPILE);
+    }
+
+    function test_setWriterKind_onlyOwner_andValidates() public {
+        vm.prank(platformAdmin);
+        vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformOwner.selector, platformAdmin));
+        hi.setWriterKind(writer, "orders", true);
+
+        vm.startPrank(platformOwner);
         vm.expectRevert(IHistoryIndex.ZeroAddress.selector);
-        hi.setFullDB(address(0));
+        hi.setWriterKind(address(0), "orders", true);
+        vm.expectRevert(IHistoryIndex.InvalidKind.selector);
+        hi.setWriterKind(writer, "Orders", true);
+
+        vm.expectEmit(address(hi));
+        emit IHistoryIndex.WriterKindSet(1, writer, keccak256("orders"), "orders", true);
+        hi.setWriterKind(writer, "orders", true);
+        vm.stopPrank();
+        assertTrue(hi.canWrite(writer, "orders"));
+        assertFalse(hi.canWrite(writer, "payments"));
+        assertFalse(hi.canWrite(stranger, "orders"));
+    }
+
+    /// Writer chỉ ghi được kind đã cấp: một module lỗi không ghi đè được dữ liệu của module khác.
+    function test_append_rejectsKindNotGranted() public {
+        vm.prank(writer);
+        vm.expectRevert(abi.encodeWithSelector(IHistoryIndex.KindNotAllowed.selector, writer, "platform_agents"));
+        hi.append(0, "platform_agents", "x", _terms("B", "1"), _vals(1, 1));
+    }
+
+    function test_replace_rejectsKindNotGranted() public {
+        // Writer khác ghi `platform_agents`; `writer` (chỉ có `topups`) không thay được document đó.
+        address other = makeAddr("otherModule");
+        vm.startPrank(platformOwner);
+        hi.setWriter(other, true);
+        hi.setWriterKind(other, "platform_agents", true);
+        vm.stopPrank();
+        vm.prank(other);
+        uint256 id = hi.append(0, "platform_agents", "profile", _terms("B", "1"), _vals(1, 1));
+
+        vm.prank(writer);
+        vm.expectRevert(abi.encodeWithSelector(IHistoryIndex.KindNotAllowed.selector, writer, "platform_agents"));
+        hi.replace(0, "platform_agents", id, "forged");
+        assertEq(hi.get(0, "platform_agents", id), "profile");
+    }
+
+    /// Thu kind hoặc tắt công tắc tổng đều chặn ghi.
+    function test_writer_revokeKindOrSwitch() public {
+        vm.prank(platformOwner);
+        hi.setWriterKind(writer, "topups", false);
+        vm.prank(writer);
+        vm.expectRevert(abi.encodeWithSelector(IHistoryIndex.KindNotAllowed.selector, writer, "topups"));
+        hi.append(1, "topups", "x", _terms("B", "1"), _vals(1, 1));
+
+        vm.startPrank(platformOwner);
+        hi.setWriterKind(writer, "topups", true);
+        hi.setWriter(writer, false);
+        vm.stopPrank();
+        assertFalse(hi.canWrite(writer, "topups"));
+        vm.prank(writer);
+        vm.expectRevert(abi.encodeWithSelector(IHistoryIndex.NotWriter.selector, writer));
+        hi.append(1, "topups", "x", _terms("B", "1"), _vals(1, 1));
     }
 
     function test_dbName() public view {

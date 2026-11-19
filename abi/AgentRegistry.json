@@ -45,19 +45,6 @@
   },
   {
     "type": "function",
-    "name": "MAX_MIGRATE",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
     "name": "MAX_NOTE",
     "inputs": [],
     "outputs": [
@@ -146,6 +133,19 @@
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "agentAccess",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -392,6 +392,25 @@
   },
   {
     "type": "function",
+    "name": "holdsAgentRole",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "initialize",
     "inputs": [
       {
@@ -426,24 +445,6 @@
       }
     ],
     "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "migrateAllowedServices",
-    "inputs": [
-      {
-        "name": "ids",
-        "type": "uint64[]",
-        "internalType": "uint64[]"
-      },
-      {
-        "name": "masks",
-        "type": "uint16[]",
-        "internalType": "uint16[]"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -521,6 +522,19 @@
         "name": "reason",
         "type": "string",
         "internalType": "string"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setAgentAccess",
+    "inputs": [
+      {
+        "name": "agentAccess_",
+        "type": "address",
+        "internalType": "address"
       }
     ],
     "outputs": [],
@@ -619,6 +633,25 @@
     ],
     "outputs": [],
     "stateMutability": "payable"
+  },
+  {
+    "type": "event",
+    "name": "AgentAccessSet",
+    "inputs": [
+      {
+        "name": "version",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "uint8"
+      },
+      {
+        "name": "agentAccess",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
   },
   {
     "type": "event",
@@ -963,11 +996,6 @@
   },
   {
     "type": "error",
-    "name": "MigrateBatchInvalid",
-    "inputs": []
-  },
-  {
-    "type": "error",
     "name": "NoPendingOwner",
     "inputs": [
       {
@@ -1018,6 +1046,22 @@
   {
     "type": "error",
     "name": "OwnerAlreadyHasAgent",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "agentId",
+        "type": "uint64",
+        "internalType": "uint64"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "OwnerIsAgentMember",
     "inputs": [
       {
         "name": "owner",

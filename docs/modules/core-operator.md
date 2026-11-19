@@ -99,7 +99,7 @@ Kiểm domain → `branchIdCount++` → lưu `BranchInfo` (tên, địa chỉ, S
 |---|---|---|
 | ✅ `PlatformAccess` | `core/access` | **Chỉ tầng quản trị hệ thống:** `PLATFORM_OWNER` = owner của OZ `Ownable2StepUpgradeable` (đổi hai bước, **tắt `renounceOwnership`**), `PLATFORM_ADMIN` (≤ 50 ví, tự viết), pause toàn hệ bằng OZ `PausableUpgradeable`. Không có vai trò agent nào. Lỗi/event phần owner và pause là của OZ (`OwnableUnauthorizedAccount`, `EnforcedPause`, `Paused`…) |
 | ✅ `PlatformAccessed` | `core/access` | Lớp cha abstract cho mọi contract khác: modifier `onlyPlatformOwner`, `onlyPlatformAdmin`, `whenNotPaused`; quyền nâng cấp UUPS = `PLATFORM_OWNER`. **Hỏi owner từ một `PlatformAccess` duy nhất**, không kế thừa `Ownable` riêng, để cả hệ chỉ có một owner (đổi một chỗ là đổi toàn hệ) |
-| ✅ `HistoryIndex` | `core/history` | Cổng duy nhất vào FullDB (writer do owner đăng ký) |
+| ✅ `HistoryIndex` | `core/history` | Cổng duy nhất vào FullDB. Writer do owner đăng ký (`setWriter`) và chỉ ghi được các kind owner cấp (`setWriterKind`). Địa chỉ FullDB cố định từ `initialize`, không có `setFullDB` |
 | ✅ `AgentRegistry` | `core/tenant` | Agent: tạo, sửa hồ sơ, dừng, mở lại, xoá mềm, đổi ví chủ. View cho module: `requireAgentWritable(agentId)` |
 | ✅ `BranchRegistry` | `core/tenant` | Chi nhánh, dịch vụ, domain, múi giờ, chi nhánh chính, thuế. View `requireWritable(branchId, service)`. **23,0 KB, sát trần 24 KB**: thêm tính năng thì tách thuế ra `TaxRegistry` |
 | `AgentAccess` | `core/access` | Vai trò **bên trong** agent (co-owner, quản lý, nhân viên), gắn `(agentId, branchId)`. Thuộc bước "luồng agent" |
@@ -162,22 +162,17 @@ branchTax[branchId][service]     → uint16 bps + 1, 0 = chưa đặt (mức ri�
 | R3 | Domain bắt buộc, **chữ thường** (`a–z 0–9 - .`, 3–253 ký tự), duy nhất toàn hệ (so `keccak256`); đổi domain hoặc xoá chi nhánh thì nhả hash cũ | `createBranch`, `setBranchDomain`, `deleteBranch` ✅ |
 | R4 | Chỉ `PLATFORM_ADMIN` tạo, sửa, tạm dừng chi nhánh và đổi dịch vụ. Thuế là ngoại lệ: chỉ `AGENT_OWNER` đặt (mục 6.2) | `PlatformOperator`, `TenantRegistry` |
 | R5 | **Chỉ đọc khi dừng:** agent `Suspended`, hoặc chi nhánh `Suspended`, hoặc dịch vụ không bật → **mọi hàm ghi** của module ở chi nhánh đó revert, kể cả khách tiêu số dư, đóng phiên, thanh toán. View vẫn chạy bình thường. Dữ liệu không bị xoá hay sửa | `requireWritable(branchId, service)`, gọi đầu mọi hàm ghi của module |
-| R6 | Một ví chỉ làm chủ một agent; ví chủ không được là ví admin nền tảng | `createAgent`, `acceptAgentOwner` |
+| R6 | Một ví chỉ làm chủ một agent; ví chủ không được là ví nền tảng (owner, pending owner, admin), kiểm cả hai chiều: `PlatformAccess` hỏi `agentRoleSources` (`AgentRegistry`, `AgentAccess`) trước `addPlatformAdmin` / `transferOwnership` / `acceptOwnership`. Đổi chủ không được rơi vào thành viên chi nhánh của chính agent đó (`OwnerIsAgentMember`, xem core-access A9) | `createAgent`, `proposeAgentOwner`, `acceptAgentOwner`, `PlatformAccess._requireNoAgentRole` |
 | R7 | **Không xoá dữ liệu.** `deleteAgent` / `deleteBranch` là xoá mềm: sang `Deleted` (trạng thái cuối), mọi dữ liệu vẫn đọc được, mọi hàm ghi revert như R5. Xoá agent nhả ví chủ; xoá chi nhánh nhả domain. Chi nhánh chính chỉ xoá được sau khi agent đã xoá (trước đó phải `setMainBranch` sang chi nhánh khác). `deleteBranch` vẫn gọi được khi agent đã xoá, để nhả domain | `AgentRegistry.deleteAgent`, `BranchRegistry.deleteBranch` ✅ |
 | R8 | Tắt một dịch vụ trên chi nhánh: dữ liệu dịch vụ đó vẫn còn, chuyển chỉ đọc theo R5. Bật lại thì ghi tiếp | `setBranchServices` |
 | R9 | Đổi ví chủ hai bước: admin đề xuất `pendingOwner`, ví mới `acceptAgentOwner`; vai trò `AGENT_OWNER` chuyển nguyên tử. `acceptAgentOwner` ghi lại hồ sơ FullDB với `owner` mới (`history.replace`) | `proposeAgentOwner`, `acceptAgentOwner` |
-| R10 | Mỗi thao tác vận hành ghi một bản audit vào FullDB (`mp1_platform_audit`, nhãn `G<agentId>`, `X<action>`, `R<actor>`) và phát event. `migrateAllowedServices` không audit (gas của giao dịch nâng cấp) | `AgentRegistry._audit` ✅ |
+| R10 | Mỗi thao tác vận hành ghi một bản audit vào FullDB (`mp1_platform_audit`, nhãn `G<agentId>`, `X<action>`, `R<actor>`) và phát event. | `AgentRegistry._audit` ✅ |
 
 **Chú ý R5:** khi dừng agent đang có phiên NET mở, phiên đó không đóng được và không trừ tiền tiếp, nên tiền khách đứng yên. Mở lại thì heartbeat tiếp theo sẽ tính cả khoảng thời gian bị dừng. Đặc tả NET phải quy định không tính tiền khoảng thời gian bị dừng (ghi vào đặc tả NET).
 
-### 2.4.1 Nâng cấp v2 (`allowedServices`)
+### 2.4.1 Không có bước migrate `allowedServices`
 
-Agent tạo trước khi có trường `allowedServices` đọc ra 0. Để 0 thì mọi chi nhánh gặp `ServiceNotAllowed` ngay sau khi `BranchRegistry` mới chạy. Vì vậy nâng cấp điền trần **trong cùng giao dịch** với implementation mới:
-
-1. `AgentRegistry`: `upgradeToAndCall(impl, migrateAllowedServices(ids, masks))`. `migrateAllowedServices` là `reinitializer(2)` nên chỉ chạy một lần, tối đa 200 agent. Mask hợp lệ (`ServiceMask.isValid`) chỉ ghi khi giá trị đang là 0 và agent chưa `Deleted`. Không audit FullDB.
-2. `BranchRegistry`: `upgradeToAndCall(impl, "")` **sau** AgentRegistry. Làm ngược lại thì `requireWritable` revert vì bản `AgentRegistry` cũ không trả về `uint16`.
-
-Script `script/UpgradeAllowedServices.s.sol` tự tính mask: OR `services` của chi nhánh chưa xoá theo `agentId`. Agent không có chi nhánh sống nhận `NET | IQR` (3). Nếu số agent sống lớn hơn 200, script revert trước khi nâng (không nâng một phần rồi hết lượt `reinitializer`). Người dùng chạy `make upgrade-allowed-services`.
+Hệ mới deploy từ đầu: mọi agent nhận `allowedServices` hợp lệ ngay ở `createAgent`. Không có `migrateAllowedServices`, không có script nâng cấp điền trần (đã gỡ 2026-11-19 theo yêu cầu người dùng).
 
 ### 2.5 Hàm (`PlatformOperator`, mỗi hàm một giao dịch, đều yêu cầu `PLATFORM_ADMIN`)
 
@@ -206,7 +201,7 @@ Hàm của chủ agent (`TenantRegistry`, yêu cầu `AGENT_OWNER` của đúng 
 - `agentOf(branchId)`;
 - `getAgent`, `getBranch`;
 - `branchByDomain(bytes32 domainHash)`;
-- `isServiceEnabled`;
+- `isServiceEnabled` (chỉ cấu hình; `false` khi chi nhánh hoặc agent đã `Deleted`; không xét pause/`Suspended`, quyết định ghi dùng `requireWritable`);
 - `taxOf(branchId, service)` → mức hiệu lực (riêng chi nhánh nếu có, không thì mặc định agent).
 
 ### 2.6 Event (schema có version)

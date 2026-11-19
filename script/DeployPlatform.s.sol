@@ -10,7 +10,8 @@ import {BranchRegistry} from "../src/core/tenant/BranchRegistry.sol";
 import {AgentAccess} from "../src/core/access/AgentAccess.sol";
 
 /// @notice Deploy tầng quản trị: PlatformAccess → HistoryIndex → AgentRegistry → BranchRegistry → AgentAccess,
-///         rồi đăng ký ba contract làm writer của HistoryIndex.
+///         rồi đăng ký ba contract làm writer của HistoryIndex (mỗi contract chỉ các kind của nó), nối AgentAccess vào
+///         AgentRegistry và đặt AgentRegistry + AgentAccess làm nguồn vai trò agent của PlatformAccess.
 ///         Hệ đã deploy trước khi có AgentAccess thì dùng `script/DeployAgentAccess.s.sol`.
 ///         `run()` đọc env và broadcast. `deploy()` không đọc env, để test gọi trực tiếp.
 ///         Không hard-code khoá. Người dùng tự chạy `make deploy` với `.env`.
@@ -85,10 +86,21 @@ contract DeployPlatform is Script {
         HistoryIndex history = HistoryIndex(deployed.historyProxy);
         PlatformAccess access = PlatformAccess(deployed.accessProxy);
 
+        address[] memory sources = new address[](2);
+        sources[0] = deployed.agentsProxy;
+        sources[1] = deployed.agentAccessProxy;
+
         if (!_broadcasting) vm.startPrank(owner);
         history.setWriter(deployed.agentsProxy, true);
         history.setWriter(deployed.branchesProxy, true);
         history.setWriter(deployed.agentAccessProxy, true);
+        history.setWriterKind(deployed.agentsProxy, "platform_agents", true);
+        history.setWriterKind(deployed.agentsProxy, "platform_audit", true);
+        history.setWriterKind(deployed.branchesProxy, "platform_branches", true);
+        history.setWriterKind(deployed.branchesProxy, "platform_audit", true);
+        history.setWriterKind(deployed.agentAccessProxy, "platform_audit", true);
+        AgentRegistry(deployed.agentsProxy).setAgentAccess(deployed.agentAccessProxy);
+        access.setAgentRoleSources(sources);
         if (admin != address(0)) access.addPlatformAdmin(admin);
         if (!_broadcasting) vm.stopPrank();
     }

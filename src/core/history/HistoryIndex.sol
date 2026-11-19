@@ -8,7 +8,9 @@ import {FullDBCodec} from "../../libraries/FullDBCodec.sol";
 
 /// @title HistoryIndex
 /// @notice Cổng duy nhất vào precompile FullDB. Sửa F1/F2 của hệ cũ: chỉ writer do PLATFORM_OWNER đăng ký mới ghi,
-///         không có hàm xoá, không có hàm ghi theo tên DB tuỳ ý. Kiểm docId trùng (F5).
+///         và chỉ ghi được các kind đã cấp cho writer đó; không có hàm xoá, không có hàm ghi theo tên DB tuỳ ý.
+///         Kiểm docId trùng (F5). Địa chỉ FullDB cố định từ `initialize`: đổi kho giữa chừng làm mọi `profileDocId`
+///         và bộ nhớ đệm `dbReady`/`docUsed` sai, nên không có hàm đổi.
 contract HistoryIndex is PlatformAccessed, IHistoryIndex {
     uint8 public constant EVENT_VERSION = 1;
     uint256 public constant MAX_TERMS = 8;
@@ -24,6 +26,7 @@ contract HistoryIndex is PlatformAccessed, IHistoryIndex {
         mapping(address => bool) writers;
         mapping(bytes32 => bool) dbReady; // keccak(dbName) → đã getOrCreateDb
         mapping(bytes32 => mapping(uint256 => bool)) docUsed; // keccak(dbName) → docId → đã cấp
+        mapping(address => mapping(bytes32 => bool)) writerKinds; // writer → keccak(kind) → được ghi
     }
 
     // keccak256(abi.encode(uint256(keccak256("metaplatform.core.history")) - 1)) & ~bytes32(uint256(0xff))
@@ -35,9 +38,11 @@ contract HistoryIndex is PlatformAccessed, IHistoryIndex {
         }
     }
 
-    modifier onlyWriter() {
-        if (!_h().writers[msg.sender]) revert NotWriter(msg.sender);
-        _;
+    /// @dev Hàm thay cho modifier để không thêm biến lên stack của `append`.
+    function _onlyWriterOf(string calldata kind) private view {
+        HistoryStorage storage $ = _h();
+        if (!$.writers[msg.sender]) revert NotWriter(msg.sender);
+        if (!$.writerKinds[msg.sender][keccak256(bytes(kind))]) revert KindNotAllowed(msg.sender, kind);
     }
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -47,23 +52,15 @@ contract HistoryIndex is PlatformAccessed, IHistoryIndex {
 
     function initialize(address access_, address fullDB_) external initializer {
         __PlatformAccessed_init(access_);
-        _setFullDB(fullDB_ == address(0) ? DEFAULT_FULLDB : fullDB_);
+        address db = fullDB_ == address(0) ? DEFAULT_FULLDB : fullDB_;
+        _h().fullDB = IFullDB(db);
+        emit FullDBSet(EVENT_VERSION, db);
     }
 
     // ─── Cấu hình (PLATFORM_OWNER) ──────────────────────────────────────
 
     function fullDB() external view returns (address) {
         return address(_h().fullDB);
-    }
-
-    function setFullDB(address fullDB_) external onlyPlatformOwner {
-        if (fullDB_ == address(0)) revert ZeroAddress();
-        _setFullDB(fullDB_);
-    }
-
-    function _setFullDB(address fullDB_) private {
-        _h().fullDB = IFullDB(fullDB_);
-        emit FullDBSet(EVENT_VERSION, fullDB_);
     }
 
     function setWriter(address writer, bool allowed) external onlyPlatformOwner {
@@ -74,6 +71,18 @@ contract HistoryIndex is PlatformAccessed, IHistoryIndex {
 
     function isWriter(address account) external view returns (bool) {
         return _h().writers[account];
+    }
+
+    function setWriterKind(address writer, string calldata kind, bool allowed) external onlyPlatformOwner {
+        if (writer == address(0)) revert ZeroAddress();
+        _checkKind(kind);
+        _h().writerKinds[writer][keccak256(bytes(kind))] = allowed;
+        emit WriterKindSet(EVENT_VERSION, writer, keccak256(bytes(kind)), kind, allowed);
+    }
+
+    function canWrite(address writer, string calldata kind) external view returns (bool) {
+        HistoryStorage storage $ = _h();
+        return $.writers[writer] && $.writerKinds[writer][keccak256(bytes(kind))];
     }
 
     // ─── Ghi ────────────────────────────────────────────────────────────
@@ -92,7 +101,8 @@ contract HistoryIndex is PlatformAccessed, IHistoryIndex {
         bytes calldata data,
         Term[] calldata terms,
         Value[] calldata values
-    ) external onlyWriter returns (uint256 docId) {
+    ) external returns (uint256 docId) {
+        _onlyWriterOf(kind);
         if (terms.length > MAX_TERMS) revert TooManyTerms(MAX_TERMS);
         if (values.length > MAX_VALUES) revert TooManyValues(MAX_VALUES);
 
@@ -103,7 +113,8 @@ contract HistoryIndex is PlatformAccessed, IHistoryIndex {
         emit HistoryAppended(EVENT_VERSION, agentId, keccak256(bytes(kind)), docId, keccak256(data));
     }
 
-    function replace(uint64 agentId, string calldata kind, uint256 docId, bytes calldata data) external onlyWriter {
+    function replace(uint64 agentId, string calldata kind, uint256 docId, bytes calldata data) external {
+        _onlyWriterOf(kind);
         HistoryStorage storage $ = _h();
         string memory db = dbName(agentId, kind);
         if (!$.docUsed[keccak256(bytes(db))][docId]) revert UnknownDocument(docId);

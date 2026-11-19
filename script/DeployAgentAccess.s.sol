@@ -5,9 +5,12 @@ import {Script, console2} from "forge-std/Script.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {HistoryIndex} from "../src/core/history/HistoryIndex.sol";
 import {AgentAccess} from "../src/core/access/AgentAccess.sol";
+import {AgentRegistry} from "../src/core/tenant/AgentRegistry.sol";
+import {PlatformAccess} from "../src/core/access/PlatformAccess.sol";
 
 /// @notice Thêm AgentAccess vào tầng quản trị đã deploy (trước khi có AgentAccess): deploy proxy,
-///         PLATFORM_OWNER đăng ký nó làm writer của HistoryIndex, rồi nối hai khoá vào
+///         PLATFORM_OWNER đăng ký nó làm writer của HistoryIndex (kind `platform_audit`), nối nó vào AgentRegistry,
+///         đặt AgentRegistry + AgentAccess làm nguồn vai trò agent của PlatformAccess, rồi nối hai khoá vào
 ///         `deployments/platform-<chainid>.json`. Địa chỉ các proxy cũ đọc từ chính file đó.
 ///         Env: `PRIVATE_KEY` (owner). Người dùng tự chạy `make deploy-agent-access`. Không hard-code khoá.
 contract DeployAgentAccess is Script {
@@ -22,8 +25,15 @@ contract DeployAgentAccess is Script {
         proxy = address(
             new ERC1967Proxy(impl, abi.encodeCall(AgentAccess.initialize, (access, agents, branches, history)))
         );
-        if (!_broadcasting) vm.prank(owner);
+        address[] memory sources = new address[](2);
+        sources[0] = agents;
+        sources[1] = proxy;
+        if (!_broadcasting) vm.startPrank(owner);
         HistoryIndex(history).setWriter(proxy, true);
+        HistoryIndex(history).setWriterKind(proxy, "platform_audit", true);
+        AgentRegistry(agents).setAgentAccess(proxy);
+        PlatformAccess(access).setAgentRoleSources(sources);
+        if (!_broadcasting) vm.stopPrank();
     }
 
     function run() external {

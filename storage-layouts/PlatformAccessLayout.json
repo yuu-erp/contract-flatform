@@ -16,5 +16,11 @@
   1,
   0,
   "mapping(address => uint256)"
+ ],
+ [
+  "s.agentRoleSources",
+  2,
+  0,
+  "contract IAgentRoleSource[]"
  ]
 ]

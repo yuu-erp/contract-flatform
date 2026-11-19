@@ -34,6 +34,22 @@ contract DeployPlatformTest is BaseTest {
         assertTrue(history.isWriter(d.agentsProxy));
         assertTrue(history.isWriter(d.branchesProxy));
         assertTrue(history.isWriter(d.agentAccessProxy));
+        // Mỗi writer chỉ được các kind của nó
+        assertTrue(history.canWrite(d.agentsProxy, "platform_agents"));
+        assertTrue(history.canWrite(d.agentsProxy, "platform_audit"));
+        assertFalse(history.canWrite(d.agentsProxy, "platform_branches"));
+        assertTrue(history.canWrite(d.branchesProxy, "platform_branches"));
+        assertTrue(history.canWrite(d.branchesProxy, "platform_audit"));
+        assertFalse(history.canWrite(d.branchesProxy, "platform_agents"));
+        assertTrue(history.canWrite(d.agentAccessProxy, "platform_audit"));
+        assertFalse(history.canWrite(d.agentAccessProxy, "platform_agents"));
+        assertFalse(history.canWrite(d.agentAccessProxy, "platform_branches"));
+        // Nối AgentAccess và nguồn vai trò agent
+        assertEq(agents.agentAccess(), d.agentAccessProxy);
+        address[] memory sources = access.agentRoleSources();
+        assertEq(sources.length, 2);
+        assertEq(sources[0], d.agentsProxy);
+        assertEq(sources[1], d.agentAccessProxy);
         assertEq(AgentAccess(d.agentAccessProxy).branchRegistry(), d.branchesProxy);
         assertTrue(access.isPlatformAdmin(platformAdmin));
         assertEq(access.platformAdminCount(), 1);
@@ -91,6 +107,10 @@ contract DeployPlatformTest is BaseTest {
             new DeployAgentAccess().deploy(platformOwner, d.accessProxy, d.agentsProxy, d.branchesProxy, d.historyProxy);
         AgentAccess acl = AgentAccess(proxy);
         assertTrue(HistoryIndex(d.historyProxy).isWriter(proxy));
+        assertTrue(HistoryIndex(d.historyProxy).canWrite(proxy, "platform_audit"));
+        assertFalse(HistoryIndex(d.historyProxy).canWrite(proxy, "platform_agents"));
+        assertEq(AgentRegistry(d.agentsProxy).agentAccess(), proxy);
+        assertEq(PlatformAccess(d.accessProxy).agentRoleSources()[1], proxy);
         assertEq(acl.agentRegistry(), d.agentsProxy);
 
         // luồng đầy đủ: admin tạo agent + chi nhánh, chủ agent cấp quản lý, quản lý cấp nhân viên

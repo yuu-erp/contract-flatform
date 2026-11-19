@@ -28,5 +28,11 @@
   3,
   0,
   "mapping(bytes32 => mapping(uint256 => bool))"
+ ],
+ [
+  "s.writerKinds",
+  4,
+  0,
+  "mapping(address => mapping(bytes32 => bool))"
  ]
 ]

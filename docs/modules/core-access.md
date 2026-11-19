@@ -39,11 +39,12 @@ Tầng quản trị nền tảng (`PLATFORM_OWNER`, `PLATFORM_ADMIN`) **không**
 |---|---|---|
 | A1 | Cấp vai trò: hệ không pause, chi nhánh `Active`, agent `Active` | `grantRole` |
 | A2 | Thu vai trò và tự rời chạy được khi chi nhánh/agent đã dừng hoặc xoá (chỉ cần hệ không pause), để luôn thu quyền được | `revokeRole`, `renounceRole` |
-| A3 | Ví nhận vai trò khác `0x0`, khác chủ agent, không phải owner / pending owner / admin nền tảng | `grantRole` |
+| A3 | Ví nhận vai trò khác `0x0`, khác chủ agent, không phải owner / pending owner / admin nền tảng. Chiều ngược lại: ví đang là thành viên chi nhánh (kể cả chi nhánh đã xoá, chưa thu hồi) không được thêm làm admin hay nhận owner nền tảng | `grantRole`; `PlatformAccess` hỏi `holdsAgentRole` |
 | A4 | Một ví có tối đa một vai trò trong mỗi chi nhánh; có thể ở nhiều chi nhánh (kể cả của agent khác) | `member[branchId][ví]` |
 | A5 | Trần: 200 thành viên mỗi chi nhánh, 20 chi nhánh mỗi ví. Danh sách xoá kiểu swap-pop, view phân trang tối đa 100 | `_add`, `_remove`, `_page` |
 | A6 | Vai trò hiệu lực là `None` khi chi nhánh hoặc agent đã `Deleted`; vai trò đã lưu vẫn giữ để thu hồi | `effectiveRoleOf` |
 | A7 | Đổi chủ agent đổi quyền `Owner` ngay, không cần thao tác ở AgentAccess | `effectiveRoleOf` đọc `AgentRegistry` |
+| A9 | Ví đang là Manager/Staff của một chi nhánh thuộc agent X không được đề xuất hay nhận làm chủ X; phải rời/bị thu hết vai trò ở X trước. Lý do: làm chủ thì vai trò cũ bị che, rồi "sống lại" khi quyền chủ chuyển đi | `AgentRegistry._checkNewOwner` đọc `membershipCountInAgent` |
 | A8 | Mỗi lần cấp / thu / tự rời phát `RoleChanged` và ghi audit `access_grant` / `access_revoke` / `access_renounce` vào `mp1_platform_audit` (nhãn `G`, `B`, `X`, `R`) | `_audit` |
 
 `requireRole` chỉ kiểm vai trò. Module vẫn phải gọi `BranchRegistry.requireWritable(branchId, service)` để kiểm pause, trạng thái và dịch vụ.
@@ -58,13 +59,15 @@ AgentAccessStorage (erc7201:metaplatform.core.access.agent)
   member[branchId][ví]         → Member
   branchesOf[ví]               → uint64[]
   branchIndexPlusOne[ví][branchId] → uint16
+  agentMemberships[ví][agentId]    → uint16   // số chi nhánh của agent mà ví đang là thành viên (A9)
 ```
 
 Không lưu tên, SĐT nhân viên (nguyên tắc 8). Hồ sơ nhân viên, ca làm, chấm công thuộc `core/staff` (giai đoạn 3).
 
 ## 6. Deploy
 
-- Hệ mới: `make deploy` đã gồm AgentAccess và đăng ký nó làm writer của `HistoryIndex`.
+- Hệ mới: `make deploy` đã gồm AgentAccess, đăng ký nó làm writer của `HistoryIndex` (chỉ kind `platform_audit`),
+  nối nó vào `AgentRegistry.setAgentAccess` và đặt `AgentRegistry` + `AgentAccess` làm `PlatformAccess.agentRoleSources`.
 - Hệ đã deploy trước khi có AgentAccess (chain 991): người dùng chạy `make deploy-agent-access` bằng ví owner. Script đọc địa chỉ proxy từ `deployments/platform-<chainid>.json` rồi ghi thêm `agentAccessProxy`, `agentAccessImpl`; từ chối nếu khoá đã có.
 
 ## 7. Để sau
@@ -72,3 +75,5 @@ Không lưu tên, SĐT nhân viên (nguyên tắc 8). Hồ sơ nhân viên, ca l
 - Co-owner (đồng sở hữu), biểu quyết.
 - Quyền chi tiết theo bit cho nhân viên (thu ngân, phục vụ…), khi làm `core/staff` và các module dịch vụ.
 - Admin nền tảng thu hồi khẩn cấp vai trò agent (chưa có yêu cầu).
+- Cấp vai trò hai bước (ví nhận phải đồng ý). Hiện chủ agent/Manager cấp đơn phương, nên ai kiểm soát 20 chi nhánh
+  có thể đẩy một ví chạm trần 20 chi nhánh; ví tự gỡ bằng `renounceRole`. Rủi ro thấp vì agent và chi nhánh do admin tạo.

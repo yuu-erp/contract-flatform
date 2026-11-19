@@ -26,6 +26,7 @@ contract AgentAccess is PlatformAccessed, PlatformAuditing, IAgentAccess {
         mapping(uint64 => mapping(address => Member)) member; // branchId → ví → thành viên
         mapping(address => uint64[]) branchesOf; // ví → branchId
         mapping(address => mapping(uint64 => uint16)) branchIndexPlusOne; // ví → branchId → vị trí + 1
+        mapping(address => mapping(uint64 => uint16)) agentMemberships; // ví → agentId → số chi nhánh đang là thành viên
     }
 
     // keccak256(abi.encode(uint256(keccak256("metaplatform.core.access.agent")) - 1)) & ~bytes32(uint256(0xff))
@@ -77,7 +78,7 @@ contract AgentAccess is PlatformAccessed, PlatformAuditing, IAgentAccess {
         if (account == agentOwner) revert AccountIsAgentOwner(account, br.agentId);
         if (_isPlatformRole(account)) revert AccountIsPlatformRole(account);
 
-        if (current == Role.None) _add(branchId, account);
+        if (current == Role.None) _add(br.agentId, branchId, account);
         m.role = role;
         m.grantedBy = msg.sender;
         m.grantedAt = uint64(block.timestamp);
@@ -158,6 +159,14 @@ contract AgentAccess is PlatformAccessed, PlatformAuditing, IAgentAccess {
         }
     }
 
+    function holdsAgentRole(address account) external view returns (bool) {
+        return _s().branchesOf[account].length != 0;
+    }
+
+    function membershipCountInAgent(uint64 agentId, address account) external view returns (uint256) {
+        return _s().agentMemberships[account][agentId];
+    }
+
     function branchCountOfAccount(address account) external view returns (uint256) {
         return _s().branchesOf[account].length;
     }
@@ -182,7 +191,7 @@ contract AgentAccess is PlatformAccessed, PlatformAuditing, IAgentAccess {
         if (role == Role.None) revert NotMember(branchId, account);
     }
 
-    function _add(uint64 branchId, address account) private {
+    function _add(uint64 agentId, uint64 branchId, address account) private {
         AgentAccessStorage storage $ = _s();
         address[] storage list = $.members[branchId];
         if (list.length >= MAX_MEMBERS_PER_BRANCH) revert TooManyMembers(branchId);
@@ -195,6 +204,7 @@ contract AgentAccess is PlatformAccessed, PlatformAuditing, IAgentAccess {
         mine.push(branchId);
         // forge-lint: disable-next-line(unsafe-typecast)
         $.branchIndexPlusOne[account][branchId] = uint16(mine.length); // ≤ MAX_BRANCHES_PER_ACCOUNT
+        ++$.agentMemberships[account][agentId]; // ≤ MAX_BRANCHES_PER_ACCOUNT
     }
 
     function _remove(uint64 agentId, uint64 branchId, address account, Role current, string memory action) private {
@@ -219,6 +229,7 @@ contract AgentAccess is PlatformAccessed, PlatformAuditing, IAgentAccess {
         $.branchIndexPlusOne[account][lastBranch] = uint16(bIdx + 1); // bIdx < MAX_BRANCHES_PER_ACCOUNT
         mine.pop();
         delete $.branchIndexPlusOne[account][branchId];
+        --$.agentMemberships[account][agentId];
 
         emit RoleChanged(EVENT_VERSION, agentId, branchId, account, current, Role.None, msg.sender);
         _audit(action, agentId, branchId, abi.encode(account, current), abi.encode(account, Role.None));
