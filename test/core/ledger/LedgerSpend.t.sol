@@ -112,6 +112,9 @@ contract LedgerSpendTest is PlatformFixture {
         assertEq(ledger.balanceOf(a, alice), 20_000);
         assertEq(ledger.walletLiability(a), 20_000);
         assertEq(_cell(1, a, M.serviceMetric(NET, M.GROSS)), 0);
+        assertEq(_cell(1, a, M.WALLET_SPEND), 0);
+        assertEq(_cell(2, b1, M.WALLET_SPEND), 0);
+        assertEq(_cell(2, b1, M.serviceMetric(NET, M.GROSS)), 0);
         assertEq(uint8(ledger.entryOf(r).kind), uint8(ILedger.EntryKind.None));
     }
 
@@ -133,7 +136,10 @@ contract LedgerSpendTest is PlatformFixture {
         vm.prank(agentOwner);
         sales.setBranchTax(b2, IQR, 800);
         _topup(b2, 200_000);
-        bytes32 r = _spend(b2, IQR, 108_000, 0);
+        bytes32 r = _ref();
+        vm.expectEmit(true, true, true, true);
+        emit ILedger.Posted(1, a, b2, r, ILedger.EntryKind.WalletSpend, alice, IQR, WALLET, 108_000, 8000, actor, 0);
+        poster.walletSpend(_ctx(r, b2), alice, IQR, 108_000, 0);
         assertEq(ledger.entryOf(r).taxBps, 800);
         assertEq(_cell(1, a, M.serviceMetric(IQR, M.TAX)), 8000);
         assertEq(_cell(2, b2, M.serviceMetric(IQR, M.TAX)), 8000);
@@ -195,5 +201,41 @@ contract LedgerSpendTest is PlatformFixture {
         _spend(b1, NET, 4000, 0);
         assertEq(ledger.walletLiability(a), ledger.balanceOf(a, alice));
         assertEq(ledger.balanceOf(a, alice), 50_000 + 30_000 + 9000 + 5000 - 64_000);
+    }
+
+    function _cellAt(uint8 scope, uint64 id, uint32 d, uint256 metric) internal view returns (uint256) {
+        return ledger.rollup(scope, id, d, d)[0][metric];
+    }
+
+    function test_spend_dayAttributionAcrossTimezones() public {
+        vm.prank(platformAdmin);
+        branches.setBranchTimezone(b1, -300); // b1 = UTC-5, b2 = UTC+7
+        vm.prank(agentOwner);
+        sales.setBranchTax(b2, NET, 1000);
+        // đặt 17:30 UTC: b2 = 00:30 ngày sau, b1 = 12:30 ngày trước đó
+        vm.warp((block.timestamp / 1 days) * 1 days + 17 hours + 30 minutes);
+        uint32 d1 = ledger.dayOf(b1, block.timestamp);
+        uint32 d2 = ledger.dayOf(b2, block.timestamp);
+        assertEq(d2, d1 + 1);
+
+        _topup(b1, 50_000);
+        _spend(b2, NET, 11_000, 0);
+
+        uint256 g = M.serviceMetric(NET, M.GROSS);
+        uint256 t = M.serviceMetric(NET, M.TAX);
+        uint256 sh = M.serviceMetric(NET, M.SERVED_HERE);
+        uint8[3] memory scopes = [uint8(0), 1, 2];
+        uint64[3] memory ids = [uint64(0), a, b1];
+        for (uint256 i; i < 3; ++i) {
+            assertEq(_cellAt(scopes[i], ids[i], d1, g), 11_000);
+            assertEq(_cellAt(scopes[i], ids[i], d1, t), 1000);
+            assertEq(_cellAt(scopes[i], ids[i], d1, M.WALLET_SPEND), 11_000);
+            assertEq(_cellAt(scopes[i], ids[i], d2, g), 0);
+            assertEq(_cellAt(scopes[i], ids[i], d2, t), 0);
+            assertEq(_cellAt(scopes[i], ids[i], d2, M.WALLET_SPEND), 0);
+        }
+        assertEq(_cellAt(2, b2, d2, sh), 11_000);
+        assertEq(_cellAt(2, b2, d1, sh), 0);
+        assertEq(_cellAt(2, b2, d2, g), 0);
     }
 }
