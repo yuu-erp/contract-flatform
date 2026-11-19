@@ -21,8 +21,19 @@ contract LedgerHandler is Test {
     bytes32[] internal saleRefs; // walletSpend + directSale đã ghi, để hoàn
     mapping(bytes32 => uint64) internal saleBranch;
     uint256 public startTs;
+    uint64 internal agentId;
 
-    constructor(Ledger ledger_, MockLedgerPoster poster_, uint64 b0, uint64 b1, uint64 b2) {
+    // Ghost counters: số lần ghi thành công theo loại.
+    uint256 public okTopup;
+    uint256 public okSpend;
+    uint256 public okSale;
+    uint256 public okAdjust;
+    uint256 public okRefundTopup;
+    uint256 public okRefundSale;
+    uint256 public okCrossBranchWalletRefund;
+
+    constructor(Ledger ledger_, MockLedgerPoster poster_, uint64 agentId_, uint64 b0, uint64 b1, uint64 b2) {
+        agentId = agentId_;
         ledger = ledger_;
         poster = poster_;
         branchIds = [b0, b1, b2];
@@ -53,15 +64,21 @@ contract LedgerHandler is Test {
         ILedger.Ctx memory x = _ctx(b);
         try poster.topup(x, customers[c % 3], _method(m), _amount(a)) {
             refIds.push(x.refId);
+            ++okTopup;
         } catch {}
     }
 
     function walletSpend(uint256 b, uint256 c, uint256 s, uint256 a, uint256 d) external {
         ILedger.Ctx memory x = _ctx(b);
-        try poster.walletSpend(x, customers[c % 3], _svc(s), _amount(a), uint128(d % 5000)) {
+        uint128 amt = _amount(a);
+        // thiên về trừ nhiều túi: một nửa số lần xin trọn số dư (hoặc quá nửa) của khách
+        uint128 bal = ledger.balanceOf(agentId, customers[c % 3]);
+        if (bal != 0 && a % 4 != 3) amt = a % 4 == 0 ? bal : uint128(1 + bal * 3 / 4);
+        try poster.walletSpend(x, customers[c % 3], _svc(s), amt, uint128(d % 5000)) {
             refIds.push(x.refId);
             saleRefs.push(x.refId);
             saleBranch[x.refId] = x.branchId;
+            ++okSpend;
         } catch {}
     }
 
@@ -72,6 +89,7 @@ contract LedgerHandler is Test {
             refIds.push(x.refId);
             saleRefs.push(x.refId);
             saleBranch[x.refId] = x.branchId;
+            ++okSale;
         } catch {}
     }
 
@@ -79,29 +97,72 @@ contract LedgerHandler is Test {
         ILedger.Ctx memory x = _ctx(b);
         try poster.adjust(x, _svc(s), up, _amount(a), "adj") {
             refIds.push(x.refId);
+            ++okAdjust;
         } catch {}
     }
 
     function refundTopup(uint256 b, uint256 c, uint256 m, uint256 a) external {
         ILedger.Ctx memory x = _ctx(b);
-        try poster.refundTopup(x, customers[c % 3], _method(m), _amount(a)) {
+        address cust = customers[c % 3];
+        uint128 amt = _amount(a);
+        // thiên về hoàn thành công: chọn một túi có sẵn và số tiền không vượt túi đó
+        ILedger.Portion[] memory bk = ledger.bucketsOf(agentId, cust);
+        if (bk.length != 0 && a % 4 != 0) {
+            ILedger.Portion memory p = bk[a % bk.length];
+            x.branchId = p.branchId;
+            amt = uint128(1 + (a % p.amount));
+        }
+        try poster.refundTopup(x, cust, _method(m), amt) {
             refIds.push(x.refId);
+            ++okRefundTopup;
         } catch {}
     }
 
     function refundSale(uint256 pick, uint256 a, bool wrongBranch) external {
         if (saleRefs.length == 0) return;
         bytes32 orig = saleRefs[pick % saleRefs.length];
+        // thiên về hoàn ví nhiều phần: quét tìm một WalletSpend có từ 2 phần trở lên
+        if (a % 4 != 0) {
+            for (uint256 i; i < saleRefs.length; ++i) {
+                bytes32 cand = saleRefs[(pick + i) % saleRefs.length];
+                if (ledger.portionsOf(cand).length > 1) {
+                    orig = cand;
+                    break;
+                }
+            }
+        }
         ILedger.Ctx memory x = _ctx(0);
         uint64 b = saleBranch[orig];
         x.branchId = wrongBranch ? branchIds[(a + 1) % 3] : b;
         // nửa số lần xin đúng phần còn lại để chạm trần
         ILedger.Entry memory e = ledger.entryOf(orig);
-        uint128 amt = a % 2 == 0 ? e.amount - e.refunded : _amount(a);
+        uint128 amt = a % 3 != 0 ? e.amount - e.refunded : _amount(a);
         if (amt == 0) amt = 1;
         try poster.refundSale(x, orig, amt) {
             refIds.push(x.refId);
+            ++okRefundSale;
+            if (e.kind == ILedger.EntryKind.WalletSpend) {
+                ILedger.Portion[] memory ps = ledger.portionsOf(orig);
+                for (uint256 i; i < ps.length; ++i) {
+                    if (ps[i].branchId != x.branchId) {
+                        ++okCrossBranchWalletRefund;
+                        break;
+                    }
+                }
+            }
         } catch {}
+    }
+
+    /// @dev Kịch bản ghép: khách nạp ở hai chi nhánh, trừ hết số dư tại chi nhánh thứ hai (túi chi nhánh khác bị lấy),
+    ///      rồi hoàn trọn: xu về túi chi nhánh nạp khác chi nhánh phục vụ.
+    function crossRefund(uint256 b, uint256 c) external {
+        this.topup(b, c, 0, 999);
+        this.topup(b + 1, c, 0, 999);
+        this.walletSpend(b + 1, c, 0, 0, 0);
+        if (saleRefs.length != 0) this.refundSale(saleRefs.length - 1, 1, false);
+        this.refundTopup(b, c, 0, 1);
+        this.directSale(b, c, 0, 0, 500, 0);
+        this.adjust(b, 0, true, 5);
     }
 
     function warp(uint256 secs) external {
@@ -154,8 +215,19 @@ contract LedgerInvariantTest is PlatformFixture {
         branches.setBranchTimezone(b2, 840);
         vm.stopPrank();
         vm.warp(1_800_000_000);
-        handler = new LedgerHandler(ledger, poster, b0, b1, b2);
+        handler = new LedgerHandler(ledger, poster, agentId, b0, b1, b2);
         targetContract(address(handler));
+    }
+
+    /// @dev Chứng minh handler chạm đủ các đường ghi (kể cả hoàn ví về chi nhánh nạp khác chi nhánh phục vụ).
+    function afterInvariant() public view {
+        assertGt(handler.okTopup(), 0, "topup");
+        assertGt(handler.okSpend(), 0, "walletSpend");
+        assertGt(handler.okSale(), 0, "directSale");
+        assertGt(handler.okAdjust(), 0, "adjust");
+        assertGt(handler.okRefundTopup(), 0, "refundTopup");
+        assertGt(handler.okRefundSale(), 0, "refundSale");
+        assertGt(handler.okCrossBranchWalletRefund(), 0, "cross-branch wallet refund");
     }
 
     /// @dev Nợ ví của agent bằng tổng mọi túi của mọi khách.
