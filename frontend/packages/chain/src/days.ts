@@ -1,6 +1,7 @@
 import type { Day } from './metrics'
 
 const SECONDS_PER_DAY = 86_400
+const MS_PER_DAY = 86_400_000
 
 export function dayOf(ts: number, tzMinutes: number): Day {
   const local = ts + tzMinutes * 60
@@ -31,13 +32,25 @@ export function dayToDate(day: Day, tzMinutes: number): Date {
   return new Date((startOfDayEpoch(day, tzMinutes) + tzMinutes * 60) * 1000)
 }
 
-function monthRange(year: number, month: number, tzMinutes: number): { fromDay: Day; toDay: Day } {
-  const from = new Date(Date.UTC(year, month, 1))
-  const to = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59))
+/** Ngày kinh doanh của lịch (Y, M, D) địa phương = UTC epoch ngày đó / 86 400 000. */
+export function calendarDay(year: number, month: number, day: number): Day {
+  return Math.floor(Date.UTC(year, month, day) / MS_PER_DAY)
+}
+
+export function localCalendarParts(now: Date, tzMinutes: number): { year: number; month: number; date: number } {
+  const shifted = new Date(now.getTime() + tzMinutes * 60_000)
   return {
-    fromDay: dayOf(Math.floor(from.getTime() / 1000), tzMinutes),
-    toDay: dayOf(Math.floor(to.getTime() / 1000), tzMinutes),
+    year: shifted.getUTCFullYear(),
+    month: shifted.getUTCMonth(),
+    date: shifted.getUTCDate(),
   }
+}
+
+function monthCalendarRange(year: number, month: number): { fromDay: Day; toDay: Day } {
+  const fromDay = calendarDay(year, month, 1)
+  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate()
+  const toDay = calendarDay(year, month, daysInMonth)
+  return { fromDay, toDay }
 }
 
 export function rangeToDays(
@@ -61,15 +74,19 @@ export function rangeToDays(
     case '30d':
       return { fromDay: today - 29, toDay: today }
     case 'thisMonth': {
-      const y = now.getUTCFullYear()
-      const m = now.getUTCMonth()
-      const { fromDay, toDay } = monthRange(y, m, tzMinutes)
+      const { year, month } = localCalendarParts(now, tzMinutes)
+      const { fromDay, toDay } = monthCalendarRange(year, month)
       return { fromDay, toDay: Math.min(toDay, today) }
     }
     case 'lastMonth': {
-      const y = now.getUTCMonth() === 0 ? now.getUTCFullYear() - 1 : now.getUTCFullYear()
-      const m = now.getUTCMonth() === 0 ? 11 : now.getUTCMonth() - 1
-      return monthRange(y, m, tzMinutes)
+      const { year, month } = localCalendarParts(now, tzMinutes)
+      let y = year
+      let m = month - 1
+      if (m < 0) {
+        m = 11
+        y -= 1
+      }
+      return monthCalendarRange(y, m)
     }
     default:
       return { fromDay: today, toDay: today }

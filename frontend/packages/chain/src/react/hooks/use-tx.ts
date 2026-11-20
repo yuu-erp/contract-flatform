@@ -8,13 +8,14 @@ export type TxRunOptions = {
   onSuccess?: () => void
 }
 
+/** Chạy giao dịch on-chain; trả `true`/`false`, không ném — caller dùng toast qua `onError`. */
 export function useTx() {
   const queryClient = useQueryClient()
   const [pending, setPending] = useState(false)
   const [lastError, setLastError] = useState<string | null>(null)
 
   const run = useCallback(
-    async (fn: () => Promise<void>, options?: TxRunOptions) => {
+    async (fn: () => Promise<void>, options?: TxRunOptions): Promise<boolean> => {
       setPending(true)
       setLastError(null)
       try {
@@ -23,11 +24,12 @@ export function useTx() {
           await queryClient.invalidateQueries({ queryKey: key })
         }
         options?.onSuccess?.()
+        return true
       } catch (error) {
         const message = decodeContractError(error)
         setLastError(message)
         options?.onError?.(message)
-        throw error
+        return false
       } finally {
         setPending(false)
       }

@@ -38,3 +38,20 @@ cd frontend && pnpm -r build && pnpm -r lint && pnpm -r test
 ## Câu hỏi mở
 
 - App sẽ bọc `ContractsProvider` + `QueryClientProvider` ở Task 4/7; toast `useTx` do app truyền `onError` (chưa phụ thuộc `sonner` trong `chain`).
+
+## Sửa sau review
+
+- **`rangeToDays`:** lịch địa phương qua `localCalendarParts` + `calendarDay(Date.UTC(Y,M,D)/86_400_000)`; test biên tháng UTC+7 và tz −300.
+- **`search-agents.ts`:** `matchAgent` bỏ dấu/SĐT/ví/id; `useAgents` lưu phone/address, lọc `allowedServices & mask`.
+- **`useTx.run`:** trả `boolean`, không ném; **`useAgents`:** chỉ bỏ qua profile khi `profileDocId === 0n`, lỗi khác `console.warn` + fail query.
+- **`usePlatformContracts(chainId, deployments)`** dựng `PlatformContracts` cho `ContractsProvider`.
+
+```bash
+cd frontend && pnpm -r build && pnpm -r lint && pnpm -r test
+```
+
+```
+ Test Files  13 passed (13)
+      Tests  32 passed (32)
+   Duration  806ms
+```
