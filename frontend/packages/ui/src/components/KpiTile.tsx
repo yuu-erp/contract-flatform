@@ -1,0 +1,39 @@
+import { cn } from '../lib/cn'
+import { formatBps, formatVnd } from '../lib/format'
+
+export type KpiTileProps = {
+  label: string
+  value: bigint | number
+  previous?: bigint | number
+  format?: 'vnd' | 'bps' | 'number'
+  className?: string
+}
+
+function displayValue(value: bigint | number, format: KpiTileProps['format']) {
+  if (format === 'bps') return formatBps(Number(value))
+  if (format === 'vnd') return formatVnd(typeof value === 'bigint' ? value : BigInt(value))
+  return String(value)
+}
+
+function compareText(current: bigint, previous: bigint): string | null {
+  if (previous === 0n && current === 0n) return null
+  if (previous === 0n) return '—'
+  const diff = Number(((current - previous) * 10000n) / previous) / 100
+  if (!Number.isFinite(diff)) return null
+  const sign = diff > 0 ? '+' : ''
+  return `${sign}${diff.toFixed(2)}% so với kỳ trước`
+}
+
+export function KpiTile({ label, value, previous, format = 'vnd', className }: KpiTileProps) {
+  const current = typeof value === 'bigint' ? value : BigInt(Math.trunc(value))
+  const prev = previous == null ? undefined : typeof previous === 'bigint' ? previous : BigInt(Math.trunc(previous))
+  const trend = prev == null ? null : compareText(current, prev)
+
+  return (
+    <div className={cn('rounded-lg border border-border bg-background p-4 shadow-sm', className)}>
+      <p className="text-sm text-muted-foreground">{label}</p>
+      <p className="mt-1 text-2xl font-semibold tabular-nums">{displayValue(current, format)}</p>
+      {trend ? <p className="mt-1 text-xs text-muted-foreground">{trend}</p> : null}
+    </div>
+  )
+}

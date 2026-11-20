@@ -142,8 +142,8 @@ Mọi hành động ghi: nút bị khoá kèm lý do khi điều kiện không �
 
 **Produces:** `AppShell` (sidebar theo danh sách menu truyền vào, header: chain, ví rút gọn, huy hiệu vai trò, bộ chọn ngữ cảnh tuỳ chọn, banner "Hệ đang tạm dừng"), `LoginScreen`, `NoAccessScreen`, `KpiTile` (giá trị, nhãn, so sánh kỳ trước tuỳ chọn), `RevenueChart` (recharts, cột chồng NET/IQR theo ngày, tooltip VND, chế độ sáng/tối), `RangePicker`, `ServiceFilter`, `DataTable` (cột, phân trang, rỗng, đang tải, lỗi), `ConfirmDialog` (có ô lý do 1–200 ký tự khi cần), `TxButton` (dùng `useTx`), `Money`, `Percent`, `Address` (rút gọn + copy), `StatusBadge` (agent/chi nhánh/vai trò), `EmptyState`, `ErrorState`.
 
-- [ ] Test Vitest cho hàm định dạng: `formatVnd(1234567n) == "1.234.567 ₫"` (so sánh sau khi đổi NBSP của `Intl` thành dấu cách), `formatBps(800) == "8,00%"`, `formatBps(0) == "0,00%"`; `KpiTile` với giá trị 0 và kỳ trước 0 không hiện NaN.
-- [ ] Commit `feat(frontend): bộ giao diện dùng chung`.
+- [x] Test Vitest cho hàm định dạng: `formatVnd(1234567n) == "1.234.567 ₫"` (so sánh sau khi đổi NBSP của `Intl` thành dấu cách), `formatBps(800) == "8,00%"`, `formatBps(0) == "0,00%"`; `KpiTile` với giá trị 0 và kỳ trước 0 không hiện NaN.
+- [x] Commit `feat(frontend): bộ giao diện dùng chung`.
 
 ### Task 4: App `platform` — khung, Tổng quan, danh sách agent
 
