@@ -26,6 +26,20 @@
   --color-sidebar-accent: #27272a;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --color-background: #0a0a0a;
+    --color-foreground: #fafafa;
+    --color-muted: #18181b;
+    --color-muted-foreground: #a1a1aa;
+    --color-primary: #fafafa;
+    --color-primary-foreground: #18181b;
+    --color-border: #27272a;
+    --color-sidebar: #111113;
+    --color-sidebar-accent: #27272a;
+  }
+}
+
 body {
   @apply bg-background text-foreground antialiased;
 }

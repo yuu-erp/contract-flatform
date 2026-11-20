@@ -14,9 +14,15 @@ export function FinsdkProvider({
   const [loadingSdk, setLoadingSdk] = useState(true)
 
   useEffect(() => {
+    let alive = true
     void FiaiSDK.init({ basePath })
       .catch(console.error)
-      .finally(() => setLoadingSdk(false))
+      .finally(() => {
+        if (alive) setLoadingSdk(false)
+      })
+    return () => {
+      alive = false
+    }
   }, [basePath])
 
   if (loadingSdk) {

@@ -15,9 +15,14 @@ function displayValue(value: bigint | number, format: KpiTileProps['format']) {
   return String(value)
 }
 
-function compareText(current: bigint, previous: bigint): string | null {
+function compareText(current: bigint, previous: bigint, format: KpiTileProps['format']): string | null {
   if (previous === 0n && current === 0n) return null
   if (previous === 0n) return '—'
+  if (previous < 0n) {
+    const delta = current - previous
+    if (format === 'vnd') return `${formatVnd(delta)} so với kỳ trước`
+    return `${displayValue(delta, format)} so với kỳ trước`
+  }
   const diff = Number(((current - previous) * 10000n) / previous) / 100
   if (!Number.isFinite(diff)) return null
   const sign = diff > 0 ? '+' : ''
@@ -27,7 +32,7 @@ function compareText(current: bigint, previous: bigint): string | null {
 export function KpiTile({ label, value, previous, format = 'vnd', className }: KpiTileProps) {
   const current = typeof value === 'bigint' ? value : BigInt(Math.trunc(value))
   const prev = previous == null ? undefined : typeof previous === 'bigint' ? previous : BigInt(Math.trunc(previous))
-  const trend = prev == null ? null : compareText(current, prev)
+  const trend = prev == null ? null : compareText(current, prev, format)
 
   return (
     <div className={cn('rounded-lg border border-border bg-background p-4 shadow-sm', className)}>

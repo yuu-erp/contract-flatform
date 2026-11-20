@@ -1,5 +1,6 @@
 export * from './lib/cn'
 export * from './lib/format'
+export * from './lib/range-picker'
 export * from './primitives/button'
 export * from './components/AppShell'
 export * from './components/Address'

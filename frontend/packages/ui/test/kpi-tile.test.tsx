@@ -8,4 +8,10 @@ describe('KpiTile', () => {
     expect(screen.queryByText(/NaN/i)).toBeNull()
     expect(screen.getByText('0 ₫')).toBeTruthy()
   })
+
+  it('shows absolute delta when previous is negative', () => {
+    render(<KpiTile label="Doanh thu" value={50_000n} previous={-10_000n} format="vnd" />)
+    expect(screen.getByText(/60\.000 ₫ so với kỳ trước/)).toBeTruthy()
+    expect(screen.queryByText(/NaN/i)).toBeNull()
+  })
 })

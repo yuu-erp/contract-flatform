@@ -7,8 +7,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { formatVnd } from '../lib/format'
+import { formatVnd, formatVndCompact } from '../lib/format'
 import { cn } from '../lib/cn'
+import { useChartDarkMode } from '../hooks/use-chart-theme'
 
 export type RevenueChartPoint = {
   label: string
@@ -19,12 +20,11 @@ export type RevenueChartPoint = {
 export function RevenueChart({
   data,
   className,
-  dark = false,
 }: {
   data: RevenueChartPoint[]
   className?: string
-  dark?: boolean
 }) {
+  const dark = useChartDarkMode()
   const grid = dark ? '#3f3f46' : '#e4e4e7'
   const text = dark ? '#a1a1aa' : '#71717a'
 
@@ -34,7 +34,7 @@ export function RevenueChart({
         <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <CartesianGrid stroke={grid} vertical={false} />
           <XAxis dataKey="label" tick={{ fill: text, fontSize: 12 }} />
-          <YAxis tick={{ fill: text, fontSize: 12 }} width={72} tickFormatter={(v) => formatVnd(BigInt(Math.round(v)))} />
+          <YAxis tick={{ fill: text, fontSize: 12 }} width={56} tickFormatter={(v) => formatVndCompact(BigInt(Math.round(v)))} />
           <Tooltip
             formatter={(value: number, name: string) => [formatVnd(BigInt(Math.round(value))), name === 'net' ? 'NET' : 'IQR']}
             contentStyle={{
