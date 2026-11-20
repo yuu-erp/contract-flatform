@@ -72,3 +72,14 @@ Test: thêm `NotAuthorized`, `AccountHasAgentRole`, `OwnerIsAgentMember`, và ch
 ## Việc tiếp theo
 
 Sửa 1–3 (và 4–5 nếu kịp), chạy lại `pnpm -r build && pnpm -r lint && pnpm -r test`, commit `fix(frontend): tách loader Node, lớp gọi contract có kiểu, bổ sung thông báo lỗi`, cập nhật `task-1.md` phần "Sửa sau review", rồi báo để review lại trước khi sang Task 2.
+
+## Review lại sau sửa (commit `b11687d`)
+
+Kết luận: **Đạt.** Chạy lại `pnpm -r build && pnpm -r lint && pnpm -r test` → xanh (21/21).
+
+- Điểm 1 — Đã sửa: `loadAddresses.ts` không còn module Node; `loadAddresses.node.ts` không export qua `index.ts`; có test quét `node:`.
+- Điểm 2 — Đã sửa: lớp `src/api/` có kiểu, mapper chịu cả dạng mảng và object; `rollup` giữ `2n**100n`.
+- Điểm 3 — Đã sửa: bổ sung lỗi, dò tên dài trước.
+- Điểm 4, 5 — Đã sửa (`asHexData`, `termAuditAgent`).
+
+Nhỏ, sửa khi làm Task 2: quy ước "uint gửi `String(n)`" chưa nhất quán — `LedgerApi.rollup` gửi `scope` dạng số, `SalesSettingsApi.quoteTax`/`branchTaxOf` gửi `service` dạng số. Đổi hết sang `String(...)` theo đúng quy ước đã ghi.
