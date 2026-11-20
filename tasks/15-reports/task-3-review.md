@@ -45,3 +45,14 @@ Sửa: dưới `md`, hiện nút menu ở header mở danh sách menu (Radix `Di
 ## Ghi chú cho Task 4/7
 
 - Ở Task 4, nhớ điểm còn mở từ review Task 2: bắt lỗi thiếu khoá deployments, hiện màn lỗi thay vì sập app.
+
+## Review lại sau sửa (commit `b72b413`)
+
+Kết luận: **Đạt.** Chạy lại build/lint/test → xanh (chain 32, ui 9).
+
+- Điểm 1 — Đã sửa: `utf8Length`, `isReasonBytesValid` (1–200 byte), bộ đếm byte, ô lý do tự xoá khi đóng; test `Quận 1` = 8 byte, 100 × `ệ` = 300 byte bị chặn.
+- Điểm 2 — Đã sửa: `RangePicker` có "Tuỳ chọn", ngày nhập `YYYY-MM-DD` quy về `calendarDay` (không phụ thuộc múi giờ trình duyệt), chặn đảo ngày và > 366 ngày.
+- Điểm 3 — Đã sửa: menu điện thoại bằng Radix `Dialog` dưới `md`.
+- Điểm 4–8 — Đã sửa (nhãn tiếng Việt, `formatVndCompact`, kỳ trước âm, cờ `alive`, `prefers-color-scheme`).
+
+Nhắc cho Task 4–8: dùng `utf8Length` cho mọi trường văn bản có trần byte (tên cửa hàng 100, địa chỉ 200, ghi chú 500, tên chi nhánh 100, vị trí 200); bắt lỗi thiếu khoá deployments (review Task 2).
