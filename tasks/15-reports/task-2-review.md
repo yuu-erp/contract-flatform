@@ -49,3 +49,13 @@ Test: `"cyber quan 1"` khớp tên `"Cyber Quận 1"`; `"0283822"` khớp SĐT `
 
 - App cần một hook dựng `PlatformContracts` từ ví đang chọn và địa chỉ (`loadAddresses(chainId, data)`), rồi bọc `ContractsProvider` + `QueryClientProvider`. Đặt hook này trong `packages/chain/src/react/` (ví dụ `usePlatformContracts(chainId, deployments)`) để hai app không viết lặp.
 - Toast của `useTx`: app truyền `onError`/`onSuccess` (đồng ý với báo cáo).
+
+## Review lại sau sửa (commit `6a24149`)
+
+Kết luận: **Đạt.** Chạy lại build/lint/test → xanh (32/32).
+
+- Điểm 1 — Đã sửa: tháng/năm lấy theo lịch địa phương, ngày kinh doanh = `Date.UTC(Y,M,D)/86 400 000`; test biên UTC+7 và UTC−5 đúng (1/12/2026 = ngày 20 788, 30/11 = 20 787).
+- Điểm 2 — Đã sửa: `matchAgent` bỏ dấu, `đ`, SĐT theo chữ số, ví, id; lọc theo dịch vụ.
+- Điểm 3, 4 — Đã sửa (`useTx.run` trả `boolean`; chỉ bỏ qua hồ sơ khi `profileDocId == 0`).
+
+Lưu ý cho Task 4/7: `usePlatformContracts` gọi `loadAddresses` trong `useMemo`, thiếu khoá sẽ **ném lỗi khi render** và làm sập app (chain 991 hiện thiếu `salesSettingsProxy`, `ledgerProxy`). App phải bắt lỗi này và hiện màn "Thiếu khoá …" (bọc `try/catch` trả `{ error }` trong hook, hoặc Error Boundary ở gốc app).
