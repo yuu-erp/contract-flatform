@@ -71,8 +71,10 @@ export function RangePicker({
               onChange(preset.id)
             }}
             className={cn(
-              'rounded-md border border-border px-3 py-1.5 text-sm',
-              activePreset === preset.id ? 'bg-muted font-medium' : 'text-muted-foreground hover:bg-muted/60',
+              'h-9 rounded-md border border-input bg-background px-3 text-sm shadow-sm transition-colors',
+              activePreset === preset.id
+                ? 'border-primary/30 bg-primary/10 font-medium text-foreground'
+                : 'text-muted-foreground hover:bg-muted/60',
             )}
           >
             {preset.label}
@@ -82,8 +84,10 @@ export function RangePicker({
           type="button"
           onClick={() => setShowCustom((open) => !open)}
           className={cn(
-            'rounded-md border border-border px-3 py-1.5 text-sm',
-            showCustom ? 'bg-muted font-medium' : 'text-muted-foreground hover:bg-muted/60',
+            'h-9 rounded-md border border-input bg-background px-3 text-sm shadow-sm transition-colors',
+            showCustom
+              ? 'border-primary/30 bg-primary/10 font-medium text-foreground'
+              : 'text-muted-foreground hover:bg-muted/60',
           )}
         >
           Tuỳ chọn

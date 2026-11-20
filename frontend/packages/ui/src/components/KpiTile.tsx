@@ -35,10 +35,10 @@ export function KpiTile({ label, value, previous, format = 'vnd', className }: K
   const trend = prev == null ? null : compareText(current, prev, format)
 
   return (
-    <div className={cn('rounded-lg border border-border bg-background p-4 shadow-sm', className)}>
-      <p className="text-sm text-muted-foreground">{label}</p>
-      <p className="mt-1 text-2xl font-semibold tabular-nums">{displayValue(current, format)}</p>
-      {trend ? <p className="mt-1 text-xs text-muted-foreground">{trend}</p> : null}
+    <div className={cn('rounded-xl border border-border bg-card p-4 text-card-foreground shadow-sm', className)}>
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="mt-2 text-2xl font-semibold tracking-tight tabular-nums">{displayValue(current, format)}</p>
+      {trend ? <p className="mt-2 text-xs text-muted-foreground">{trend}</p> : null}
     </div>
   )
 }

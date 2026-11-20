@@ -15,7 +15,7 @@ export function FinsdkProvider({
 
   useEffect(() => {
     let alive = true
-    void FiaiSDK.init({ basePath })
+    void FiaiSDK.init({ basePath: "" })
       .catch(console.error)
       .finally(() => {
         if (alive) setLoadingSdk(false)

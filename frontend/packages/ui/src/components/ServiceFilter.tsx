@@ -18,7 +18,7 @@ export function ServiceFilter({
   className?: string
 }) {
   return (
-    <div className={cn('inline-flex rounded-md border border-border p-0.5', className)}>
+    <div className={cn('inline-flex rounded-md border border-input bg-background p-0.5 shadow-sm', className)}>
       {options.map((opt) => (
         <button
           key={opt.value}

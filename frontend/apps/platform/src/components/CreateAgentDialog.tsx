@@ -2,6 +2,7 @@ import { useContracts, useTx } from '@meta-platform/chain'
 import { Button, utf8Length } from '@meta-platform/ui'
 import { Dialog } from 'radix-ui'
 import { useState } from 'react'
+import { usePlatformRole } from '../hooks/use-platform-role'
 import {
   SERVICE_MASK,
   validateCreateAgentForm,
@@ -19,7 +20,9 @@ const emptyForm = (): CreateAgentForm => ({
 
 export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
   const contracts = useContracts()
+  const { role, paused } = usePlatformRole()
   const tx = useTx()
+  const canCreate = Boolean(role?.isAdmin && !paused)
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState<CreateAgentForm>(emptyForm)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -39,7 +42,20 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Tạo agent</Button>
+      <div className="flex max-w-xs flex-col items-end gap-1 text-right">
+        <Button
+          disabled={!canCreate}
+          title={canCreate ? undefined : 'Cần ví PLATFORM_ADMIN (Owner không ghi được createAgent).'}
+          onClick={() => setOpen(true)}
+        >
+          Tạo agent
+        </Button>
+        {!canCreate && role?.isOwner ? (
+          <p className="text-xs text-muted-foreground">
+            Ví Owner chỉ quản trị hệ thống; tạo agent cần ví Admin (cấp bằng make set-admin).
+          </p>
+        ) : null}
+      </div>
       <Dialog.Root
         open={open}
         onOpenChange={(next: boolean) => {
@@ -52,7 +68,8 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
           <Dialog.Content className="fixed top-1/2 left-1/2 max-h-[90vh] w-[min(100%,32rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-lg border border-border bg-background p-5 shadow-lg">
             <Dialog.Title className="text-lg font-semibold">Tạo agent</Dialog.Title>
             <Dialog.Description className="mt-1 text-sm text-muted-foreground">
-              Chỉ Admin nền tảng được ghi trên contract.
+              Ví đăng nhập phải là Admin nền tảng. Ví chủ agent phải là ví merchant khác — không trùng Owner/Admin
+              platform.
             </Dialog.Description>
             <div className="mt-4 space-y-3 text-sm">
               <label className="block space-y-1">
@@ -135,9 +152,15 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
                   void tx.run(
                     async () => {
                       const errors = validateCreateAgentForm(form)
+                      const owner = form.owner.trim()
+                      const platformRole = await contracts!.access.resolvePlatformRole(owner)
+                      if (platformRole.isOwner || platformRole.isAdmin || platformRole.isPendingOwner) {
+                        errors.owner =
+                          'Ví chủ agent không được là Owner, Admin hoặc pending owner nền tảng — dùng ví merchant riêng.'
+                      }
                       setFieldErrors(errors)
                       if (Object.keys(errors).length > 0) throw new Error('invalid')
-                      await contracts!.agents.createAgent(form.owner.trim(), form.allowedServices, {
+                      await contracts!.agents.createAgent(owner, form.allowedServices, {
                         storeName: form.storeName.trim(),
                         storeAddress: form.storeAddress.trim(),
                         note: form.note.trim(),

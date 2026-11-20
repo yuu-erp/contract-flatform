@@ -13,10 +13,14 @@
   "dependencies": {
     "@meta-platform/chain": "workspace:*",
     "@meta-platform/ui": "workspace:*",
+    "@metanodejs/fiai-sdk": "link:../../../../CONG_TY/metanode-finsdk/packages/fiai-sdk",
+    "@metanodejs/mtn-contract": "^1.0.8",
+    "@metanodejs/system-core": "^1.0.19",
     "@tanstack/react-query": "^5.102.8",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "radix-ui": "^1.6.7",
+    "lucide-react": "^1.46.0",
     "react-router-dom": "^7.18.3"
   },
   "devDependencies": {
@@ -32,10 +36,5 @@
     "typescript-eslint": "^8.69.0",
     "vite": "^7.3.8",
     "vitest": "^3.0.5"
-  },
-  "peerDependencies": {
-    "@metanodejs/fiai-sdk": "*",
-    "@metanodejs/mtn-contract": "*",
-    "@metanodejs/system-core": "*"
   }
 }

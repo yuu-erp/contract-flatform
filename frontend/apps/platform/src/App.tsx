@@ -1,58 +1,31 @@
-import { ContractsProvider, deploymentsError, useActiveWallet, useConnectWallet, usePlatformContracts } from '@meta-platform/chain'
-import { ErrorState, LoginScreen } from '@meta-platform/ui'
+import { deploymentsError } from '@meta-platform/chain'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
-import deployments from '../../../../deployments/platform-991.json'
-import { PlatformLayout } from './layout/PlatformLayout'
+import { DeploymentsError } from './components/DeploymentsError'
+import { platformDeployments } from './config/deployments'
+import { PlatformChrome } from './layout/PlatformChrome'
 import { AgentsPage } from './pages/AgentsPage'
 import { OverviewPage } from './pages/OverviewPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
+import { SystemPage } from './pages/SystemPage'
 
-const CHAIN_ID = Number(import.meta.env.VITE_CHAIN_ID ?? '991')
-
-function AppRoutes() {
-  const missing = deploymentsError(deployments as Record<string, unknown>)
-  const { data: wallet } = useActiveWallet()
-  const connect = useConnectWallet()
-  const contracts = usePlatformContracts(CHAIN_ID, deployments as Record<string, unknown>)
+export function App() {
+  const missing = deploymentsError(platformDeployments)
 
   if (missing) {
-    return <ErrorState message={missing} onRetry={() => window.location.reload()} />
-  }
-
-  if (!wallet) {
-    return (
-      <LoginScreen
-        title="Dashboard Nền tảng"
-        description="Kết nối ví có quyền Owner hoặc Admin nền tảng."
-        onConnect={() => connect.mutate()}
-        pending={connect.isPending}
-      />
-    )
-  }
-
-  if (!contracts) {
-    return <p className="p-6 text-sm text-muted-foreground">Đang khởi tạo kết nối contract…</p>
+    return <DeploymentsError message={missing} />
   }
 
   return (
-    <ContractsProvider value={contracts}>
+    <HashRouter>
       <Routes>
-        <Route element={<PlatformLayout />}>
+        <Route element={<PlatformChrome />}>
           <Route index element={<OverviewPage />} />
           <Route path="agents" element={<AgentsPage />} />
           <Route path="audit" element={<PlaceholderPage title="Nhật ký toàn hệ" />} />
-          <Route path="system" element={<PlaceholderPage title="Hệ thống" />} />
+          <Route path="system" element={<SystemPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
-    </ContractsProvider>
-  )
-}
-
-export function App() {
-  return (
-    <HashRouter>
-      <AppRoutes />
     </HashRouter>
   )
 }

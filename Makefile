@@ -1,6 +1,6 @@
 # Lệnh chuẩn của meta-platform. CI chạy `make ci`.
 # `deploy`, `deploy-agent-access` và `set-admin` chỉ người dùng chạy (đọc .env, có --broadcast). Agent không chạy các target đó.
-.PHONY: build test fmt sizes layout deps snapshot snapshot-update ci legacy-inventory abi deploy deploy-agent-access deploy-local set-admin upgrade upgrade-dry upgrade-local
+.PHONY: build test fmt sizes layout deps snapshot snapshot-update ci legacy-inventory abi deploy deploy-agent-access deploy-local set-admin mock-agents deploy-mock-fulldb upgrade upgrade-dry upgrade-local
 
 build:
 	forge build
@@ -47,6 +47,7 @@ abi:
 	forge inspect Ledger abi --json > abi/Ledger.json
 
 # Chỉ người dùng chạy. Cần PRIVATE_KEY và RPC_URL trong .env (foundry nạp .env; rpc "platform" = ${RPC_URL}).
+# FOUNDry doc: bien trong .env duoc nap; neu FULLDB khong ap dung, chay: FULLDB=0x... make deploy
 deploy:
 	forge script script/DeployPlatform.s.sol --rpc-url platform --broadcast
 
@@ -58,6 +59,14 @@ deploy-agent-access:
 # Chỉ người dùng chạy. Cần PRIVATE_KEY (owner), ACCESS_PROXY, ADMIN, ALLOW=true|false.
 set-admin:
 	forge script script/SetPlatformAdmin.s.sol --rpc-url platform --broadcast
+
+# Chỉ người dùng chạy. Cần ADMIN_PRIVATE_KEY trong .env (hoặc PRIVATE_KEY = admin). MOCK_AGENT_COUNT / MOCK_AGENT_START tuỳ chọn.
+mock-agents:
+	forge script script/SeedMockAgents.s.sol --rpc-url platform --broadcast
+
+# Chỉ người dùng chạy. Deploy contract MockFullDB khi chain khong co precompile 0x...0107.
+deploy-mock-fulldb:
+	forge script script/DeployMockFullDB.s.sol --rpc-url platform --broadcast
 
 # Chỉ người dùng chạy. Nâng một proxy lên implementation build từ mã hiện tại; ghi lại <key>Impl trong
 # deployments/platform-<chainid>.json. Cần PRIVATE_KEY (owner). Ví dụ: make upgrade CONTRACT=AgentRegistry

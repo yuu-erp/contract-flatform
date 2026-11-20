@@ -2,6 +2,7 @@ out/
 cache/
 broadcast/
 deployments/*-31337.json
+deployments/platform-991.local.json
 node_modules/
 web/node_modules/
 web/dist/

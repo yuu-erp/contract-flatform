@@ -55,6 +55,26 @@ export class AgentRegistryApi {
   async createAgent(owner: string, allowedServices: number, profile: AgentProfile): Promise<void> {
     await this.inner.createAgent(owner, String(allowedServices), profile)
   }
+
+  async updateAgentProfile(agentId: number, profile: AgentProfile): Promise<void> {
+    await this.inner.updateAgentProfile(String(agentId), profile)
+  }
+
+  async setAgentServices(agentId: number, allowedServices: number): Promise<void> {
+    await this.inner.setAgentServices(String(agentId), String(allowedServices))
+  }
+
+  async suspendAgent(agentId: number, reason: string): Promise<void> {
+    await this.inner.suspendAgent(String(agentId), reason)
+  }
+
+  async resumeAgent(agentId: number, reason: string): Promise<void> {
+    await this.inner.resumeAgent(String(agentId), reason)
+  }
+
+  async deleteAgent(agentId: number, reason: string): Promise<void> {
+    await this.inner.deleteAgent(String(agentId), reason)
+  }
 }
 
 export class BranchRegistryApi {
@@ -154,6 +174,14 @@ export class PlatformAccessApi {
 
   async pendingOwnerAddress(): Promise<string> {
     return toAddress(asString(unwrapValue(await this.inner.pendingOwner())))
+  }
+
+  async pause(): Promise<void> {
+    await this.inner.pause()
+  }
+
+  async unpause(): Promise<void> {
+    await this.inner.unpause()
   }
 }
 

@@ -1,8 +1,10 @@
 import { useAgents } from '@meta-platform/chain'
-import { Address, DataTable, StatusBadge } from '@meta-platform/ui'
+import { Address, Card, CardContent, CardDescription, CardHeader, CardTitle, DataTable, Input, StatusBadge } from '@meta-platform/ui'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { AgentManageDialog, type AgentManageMode } from '../components/AgentManageDialog'
 import { CreateAgentDialog } from '../components/CreateAgentDialog'
+import { usePlatformRole } from '../hooks/use-platform-role'
 import { useBranchCounts } from '../hooks/use-branch-counts'
 import { AGENTS_PAGE_SIZE } from '../lib/scopes'
 import { filterAndSearchAgents, paginateAgents, type AgentListRow } from '../lib/agent-list'
@@ -11,6 +13,9 @@ import { SERVICE_MASK } from '../lib/validate-create-agent'
 
 export function AgentsPage() {
   const agents = useAgents()
+  const { role, paused } = usePlatformRole()
+  const canWrite = Boolean(role?.isAdmin && !paused)
+  const [manage, setManage] = useState<{ row: AgentListRow; mode: AgentManageMode } | null>(null)
   const [q, setQ] = useState('')
   const [status, setStatus] = useState<number | null>(null)
   const [servicesMask, setServicesMask] = useState<number | null>(null)
@@ -77,20 +82,38 @@ export function AgentsPage() {
             ? new Date(row.createdAt * 1000).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
             : '—',
       },
+      {
+        key: 'actions',
+        header: '',
+        render: (row: AgentListRow) => (
+          <AgentRowActions row={row} canWrite={canWrite} onAction={(mode) => setManage({ row, mode })} />
+        ),
+      },
     ],
-    [branchCounts.data],
+    [branchCounts.data, canWrite],
   )
 
   return (
-    <div className="space-y-4 p-4 md:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold">Danh sách agent</h1>
-        <CreateAgentDialog onCreated={() => agents.refetch()} />
-      </div>
-
+    <div className="space-y-4">
+      <Card>
+        <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3 space-y-0">
+          <div>
+            <CardTitle>Danh sách agent</CardTitle>
+            <CardDescription>Tìm, lọc và tạo agent mới (Admin ghi on-chain)</CardDescription>
+          </div>
+          <CreateAgentDialog onCreated={() => agents.refetch()} />
+        </CardHeader>
+        <CardContent className="space-y-4 pt-0">
+      {paused ? (
+        <p className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-950 dark:text-amber-100">
+          Hệ đang pause — sửa/xoá agent bị khoá. Owner mở lại tại mục Hệ thống.
+        </p>
+      ) : !role?.isAdmin ? (
+        <p className="text-sm text-muted-foreground">Chỉ PLATFORM_ADMIN được sửa và đổi trạng thái agent.</p>
+      ) : null}
       <div className="flex flex-wrap gap-2">
-        <input
-          className="min-w-[12rem] flex-1 rounded-md border border-border px-3 py-2 text-sm"
+        <Input
+          className="min-w-[12rem] flex-1"
           placeholder="Tìm theo tên, SĐT, id, ví…"
           value={q}
           onChange={(e) => {
@@ -99,7 +122,7 @@ export function AgentsPage() {
           }}
         />
         <select
-          className="rounded-md border border-border px-3 py-2 text-sm"
+          className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-sm"
           value={status ?? ''}
           onChange={(e) => {
             setStatus(e.target.value ? Number(e.target.value) : null)
@@ -112,7 +135,7 @@ export function AgentsPage() {
           <option value="3">Đã xoá</option>
         </select>
         <select
-          className="rounded-md border border-border px-3 py-2 text-sm"
+          className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-sm"
           value={servicesMask ?? ''}
           onChange={(e) => {
             const v = e.target.value
@@ -142,6 +165,53 @@ export function AgentsPage() {
       <p className="text-xs text-muted-foreground">
         Trang {page}/{totalPages} · {total} agent (tìm kiếm phía client, giới hạn ~1000 agent)
       </p>
+        </CardContent>
+      </Card>
+      {manage ? (
+        <AgentManageDialog
+          row={manage.row}
+          mode={manage.mode}
+          open
+          onOpenChange={(open) => {
+            if (!open) setManage(null)
+          }}
+          onDone={() => agents.refetch()}
+        />
+      ) : null}
+    </div>
+  )
+}
+
+function AgentRowActions({
+  row,
+  canWrite,
+  onAction,
+}: {
+  row: AgentListRow
+  canWrite: boolean
+  onAction: (mode: AgentManageMode) => void
+}) {
+  if (!canWrite) return <span className="text-xs text-muted-foreground">—</span>
+  return (
+    <div className="flex flex-wrap justify-end gap-1">
+      <button type="button" className="text-xs text-primary hover:underline" onClick={() => onAction('edit')}>
+        Sửa
+      </button>
+      {row.status === 1 ? (
+        <button type="button" className="text-xs text-amber-700 hover:underline dark:text-amber-200" onClick={() => onAction('suspend')}>
+          Dừng
+        </button>
+      ) : null}
+      {row.status === 2 ? (
+        <button type="button" className="text-xs text-primary hover:underline" onClick={() => onAction('resume')}>
+          Mở lại
+        </button>
+      ) : null}
+      {row.status !== 3 ? (
+        <button type="button" className="text-xs text-destructive hover:underline" onClick={() => onAction('delete')}>
+          Xoá
+        </button>
+      ) : null}
     </div>
   )
 }
