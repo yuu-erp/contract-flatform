@@ -1,0 +1,9 @@
+{
+  "name": "meta-platform-frontend",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test"
+  }
+}

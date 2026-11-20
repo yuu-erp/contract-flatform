@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true,
+    "paths": {
+      "@abi/*": ["../../../abi/*"]
+    }
+  },
+  "include": ["src", "test", "vitest.config.ts"]
+}

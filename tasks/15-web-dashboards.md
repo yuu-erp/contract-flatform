@@ -118,9 +118,9 @@ Mọi hành động ghi: nút bị khoá kèm lý do khi điều kiện không �
 - `searchFullDB(history, agentId, kind, query) → {total, items:{docId, data}[]}` với `Query{filters, ranges, sortSlot, ascending, offset, limit≤100}`; helper term: `termAgent(id)`, `termBranch(id)`, `termKind(k)`, `termAddress(prefix, addr)` (hex thường có `0x`).
 - `decodeContractError(error) → string` (chép `web/src/lib/errors.ts`, thêm mọi lỗi của `ISalesSettings`, `ILedger`).
 
-- [ ] Viết test Vitest: `normalize` (tuple mảng/obj/`{"":v}`), `loadAddresses` thiếu khoá → lỗi nêu tên `ledgerProxy`, `decodeLedgerRecord` với dữ liệu mã hoá bằng viem `encodeAbiParameters` (round-trip đủ trường, `portions` 2 phần), `termAddress('W', '0xABC…')` → chữ thường, `decodeContractError` cho `InsufficientBalance`, `MethodNotEnabled`.
-- [ ] Cài, chạy test đỏ → viết code → xanh. `pnpm -r build` xanh.
-- [ ] Commit `feat(frontend): workspace và lớp gọi contract dùng chung`.
+- [x] Viết test Vitest: `normalize` (tuple mảng/obj/`{"":v}`), `loadAddresses` thiếu khoá → lỗi nêu tên `ledgerProxy`, `decodeLedgerRecord` với dữ liệu mã hoá bằng viem `encodeAbiParameters` (round-trip đủ trường, `portions` 2 phần), `termAddress('W', '0xABC…')` → chữ thường, `decodeContractError` cho `InsufficientBalance`, `MethodNotEnabled`.
+- [x] Cài, chạy test đỏ → viết code → xanh. `pnpm -r build` xanh.
+- [x] Commit `feat(frontend): workspace và lớp gọi contract dùng chung`.
 
 ### Task 2: `packages/chain` — doanh thu, ngày, vai trò, hook dữ liệu
 
