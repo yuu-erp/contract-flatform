@@ -1,6 +1,3 @@
-import { readFileSync } from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { toAddress } from '../address'
 
 export type PlatformAddresses = {
@@ -23,17 +20,6 @@ const REQUIRED_KEYS = [
   'salesSettingsProxy',
   'ledgerProxy',
 ] as const
-
-function repoDeploymentsPath(chainId: number): string {
-  const here = path.dirname(fileURLToPath(import.meta.url))
-  return path.resolve(here, '../../../../../deployments', `platform-${chainId}.json`)
-}
-
-function readDeployment(chainId: number): Record<string, unknown> {
-  const file = repoDeploymentsPath(chainId)
-  const raw = readFileSync(file, 'utf8')
-  return JSON.parse(raw) as Record<string, unknown>
-}
 
 function requireAddress(value: unknown, key: string): string {
   if (typeof value !== 'string' || !value.trim()) {
@@ -61,8 +47,12 @@ export function parsePlatformDeployments(data: Record<string, unknown>): Platfor
   }
 }
 
-/** Đọc `deployments/platform-<chainId>.json`; có thể truyền `data` khi bundle Vite đã import JSON. */
-export function loadAddresses(chainId = 991, data?: Record<string, unknown>): PlatformAddresses {
-  const raw = data ?? readDeployment(chainId)
-  return parsePlatformDeployments(raw)
+/** App Vite import JSON deployments rồi gọi hàm này (không đọc `fs` trong bundle trình duyệt). */
+export function loadAddresses(chainId: number, data: Record<string, unknown>): PlatformAddresses {
+  const parsed = parsePlatformDeployments(data)
+  if (parsed.chainId !== chainId && parsed.chainId !== 0) {
+    // Cho phép file không có chainId khớp nếu caller truyền đúng chain đích.
+    return { ...parsed, chainId }
+  }
+  return { ...parsed, chainId: parsed.chainId || chainId }
 }

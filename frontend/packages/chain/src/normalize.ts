@@ -70,6 +70,29 @@ export function asBigInt(value: unknown): bigint {
 
 export function asBigIntArray32(value: unknown): bigint[] {
   const raw = unwrapValue(value)
-  if (!Array.isArray(raw)) return Array.from({ length: 32 }, () => 0n)
-  return raw.map((item) => asBigInt(item))
+  if (Array.isArray(raw)) return raw.map((item) => asBigInt(item))
+  if (raw && typeof raw === 'object') {
+    const source = raw as Record<string, unknown>
+    return Array.from({ length: 32 }, (_, i) => asBigInt(source[String(i)] ?? source[i]))
+  }
+  return Array.from({ length: 32 }, () => 0n)
+}
+
+/** Chuẩn hoá bytes từ SDK (hex, `Uint8Array`, hoặc mảng số) về `0x…`. */
+export function asHexData(value: unknown): `0x${string}` {
+  const raw = unwrapValue(value)
+  if (typeof raw === 'string') {
+    const trimmed = raw.trim()
+    if (!trimmed) return '0x'
+    return (trimmed.startsWith('0x') ? trimmed : `0x${trimmed}`).toLowerCase() as `0x${string}`
+  }
+  if (raw instanceof Uint8Array) {
+    const hex = [...raw].map((b) => b.toString(16).padStart(2, '0')).join('')
+    return `0x${hex}` as `0x${string}`
+  }
+  if (Array.isArray(raw)) {
+    const hex = raw.map((b) => Number(b).toString(16).padStart(2, '0')).join('')
+    return `0x${hex}` as `0x${string}`
+  }
+  return '0x'
 }

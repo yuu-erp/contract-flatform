@@ -11,4 +11,16 @@ describe('decodeContractError', () => {
   it('decodes MethodNotEnabled by name fallback', () => {
     expect(decodeContractError(new Error('MethodNotEnabled(7,2)'))).toMatch(/phương thức|MethodNotEnabled/i)
   })
+
+  it('decodes additional access errors by name', () => {
+    expect(decodeContractError(new Error('NotAuthorized(0x01,5)'))).toMatch(/quyền trên chi nhánh/)
+    expect(decodeContractError(new Error('AccountHasAgentRole'))).toMatch(/admin nền tảng/)
+    expect(decodeContractError(new Error('OwnerIsAgentMember'))).toMatch(/thành viên agent/)
+  })
+
+  it('prefers InvalidServices over InvalidService substring', () => {
+    expect(decodeContractError(new Error('revert InvalidServices()'))).toBe(
+      'Phải có NET hoặc IQR.',
+    )
+  })
 })

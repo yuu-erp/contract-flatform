@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parsePlatformDeployments } from '../src/config/loadAddresses'
+import { loadAddresses, parsePlatformDeployments } from '../src/config/loadAddresses'
 
 describe('loadAddresses', () => {
   it('throws naming missing ledgerProxy', () => {
@@ -30,5 +30,19 @@ describe('loadAddresses', () => {
     expect(addresses.ledger).toBe('0xLedger')
     expect(addresses.salesSettings).toBe('0xSales')
     expect(addresses.chainId).toBe(991)
+  })
+
+  it('loadAddresses requires deployment data object', () => {
+    const data = {
+      accessProxy: '0xAccess',
+      agentsProxy: '0xAgents',
+      branchesProxy: '0xBranches',
+      historyProxy: '0xHistory',
+      agentAccessProxy: '0xAgentAccess',
+      salesSettingsProxy: '0xSales',
+      ledgerProxy: '0xLedger',
+      chainId: 991,
+    }
+    expect(loadAddresses(991, data).ledger).toBe('0xLedger')
   })
 })

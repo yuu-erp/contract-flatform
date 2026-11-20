@@ -1,6 +1,6 @@
 import { normalizeHexAddress } from './address'
 import type { HistoryIndexContract } from './contracts/history-index.contract'
-import { asNumber, asString, unwrapValue } from './normalize'
+import { asHexData, asNumber, unwrapValue } from './normalize'
 
 export type SearchTerm = { prefix: string; value: string }
 export type SearchRange = { slot: number; min: bigint; max: bigint }
@@ -16,9 +16,16 @@ export type SearchQuery = {
 export type SearchHit = { docId: number; data: `0x${string}` }
 export type SearchResult = { total: number; items: SearchHit[] }
 
-export function termAgent(agentId: number | bigint): SearchTerm {
+/**
+ * Nhãn audit FullDB (`G<agentId>`), không phải term tự động `A` của HistoryIndex.
+ * Dùng cho `platform_audit` và lọc nhật ký; tra cứu ledger dùng `termKind`, `termBranch`, …
+ */
+export function termAuditAgent(agentId: number | bigint): SearchTerm {
   return { prefix: 'G', value: String(agentId) }
 }
+
+/** @deprecated Dùng `termAuditAgent`. */
+export const termAgent = termAuditAgent
 
 export function termBranch(branchId: number | bigint): SearchTerm {
   return { prefix: 'B', value: String(branchId) }
@@ -38,13 +45,13 @@ function toSearchQuery(q: SearchQuery) {
     filters: q.filters ?? [],
     ranges: (q.ranges ?? []).map((r) => ({
       slot: r.slot,
-      min: r.min,
-      max: r.max,
+      min: r.min.toString(),
+      max: r.max.toString(),
     })),
-    sortSlot: q.sortSlot ?? -1,
+    sortSlot: String(q.sortSlot ?? -1),
     ascending: q.ascending ?? false,
-    offset: q.offset ?? 0,
-    limit: Math.min(Math.max(limit, 1), 100),
+    offset: String(q.offset ?? 0),
+    limit: String(Math.min(Math.max(limit, 1), 100)),
   }
 }
 
@@ -58,7 +65,7 @@ export async function searchFullDB(
   const raw = unwrapValue(result) as Record<string, unknown>
   const total = asNumber(raw.total)
   const docIds = Array.isArray(raw.docIds) ? raw.docIds.map((id) => asNumber(id)) : []
-  const data = Array.isArray(raw.data) ? raw.data.map((row) => asString(row) as `0x${string}`) : []
+  const data = Array.isArray(raw.data) ? raw.data.map((row) => asHexData(row)) : []
   const items: SearchHit[] = docIds.map((docId, index) => ({
     docId,
     data: data[index] ?? '0x',

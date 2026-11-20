@@ -40,3 +40,24 @@ cd frontend && pnpm install && pnpm -r build && pnpm -r lint && pnpm -r test
 
 - Task 2: có tách `use-active-wallet` / `FinsdkProvider` vào `packages/chain` hay `packages/ui`? Kế hoạch Task 2 gom hook dữ liệu vào chain.
 - App platform/agent: `@metanodejs/fiai-sdk` trỏ local path như `web/` README (khi có) — cần xác nhận đường dẫn trên máy dev.
+
+## Sửa sau review
+
+Theo `tasks/15-reports/task-1-review.md` (điểm 1–5):
+
+1. **Loader Node:** `loadAddresses.ts` không còn `node:fs`; chỉ `parsePlatformDeployments` + `loadAddresses(chainId, data)` bắt buộc có `data`. Script/test dùng `src/config/loadAddresses.node.ts` (`loadAddressesFromRepo`, không export qua `index.ts`). Test quét `src/` không chứa `node:` (trừ `*.node.ts`).
+2. **Lớp có kiểu `src/api/`:** `*Api` bọc contract thô; mapper chuẩn hoá struct/id/`bigint`/`uint256[32]`. Đầu vào uint: `String(n)` như web-admin. Test tuple mảng vs object; `rollup` giữ `2n**100n`.
+3. **Lỗi tiếng Việt:** bổ sung AgentAccess, PlatformAccess, AgentRegistry/Branch, `NotAgentOwner`; sắp tên lỗi dài trước khi `includes` (tránh `InvalidService` trong `InvalidServices`).
+4. **`searchFullDB`:** `ranges`/`offset`/`limit`/`sortSlot` gửi SDK dạng chuỗi; `data` qua `asHexData` (hex / `Uint8Array` / mảng byte) — web-admin không có HistoryIndex; giả định SDK trả hex hoặc bytes, chuẩn hoá về `0x…` trước decode.
+5. **`termAuditAgent`:** đổi tên từ `termAgent`; giữ alias deprecated; NatSpec ghi rõ nhãn audit `G`, không phải `A`.
+
+```bash
+cd frontend && pnpm -r build && pnpm -r lint && pnpm -r test
+```
+
+```
+ Test Files  8 passed (8)
+      Tests  21 passed (21)
+   Start at  09:51:36
+   Duration  487ms (transform 196ms, setup 0ms, collect 623ms, tests 27ms, environment 1ms, prepare 679ms)
+```

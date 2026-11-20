@@ -53,6 +53,27 @@ const MESSAGES: Record<string, string> = {
   InvalidKind: 'Loại FullDB không hợp lệ.',
   InvalidLimit: 'Giới hạn truy vấn vượt MAX_LIMIT.',
   UserRejected: 'Người dùng từ chối ký giao dịch.',
+  NotAuthorized: 'Không đủ quyền trên chi nhánh này.',
+  RoleUnchanged: 'Vai trò không thay đổi.',
+  NotMember: 'Ví không phải thành viên chi nhánh.',
+  InvalidRole: 'Vai trò không hợp lệ.',
+  AccountIsAgentOwner: 'Chủ agent không được gán vai trò Manager/Staff.',
+  AccountIsPlatformRole: 'Vai trò nền tảng không được gán vai trò chi nhánh.',
+  TooManyMembers: 'Chi nhánh đã đủ số thành viên tối đa.',
+  TooManyBranches: 'Ví đã tham gia quá nhiều chi nhánh.',
+  MissingRole: 'Thiếu vai trò yêu cầu trên chi nhánh.',
+  AccountHasAgentRole: 'Ví đang tham gia agent, không làm admin nền tảng.',
+  AlreadyAdmin: 'Ví đã là admin nền tảng.',
+  NotAdmin: 'Ví không phải admin nền tảng.',
+  OwnerCannotBeAdmin: 'Owner không thể là admin.',
+  TooManyAdmins: 'Đã đủ số admin tối đa.',
+  TooManyRoleSources: 'Đã đủ nguồn vai trò agent tối đa.',
+  RenounceDisabled: 'Không thể từ bỏ ownership theo cấu hình contract.',
+  OwnerIsAgentMember: 'Ví là thành viên agent, không làm chủ agent.',
+  NotPendingOwner: 'Ví không phải chủ agent đang chờ.',
+  NoPendingOwner: 'Agent không có đề xuất chủ mới.',
+  AlreadyMainBranch: 'Chi nhánh đã là chi nhánh chính.',
+  NotAgentOwner: 'Chỉ chủ agent được đổi cài đặt này.',
 }
 
 function signatureOf(entry: AbiEntry): string {
@@ -108,8 +129,9 @@ function messageFromText(text: string): string | null {
     const known = selectorMessages.get(selector)
     if (known) return known
   }
-  for (const [name, message] of Object.entries(MESSAGES)) {
-    if (text.includes(name)) return message
+  const names = Object.keys(MESSAGES).sort((a, b) => b.length - a.length)
+  for (const name of names) {
+    if (text.includes(name)) return MESSAGES[name]!
   }
   return null
 }
