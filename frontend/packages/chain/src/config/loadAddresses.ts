@@ -47,6 +47,16 @@ export function parsePlatformDeployments(data: Record<string, unknown>): Platfor
   }
 }
 
+/** Trả thông báo thiếu khóa; `null` nếu hợp lệ (dùng trước khi render app). */
+export function deploymentsError(data: Record<string, unknown>): string | null {
+  try {
+    parsePlatformDeployments(data)
+    return null
+  } catch (error) {
+    return error instanceof Error ? error.message : 'Lỗi cấu hình deployments'
+  }
+}
+
 /** App Vite import JSON deployments rồi gọi hàm này (không đọc `fs` trong bundle trình duyệt). */
 export function loadAddresses(chainId: number, data: Record<string, unknown>): PlatformAddresses {
   const parsed = parsePlatformDeployments(data)

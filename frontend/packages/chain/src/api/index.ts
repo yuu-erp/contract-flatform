@@ -4,6 +4,9 @@ import type { AgentAccessContract } from '../contracts/agent-access.contract'
 import type { LedgerContract } from '../contracts/ledger.contract'
 import type { SalesSettingsContract } from '../contracts/sales-settings.contract'
 import type { PlatformAccessContract } from '../contracts/platform-access.contract'
+import { resolvePlatformRole, type PlatformRole } from '../roles'
+import { asBigInt, asNumber, asString, unwrapValue } from '../normalize'
+import { toAddress } from '../address'
 import {
   mapAddressPage,
   mapAgent,
@@ -17,7 +20,7 @@ import {
   mapRollup,
   mapTaxQuote,
 } from './mappers'
-import { asBigInt, asNumber } from '../normalize'
+import type { AgentProfile } from '../decode'
 import type {
   AgentProfileRecord,
   AgentView,
@@ -47,6 +50,10 @@ export class AgentRegistryApi {
 
   async getAgentProfile(agentId: number): Promise<AgentProfileRecord> {
     return mapAgentProfileRecord(await this.inner.getAgentProfile(String(agentId)))
+  }
+
+  async createAgent(owner: string, allowedServices: number, profile: AgentProfile): Promise<void> {
+    await this.inner.createAgent(owner, String(allowedServices), profile)
   }
 }
 
@@ -131,6 +138,22 @@ export class PlatformAccessApi {
 
   async platformAdmins(offset: number, limit: number): Promise<string[]> {
     return mapAddressPage(await this.inner.platformAdmins(String(offset), String(limit)))
+  }
+
+  async paused(): Promise<boolean> {
+    return Boolean(unwrapValue(await this.inner.paused()))
+  }
+
+  async resolvePlatformRole(account: string): Promise<PlatformRole> {
+    return resolvePlatformRole(this.inner, account)
+  }
+
+  async ownerAddress(): Promise<string> {
+    return toAddress(asString(unwrapValue(await this.inner.owner())))
+  }
+
+  async pendingOwnerAddress(): Promise<string> {
+    return toAddress(asString(unwrapValue(await this.inner.pendingOwner())))
   }
 }
 

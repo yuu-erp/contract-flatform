@@ -8,7 +8,7 @@ import {
   PlatformAccessApi,
   SalesSettingsApi,
 } from '../api'
-import { loadAddresses, type PlatformAddresses } from '../config/loadAddresses'
+import { deploymentsError, loadAddresses, type PlatformAddresses } from '../config/loadAddresses'
 import { AgentAccessContract } from '../contracts/agent-access.contract'
 import { AgentRegistryContract } from '../contracts/agent-registry.contract'
 import { BranchRegistryContract } from '../contracts/branch-registry.contract'
@@ -27,14 +27,15 @@ export function usePlatformContracts(
   deployments: Record<string, unknown>,
 ): PlatformContracts | null {
   const { data: wallet } = useActiveWallet()
-  const addresses: PlatformAddresses = useMemo(
-    () => loadAddresses(chainId, deployments),
-    [chainId, deployments],
-  )
+  const missing = useMemo(() => deploymentsError(deployments), [deployments])
+  const addresses: PlatformAddresses | null = useMemo(() => {
+    if (missing) return null
+    return loadAddresses(chainId, deployments)
+  }, [chainId, deployments, missing])
   const from = wallet?.address ? toAddress(wallet.address) : ''
 
   return useMemo(() => {
-    if (!from) return null
+    if (!from || !addresses) return null
     return {
       addresses,
       from,
