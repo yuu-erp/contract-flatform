@@ -17,7 +17,7 @@ import {
   mapRollup,
   mapTaxQuote,
 } from './mappers'
-import { asBigInt } from '../normalize'
+import { asBigInt, asNumber } from '../normalize'
 import type {
   AgentProfileRecord,
   AgentView,
@@ -33,6 +33,14 @@ import type {
 export class AgentRegistryApi {
   constructor(private readonly inner: AgentRegistryContract) {}
 
+  async agentCount(): Promise<number> {
+    return asNumber(await this.inner.agentCount())
+  }
+
+  async agentIdOf(owner: string): Promise<number> {
+    return asNumber(await this.inner.agentIdOf(owner))
+  }
+
   async getAgent(agentId: number): Promise<AgentView> {
     return mapAgent(await this.inner.getAgent(String(agentId)))
   }
@@ -45,6 +53,14 @@ export class AgentRegistryApi {
 export class BranchRegistryApi {
   constructor(private readonly inner: BranchRegistryContract) {}
 
+  async agentOf(branchId: number): Promise<number> {
+    return asNumber(await this.inner.agentOf(String(branchId)))
+  }
+
+  async branchCountOf(agentId: number): Promise<number> {
+    return asNumber(await this.inner.branchCountOf(String(agentId)))
+  }
+
   async getBranch(branchId: number): Promise<BranchView> {
     return mapBranch(await this.inner.getBranch(String(branchId)))
   }
@@ -52,6 +68,10 @@ export class BranchRegistryApi {
 
 export class AgentAccessApi {
   constructor(private readonly inner: AgentAccessContract) {}
+
+  async effectiveRoleOf(branchId: number, account: string): Promise<number> {
+    return asNumber(await this.inner.effectiveRoleOf(String(branchId), account))
+  }
 
   async membersOf(branchId: number, offset: number, limit: number): Promise<MemberView[]> {
     return mapMembers(await this.inner.membersOf(String(branchId), String(offset), String(limit)))
@@ -67,7 +87,7 @@ export class LedgerApi {
 
   async rollup(scope: number, id: number, fromDay: number, toDay: number): Promise<bigint[][]> {
     return mapRollup(
-      await this.inner.rollup(scope, String(id), String(fromDay), String(toDay)),
+      await this.inner.rollup(String(scope), String(id), String(fromDay), String(toDay)),
     )
   }
 
@@ -97,12 +117,12 @@ export class SalesSettingsApi {
 
   async quoteTax(branchId: number, service: number, amount: bigint): Promise<TaxQuote> {
     return mapTaxQuote(
-      await this.inner.quoteTax(String(branchId), service, amount.toString()),
+      await this.inner.quoteTax(String(branchId), String(service), amount.toString()),
     )
   }
 
   async branchTaxOf(branchId: number, service: number): Promise<BranchTax> {
-    return mapBranchTax(await this.inner.branchTaxOf(String(branchId), service))
+    return mapBranchTax(await this.inner.branchTaxOf(String(branchId), String(service)))
   }
 }
 

@@ -12,6 +12,7 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    include: ['test/**/*.test.ts'],
+    environmentMatchGlobs: [['test/**/*.test.tsx', 'jsdom']],
+    include: ['test/**/*.test.{ts,tsx}'],
   },
 })

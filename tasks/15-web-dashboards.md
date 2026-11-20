@@ -130,13 +130,13 @@ Mọi hành động ghi: nút bị khoá kèm lý do khi điều kiện không �
 - `roles.ts`: `resolvePlatformRole(...) → {isOwner,isAdmin,isPendingOwner}`; `resolveAgentContexts(account) → Context[]` (theo Thiết kế/Vai trò).
 - Hook React Query: `useRollup(scope, id, fromDay, toDay)` (tự chunk, cache theo khoá), `useAgents()` (tải hết có concurrency 8, trả `{rows, search(text), filter}`), `useAgent(id)`, `useAgentBranches(agentId)`, `useBranch(id)`, `useMembers(branchId, page)`, `useAuditLog(filter, page)`, `useLedgerEntries(agentId, filter, page)`, `useCustomerWallet(agentId, address)`, `useSalesSettings(agentId, branchIds)`, `useTx()` (bọc ghi: trạng thái pending, toast, giải mã lỗi, invalidate khoá truyền vào).
 
-- [ ] Test (giá trị chính xác):
+- [x] Test (giá trị chính xác):
   - `dayOf(1_767_200_399, 420) == 20_453`, `dayOf(1_767_200_400, 420) == 20_454`, `dayOf(90_000, -60) == 1` (khớp test Solidity `LedgerMetrics.t.sol`).
   - `chunkDays(0, 199)` → `[[0,92],[93,185],[186,199]]`.
   - `revenue` với hàng có NET gộp 100_000, hoàn 10_000, tăng 5_000, giảm 2_000, thuế 9_090, thuế hoàn 909 → net 93_000, taxNet 8_181; `'ALL'` cộng NET + IQR.
   - `resolveAgentContexts`: ví chủ agent 1 + Manager chi nhánh 7 của agent 2 + Staff chi nhánh 9 → 2 ngữ cảnh (owner 1; manager 2 [7]); Staff bị bỏ.
   - `useRollup` với 200 ngày gọi contract giả 3 lần và cộng đúng.
-- [ ] Đỏ → code → xanh. Commit `feat(frontend): công thức doanh thu, ngày kinh doanh, vai trò và hook dữ liệu`.
+- [x] Đỏ → code → xanh. Commit `feat(frontend): công thức doanh thu, ngày kinh doanh, vai trò và hook dữ liệu`.
 
 ### Task 3: `packages/ui` — giao diện dùng chung
 
