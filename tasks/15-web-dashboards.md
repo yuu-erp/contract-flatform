@@ -164,9 +164,9 @@ Mọi hành động ghi: nút bị khoá kèm lý do khi điều kiện không �
 
 ### Task 6: App `platform` — Hệ thống và Nhật ký
 
-- [ ] `/system` (chỉ owner) đủ như Thiết kế; pending owner thấy nút nhận quyền ở header.
-- [ ] `/audit` toàn hệ, lọc theo Thiết kế, mỗi dòng mở chi tiết (trước/sau giải mã được thì hiển thị, không thì hex).
-- [ ] Commit `feat(platform): hệ thống và nhật ký`.
+- [x] `/system` (chỉ owner) đủ như Thiết kế; pending owner thấy nút nhận quyền ở header.
+- [x] `/audit` toàn hệ, lọc theo Thiết kế, mỗi dòng mở chi tiết (trước/sau giải mã được thì hiển thị, không thì hex).
+- [x] Commit `feat(platform): hệ thống và nhật ký`.
 
 ### Task 7: App `agent` — khung, ngữ cảnh, Tổng quan, chi nhánh
 

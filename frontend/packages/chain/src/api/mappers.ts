@@ -215,6 +215,12 @@ export function mapBranchTax(value: unknown): BranchTax {
   return { isSet: asBool(record.isSet), bps: asNumber(record.bps) }
 }
 
+export function mapAddressList(value: unknown): string[] {
+  const raw = unwrapValue(value)
+  if (!Array.isArray(raw)) return []
+  return raw.map((addr) => toAddress(asString(addr)))
+}
+
 export function mapAddressPage(value: unknown): string[] {
   const raw = unwrapValue(value)
   if (Array.isArray(raw)) {

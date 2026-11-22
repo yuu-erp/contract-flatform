@@ -3,7 +3,6 @@ import {
   sumDays,
   useAgent,
   useAgentBranches,
-  useAuditLog,
   useContracts,
   useCustomerWallet,
   useLedgerEntries,
@@ -35,6 +34,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { AdminOnlyNote } from '../components/AdminOnlyNote'
+import { AuditLogPanel } from '../components/AuditLogPanel'
 import { AgentManageDialog, type AgentManageMode } from '../components/AgentManageDialog'
 import { CreateBranchDialog } from '../components/CreateBranchDialog'
 import { DetailTabs, type DetailTab } from '../components/DetailTabs'
@@ -146,7 +146,7 @@ export function AgentDetailPage() {
       {tab === 'sales' && <AgentSalesTab agentId={agentId} branchIds={branchList.map((b) => b.branchId)} rows={branchList} />}
       {tab === 'wallets' && <AgentWalletsTab agentId={agentId} branches={branchList} />}
       {tab === 'transactions' && <AgentTransactionsTab agentId={agentId} branches={branchList} />}
-      {tab === 'audit' && <AgentAuditTab agentId={agentId} />}
+      {tab === 'audit' && <AuditLogPanel locked={{ agentId }} hideAgent />}
     </div>
   )
 }
@@ -506,29 +506,6 @@ function AgentTransactionsTab({
         />
       </CardContent>
     </Card>
-  )
-}
-
-function AgentAuditTab({ agentId }: { agentId: number }) {
-  const [page, setPage] = useState(0)
-  const audit = useAuditLog({ agentId }, page)
-  type AuditRow = NonNullable<typeof audit.data>['items'][number]
-  const columns = [
-    { key: 'action', header: 'Hành động', render: (r: AuditRow) => r.record.action },
-    { key: 'actor', header: 'Người làm', render: (r: AuditRow) => <Address value={r.record.actor} /> },
-    { key: 'ts', header: 'Thời gian', render: (r: AuditRow) => new Date(r.record.timestamp * 1000).toLocaleString('vi-VN') },
-  ]
-  return (
-    <DataTable
-      columns={columns}
-      rows={audit.data?.items ?? []}
-      loading={audit.isLoading}
-      page={page}
-      pageSize={20}
-      total={audit.data?.total ?? 0}
-      onPageChange={setPage}
-      emptyTitle="Chưa có nhật ký"
-    />
   )
 }
 

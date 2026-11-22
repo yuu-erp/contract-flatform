@@ -8,8 +8,9 @@ export type AuditFilter = {
   branchId?: number
   action?: string
   actor?: string
-  fromDay?: number
-  toDay?: number
+  /** Unix timestamp (giây) — slot 0 nhật ký audit. */
+  fromTs?: number
+  toTs?: number
 }
 
 export function useAuditLog(filter: AuditFilter, page: number) {
@@ -27,8 +28,8 @@ export function useAuditLog(filter: AuditFilter, page: number) {
   if (filter.branchId != null) query.filters!.push(termBranch(filter.branchId))
   if (filter.action) query.filters!.push({ prefix: 'X', value: filter.action })
   if (filter.actor) query.filters!.push({ prefix: 'R', value: filter.actor })
-  if (filter.fromDay != null && filter.toDay != null) {
-    query.ranges!.push({ slot: 0, min: BigInt(filter.fromDay), max: BigInt(filter.toDay) })
+  if (filter.fromTs != null && filter.toTs != null) {
+    query.ranges!.push({ slot: 0, min: BigInt(filter.fromTs), max: BigInt(filter.toTs) })
   }
 
   return useQuery({

@@ -40,7 +40,7 @@ function PlatformSession() {
     return <PageLoader message="Đang kiểm tra quyền on-chain…" />
   }
 
-  if (!role?.isOwner && !role?.isAdmin) {
+  if (!role?.isOwner && !role?.isAdmin && !role?.isPendingOwner) {
     return (
       <div className="mx-auto w-full max-w-3xl space-y-4">
         {wallet?.address ? (

@@ -8,6 +8,7 @@ import { resolvePlatformRole, type PlatformRole } from '../roles'
 import { asBigInt, asNumber, asString, unwrapValue } from '../normalize'
 import { toAddress } from '../address'
 import {
+  mapAddressList,
   mapAddressPage,
   mapAgent,
   mapAgentProfileRecord,
@@ -187,6 +188,14 @@ export class LedgerApi {
   async walletLiability(agentId: number): Promise<bigint> {
     return asBigInt(await this.inner.walletLiability(String(agentId)))
   }
+
+  async posterKinds(poster: string): Promise<number> {
+    return asNumber(unwrapValue(await this.inner.posterKinds(poster)))
+  }
+
+  async setPoster(poster: string, kindsMask: number): Promise<void> {
+    await this.inner.setPoster(poster, String(kindsMask))
+  }
 }
 
 export class SalesSettingsApi {
@@ -248,6 +257,30 @@ export class PlatformAccessApi {
 
   async unpause(): Promise<void> {
     await this.inner.unpause()
+  }
+
+  async addPlatformAdmin(account: string): Promise<void> {
+    await this.inner.addPlatformAdmin(account)
+  }
+
+  async removePlatformAdmin(account: string): Promise<void> {
+    await this.inner.removePlatformAdmin(account)
+  }
+
+  async acceptOwnership(): Promise<void> {
+    await this.inner.acceptOwnership()
+  }
+
+  async transferOwnership(newOwner: string): Promise<void> {
+    await this.inner.transferOwnership(newOwner)
+  }
+
+  async platformAdminCount(): Promise<number> {
+    return asNumber(await this.inner.platformAdminCount())
+  }
+
+  async agentRoleSources(): Promise<string[]> {
+    return mapAddressList(await this.inner.agentRoleSources())
   }
 }
 

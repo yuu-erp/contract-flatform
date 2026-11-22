@@ -7,7 +7,7 @@ import { AgentDetailPage } from './pages/AgentDetailPage'
 import { AgentsPage } from './pages/AgentsPage'
 import { BranchDetailPage } from './pages/BranchDetailPage'
 import { OverviewPage } from './pages/OverviewPage'
-import { PlaceholderPage } from './pages/PlaceholderPage'
+import { AuditPage } from './pages/AuditPage'
 import { SystemPage } from './pages/SystemPage'
 
 export function App() {
@@ -25,7 +25,7 @@ export function App() {
           <Route path="agents" element={<AgentsPage />} />
           <Route path="agents/:agentId" element={<AgentDetailPage />} />
           <Route path="branches/:branchId" element={<BranchDetailPage />} />
-          <Route path="audit" element={<PlaceholderPage title="Nhật ký toàn hệ" />} />
+          <Route path="audit" element={<AuditPage />} />
           <Route path="system" element={<SystemPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
