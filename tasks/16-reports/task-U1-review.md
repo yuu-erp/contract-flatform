@@ -68,3 +68,16 @@ resolve: { alias: localSdk ? { '@metanodejs/fiai-sdk': localSdk } : {} }
 Ghi cách dùng (`FIAI_SDK_PATH=... pnpm dev`) vào README. Nếu bản npm thiếu tính năng cần thiết thì ghi rõ tính năng nào để phát hành bản npm mới.
 
 **C. Danh sách chi nhánh chuyển sang quét toàn bộ id** (`listAgentBranches`): mỗi agent quét id 1…`branchCount` toàn hệ, tuần tự, 2–3 lệnh đọc mỗi id → 1 000 chi nhánh là vài nghìn lệnh gọi cho **một** trang. Cách này che đi một vấn đề lớn hơn: **`HistoryIndex.search` trên chain thật có chạy không?** Nhật ký và giao dịch sổ cũng dùng `search`. Báo cáo cần ghi: lỗi/kết quả cụ thể khi gọi `search(agentId, "platform_branches", …)` trên chain 991 (thông báo lỗi, hay trả rỗng, hay sai định dạng). Tạm thời giữ cách quét nhưng: chạy song song có giới hạn (`mapWithConcurrency` 8), dừng khi đủ `branchCountOf`, và chỉ dùng khi `search` lỗi/rỗng (thử `search` trước).
+
+## Đọc báo cáo chẩn đoán FullDB (`fulldb-991.md`, commit `4ea632c`)
+
+**Kết luận search:** `HistoryIndex.search` trên 991 trả đúng dữ liệu (cast và viem khớp). Lỗi tab Chi nhánh trống nằm ở phía web (`agentId` không gửi dạng chuỗi, parse `Page`, lỗi giải mã bị nuốt). → **Quay lại dùng `search`** cho danh sách chi nhánh (đã có `String(agentId)` và `parseHistorySearchPage`), hiện lỗi giải mã lên bảng thay vì nuốt; giữ `listAgentBranches` chỉ làm dự phòng khi `search` lỗi.
+
+**Phát hiện quan trọng mà báo cáo bỏ sót:** Bước 1 cho thấy `fullDB()` = `0xCCc63a17F863471301d5e03aa4DdB5a0a5d96d5c` **có bytecode** (`0x6080…`). FullDB thật là precompile `0x…0107` và precompile **không có bytecode**. Nghĩa là bộ deploy hiện tại trên 991 đang dùng **`MockFullDB`** (deploy theo `DeployMockFullDB` trước khi script bị chặn chỉ cho anvil).
+
+Hệ quả:
+- `MockFullDB.newDocument` / `setDataDocument` **không kiểm quyền** — bất kỳ ví nào cũng ghi/sửa được hồ sơ, nhật ký, bút toán trong kho này.
+- Mọi kết luận "search chạy đúng" mới đúng **với mock**, chưa kiểm với precompile thật.
+- Địa chỉ FullDB cố định từ `initialize`; muốn dùng precompile phải **deploy lại toàn bộ** (`FULLDB` để trống).
+
+Việc cần làm (người dùng quyết): nếu 991 chỉ là chain thử thì chấp nhận tạm, nhưng trước khi có dữ liệu thật phải deploy lại không đặt `FULLDB`, rồi chạy lại đúng các lệnh ở `fulldb-991.md` để xác nhận precompile `search` cũng chạy.
