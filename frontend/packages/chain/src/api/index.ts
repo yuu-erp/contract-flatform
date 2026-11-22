@@ -291,3 +291,4 @@ export class PlatformAccessApi {
 export * from './types'
 export * from './mappers'
 export * from './list-agent-branches'
+export * from './fetch-agent-branches'

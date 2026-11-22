@@ -17,8 +17,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       '@metanodejs/fiai-sdk':
-        specifier: /Users/yuu/Downloads/metanode-finsdk/packages/fiai-sdk
-        version: link:../../../../../Downloads/metanode-finsdk/packages/fiai-sdk
+        specifier: ^2.1.1
+        version: 2.1.1
       '@metanodejs/mtn-contract':
         specifier: ^1.0.8
         version: 1.0.8

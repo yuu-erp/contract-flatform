@@ -1,11 +1,12 @@
 import type { BranchProfileRecord } from '../decode'
+import { mapWithConcurrency } from '../react/concurrency'
 import type { BranchRegistryApi } from './index'
 
 export type AgentBranchRow = { docId: number; record: BranchProfileRecord }
 
 /**
- * Liệt kê chi nhánh của agent qua BranchRegistry (không phụ thuộc FullDB search).
- * Quét id 1..max(globalCount, mainId) — đủ cho quy mô hiện tại.
+ * Dự phòng khi `HistoryIndex.search` lỗi hoặc trả rỗng.
+ * Quét id 1..max(globalCount, mainId) song song (concurrency 8), dừng khi đủ `branchCountOf`.
  */
 export async function listAgentBranches(branches: BranchRegistryApi, agentId: number): Promise<AgentBranchRow[]> {
   let need = await branches.branchCountOf(agentId)
@@ -30,12 +31,16 @@ export async function listAgentBranches(branches: BranchRegistryApi, agentId: nu
   }
 
   if (main > 0) await tryAdd(main)
+  if (out.length >= need) return out
 
   const global = await branches.branchCount()
   const scanMax = Math.max(global, main, need, 1)
-  for (let id = 1; id <= scanMax && out.length < need; id++) {
-    await tryAdd(id)
-  }
+  const ids = Array.from({ length: scanMax }, (_, i) => i + 1).filter((id) => !seen.has(id))
+
+  await mapWithConcurrency(ids, 8, async (branchId) => {
+    if (out.length >= need) return
+    await tryAdd(branchId)
+  })
 
   return out
 }

@@ -16,6 +16,7 @@ describe('listAgentBranches', () => {
   it('trả rỗng khi branchCountOf = 0', async () => {
     const branches = {
       branchCountOf: vi.fn(async () => 0),
+      mainBranchOf: vi.fn(async () => 0),
     } as unknown as BranchRegistryApi
     await expect(listAgentBranches(branches, 101)).resolves.toEqual([])
   })

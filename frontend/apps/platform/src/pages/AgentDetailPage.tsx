@@ -73,13 +73,16 @@ export function AgentDetailPage() {
 
   const branchList = useMemo(
     () =>
-      (branches.data ?? []).map((b) => ({
+      (branches.data?.rows ?? []).map((b) => ({
         branchId: b.record.branchId,
         name: b.record.profile.name,
         domain: b.record.domain,
       })),
     [branches.data],
   )
+  const branchesLoadError =
+    branches.isError && branches.error ? branches.error.message : (branches.data?.searchError ?? null)
+  const branchesSearchWarning = branches.data?.searchWarning ?? null
 
   if (!validId) return <EmptyState title="Agent không hợp lệ" />
   if (agent.isLoading) return <PageLoader message="Đang tải agent…" />
@@ -139,7 +142,8 @@ export function AgentDetailPage() {
           agentAllowedServices={view.allowedServices}
           rows={branchList}
           loading={branches.isLoading}
-          error={branches.isError ? branches.error?.message : null}
+          error={branchesLoadError}
+          warning={branchesSearchWarning}
           onRefetch={() => branches.refetch()}
         />
       )}
@@ -239,6 +243,7 @@ function AgentBranchesTab({
   rows,
   loading,
   error,
+  warning,
   onRefetch,
 }: {
   agentId: number
@@ -246,6 +251,7 @@ function AgentBranchesTab({
   rows: { branchId: number; name: string; domain: string }[]
   loading: boolean
   error?: string | null
+  warning?: string | null
   onRefetch: () => void
 }) {
   const columns = [
@@ -267,7 +273,12 @@ function AgentBranchesTab({
         <CardTitle>Chi nhánh</CardTitle>
         <CreateBranchDialog agentId={agentId} agentAllowedServices={agentAllowedServices} onCreated={onRefetch} />
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-2">
+        {warning ? (
+          <p className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-900 dark:text-amber-100">
+            {warning}
+          </p>
+        ) : null}
         <DataTable
           columns={columns}
           rows={rows}
