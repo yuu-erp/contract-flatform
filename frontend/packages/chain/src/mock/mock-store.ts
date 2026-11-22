@@ -23,7 +23,15 @@ const AGENT_NAMES = [
   'Tiệm sách Đông Tây',
 ] as const
 
-const STATUSES = [0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2]
+/** Contract: 1 Active, 2 Suspended, 3 Deleted (0 = None). */
+const STATUSES = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3]
+
+const SERVED_METRICS = new Set<number>([
+  METRIC.netServedHere,
+  METRIC.iqrServedHere,
+  METRIC.netServedHereRefund,
+  METRIC.iqrServedHereRefund,
+])
 
 type SearchDoc = {
   docId: number
@@ -76,6 +84,41 @@ function addRow(target: bigint[], source: bigint[]) {
   for (let i = 0; i < 32; i++) target[i] = (target[i] ?? 0n) + (source[i] ?? 0n)
 }
 
+/** Chia rollup agent cho các chi nhánh; tổng (trừ served-here) khớp agent. */
+function splitAgentRollupToBranches(
+  rollups: Map<string, bigint[][]>,
+  agentDays: bigint[][],
+  branchIds: number[],
+  weights: number[],
+) {
+  if (branchIds.length === 0) return
+  const totalW = weights.reduce((a, b) => a + b, 0)
+  const perBranchDays: bigint[][][] = branchIds.map(() => agentDays.map(() => emptyMetricRow()))
+
+  for (let di = 0; di < agentDays.length; di++) {
+    const row = agentDays[di]!
+    for (let mi = 0; mi < 32; mi++) {
+      const v = row[mi] ?? 0n
+      if (SERVED_METRICS.has(mi)) {
+        const share = v / BigInt(branchIds.length)
+        for (let bi = 0; bi < branchIds.length; bi++) perBranchDays[bi]![di]![mi] = share
+        continue
+      }
+      let assigned = 0n
+      for (let bi = 0; bi < branchIds.length - 1; bi++) {
+        const part = BigInt(Math.floor((Number(v) * weights[bi]!) / totalW))
+        perBranchDays[bi]![di]![mi] = part
+        assigned += part
+      }
+      perBranchDays[branchIds.length - 1]![di]![mi] = v - assigned
+    }
+  }
+
+  branchIds.forEach((bid, bi) => {
+    rollups.set(`2:${bid}`, perBranchDays[bi]!)
+  })
+}
+
 export function buildMockState(seed: number): MockPlatformState {
   const rng = createRng(seed)
   const now = new Date()
@@ -122,7 +165,7 @@ export function buildMockState(seed: number): MockPlatformState {
     const perAgentDays: bigint[][] = []
     for (let d = 0; d < dayCount; d++) {
       const row = emptyMetricRow()
-      if (status === 2) {
+      if (status === 3) {
         perAgentDays.push(row)
         continue
       }
@@ -155,13 +198,14 @@ export function buildMockState(seed: number): MockPlatformState {
     const allowedServices = id % 3 === 0 ? 7 : id % 2 === 0 ? 3 : 1
     const perAgentDays = rollups.get(`1:${id}`) ?? []
     const branchCount = id <= 6 ? 2 : 3
-    for (let b = 0; b < branchCount && branchId <= 30; b++) {
+    const branchesForAgent: number[] = []
+  for (let b = 0; b < branchCount && branchId <= 30; b++) {
       const tz = b % 2 === 0 ? 420 : -300
       const domain = `agent${id}-cn${b + 1}.mock.local`
       branches.push({
         id: branchId,
         agentId: id,
-        status: status === 2 ? 2 : 0,
+        status: status === 3 ? 3 : status === 2 ? 2 : 1,
         services: allowedServices,
         isMain: b === 0,
         tzOffsetMinutes: tz,
@@ -205,10 +249,11 @@ export function buildMockState(seed: number): MockPlatformState {
         slot0: 0n,
         slot2: 0n,
       })
-      const branchDays: bigint[][] = perAgentDays.map((row) => [...row])
-      rollups.set(`2:${branchId}`, branchDays)
+      branchesForAgent.push(branchId)
       branchId++
     }
+    const weights = branchesForAgent.map((_, i) => (i % 2 === 0 ? 3 : 2))
+    splitAgentRollupToBranches(rollups, perAgentDays, branchesForAgent, weights)
   }
 
   const platformDays = Array.from({ length: dayCount }, (_, i) => {

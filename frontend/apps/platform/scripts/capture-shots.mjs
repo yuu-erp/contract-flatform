@@ -14,6 +14,7 @@ const BASE = `http://127.0.0.1:${PORT}/platform/#`
 
 const AGENT_TABS = ['overview', 'branches', 'profile', 'sales', 'wallets', 'transactions', 'audit']
 const BRANCH_TABS = ['overview', 'info', 'members', 'sales', 'transactions', 'audit']
+const CHART_SHOTS = new Set(['overview', 'agent-overview', 'branch-overview'])
 
 function run(cmd, args, env, cwd) {
   return new Promise((resolve, reject) => {
@@ -83,7 +84,8 @@ async function main() {
 
   try {
     await waitForServer(`http://127.0.0.1:${PORT}/platform/`)
-    const browser = await chromium.launch()
+    const launchOpts = process.env.PW_CHROMIUM_PATH ? { executablePath: process.env.PW_CHROMIUM_PATH } : {}
+    const browser = await chromium.launch(launchOpts)
     const jobs = [
       { tag: '1440-light', width: 1440, height: 900, theme: 'light' },
       { tag: '1440-dark', width: 1440, height: 900, theme: 'dark' },
@@ -96,6 +98,9 @@ async function main() {
       for (const [name, route] of routes()) {
         await page.goto(`${BASE}${route}`, { waitUntil: 'networkidle' })
         await applyTheme(page, job.theme)
+        if (CHART_SHOTS.has(name)) {
+          await page.waitForSelector('.recharts-surface', { timeout: 3000 }).catch(() => {})
+        }
         await page.waitForTimeout(400)
         const file = path.join(shotsDir, `${name}--${job.tag}.png`)
         await page.screenshot({ path: file, fullPage: true })

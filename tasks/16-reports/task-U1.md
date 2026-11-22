@@ -27,3 +27,10 @@ VITE_PREVIEW=mock pnpm dev
 ## Tham chiếu UI
 
 Mẫu [shadcn dashboard-01](https://ui.shadcn.com/blocks) dùng cho Task U2–U5; U1 chỉ cần dữ liệu và ảnh chụp để review layout hiện tại.
+
+## Sửa sau review (`task-U1-review.md`)
+
+- `packages/ui/src/styles.css`: `@source "./";` sau `@import 'tailwindcss'` — Tailwind quét mã component dùng chung (biểu đồ `h-72`, thanh bên `md:flex`, …).
+- `platform/package.json`: `@metanodejs/fiai-sdk` về `^2.1.1` (npm).
+- `mock-store`: enum trạng thái 1/2/3; rollup chi nhánh chia theo tỉ lệ (tổng = agent trừ served-here); test bổ sung.
+- `capture-shots.mjs`: `PW_CHROMIUM_PATH`, chờ `.recharts-surface` trên trang biểu đồ.
