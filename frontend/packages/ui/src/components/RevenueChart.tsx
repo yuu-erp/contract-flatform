@@ -36,15 +36,19 @@ export function RevenueChart({
           <XAxis dataKey="label" tick={{ fill: text, fontSize: 12 }} />
           <YAxis tick={{ fill: text, fontSize: 12 }} width={56} tickFormatter={(v) => formatVndCompact(BigInt(Math.round(v)))} />
           <Tooltip
-            formatter={(value: number, name: string) => [formatVnd(BigInt(Math.round(value))), name === 'net' ? 'NET' : 'IQR']}
+            formatter={(value, name) => {
+              const n = typeof value === 'number' ? value : Number(value ?? 0)
+              const key = String(name)
+              return [formatVnd(BigInt(Math.round(n))), key === 'net' ? 'NET' : 'IQR']
+            }}
             contentStyle={{
               background: dark ? '#18181b' : '#fff',
               border: `1px solid ${grid}`,
               borderRadius: 8,
             }}
           />
-          <Bar dataKey="net" stackId="a" fill="#2563eb" name="net" />
-          <Bar dataKey="iqr" stackId="a" fill="#7c3aed" name="iqr" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="net" stackId="a" fill="var(--chart-1)" name="net" />
+          <Bar dataKey="iqr" stackId="a" fill="var(--chart-2)" name="iqr" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

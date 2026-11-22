@@ -56,10 +56,10 @@ Cách dùng: chạy `pnpm dlx shadcn@latest add dashboard-01` (và các componen
 
 ### Task U2: Nền tảng giao diện trong `packages/ui`
 
-- [ ] `components.json` cho monorepo; thêm component shadcn: `sidebar`, `breadcrumb`, `tabs`, `select`, `dropdown-menu`, `dialog`, `sheet`, `alert-dialog`, `tooltip`, `badge`, `separator`, `skeleton`, `table`, `checkbox`, `label`, `textarea`, `toggle-group`, `popover`, `calendar`, `sonner`, `chart`, `avatar`, `alert`, `card`, `button`, `input` (thay `primitives/` tự viết).
-- [ ] Token: thêm `--primary` màu nhấn, `--success/--warning/--danger` (+ `-foreground`), `--chart-1/--chart-2` theo bảng trên cho cả sáng và tối; phông Inter.
-- [ ] Bỏ các component tự chế trùng chức năng (`DashboardToolbar`, `PageLoader`, `primitives/*`) hoặc viết lại trên nền shadcn; giữ nguyên tên export đang được app dùng để không vỡ import (hoặc sửa import trong app cùng commit).
-- [ ] Commit `feat(ui): nền shadcn, token màu, phông chữ`.
+- [x] `components.json` cho monorepo; thêm component shadcn: `sidebar`, `breadcrumb`, `tabs`, `select`, `dropdown-menu`, `dialog`, `sheet`, `alert-dialog`, `tooltip`, `badge`, `separator`, `skeleton`, `table`, `checkbox`, `label`, `textarea`, `toggle-group`, `popover`, `calendar`, `sonner`, `chart`, `avatar`, `alert`, `card`, `button`, `input` (thay `primitives/` tự viết).
+- [x] Token: thêm `--primary` màu nhấn, `--success/--warning/--danger` (+ `-foreground`), `--chart-1/--chart-2` theo bảng trên cho cả sáng và tối; phông Inter.
+- [x] Bỏ các component tự chế trùng chức năng (`DashboardToolbar`, `PageLoader`, `primitives/*`) hoặc viết lại trên nền shadcn; giữ nguyên tên export đang được app dùng để không vỡ import (hoặc sửa import trong app cùng commit).
+- [x] Commit `feat(ui): nền shadcn, token màu, phông chữ`.
 
 ### Task U3: Khung ứng dụng theo `dashboard-01`
 
