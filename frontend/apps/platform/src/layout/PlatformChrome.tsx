@@ -23,6 +23,8 @@ import { PlatformRoleStatus } from '../components/PlatformRoleStatus'
 import { platformChainId, platformDeployments } from '../config/deployments'
 import { useDashboardTitle } from '../hooks/use-dashboard-title'
 import { usePlatformRole } from '../hooks/use-platform-role'
+import { isPreviewMock } from '../preview/env'
+import { PreviewPlatformChrome } from './PreviewPlatformChrome'
 
 const menuBase: { to: string; label: string; end?: boolean; icon: LucideIcon }[] = [
   { to: '/', label: 'Tổng quan', end: true, icon: LayoutDashboard },
@@ -93,7 +95,7 @@ function PlatformChromeWithContracts() {
   )
 }
 
-export function PlatformChrome() {
+function LivePlatformChrome() {
   const theme = useWalletTheme()
   const { data: wallet, isPending: walletLoading } = useActiveWallet()
   const connect = useConnectWallet(theme)
@@ -136,4 +138,9 @@ export function PlatformChrome() {
   }
 
   return <AppShell {...shellProps} main={main} />
+}
+
+export function PlatformChrome() {
+  if (isPreviewMock()) return <PreviewPlatformChrome />
+  return <LivePlatformChrome />
 }

@@ -49,10 +49,10 @@ Cách dùng: chạy `pnpm dlx shadcn@latest add dashboard-01` (và các componen
 
 Để thiết kế và review được mà không cần ví/chain.
 
-- [ ] `packages/chain`: `createMockContracts(seed)` trả `PlatformContracts` giả, dữ liệu tất định: 12 agent (đủ 3 trạng thái, tên có dấu), 30 chi nhánh (2 múi giờ: +7 và −5), 90 ngày bộ đếm (có ngày 0, có hoàn, có điều chỉnh), 60 bút toán đủ 6 loại, 40 dòng nhật ký, 3 admin, 1 poster.
-- [ ] App `platform`: khi `VITE_PREVIEW=mock` thì bỏ qua `FinsdkProvider`/ví, dùng ví giả là owner nền tảng (có công tắc đổi vai trò owner/admin/không quyền trong menu người dùng ở chế độ này). Giao dịch giả: chờ 800 ms rồi thành công (hoặc lỗi nếu địa chỉ bắt đầu bằng `0xdead`).
-- [ ] Script `pnpm --filter platform shots`: build với `VITE_PREVIEW=mock`, chạy `vite preview`, dùng Playwright chụp **mọi route** (Tổng quan, Agent, chi tiết agent từng tab, chi tiết chi nhánh từng tab, Nhật ký, Hệ thống) ở 1440×900 sáng, 1440×900 tối, 390×844 sáng → `frontend/apps/platform/shots/*.png` (thư mục bỏ qua git).
-- [ ] Commit `feat(platform): chế độ xem trước dữ liệu giả và chụp màn hình`.
+- [x] `packages/chain`: `createMockContracts(seed)` trả `PlatformContracts` giả, dữ liệu tất định: 12 agent (đủ 3 trạng thái, tên có dấu), 30 chi nhánh (2 múi giờ: +7 và −5), 90 ngày bộ đếm (có ngày 0, có hoàn, có điều chỉnh), 60 bút toán đủ 6 loại, 40 dòng nhật ký, 3 admin, 1 poster.
+- [x] App `platform`: khi `VITE_PREVIEW=mock` thì bỏ qua `FinsdkProvider`/ví, dùng ví giả là owner nền tảng (có công tắc đổi vai trò owner/admin/không quyền trong menu người dùng ở chế độ này). Giao dịch giả: chờ 800 ms rồi thành công (hoặc lỗi nếu địa chỉ bắt đầu bằng `0xdead`).
+- [x] Script `pnpm --filter platform shots`: build với `VITE_PREVIEW=mock`, chạy `vite preview`, dùng Playwright chụp **mọi route** (Tổng quan, Agent, chi tiết agent từng tab, chi tiết chi nhánh từng tab, Nhật ký, Hệ thống) ở 1440×900 sáng, 1440×900 tối, 390×844 sáng → `frontend/apps/platform/shots/*.png` (thư mục bỏ qua git).
+- [x] Commit `feat(platform): chế độ xem trước dữ liệu giả và chụp màn hình`.
 
 ### Task U2: Nền tảng giao diện trong `packages/ui`
 

@@ -4,6 +4,8 @@ import { FinsdkProvider } from "@meta-platform/ui";
 import "@meta-platform/ui/styles.css";
 import { Toaster } from "sonner";
 import { App } from "./App";
+import { isPreviewMock } from "./preview/env";
+import { PreviewBootstrap } from "./preview/PreviewBootstrap";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -11,11 +13,19 @@ const queryClient = new QueryClient({
   },
 });
 
+const tree = (
+  <>
+    <App />
+    <Toaster richColors closeButton position="bottom-right" />
+  </>
+);
+
 createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
-    <FinsdkProvider basePath="/platform">
-      <App />
-      <Toaster richColors closeButton position="bottom-right" />
-    </FinsdkProvider>
+    {isPreviewMock() ? (
+      <PreviewBootstrap>{tree}</PreviewBootstrap>
+    ) : (
+      <FinsdkProvider basePath="/platform">{tree}</FinsdkProvider>
+    )}
   </QueryClientProvider>,
 );

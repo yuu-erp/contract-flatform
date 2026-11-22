@@ -9,9 +9,10 @@ import { BranchDetailPage } from './pages/BranchDetailPage'
 import { OverviewPage } from './pages/OverviewPage'
 import { AuditPage } from './pages/AuditPage'
 import { SystemPage } from './pages/SystemPage'
+import { isPreviewMock } from './preview/env'
 
 export function App() {
-  const missing = deploymentsError(platformDeployments)
+  const missing = !isPreviewMock() ? deploymentsError(platformDeployments) : null
 
   if (missing) {
     return <DeploymentsError message={missing} />

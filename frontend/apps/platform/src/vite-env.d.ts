@@ -2,6 +2,7 @@
 
 interface ImportMetaEnv {
   readonly VITE_CHAIN_ID?: string
+  readonly VITE_PREVIEW?: string
 }
 
 interface ImportMeta {
