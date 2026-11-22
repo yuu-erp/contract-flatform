@@ -60,3 +60,17 @@ Sửa: thêm mục "Commit `867643e`" vào `task-4.md` liệt kê từng thay đ
 6. Tổng quan: các ô "Tiền mặt thuần", "Giảm trừ", "Hoàn" không có so sánh kỳ trước trong khi ô khác có; nên đồng nhất (hoặc bỏ hết so sánh ở hàng hai).
 7. `revenue(prevSum, service)` gọi lặp nhiều lần trong JSX; dùng `prevRev` đã tính.
 8. Message commit `867643e` không theo kế hoạch (một task một commit, tên cố định). Từ Task 5 giữ đúng.
+
+## Review lại sau sửa (commit `117a595`)
+
+Kết luận: **Đạt**, kèm một việc nhỏ phải làm ở đầu Task 5.
+
+Chạy lại trên container reviewer: `pnpm install --frozen-lockfile && pnpm -r build && pnpm -r lint && pnpm -r test` → **xanh cả ba gói** (chain 32, ui 9, platform 7); app `platform` build được nhờ SDK lấy từ npm.
+
+- Điểm 1 — Đã sửa: bỏ kiểm bytecode FullDB; `DeployMockFullDB` chặn ngoài chain 31337.
+- Điểm 2 — Đã sửa: `dist/` ra khỏi git, thêm vào `.gitignore`.
+- Điểm 3 — Đã sửa: lọc xếp hạng bằng `useMemo` + `matchAgent`, có test.
+- Điểm 4 — Đã sửa: `@metanodejs/fiai-sdk@^2.1.1` từ npm; `utf8Length` chuyển sang `chain`.
+- Điểm 5–7 — Đã sửa.
+
+Việc nhỏ (làm cùng commit đầu tiên của Task 5): `forge fmt --check` báo lệch ở `script/SeedMockAgents.s.sol` và `script/DeployMockFullDB.s.sol` → `make ci` (CI GitHub) đỏ. Chạy `forge fmt script/SeedMockAgents.s.sol script/DeployMockFullDB.s.sol`.
