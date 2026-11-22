@@ -91,6 +91,10 @@ export class BranchRegistryApi {
     return asNumber(await this.inner.agentOf(String(branchId)))
   }
 
+  async branchCount(): Promise<number> {
+    return asNumber(await this.inner.branchCount())
+  }
+
   async branchCountOf(agentId: number): Promise<number> {
     return asNumber(await this.inner.branchCountOf(String(agentId)))
   }
@@ -286,3 +290,4 @@ export class PlatformAccessApi {
 
 export * from './types'
 export * from './mappers'
+export * from './list-agent-branches'

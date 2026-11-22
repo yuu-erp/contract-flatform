@@ -139,6 +139,7 @@ export function AgentDetailPage() {
           agentAllowedServices={view.allowedServices}
           rows={branchList}
           loading={branches.isLoading}
+          error={branches.isError ? branches.error?.message : null}
           onRefetch={() => branches.refetch()}
         />
       )}
@@ -237,12 +238,14 @@ function AgentBranchesTab({
   agentAllowedServices,
   rows,
   loading,
+  error,
   onRefetch,
 }: {
   agentId: number
   agentAllowedServices: number
   rows: { branchId: number; name: string; domain: string }[]
   loading: boolean
+  error?: string | null
   onRefetch: () => void
 }) {
   const columns = [
@@ -269,6 +272,8 @@ function AgentBranchesTab({
           columns={columns}
           rows={rows}
           loading={loading}
+          error={error}
+          onRetry={onRefetch}
           emptyTitle="Chưa có chi nhánh"
           page={1}
           pageSize={100}

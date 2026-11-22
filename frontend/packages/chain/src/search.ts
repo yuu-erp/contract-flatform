@@ -1,6 +1,17 @@
 import { normalizeHexAddress } from './address'
 import type { HistoryIndexContract } from './contracts/history-index.contract'
-import { asHexData, asNumber, unwrapValue } from './normalize'
+import { asHexData, asNumber, asRecord, unwrapValue } from './normalize'
+
+const PAGE_FIELDS = ['total', 'docIds', 'data'] as const
+
+/** SDK có thể trả Page dạng tuple, object, hoặc bọc trong `page`. */
+export function parseHistorySearchPage(result: unknown): Record<string, unknown> {
+  let raw = unwrapValue(result)
+  if (raw && typeof raw === 'object' && !Array.isArray(raw) && 'page' in (raw as object)) {
+    raw = unwrapValue((raw as Record<string, unknown>).page)
+  }
+  return asRecord(raw, PAGE_FIELDS)
+}
 
 export type SearchTerm = { prefix: string; value: string }
 export type SearchRange = { slot: number; min: bigint; max: bigint }
@@ -61,8 +72,8 @@ export async function searchFullDB(
   kind: string,
   query: SearchQuery,
 ): Promise<SearchResult> {
-  const result = await history.search(agentId, kind, toSearchQuery(query))
-  const raw = unwrapValue(result) as Record<string, unknown>
+  const result = await history.search(String(agentId), kind, toSearchQuery(query))
+  const raw = parseHistorySearchPage(result)
   const total = asNumber(raw.total)
   const docIds = Array.isArray(raw.docIds) ? raw.docIds.map((id) => asNumber(id)) : []
   const data = Array.isArray(raw.data) ? raw.data.map((row) => asHexData(row)) : []
