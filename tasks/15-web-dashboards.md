@@ -149,11 +149,11 @@ Mọi hành động ghi: nút bị khoá kèm lý do khi điều kiện không �
 
 **Files:** `frontend/apps/platform/**` (base `/platform/`, `FiaiSDK.init({ basePath: '/platform' })` theo mẫu).
 
-- [ ] Gate vai trò (Owner/Admin; khác → `NoAccessScreen`), menu: Tổng quan, Agent, Nhật ký, Hệ thống (chỉ owner).
-- [ ] `/` Tổng quan đủ như bảng Thiết kế; bảng xếp hạng agent dùng `useRollup(SCOPE_AGENT, id, …)` cho từng agent (concurrency 8), sắp theo `net` giảm dần.
-- [ ] `/agents` danh sách, tìm, lọc, phân trang, form "Tạo agent" (kiểm dữ liệu như `web/src/lib/validate.ts`: tên 1–100, địa chỉ ≤ 200, ghi chú ≤ 500, SĐT theo `TextRules.isPhone`, dịch vụ hợp lệ theo `ServiceMask`).
-- [ ] Test Vitest: lọc/tìm agent (tên không dấu/có dấu, SĐT, id, địa chỉ ví) trên dữ liệu giả 150 agent; sắp xếp xếp hạng.
-- [ ] Commit `feat(platform): tổng quan và danh sách agent`.
+- [x] Gate vai trò (Owner/Admin; khác → `NoAccessScreen`), menu: Tổng quan, Agent, Nhật ký, Hệ thống (chỉ owner).
+- [x] `/` Tổng quan đủ như bảng Thiết kế; bảng xếp hạng agent dùng `useRollup(SCOPE_AGENT, id, …)` cho từng agent (concurrency 8), sắp theo `net` giảm dần.
+- [x] `/agents` danh sách, tìm, lọc, phân trang, form "Tạo agent" (kiểm dữ liệu như `web/src/lib/validate.ts`: tên 1–100, địa chỉ ≤ 200, ghi chú ≤ 500, SĐT theo `TextRules.isPhone`, dịch vụ hợp lệ theo `ServiceMask`).
+- [x] Test Vitest: lọc/tìm agent (tên không dấu/có dấu, SĐT, id, địa chỉ ví) trên dữ liệu giả 150 agent; sắp xếp xếp hạng.
+- [x] Commit `feat(platform): tổng quan và danh sách agent`.
 
 ### Task 5: App `platform` — chi tiết agent và chi nhánh
 

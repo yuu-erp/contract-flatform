@@ -1,11 +1,6 @@
 {
   "name": "meta-platform-frontend",
   "private": true,
-  "pnpm": {
-    "overrides": {
-      "@metanodejs/fiai-sdk": "link:../../CONG_TY/metanode-finsdk/packages/fiai-sdk"
-    }
-  },
   "scripts": {
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",

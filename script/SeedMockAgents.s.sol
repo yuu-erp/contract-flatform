@@ -7,8 +7,6 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {AgentRegistry} from "../src/core/tenant/AgentRegistry.sol";
 import {IAgentRegistry} from "../src/interfaces/IAgentRegistry.sol";
 import {PlatformAccess} from "../src/core/access/PlatformAccess.sol";
-import {HistoryIndex} from "../src/core/history/HistoryIndex.sol";
-
 /// @notice Tạo hàng loạt agent giả để thử dashboard / phân trang.
 ///         Env: `ADMIN_PRIVATE_KEY` (ưu tiên) hoặc `PRIVATE_KEY` nếu đó là **PLATFORM_ADMIN**.
 ///         Tuỳ chọn: `MOCK_AGENT_COUNT` (mặc định 100), `MOCK_AGENT_START` (chỉ số bắt đầu, mặc định 0).
@@ -27,14 +25,6 @@ contract SeedMockAgents is Script {
         string memory json = vm.readFile(path);
         address agentsProxy = json.readAddress(".agentsProxy");
         address accessProxy = json.readAddress(".accessProxy");
-
-        address fullDb = HistoryIndex(json.readAddress(".historyProxy")).fullDB();
-        if (fullDb.code.length == 0) {
-            console2.log("fullDB", fullDb);
-            revert(
-                "FullDB khong co code tren chain (thuong la precompile 0x0107). Chay: make deploy-mock-fulldb, dat FULLDB trong .env, make deploy."
-            );
-        }
 
         PlatformAccess access = PlatformAccess(accessProxy);
         if (!access.isPlatformAdmin(signer)) {

@@ -1,4 +1,4 @@
-import { utf8Length } from '@meta-platform/ui'
+import { utf8Length } from '@meta-platform/chain'
 import { isValidEthAddress } from './address'
 
 const MAX_STORE_NAME = 100

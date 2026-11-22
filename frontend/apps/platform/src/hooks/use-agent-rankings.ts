@@ -8,7 +8,8 @@ import {
   type ServiceFilter,
 } from '@meta-platform/chain'
 import { useQuery } from '@tanstack/react-query'
-import { sortAgentRankings, type AgentRankingRow } from '../lib/agent-ranking'
+import { useMemo } from 'react'
+import { filterAgentRankings, sortAgentRankings, type AgentRankingRow } from '../lib/agent-ranking'
 import { SCOPE_AGENT } from '../lib/scopes'
 
 export function useAgentRankings(
@@ -20,7 +21,7 @@ export function useAgentRankings(
 ) {
   const contracts = useContracts()
 
-  return useQuery({
+  const query = useQuery({
     queryKey: ['agent-rankings', agents.map((a) => a.id), fromDay, toDay, service],
     enabled: !!contracts?.ledger && agents.length > 0 && fromDay <= toDay,
     queryFn: async (): Promise<AgentRankingRow[]> => {
@@ -41,15 +42,14 @@ export function useAgentRankings(
           gross: rev.gross,
         }
       })
-      const sorted = sortAgentRankings(rows)
-      const q = rankSearch.trim().toLowerCase()
-      if (!q) return sorted
-      return sorted.filter(
-        (r) =>
-          String(r.agentId).includes(q) ||
-          r.owner.toLowerCase().includes(q) ||
-          (r.name ?? '').toLowerCase().includes(q),
-      )
+      return sortAgentRankings(rows)
     },
   })
+
+  const data = useMemo(
+    () => filterAgentRankings(query.data ?? [], agents, rankSearch),
+    [query.data, agents, rankSearch],
+  )
+
+  return { ...query, data }
 }

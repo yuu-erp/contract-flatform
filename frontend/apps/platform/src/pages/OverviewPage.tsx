@@ -72,6 +72,7 @@ export function OverviewPage() {
   const rev = revenue(currentSum, service)
   const prevRev = revenue(prevSum, service)
   const cashFlow = cash(currentSum)
+  const prevCashFlow = useMemo(() => cash(prevSum), [prevSum])
   const walletFlow = wallet(currentSum)
   const chart = useMemo(
     () => buildDailyChart(rollup.data ?? [], fromDay, toDay, PLATFORM_TZ_MINUTES, service),
@@ -124,11 +125,11 @@ export function OverviewPage() {
               value={rev.net}
               previous={prevRev.net}
             />
-            <KpiTile label="Gộp" value={rev.gross} previous={revenue(prevSum, service).gross} />
-            <KpiTile label="Thuế thuần" value={rev.taxNet} previous={revenue(prevSum, service).taxNet} />
-            <KpiTile label="Tiền mặt thuần" value={cashFlow.net.cash} />
-            <KpiTile label="Giảm trừ" value={rev.discount} />
-            <KpiTile label="Hoàn" value={rev.refund} />
+            <KpiTile label="Gộp" value={rev.gross} previous={prevRev.gross} />
+            <KpiTile label="Thuế thuần" value={rev.taxNet} previous={prevRev.taxNet} />
+            <KpiTile label="Tiền mặt thuần" value={cashFlow.net.cash} previous={prevCashFlow.net.cash} />
+            <KpiTile label="Giảm trừ" value={rev.discount} previous={prevRev.discount} />
+            <KpiTile label="Hoàn" value={rev.refund} previous={prevRev.refund} />
             <KpiTile label="Điều chỉnh (+/−)" value={rev.adjUp - rev.adjDown} />
             <KpiTile label="Chuyển khoản thuần" value={cashFlow.net.transfer} />
           </div>

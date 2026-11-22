@@ -139,6 +139,7 @@ Kỳ vọng: owner đúng ví của bạn; nguồn vai trò là `[AGENTS, AA]`; 
 
 - Đăng ký FreeGas cho các proxy (nếu chain dùng FreeGas): đăng ký **địa chỉ proxy**, không phải implementation.
 - Commit `deployments/platform-<chainid>.json`. Web đọc file này khi build.
+- (Tuỳ chọn, chỉ người dùng chạy) Sinh agent giả để thử dashboard: `make seed-mock-agents` (cần `ADMIN_PRIVATE_KEY` hoặc `PRIVATE_KEY` = `PLATFORM_ADMIN`; `MOCK_AGENT_COUNT` / `MOCK_AGENT_START` tuỳ chọn). Không cần deploy `MockFullDB` trên chain có precompile FullDB `0x…0107`.
 
 ## 5. Nâng cấp một proxy
 

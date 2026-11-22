@@ -1,6 +1,6 @@
 # Lệnh chuẩn của meta-platform. CI chạy `make ci`.
 # `deploy`, `deploy-agent-access` và `set-admin` chỉ người dùng chạy (đọc .env, có --broadcast). Agent không chạy các target đó.
-.PHONY: build test fmt sizes layout deps snapshot snapshot-update ci legacy-inventory abi deploy deploy-agent-access deploy-local set-admin mock-agents deploy-mock-fulldb upgrade upgrade-dry upgrade-local
+.PHONY: build test fmt sizes layout deps snapshot snapshot-update ci legacy-inventory abi deploy deploy-agent-access deploy-local set-admin mock-agents seed-mock-agents deploy-mock-fulldb upgrade upgrade-dry upgrade-local
 
 build:
 	forge build
@@ -61,10 +61,10 @@ set-admin:
 	forge script script/SetPlatformAdmin.s.sol --rpc-url platform --broadcast
 
 # Chỉ người dùng chạy. Cần ADMIN_PRIVATE_KEY trong .env (hoặc PRIVATE_KEY = admin). MOCK_AGENT_COUNT / MOCK_AGENT_START tuỳ chọn.
-mock-agents:
+mock-agents seed-mock-agents:
 	forge script script/SeedMockAgents.s.sol --rpc-url platform --broadcast
 
-# Chỉ người dùng chạy. Deploy contract MockFullDB khi chain khong co precompile 0x...0107.
+# Chỉ người dùng chạy. Deploy MockFullDB tren anvil (chain 31337) — khong dung tren chain that.
 deploy-mock-fulldb:
 	forge script script/DeployMockFullDB.s.sol --rpc-url platform --broadcast
 

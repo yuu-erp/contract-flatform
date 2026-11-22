@@ -1,22 +1,20 @@
+import {
+  isReasonBytesValid as chainIsReasonBytesValid,
+  REASON_MAX_BYTES as CHAIN_REASON_MAX_BYTES,
+  REASON_MIN_BYTES as CHAIN_REASON_MIN_BYTES,
+  utf8Length as chainUtf8Length,
+} from '@meta-platform/chain'
+
 const NBSP = /\u00a0/g
 
 export function normalizeSpaces(text: string): string {
   return text.replace(NBSP, ' ')
 }
 
-export function utf8Length(text: string): number {
-  return new TextEncoder().encode(text).length
-}
-
-export const REASON_MIN_BYTES = 1
-export const REASON_MAX_BYTES = 200
-
-export function isReasonBytesValid(text: string): boolean {
-  const trimmed = text.trim()
-  if (!trimmed) return false
-  const len = utf8Length(trimmed)
-  return len >= REASON_MIN_BYTES && len <= REASON_MAX_BYTES
-}
+export const REASON_MIN_BYTES = CHAIN_REASON_MIN_BYTES
+export const REASON_MAX_BYTES = CHAIN_REASON_MAX_BYTES
+export const utf8Length = chainUtf8Length
+export const isReasonBytesValid = chainIsReasonBytesValid
 
 export function formatVnd(value: bigint | number): string {
   const amount = typeof value === 'bigint' ? value : BigInt(Math.trunc(value))
