@@ -2,7 +2,6 @@ import {
   cash,
   revenue,
   sumDays,
-  useAgents,
   useContracts,
   useRollup,
   wallet,
@@ -15,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
   DashboardToolbar,
+  DataTable,
   EmptyState,
   Input,
   KpiTile,
@@ -27,10 +27,14 @@ import {
   type RangePickerValue,
   type ServiceFilterValue,
 } from '@meta-platform/ui'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAgentRankings } from '../hooks/use-agent-rankings'
-import { useTotalBranchCount } from '../hooks/use-branch-counts'
+import {
+  DEFAULT_RANK_PAGE_SIZE,
+  useAgentRankingsPage,
+} from '../hooks/use-agent-rankings'
+import { useAgentStatusCounts } from '../hooks/use-agent-status-counts'
+import { useGlobalBranchCount } from '../hooks/use-global-branch-count'
 import { buildDailyChart } from '../lib/chart-data'
 import { PLATFORM_TZ_MINUTES, previousDayRange, SCOPE_PLATFORM } from '../lib/scopes'
 
@@ -40,12 +44,19 @@ export function OverviewPage() {
   const [serviceUi, setServiceUi] = useState<ServiceFilterValue>('ALL')
   const service: ServiceFilter = serviceUi
   const [rankQ, setRankQ] = useState('')
+  const [rankPage, setRankPage] = useState(0)
 
-  const { rows: agents, isLoading: agentsLoading } = useAgents()
+  const statusCountsQuery = useAgentStatusCounts()
+  const branchCountQuery = useGlobalBranchCount()
+
   const { fromDay, toDay } = useMemo(
     () => resolveRangeDays(range, PLATFORM_TZ_MINUTES),
     [range],
   )
+
+  useEffect(() => {
+    setRankPage(0)
+  }, [rankQ, fromDay, toDay, serviceUi])
   const prev = useMemo(() => previousDayRange(fromDay, toDay), [fromDay, toDay])
 
   const rollup = useRollup({
@@ -64,8 +75,14 @@ export function OverviewPage() {
     enabled: prev.fromDay <= prev.toDay && prev.toDay >= 0,
   })
 
-  const rankings = useAgentRankings(agents, fromDay, toDay, service, rankQ)
-  const branchTotals = useTotalBranchCount(agents.map((a) => a.id))
+  const rankings = useAgentRankingsPage(
+    rankPage,
+    DEFAULT_RANK_PAGE_SIZE,
+    fromDay,
+    toDay,
+    service,
+    rankQ,
+  )
 
   const currentSum = useMemo(() => sumDays(rollup.data ?? []), [rollup.data])
   const prevSum = useMemo(() => sumDays(prevRollup.data ?? []), [prevRollup.data])
@@ -79,18 +96,14 @@ export function OverviewPage() {
     [rollup.data, fromDay, toDay, service],
   )
 
-  const statusCounts = useMemo(() => {
-    const counts = { active: 0, suspended: 0, deleted: 0 }
-    for (const a of agents) {
-      if (a.status === 1) counts.active++
-      else if (a.status === 2) counts.suspended++
-      else if (a.status === 3) counts.deleted++
-    }
-    return counts
-  }, [agents])
+  const statusCounts = statusCountsQuery.data ?? {
+    active: 0,
+    suspended: 0,
+    deleted: 0,
+  }
 
   const hasData = rollup.data?.some((row) => row.some((v) => v !== 0n))
-  const loading = rollup.isLoading || agentsLoading
+  const loading = rollup.isLoading
 
   return (
     <div className="space-y-6">
@@ -168,7 +181,7 @@ export function OverviewPage() {
                 <div className="flex justify-between border-b border-border pb-2">
                   <span className="text-muted-foreground">Tổng chi nhánh</span>
                   <span className="font-semibold tabular-nums">
-                    {branchTotals.isLoading ? '…' : branchTotals.total}
+                    {branchCountQuery.isLoading ? '…' : (branchCountQuery.data ?? '—')}
                   </span>
                 </div>
                 <Link
@@ -185,7 +198,10 @@ export function OverviewPage() {
             <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3 space-y-0">
               <div>
                 <CardTitle>Xếp hạng agent</CardTitle>
-                <CardDescription>Theo doanh thu thuần trong khoảng đã chọn</CardDescription>
+                <CardDescription>
+                  Doanh thu thuần trong khoảng đã chọn; sắp xếp theo doanh thu trên từng trang ({DEFAULT_RANK_PAGE_SIZE}{' '}
+                  agent/trang).
+                </CardDescription>
               </div>
               <Input
                 className="w-full max-w-xs"
@@ -195,38 +211,50 @@ export function OverviewPage() {
               />
             </CardHeader>
             <CardContent className="pt-0">
-              {rankings.isLoading ? (
-                <p className="py-6 text-center text-sm text-muted-foreground">Đang tải bảng xếp hạng…</p>
-              ) : rankings.data?.length === 0 ? (
-                <EmptyState title="Chưa có giao dịch trong khoảng này" />
-              ) : (
-                <div className="overflow-x-auto rounded-lg border border-border">
-                  <table className="w-full text-sm">
-                    <thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                      <tr>
-                        <th className="px-4 py-2.5">#</th>
-                        <th className="px-4 py-2.5">Agent</th>
-                        <th className="px-4 py-2.5 text-right">Doanh thu thuần</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rankings.data?.map((row, index) => (
-                        <tr key={row.agentId} className="border-t border-border hover:bg-muted/30">
-                          <td className="px-4 py-2.5 text-muted-foreground">{index + 1}</td>
-                          <td className="px-4 py-2.5">
-                            <Link to={`/agents/${row.agentId}`} className="font-medium text-primary hover:underline">
-                              {row.name || `Agent #${row.agentId}`}
-                            </Link>
-                          </td>
-                          <td className="px-4 py-2.5 text-right">
-                            <Money value={row.net} />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+              <DataTable
+                columns={[
+                  {
+                    key: 'rank',
+                    header: '#',
+                    className: 'w-14',
+                    render: (row) => {
+                      const idx = rankings.data.findIndex((r) => r.agentId === row.agentId)
+                      return <span className="text-muted-foreground">{idx >= 0 ? idx + 1 : '—'}</span>
+                    },
+                  },
+                  {
+                    key: 'agent',
+                    header: 'Agent',
+                    render: (row) => (
+                      <Link
+                        to={`/agents/${row.agentId}`}
+                        className="font-medium text-primary hover:underline"
+                      >
+                        {row.name || `Agent #${row.agentId}`}
+                      </Link>
+                    ),
+                  },
+                  {
+                    key: 'net',
+                    header: 'Doanh thu thuần',
+                    className: 'text-right',
+                    render: (row) => <Money value={row.net} />,
+                  },
+                ]}
+                rows={rankings.data}
+                page={rankPage}
+                pageSize={DEFAULT_RANK_PAGE_SIZE}
+                total={rankings.total}
+                onPageChange={setRankPage}
+                loading={rankings.isLoading}
+                error={rankings.isError ? rankings.error?.message : null}
+                onRetry={() => rankings.refetch()}
+                emptyTitle={
+                  rankQ.trim()
+                    ? 'Không có agent khớp tìm kiếm'
+                    : 'Chưa có dữ liệu agent trên trang này'
+                }
+              />
             </CardContent>
           </Card>
 
