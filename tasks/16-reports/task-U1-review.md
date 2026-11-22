@@ -48,3 +48,23 @@ Sửa (một dòng, làm **trước** mọi thứ khác ở U2): trong `packages
 - Ô KPI: số tiền có gạch chân dưới "₫" (ký tự đ bị trình duyệt gạch chân do phông); dùng `₫` không gạch hoặc viết "đ" thường.
 - Điện thoại (trang Hệ thống): địa chỉ đầy đủ 42 ký tự tràn dòng trong "Vùng nguy hiểm"; nút "Gỡ" nằm dưới địa chỉ thay vì cùng hàng.
 - Bảng "So sánh chi nhánh" và "Xếp hạng agent" chưa có lề trong thẻ (chữ dính sát viền) — sẽ hết khi sửa điểm 1 và dùng `DataTable` mới.
+
+## Review lại sau sửa (commits `6091523`, `42c280a`)
+
+Kết luận: **Đạt phần U1**, nhưng commit `42c280a` mở lại 2 vấn đề — sửa trước khi làm U2.
+
+Reviewer chụp lại 51 ảnh: **thanh bên đã hiện, biểu đồ đã có cột**, thẻ có lề; huy hiệu trạng thái đúng (8 hoạt động, 2 tạm dừng, 2 đã xoá). Điểm 1–4 đã sửa đúng.
+
+### Còn mở (từ `42c280a`)
+
+**A. Test đỏ bị commit.** `pnpm -r test` ở `packages/chain`: `list-agent-branches.test.ts > trả rỗng khi branchCountOf = 0` lỗi `branches.mainBranchOf is not a function` (mock thiếu `mainBranchOf`). Luôn chạy đủ `pnpm -r test` trước khi commit.
+
+**B. SDK lại trỏ đường dẫn local** (`/Users/yuu/Downloads/...`). Nếu máy dev cần bản SDK local mới hơn npm, giữ `package.json` là `^2.1.1` và cho Vite đổi hướng khi có biến môi trường, không đụng `package.json`:
+```ts
+// apps/platform/vite.config.ts
+const localSdk = process.env.FIAI_SDK_PATH
+resolve: { alias: localSdk ? { '@metanodejs/fiai-sdk': localSdk } : {} }
+```
+Ghi cách dùng (`FIAI_SDK_PATH=... pnpm dev`) vào README. Nếu bản npm thiếu tính năng cần thiết thì ghi rõ tính năng nào để phát hành bản npm mới.
+
+**C. Danh sách chi nhánh chuyển sang quét toàn bộ id** (`listAgentBranches`): mỗi agent quét id 1…`branchCount` toàn hệ, tuần tự, 2–3 lệnh đọc mỗi id → 1 000 chi nhánh là vài nghìn lệnh gọi cho **một** trang. Cách này che đi một vấn đề lớn hơn: **`HistoryIndex.search` trên chain thật có chạy không?** Nhật ký và giao dịch sổ cũng dùng `search`. Báo cáo cần ghi: lỗi/kết quả cụ thể khi gọi `search(agentId, "platform_branches", …)` trên chain 991 (thông báo lỗi, hay trả rỗng, hay sai định dạng). Tạm thời giữ cách quét nhưng: chạy song song có giới hạn (`mapWithConcurrency` 8), dừng khi đủ `branchCountOf`, và chỉ dùng khi `search` lỗi/rỗng (thử `search` trước).
