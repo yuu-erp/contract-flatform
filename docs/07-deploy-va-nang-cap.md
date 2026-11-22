@@ -208,9 +208,21 @@ cast send $AGENTS "upgradeToAndCall(address,bytes)" <IMPL_CŨ> 0x --rpc-url $RPC
 
 Chỉ an toàn khi bản mới **chỉ thêm** trường storage (bản cũ bỏ qua trường thừa). Nếu bản mới đã chạy `reinitializer`, bản cũ không biết dữ liệu đó; cân nhắc trước khi quay lại. Sửa lại `<key>Impl` trong file deployments cho khớp.
 
-## 6. Chain 991 hiện tại
+## 6. Chain 991 và bộ địa chỉ product
 
-Bộ đang chạy trên 991 deploy **trước** bản sửa review 2026-11-19 (writer theo kind, nguồn vai trò, bỏ `setFullDB`, bỏ `migrateAllowedServices`). Khuyến nghị **deploy lại** bằng mục 4, không nâng cấp: nếu nâng, mọi lần ghi revert `KindNotAllowed` cho tới khi owner gọi đủ `setWriterKind` (5 lệnh), `setAgentAccess`, `setAgentRoleSources`. Nhớ đổi tên file `platform-991.json` cũ trước khi `make deploy`.
+**Quyết định người dùng (2026-11-23):** chain 991 là môi trường làm và thử, được deploy lại, seed dữ liệu giả, dùng `MockFullDB` thoải mái. Khi hoàn thiện sẽ **chốt một bộ địa chỉ riêng cho product**; chỉ bộ đó cần tuân thủ danh sách dưới.
+
+Hiện trạng 991 (2026-11-23): đã có `salesSettingsProxy`, `ledgerProxy`; `HistoryIndex.fullDB()` trỏ tới một `MockFullDB` (có bytecode), không phải precompile `0x…0107`.
+
+### Danh sách kiểm trước khi chốt bộ địa chỉ product
+
+1. Deploy mới bằng `make deploy` với **`FULLDB` để trống** (precompile `0x…0107`). Kiểm `cast call $HISTORY "fullDB()(address)"` = `0x0000000000000000000000000000000000000107`.
+2. Không chạy `seed-mock-agents`, không có agent/bút toán giả.
+3. Chạy lại các lệnh đọc trong `tasks/16-reports/fulldb-991.md` (bước 1–3) trên bộ mới để xác nhận precompile `get`/`search` chạy.
+4. Owner là ví chủ của người dùng (nên là multisig — `docs/04` câu 9); thêm admin bằng `make set-admin`.
+5. Chỉ đăng ký poster Ledger thật (module ca thu ngân, NET, IQR) bằng `setPoster`; không đăng ký ví cá nhân.
+6. Lưu file deployments product riêng (ví dụ `deployments/platform-<chainId>.json` của chain product), web build với `VITE_CHAIN_ID` tương ứng.
+7. Đăng ký FreeGas cho các **proxy** của bộ product.
 
 ## 7. Lỗi thường gặp
 
