@@ -8,6 +8,7 @@ import {
   asString,
   unwrapValue,
 } from '../normalize'
+import type { BranchProfileRecord } from '../decode'
 import type {
   AgentProfileRecord,
   AgentView,
@@ -87,6 +88,28 @@ export function mapAgentProfileRecord(value: unknown): AgentProfileRecord {
       storeAddress: asString(profile.storeAddress),
       note: asString(profile.note),
       storePhone: asString(profile.storePhone),
+    },
+    updatedAt: asNumber(record.updatedAt),
+  }
+}
+
+const BRANCH_PROFILE_RECORD_FIELDS = ['version', 'branchId', 'agentId', 'domain', 'profile', 'updatedAt'] as const
+const BRANCH_PROFILE_FIELDS = ['name', 'location', 'phone', 'longlat', 'note'] as const
+
+export function mapBranchProfileRecord(value: unknown): BranchProfileRecord {
+  const record = asRecord(value, BRANCH_PROFILE_RECORD_FIELDS)
+  const profile = asRecord(record.profile, BRANCH_PROFILE_FIELDS)
+  return {
+    version: asNumber(record.version),
+    branchId: asNumber(record.branchId),
+    agentId: asNumber(record.agentId),
+    domain: asString(record.domain),
+    profile: {
+      name: asString(profile.name),
+      location: asString(profile.location),
+      phone: asString(profile.phone),
+      longlat: asString(profile.longlat),
+      note: asString(profile.note),
     },
     updatedAt: asNumber(record.updatedAt),
   }

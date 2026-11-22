@@ -7,6 +7,7 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {AgentRegistry} from "../src/core/tenant/AgentRegistry.sol";
 import {IAgentRegistry} from "../src/interfaces/IAgentRegistry.sol";
 import {PlatformAccess} from "../src/core/access/PlatformAccess.sol";
+
 /// @notice Tạo hàng loạt agent giả để thử dashboard / phân trang.
 ///         Env: `ADMIN_PRIVATE_KEY` (ưu tiên) hoặc `PRIVATE_KEY` nếu đó là **PLATFORM_ADMIN**.
 ///         Tuỳ chọn: `MOCK_AGENT_COUNT` (mặc định 100), `MOCK_AGENT_START` (chỉ số bắt đầu, mặc định 0).

@@ -1,0 +1,67 @@
+import { useContracts, useTx } from '@meta-platform/chain'
+import { Button, Input } from '@meta-platform/ui'
+import { Dialog } from 'radix-ui'
+import { useState } from 'react'
+import { usePlatformWrite } from '../hooks/use-platform-write'
+type Props = {
+  agentId: number
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onDone?: () => void
+}
+
+export function ProposeOwnerDialog({ agentId, open, onOpenChange, onDone }: Props) {
+  const contracts = useContracts()
+  const tx = useTx()
+  const { canWrite, adminOnlyHint } = usePlatformWrite()
+  const [newOwner, setNewOwner] = useState('')
+  const [error, setError] = useState<string | null>(null)
+
+  return (
+    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 bg-black/40" />
+        <Dialog.Content className="fixed top-1/2 left-1/2 w-[min(100%,28rem)] -translate-x-1/2 -translate-y-1/2 rounded-lg border border-border bg-background p-5 shadow-lg">
+          <Dialog.Title className="text-lg font-semibold">Đề xuất ví chủ mới</Dialog.Title>
+          <Dialog.Description className="mt-1 text-sm text-muted-foreground">
+            {adminOnlyHint ?? 'Ví mới phải accept on-chain sau khi đề xuất.'}
+          </Dialog.Description>
+          <label className="mt-4 block space-y-1 text-sm">
+            <span>Địa chỉ ví chủ mới</span>
+            <Input value={newOwner} onChange={(e) => setNewOwner(e.target.value)} placeholder="0x…" />
+            {error && <p className="text-destructive">{error}</p>}
+          </label>
+          <div className="mt-4 flex justify-end gap-2">
+            <Button variant="outline" onClick={() => onOpenChange(false)}>
+              Huỷ
+            </Button>
+            <Button
+              disabled={!canWrite || tx.pending}
+              onClick={() => {
+                void tx.run(
+                  async () => {
+                    const trimmed = newOwner.trim()
+                    if (!/^0x[0-9a-fA-F]{40}$/.test(trimmed)) {
+                      setError('Địa chỉ ví không hợp lệ')
+                      throw new Error('invalid')
+                    }
+                    await contracts!.agents.proposeAgentOwner(agentId, trimmed)
+                  },
+                  {
+                    invalidate: [['agent', agentId]],
+                    onSuccess: () => {
+                      onOpenChange(false)
+                      onDone?.()
+                    },
+                  },
+                )
+              }}
+            >
+              {tx.pending ? 'Đang ký…' : 'Đề xuất'}
+            </Button>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  )
+}

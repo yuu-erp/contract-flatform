@@ -157,10 +157,10 @@ Mọi hành động ghi: nút bị khoá kèm lý do khi điều kiện không �
 
 ### Task 5: App `platform` — chi tiết agent và chi nhánh
 
-- [ ] `/agents/:agentId` đủ 7 tab; `/branches/:branchId` đủ 6 tab (Thiết kế). Hành động ghi của Admin: sửa hồ sơ agent/chi nhánh, dịch vụ, dừng/mở/xoá (lý do bắt buộc), đề xuất ví chủ, tạo chi nhánh (domain chữ thường, múi giờ −720…840), đặt chi nhánh chính, đổi domain, đổi múi giờ.
-- [ ] Owner nền tảng xem được nhưng nút ghi agent/chi nhánh bị khoá với chú thích "Chỉ Admin" (contract chỉ cho `PLATFORM_ADMIN`).
-- [ ] Test Vitest: bảng giao dịch giải mã đúng loại bút toán và hướng điều chỉnh (`method` 1 = tăng, 2 = giảm với `kind = Adjust`); tab Ví khách hiển thị túi theo thứ tự trả về.
-- [ ] Commit `feat(platform): chi tiết agent và chi nhánh`.
+- [x] `/agents/:agentId` đủ 7 tab; `/branches/:branchId` đủ 6 tab (Thiết kế). Hành động ghi của Admin: sửa hồ sơ agent/chi nhánh, dịch vụ, dừng/mở/xoá (lý do bắt buộc), đề xuất ví chủ, tạo chi nhánh (domain chữ thường, múi giờ −720…840), đặt chi nhánh chính, đổi domain, đổi múi giờ.
+- [x] Owner nền tảng xem được nhưng nút ghi agent/chi nhánh bị khoá với chú thích "Chỉ Admin" (contract chỉ cho `PLATFORM_ADMIN`).
+- [x] Test Vitest: bảng giao dịch giải mã đúng loại bút toán và hướng điều chỉnh (`method` 1 = tăng, 2 = giảm với `kind = Adjust`); tab Ví khách hiển thị túi theo thứ tự trả về.
+- [x] Commit `feat(platform): chi tiết agent và chi nhánh`.
 
 ### Task 6: App `platform` — Hệ thống và Nhật ký
 

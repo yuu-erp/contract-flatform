@@ -3,7 +3,9 @@ import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { DeploymentsError } from './components/DeploymentsError'
 import { platformDeployments } from './config/deployments'
 import { PlatformChrome } from './layout/PlatformChrome'
+import { AgentDetailPage } from './pages/AgentDetailPage'
 import { AgentsPage } from './pages/AgentsPage'
+import { BranchDetailPage } from './pages/BranchDetailPage'
 import { OverviewPage } from './pages/OverviewPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import { SystemPage } from './pages/SystemPage'
@@ -21,6 +23,8 @@ export function App() {
         <Route element={<PlatformChrome />}>
           <Route index element={<OverviewPage />} />
           <Route path="agents" element={<AgentsPage />} />
+          <Route path="agents/:agentId" element={<AgentDetailPage />} />
+          <Route path="branches/:branchId" element={<BranchDetailPage />} />
           <Route path="audit" element={<PlaceholderPage title="Nhật ký toàn hệ" />} />
           <Route path="system" element={<SystemPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />

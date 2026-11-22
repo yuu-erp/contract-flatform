@@ -11,6 +11,7 @@ import {
   mapAddressPage,
   mapAgent,
   mapAgentProfileRecord,
+  mapBranchProfileRecord,
   mapBranch,
   mapBranchIdList,
   mapBranchTax,
@@ -20,7 +21,7 @@ import {
   mapRollup,
   mapTaxQuote,
 } from './mappers'
-import type { AgentProfile } from '../decode'
+import type { AgentProfile, BranchProfile, BranchProfileRecord } from '../decode'
 import type {
   AgentProfileRecord,
   AgentView,
@@ -75,6 +76,10 @@ export class AgentRegistryApi {
   async deleteAgent(agentId: number, reason: string): Promise<void> {
     await this.inner.deleteAgent(String(agentId), reason)
   }
+
+  async proposeAgentOwner(agentId: number, newOwner: string): Promise<void> {
+    await this.inner.proposeAgentOwner(String(agentId), newOwner)
+  }
 }
 
 export class BranchRegistryApi {
@@ -90,6 +95,50 @@ export class BranchRegistryApi {
 
   async getBranch(branchId: number): Promise<BranchView> {
     return mapBranch(await this.inner.getBranch(String(branchId)))
+  }
+
+  async getBranchProfile(branchId: number): Promise<BranchProfileRecord> {
+    return mapBranchProfileRecord(await this.inner.getBranchProfile(String(branchId)))
+  }
+
+  async mainBranchOf(agentId: number): Promise<number> {
+    return asNumber(await this.inner.mainBranchOf(String(agentId)))
+  }
+
+  async createBranch(agentId: number, init: unknown): Promise<void> {
+    await this.inner.createBranch(String(agentId), init)
+  }
+
+  async updateBranchProfile(branchId: number, profile: BranchProfile): Promise<void> {
+    await this.inner.updateBranchProfile(String(branchId), profile)
+  }
+
+  async setBranchDomain(branchId: number, domain: string): Promise<void> {
+    await this.inner.setBranchDomain(String(branchId), domain)
+  }
+
+  async setBranchServices(branchId: number, services: number): Promise<void> {
+    await this.inner.setBranchServices(String(branchId), String(services))
+  }
+
+  async setBranchTimezone(branchId: number, tzOffsetMinutes: number): Promise<void> {
+    await this.inner.setBranchTimezone(String(branchId), String(tzOffsetMinutes))
+  }
+
+  async setMainBranch(branchId: number): Promise<void> {
+    await this.inner.setMainBranch(String(branchId))
+  }
+
+  async suspendBranch(branchId: number, reason: string): Promise<void> {
+    await this.inner.suspendBranch(String(branchId), reason)
+  }
+
+  async resumeBranch(branchId: number, reason: string): Promise<void> {
+    await this.inner.resumeBranch(String(branchId), reason)
+  }
+
+  async deleteBranch(branchId: number, reason: string): Promise<void> {
+    await this.inner.deleteBranch(String(branchId), reason)
   }
 }
 
@@ -150,6 +199,22 @@ export class SalesSettingsApi {
 
   async branchTaxOf(branchId: number, service: number): Promise<BranchTax> {
     return mapBranchTax(await this.inner.branchTaxOf(String(branchId), String(service)))
+  }
+
+  async agentTaxOf(agentId: number, service: number): Promise<BranchTax> {
+    return mapBranchTax(await this.inner.agentTaxOf(String(agentId), String(service)))
+  }
+
+  async agentPaymentMethodsOf(agentId: number): Promise<number> {
+    return asNumber(await this.inner.agentPaymentMethodsOf(String(agentId)))
+  }
+
+  async paymentMethodsOf(branchId: number): Promise<number> {
+    return asNumber(await this.inner.paymentMethodsOf(String(branchId)))
+  }
+
+  async isTaxExclusive(agentId: number, service: number): Promise<boolean> {
+    return Boolean(unwrapValue(await this.inner.isTaxExclusive(String(agentId), String(service))))
   }
 }
 
