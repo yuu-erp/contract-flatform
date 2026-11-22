@@ -168,7 +168,7 @@ Mọi hành động ghi: nút bị khoá kèm lý do khi điều kiện không �
 - [x] `/audit` toàn hệ, lọc theo Thiết kế, mỗi dòng mở chi tiết (trước/sau giải mã được thì hiển thị, không thì hex).
 - [x] Commit `feat(platform): hệ thống và nhật ký`.
 
-### Task 7: App `agent` — khung, ngữ cảnh, Tổng quan, chi nhánh
+### Task 7: **[Thay bằng `tasks/17-agent-app.md`, 2026-11-23]** App `agent` — khung, ngữ cảnh, Tổng quan, chi nhánh
 
 **Files:** `frontend/apps/agent/**` (base `/agent/`).
 
@@ -177,7 +177,7 @@ Mọi hành động ghi: nút bị khoá kèm lý do khi điều kiện không �
 - [ ] Test Vitest: route guard theo ngữ cảnh; tổng quan manager nhiều chi nhánh cộng đúng.
 - [ ] Commit `feat(agent): ngữ cảnh, tổng quan và chi nhánh`.
 
-### Task 8: App `agent` — Nhân sự, Cài đặt, Ví khách, Giao dịch, Nhật ký
+### Task 8: **[Thay bằng `tasks/17-agent-app.md`, 2026-11-23]** App `agent` — Nhân sự, Cài đặt, Ví khách, Giao dịch, Nhật ký
 
 - [ ] `/staff` theo ma trận quyền `docs/modules/core-access.md` §3 (nút không hợp lệ thì ẩn hoặc khoá kèm lý do).
 - [ ] `/settings`: đọc `agentTaxOf`, `branchTaxOf`, `isTaxExclusive`, `agentPaymentMethodsOf`, `paymentMethodsOf`; ghi `setAgentTax`, `setBranchTax`, `clearBranchTax`, `setTaxExclusive` (NET khoá), `setAgentPaymentMethods`, `setBranchPaymentMethods` (0 = theo agent). Ô xem trước `quoteTax` (nhập số tiền → thuế, khách trả).
@@ -185,7 +185,7 @@ Mọi hành động ghi: nút bị khoá kèm lý do khi điều kiện không �
 - [ ] Test Vitest: chuyển checkbox ↔ bitmask phương thức (`CASH|WALLET == 9`, chi nhánh "theo agent" = 0); nhập thuế `8,5%` → `850` bps, chặn > 100%.
 - [ ] Commit `feat(agent): nhân sự, cài đặt, ví khách, giao dịch, nhật ký`.
 
-### Task 9: Tài liệu và nghiệm thu
+### Task 9: **[Thay bằng `tasks/17-agent-app.md`, 2026-11-23]** Tài liệu và nghiệm thu
 
 - [ ] `frontend/README.md`: cài (`@metanodejs/fiai-sdk` trỏ checkout local như `web/`), chạy hai app, biến môi trường, giới hạn đã biết (tìm agent phía client, số liệu 0 khi chưa có poster).
 - [ ] `docs/04-lo-trinh.md`: thêm mốc FE 1 (hai dashboard).
