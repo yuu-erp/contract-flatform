@@ -4,8 +4,6 @@ import {
   useAgent,
   useAgentBranches,
   useContracts,
-  useCustomerWallet,
-  useLedgerEntries,
   useRollup,
   type ServiceFilter,
 } from '@meta-platform/chain'
@@ -17,15 +15,11 @@ import {
   CardTitle,
   DataTable,
   EmptyState,
-  Input,
   KpiTile,
   Money,
   PageLoader,
-  RangePicker,
   RevenueChart,
-  ServiceFilter as ServiceFilterUi,
   StatusBadge,
-  formatBps,
   resolveRangeDays,
   type RangePickerValue,
   type ServiceFilterValue,
@@ -33,22 +27,25 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
+import {
+  AgentSalesSettingsReadonly,
+  AuditLogPanel,
+  CustomerWalletPanel,
+  LedgerEntriesPanel,
+  OverviewFiltersBar,
+  buildDailyChart,
+  formatAllowedServices,
+  PLATFORM_TZ_MINUTES,
+  SCOPE_AGENT,
+} from '@meta-platform/ui'
 import { AdminOnlyNote } from '../components/AdminOnlyNote'
-import { AuditLogPanel } from '../components/AuditLogPanel'
 import { AgentManageDialog, type AgentManageMode } from '../components/AgentManageDialog'
 import { CreateBranchDialog } from '../components/CreateBranchDialog'
 import { DetailTabs, type DetailTab } from '../components/DetailTabs'
 import { ProposeOwnerDialog } from '../components/ProposeOwnerDialog'
-import { useAgentSalesRead } from '../hooks/use-agent-sales-read'
 import { useBranchRankings } from '../hooks/use-branch-rankings'
 import { usePlatformWrite } from '../hooks/use-platform-write'
 import type { AgentListRow } from '../lib/agent-list'
-import { buildDailyChart } from '../lib/chart-data'
-import { ledgerRowSummary } from '../lib/ledger-display'
-import { formatPaymentMethods } from '../lib/payment-methods'
-import { PLATFORM_TZ_MINUTES, SCOPE_AGENT } from '../lib/scopes'
-import { formatAllowedServices } from '../lib/services-label'
-import { bucketRowsFromPortions } from '../lib/wallet-buckets'
 
 const TABS: DetailTab[] = [
   { id: 'overview', label: 'Tổng quan' },
@@ -148,9 +145,9 @@ export function AgentDetailPage() {
         />
       )}
       {tab === 'profile' && <AgentProfileTab row={listRow} onRefetch={() => agent.refetch()} />}
-      {tab === 'sales' && <AgentSalesTab agentId={agentId} branchIds={branchList.map((b) => b.branchId)} rows={branchList} />}
-      {tab === 'wallets' && <AgentWalletsTab agentId={agentId} branches={branchList} />}
-      {tab === 'transactions' && <AgentTransactionsTab agentId={agentId} branches={branchList} />}
+      {tab === 'sales' && <AgentSalesSettingsReadonly agentId={agentId} branches={branchList} />}
+      {tab === 'wallets' && <CustomerWalletPanel agentId={agentId} branches={branchList} />}
+      {tab === 'transactions' && <LedgerEntriesPanel agentId={agentId} branches={branchList} />}
       {tab === 'audit' && <AuditLogPanel locked={{ agentId }} hideAgent />}
     </div>
   )
@@ -167,7 +164,7 @@ function AgentOverviewTab({
   const [range, setRange] = useState<RangePickerValue>('7d')
   const [serviceUi, setServiceUi] = useState<ServiceFilterValue>('ALL')
   const service: ServiceFilter = serviceUi
-  const { fromDay, toDay } = useMemo(() => resolveRangeDays(range, PLATFORM_TZ_MINUTES), [range])
+  const { fromDay, toDay } = useMemo(() => resolveRangeDays(range, PLATFORM_TZ_MINUTES as number), [range])
   const rollup = useRollup({ ledger: contracts?.ledger ?? null, scope: SCOPE_AGENT, id: agentId, fromDay, toDay })
   const rankings = useBranchRankings(branches, fromDay, toDay, service)
   const sum = useMemo(() => sumDays(rollup.data ?? []), [rollup.data])
@@ -184,7 +181,12 @@ function AgentOverviewTab({
 
   return (
     <div className="space-y-4">
-      <OverviewToolbar range={range} setRange={setRange} serviceUi={serviceUi} setServiceUi={setServiceUi} />
+      <OverviewFiltersBar
+        range={range}
+        onRangeChange={setRange}
+        service={serviceUi}
+        onServiceChange={setServiceUi}
+      />
       {rollup.isLoading ? (
         <PageLoader message="Đang tải KPI…" />
       ) : (
@@ -344,202 +346,5 @@ function AgentProfileTab({ row, onRefetch }: { row: AgentListRow; onRefetch: () 
       ) : null}
       {propose ? <ProposeOwnerDialog agentId={row.id} open onOpenChange={setPropose} onDone={onRefetch} /> : null}
     </Card>
-  )
-}
-
-function AgentSalesTab({
-  agentId,
-  branchIds,
-  rows,
-}: {
-  agentId: number
-  branchIds: number[]
-  rows: { branchId: number; name: string }[]
-}) {
-  const sales = useAgentSalesRead(agentId, branchIds)
-  if (sales.isLoading) return <PageLoader />
-  const d = sales.data
-  if (!d) return <EmptyState title="Không đọc được cấu hình thuế" />
-  return (
-    <div className="space-y-4 text-sm">
-      <Card>
-        <CardHeader>
-          <CardTitle>Agent</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-1">
-          <p>Thuế NET: {formatBps(d.taxNet)}</p>
-          <p>Thuế IQR: {formatBps(d.taxIqr)}</p>
-          <p>Kiểu giá NET: {d.exNet ? 'Tách thuế' : 'Đã gồm thuế (khoá)'}</p>
-          <p>Kiểu giá IQR: {d.exIqr ? 'Tách thuế' : 'Đã gồm thuế'}</p>
-          <p>Phương thức: {formatPaymentMethods(d.methods)}</p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Chi nhánh (chỉ đọc)</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {rows.map((b) => {
-            const bt = d.branchTaxes[b.branchId]
-            if (!bt) return null
-            return (
-              <div key={b.branchId} className="border-b border-border pb-2">
-                <p className="font-medium">{b.name}</p>
-                <p>NET: {bt.net.isSet ? formatBps(bt.net.bps) : 'Theo agent'}</p>
-                <p>IQR: {bt.iqr.isSet ? formatBps(bt.iqr.bps) : 'Theo agent'}</p>
-                <p>Phương thức: {formatPaymentMethods(bt.methods)}</p>
-              </div>
-            )
-          })}
-        </CardContent>
-      </Card>
-    </div>
-  )
-}
-
-function AgentWalletsTab({
-  agentId,
-  branches,
-}: {
-  agentId: number
-  branches: { branchId: number; name: string }[]
-}) {
-  const contracts = useContracts()
-  const [customer, setCustomer] = useState('')
-  const trimmed = customer.trim()
-  const validCustomer = /^0x[0-9a-fA-F]{40}$/.test(trimmed) ? trimmed : null
-  const wallet = useCustomerWallet(agentId, validCustomer)
-  const liability = useQuery({
-    queryKey: ['wallet-liability', agentId],
-    enabled: !!contracts,
-    queryFn: () => contracts!.ledger.walletLiability(agentId),
-  })
-  const nameById = useMemo(() => new Map(branches.map((b) => [b.branchId, b.name])), [branches])
-  const rows = bucketRowsFromPortions(wallet.data?.buckets ?? [])
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Ví khách</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-sm">
-          Dư nợ tổng agent:{' '}
-          {liability.isLoading ? '…' : <Money value={liability.data ?? 0n} />}
-        </p>
-        <Input
-          placeholder="0x… ví khách"
-          value={customer}
-          onChange={(e) => setCustomer(e.target.value)}
-        />
-        {trimmed && !validCustomer ? (
-          <p className="text-sm text-destructive">Địa chỉ ví không hợp lệ (0x + 40 hex).</p>
-        ) : null}
-        {wallet.isFetching ? <PageLoader message="Đang tra…" /> : null}
-        {wallet.data ? (
-          <div className="space-y-2 text-sm">
-            <p>
-              Số dư: <Money value={wallet.data.balance} />
-            </p>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-xs uppercase text-muted-foreground">
-                  <th>Chi nhánh</th>
-                  <th className="text-right">Túi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row) => (
-                  <tr key={`${row.branchId}-${row.amount}`} className="border-t border-border">
-                    <td className="py-1">{nameById.get(row.branchId) ?? `Chi nhánh #${row.branchId}`}</td>
-                    <td className="py-1 text-right">
-                      <Money value={row.amount} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : null}
-      </CardContent>
-    </Card>
-  )
-}
-
-function AgentTransactionsTab({
-  agentId,
-  branches,
-}: {
-  agentId: number
-  branches: { branchId: number; name: string }[]
-}) {
-  const [branchId, setBranchId] = useState<number | undefined>()
-  const [page, setPage] = useState(0)
-  const entries = useLedgerEntries(agentId, { branchId }, page)
-  type TxRow = NonNullable<typeof entries.data>['items'][number]
-  const columns = [
-    {
-      key: 'kind',
-      header: 'Loại',
-      render: (row: TxRow) => ledgerRowSummary(row.record.kind, row.record.method),
-    },
-    { key: 'branch', header: 'Chi nhánh', render: (row: TxRow) => row.record.branchId || '—' },
-    {
-      key: 'amount',
-      header: 'Số tiền',
-      render: (row: TxRow) => <Money value={row.record.amount} />,
-    },
-  ]
-  return (
-    <Card>
-      <CardHeader className="flex flex-wrap gap-2">
-        <CardTitle>Giao dịch sổ</CardTitle>
-        <select
-          className="h-9 rounded-md border px-2 text-sm"
-          value={branchId ?? ''}
-          onChange={(e) => {
-            setBranchId(e.target.value ? Number(e.target.value) : undefined)
-            setPage(0)
-          }}
-        >
-          <option value="">Mọi chi nhánh</option>
-          {branches.map((b) => (
-            <option key={b.branchId} value={b.branchId}>
-              {b.name}
-            </option>
-          ))}
-        </select>
-      </CardHeader>
-      <CardContent>
-        <DataTable
-          columns={columns}
-          rows={entries.data?.items ?? []}
-          loading={entries.isLoading}
-          page={page}
-          pageSize={20}
-          total={entries.data?.total ?? 0}
-          onPageChange={setPage}
-          emptyTitle="Chưa có bút toán"
-        />
-      </CardContent>
-    </Card>
-  )
-}
-
-function OverviewToolbar({
-  range,
-  setRange,
-  serviceUi,
-  setServiceUi,
-}: {
-  range: RangePickerValue
-  setRange: (v: RangePickerValue) => void
-  serviceUi: ServiceFilterValue
-  setServiceUi: (v: ServiceFilterValue) => void
-}) {
-  return (
-    <div className="flex flex-wrap gap-3 rounded-xl border border-border bg-card p-3">
-      <RangePicker value={range} onChange={setRange} />
-      <ServiceFilterUi value={serviceUi} onChange={setServiceUi} />
-    </div>
   )
 }

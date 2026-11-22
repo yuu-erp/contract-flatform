@@ -1,4 +1,4 @@
-import { AuditLogPanel } from '../components/AuditLogPanel'
+import { AuditLogPanel } from '@meta-platform/ui'
 
 export function AuditPage() {
   return (

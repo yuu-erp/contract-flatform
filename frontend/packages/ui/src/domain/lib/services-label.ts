@@ -1,4 +1,4 @@
-import { SERVICE_MASK } from './validate-create-agent'
+const SERVICE_MASK = { NET: 1, IQR: 2, LOYALTY: 4 } as const
 
 export function formatAllowedServices(mask: number): string {
   const parts: string[] = []

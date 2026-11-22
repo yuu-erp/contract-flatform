@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { auditDateRangeFromIso } from '../src/lib/audit-date-range'
+import { auditDateRangeFromIso } from '../src/domain/lib/audit-date-range'
 
 describe('auditDateRangeFromIso', () => {
   it('chỉ từ ngày → đến hiện tại', () => {

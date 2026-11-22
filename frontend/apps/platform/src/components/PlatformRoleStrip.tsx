@@ -1,5 +1,5 @@
 import { formatWalletAddress, useContracts, type PlatformRole } from '@meta-platform/chain'
-import { useAppTx } from '../hooks/use-app-tx'
+import { useAppTx } from '@meta-platform/ui'
 import { Button } from '@meta-platform/ui'
 import { platformRoleLabel } from './PlatformRoleStatus'
 

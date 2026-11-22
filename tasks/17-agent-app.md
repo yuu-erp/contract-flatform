@@ -57,7 +57,7 @@ Mọi nút ghi khoá kèm lý do (tooltip) khi: hệ pause, agent không Active,
 
 ### Task A0: Tách khối dùng chung sang `packages/ui/src/domain`
 
-- [ ] Chuyển từ `apps/platform` sang `packages/ui/src/domain/` (giữ test, sửa import ở `platform`): `AuditLogPanel`, bảng bút toán (+ `ledger-display`), `wallet-buckets`, `payment-methods`, `services-label`, `chart-data`, khối tổng quan chi nhánh (KPI + biểu đồ + phục vụ tại chỗ), khối hiển thị thuế/phương thức chỉ đọc, `useAppTx`.
+- [x] Chuyển từ `apps/platform` sang `packages/ui/src/domain/` (giữ test, sửa import ở `platform`): `AuditLogPanel`, bảng bút toán (+ `ledger-display`), `wallet-buckets`, `payment-methods`, `services-label`, `chart-data`, khối tổng quan chi nhánh (KPI + biểu đồ + phục vụ tại chỗ), khối hiển thị thuế/phương thức chỉ đọc, `useAppTx`.
 - [ ] App `platform` vẫn build/test xanh, `shots` không đổi giao diện.
 - [ ] Commit `refactor(ui): tách khối dashboard dùng chung cho platform và agent`.
 

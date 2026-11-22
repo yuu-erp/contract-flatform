@@ -2,7 +2,7 @@ import { useTx, type TxRunOptions } from '@meta-platform/chain'
 import { useCallback } from 'react'
 import { toast } from 'sonner'
 
-/** `useTx` + toast mặc định cho app platform. */
+/** `useTx` + toast mặc định cho dashboard agent/platform. */
 export function useAppTx() {
   const tx = useTx()
 

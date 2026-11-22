@@ -1,6 +1,6 @@
 import type { LedgerPortionView } from '@meta-platform/chain'
 import { describe, expect, it } from 'vitest'
-import { bucketRowsFromPortions } from '../src/lib/wallet-buckets'
+import { bucketRowsFromPortions } from '../src/domain/lib/wallet-buckets'
 
 describe('bucketRowsFromPortions', () => {
   it('giữ thứ tự portions như contract trả về', () => {

@@ -8,7 +8,7 @@ import { usePlatformRole } from '../hooks/use-platform-role'
 import { useBranchCounts } from '../hooks/use-branch-counts'
 import { AGENTS_PAGE_SIZE } from '../lib/scopes'
 import { filterAndSearchAgents, paginateAgents, type AgentListRow } from '../lib/agent-list'
-import { formatAllowedServices } from '../lib/services-label'
+import { formatAllowedServices } from '@meta-platform/ui'
 import { SERVICE_MASK } from '../lib/validate-create-agent'
 
 export function AgentsPage() {

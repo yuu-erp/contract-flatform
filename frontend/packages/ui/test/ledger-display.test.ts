@@ -3,7 +3,7 @@ import {
   formatAdjustDirection,
   formatLedgerKind,
   LEDGER_KIND_ADJUST,
-} from '../src/lib/ledger-display'
+} from '../src/domain/lib/ledger-display'
 
 describe('formatLedgerKind / adjust direction', () => {
   it('map loại bút toán sang nhãn tiếng Việt', () => {

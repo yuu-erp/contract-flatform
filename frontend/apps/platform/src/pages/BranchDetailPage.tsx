@@ -1,15 +1,4 @@
-import {
-  revenue,
-  servedHere,
-  sumDays,
-  useAgent,
-  useBranch,
-  useContracts,
-  useLedgerEntries,
-  useMembers,
-  useRollup,
-  type ServiceFilter,
-} from '@meta-platform/chain'
+import { useAgent, useBranch, useContracts, useMembers } from '@meta-platform/chain'
 import {
   Address,
   Card,
@@ -18,31 +7,22 @@ import {
   CardTitle,
   DataTable,
   EmptyState,
-  KpiTile,
-  Money,
   PageLoader,
-  RangePicker,
-  RevenueChart,
-  ServiceFilter as ServiceFilterUi,
   StatusBadge,
-  formatBps,
-  resolveRangeDays,
-  type RangePickerValue,
-  type ServiceFilterValue,
 } from '@meta-platform/ui'
 import { useQuery } from '@tanstack/react-query'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
+import {
+  AuditLogPanel,
+  BranchOverviewPanel,
+  BranchSalesSettingsReadonly,
+  LedgerEntriesPanel,
+} from '@meta-platform/ui'
 import { AdminOnlyNote } from '../components/AdminOnlyNote'
-import { AuditLogPanel } from '../components/AuditLogPanel'
 import { BranchManageDialog, type BranchManageMode } from '../components/BranchManageDialog'
 import { DetailTabs, type DetailTab } from '../components/DetailTabs'
-import { useAgentSalesRead } from '../hooks/use-agent-sales-read'
 import { usePlatformWrite } from '../hooks/use-platform-write'
-import { buildDailyChart } from '../lib/chart-data'
-import { ledgerRowSummary } from '../lib/ledger-display'
-import { formatPaymentMethods } from '../lib/payment-methods'
-import { SCOPE_BRANCH } from '../lib/scopes'
 import type { BranchFormProfile } from '../lib/validate-create-branch'
 
 const TABS: DetailTab[] = [
@@ -104,7 +84,7 @@ export function BranchDetailPage() {
         </p>
       </header>
       <DetailTabs tabs={TABS} active={tab} onChange={setTab} />
-      {tab === 'overview' && <BranchOverviewTab branchId={branchId} tz={view.tzOffsetMinutes} />}
+      {tab === 'overview' && <BranchOverviewPanel branchId={branchId} tzMinutes={view.tzOffsetMinutes} />}
       {tab === 'info' && (
         <BranchInfoTab
           branch={view}
@@ -118,44 +98,12 @@ export function BranchDetailPage() {
         />
       )}
       {tab === 'members' && <BranchMembersTab branchId={branchId} />}
-      {tab === 'sales' && <BranchSalesTab agentId={view.agentId} branchId={branchId} />}
-      {tab === 'transactions' && <BranchTransactionsTab agentId={view.agentId} branchId={branchId} />}
+      {tab === 'sales' && (
+        <BranchSalesSettingsReadonly agentId={view.agentId} branchId={branchId} branchName={profile.name} />
+      )}
+      {tab === 'transactions' && <LedgerEntriesPanel agentId={view.agentId} lockedBranchId={branchId} />}
       {tab === 'audit' && (
         <AuditLogPanel locked={{ agentId: view.agentId, branchId }} hideAgent hideBranch />
-      )}
-    </div>
-  )
-}
-
-function BranchOverviewTab({ branchId, tz }: { branchId: number; tz: number }) {
-  const contracts = useContracts()
-  const [range, setRange] = useState<RangePickerValue>('7d')
-  const [serviceUi, setServiceUi] = useState<ServiceFilterValue>('ALL')
-  const service: ServiceFilter = serviceUi
-  const { fromDay, toDay } = useMemo(() => resolveRangeDays(range, tz), [range, tz])
-  const rollup = useRollup({ ledger: contracts?.ledger ?? null, scope: SCOPE_BRANCH, id: branchId, fromDay, toDay })
-  const sum = useMemo(() => sumDays(rollup.data ?? []), [rollup.data])
-  const rev = revenue(sum, service)
-  const served = servedHere(sum, service === 'IQR' ? 'IQR' : 'NET')
-  const chart = useMemo(() => buildDailyChart(rollup.data ?? [], fromDay, toDay, tz, service), [rollup.data, fromDay, toDay, tz, service])
-
-  return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-2 rounded-xl border border-border bg-card p-3">
-        <RangePicker value={range} onChange={setRange} />
-        <ServiceFilterUi value={serviceUi} onChange={setServiceUi} />
-      </div>
-      {rollup.isLoading ? (
-        <PageLoader />
-      ) : (
-        <>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <KpiTile label="Doanh thu thuần" value={rev.net} />
-            <KpiTile label="Gộp" value={rev.gross} />
-            <KpiTile label="Phục vụ tại chỗ thuần" value={served} />
-          </div>
-          <RevenueChart data={chart} />
-        </>
       )}
     </div>
   )
@@ -247,40 +195,3 @@ function BranchMembersTab({ branchId }: { branchId: number }) {
   )
 }
 
-function BranchSalesTab({ agentId, branchId }: { agentId: number; branchId: number }) {
-  const sales = useAgentSalesRead(agentId, [branchId])
-  const bt = sales.data?.branchTaxes[branchId]
-  if (sales.isLoading) return <PageLoader />
-  if (!bt) return <EmptyState title="Chưa có cấu hình" />
-  return (
-    <Card>
-      <CardContent className="space-y-2 pt-6 text-sm">
-        <p>Thuế NET: {bt.net.isSet ? formatBps(bt.net.bps) : 'Theo agent'}</p>
-        <p>Thuế IQR: {bt.iqr.isSet ? formatBps(bt.iqr.bps) : 'Theo agent'}</p>
-        <p>Phương thức: {formatPaymentMethods(bt.methods)}</p>
-      </CardContent>
-    </Card>
-  )
-}
-
-function BranchTransactionsTab({ agentId, branchId }: { agentId: number; branchId: number }) {
-  const [page, setPage] = useState(0)
-  const entries = useLedgerEntries(agentId, { branchId }, page)
-  type Row = NonNullable<typeof entries.data>['items'][number]
-  const columns = [
-    { key: 'kind', header: 'Loại', render: (row: Row) => ledgerRowSummary(row.record.kind, row.record.method) },
-    { key: 'amount', header: 'Số tiền', render: (row: Row) => <Money value={row.record.amount} /> },
-  ]
-  return (
-    <DataTable
-      columns={columns}
-      rows={entries.data?.items ?? []}
-      loading={entries.isLoading}
-      page={page}
-      pageSize={20}
-      total={entries.data?.total ?? 0}
-      onPageChange={setPage}
-      emptyTitle="Chưa có bút toán"
-    />
-  )
-}

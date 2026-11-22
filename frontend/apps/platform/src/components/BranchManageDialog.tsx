@@ -1,6 +1,6 @@
 import type { BranchView } from '@meta-platform/chain'
 import { useContracts } from '@meta-platform/chain'
-import { useAppTx } from '../hooks/use-app-tx'
+import { useAppTx } from '@meta-platform/ui'
 import { Button, Input, utf8Length } from '@meta-platform/ui'
 import { Dialog } from 'radix-ui'
 import { useEffect, useState } from 'react'

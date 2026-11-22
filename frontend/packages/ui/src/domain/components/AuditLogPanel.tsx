@@ -1,11 +1,14 @@
 import { useAuditLog, type AuditFilter, type PlatformAuditRecord } from '@meta-platform/chain'
-import { Address, Button, DataTable, Input } from '@meta-platform/ui'
-import { Dialog } from 'radix-ui'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { Address } from '../../components/Address'
+import { Button } from '../../components/ui/button'
+import { DataTable } from '../../components/DataTable'
+import { Input } from '../../components/ui/input'
 import { auditRowSummary, formatAuditBytes } from '../lib/audit-display'
 import { auditDateRangeFromIso } from '../lib/audit-date-range'
 import { isValidEthAddress } from '../lib/address'
+import { Dialog, DialogContent, DialogTitle } from '../../components/ui/dialog'
 
 export type AuditLogPanelProps = {
   locked?: Partial<AuditFilter>
@@ -132,20 +135,17 @@ export function AuditLogPanel({ locked, hideAgent, hideBranch }: AuditLogPanelPr
         emptyTitle="Chưa có nhật ký"
       />
 
-      <Dialog.Root open={detailId != null} onOpenChange={(open) => !open && setDetailId(null)}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/40" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 max-h-[85vh] w-[min(100%,36rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-lg border border-border bg-background p-5 shadow-lg">
-            <Dialog.Title className="text-lg font-semibold">Chi tiết nhật ký</Dialog.Title>
-            {detail ? <AuditDetailBody record={detail.record} /> : null}
-            <div className="mt-4 flex justify-end">
-              <Button variant="outline" onClick={() => setDetailId(null)}>
-                Đóng
-              </Button>
-            </div>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+      <Dialog open={detailId != null} onOpenChange={(open) => !open && setDetailId(null)}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto">
+          <DialogTitle>Chi tiết nhật ký</DialogTitle>
+          {detail ? <AuditDetailBody record={detail.record} /> : null}
+          <div className="mt-4 flex justify-end">
+            <Button variant="outline" onClick={() => setDetailId(null)}>
+              Đóng
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

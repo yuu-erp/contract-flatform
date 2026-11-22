@@ -1,5 +1,5 @@
 import { dayToDate, revenue, type Day, type ServiceFilter } from '@meta-platform/chain'
-import type { RevenueChartPoint } from '@meta-platform/ui'
+import type { RevenueChartPoint } from '../../components/RevenueChart'
 
 export function buildDailyChart(
   rows: bigint[][],

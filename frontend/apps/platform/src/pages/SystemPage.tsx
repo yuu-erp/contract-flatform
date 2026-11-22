@@ -13,13 +13,12 @@ import {
 } from '@meta-platform/ui'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
-import { isValidEthAddress } from '../lib/address'
+import { isValidEthAddress, useAppTx } from '@meta-platform/ui'
 import {
   LEDGER_KIND_CHECKBOXES,
   ledgerKindsMaskFromBits,
   ledgerKindsMaskLabels,
 } from '../lib/ledger-poster'
-import { useAppTx } from '../hooks/use-app-tx'
 import { usePlatformRole } from '../hooks/use-platform-role'
 
 const FULLDB_KINDS = [

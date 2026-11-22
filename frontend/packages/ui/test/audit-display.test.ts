@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatAuditBytes } from '../src/lib/audit-display'
+import { formatAuditBytes } from '../src/domain/lib/audit-display'
 
 describe('formatAuditBytes', () => {
   it('trống hoặc 0x → gạch ngang', () => {

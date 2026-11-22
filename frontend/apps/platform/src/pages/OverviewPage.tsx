@@ -35,7 +35,7 @@ import {
 } from '../hooks/use-agent-rankings'
 import { useAgentStatusCounts } from '../hooks/use-agent-status-counts'
 import { useGlobalBranchCount } from '../hooks/use-global-branch-count'
-import { buildDailyChart } from '../lib/chart-data'
+import { buildDailyChart } from '@meta-platform/ui'
 import { PLATFORM_TZ_MINUTES, previousDayRange, SCOPE_PLATFORM } from '../lib/scopes'
 
 export function OverviewPage() {

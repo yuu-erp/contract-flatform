@@ -18,8 +18,14 @@ export function useAgentSalesRead(agentId: number | null, branchIds: number[]) {
         s.isTaxExclusive(agentId!, SERVICE_NET),
         s.isTaxExclusive(agentId!, SERVICE_IQR),
       ])
-      const branchTaxes: Record<number, { net: Awaited<ReturnType<typeof s.branchTaxOf>>; iqr: Awaited<ReturnType<typeof s.branchTaxOf>>; methods: number }> =
-        {}
+      const branchTaxes: Record<
+        number,
+        {
+          net: Awaited<ReturnType<typeof s.branchTaxOf>>
+          iqr: Awaited<ReturnType<typeof s.branchTaxOf>>
+          methods: number
+        }
+      > = {}
       for (const branchId of branchIds) {
         branchTaxes[branchId] = {
           net: await s.branchTaxOf(branchId, SERVICE_NET),
