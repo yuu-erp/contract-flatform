@@ -39,3 +39,12 @@ Sửa: thêm các kiểm này (dùng chung hàm với form agent), áp cho cả 
 5. Tab Ví khách: kiểm địa chỉ trước khi gọi (`0x` + 40 hex), hiện dư nợ tổng ngay trong tab, cột chi nhánh hiện **tên** thay vì id.
 6. Nhật ký: thêm cột chi nhánh và mở chi tiết (trước/sau) — thuộc Task 6 nhưng nên dùng cùng component cho cả trang chi tiết.
 7. `useAgentBranches` lấy tối đa 100 chi nhánh, không phân trang. Chấp nhận hiện tại; ghi giới hạn vào README (Task 9).
+
+## Review lại sau sửa (commit `afd412b`)
+
+Kết luận: **Đạt.** Chạy lại build/lint/test → xanh (chain 33, ui 9, platform 15). Không còn `useState(1)` cho trang.
+
+- Điểm 1 — Đã sửa: trang đánh số từ 0 ở mọi bảng, `pageOffset` có test.
+- Điểm 2 — Đã sửa: `agentTaxOf` trả `uint16`, mapper có test.
+- Điểm 3 — Đã sửa: domain/SĐT/toạ độ/`ServiceMask`/trần dịch vụ của agent, dùng chung cho tạo và sửa; giá trị gửi lên đã `trim()`.
+- Điểm 5 — Đã sửa. Điểm 4 dời sang Task 8 (đã ghi trong báo cáo) — sẽ kiểm ở review Task 8.
