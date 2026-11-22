@@ -69,6 +69,14 @@ export const PREVIEW_WALLETS = {
   admin: '0x0000000000000000000000000000000000002001',
   pending: '0x0000000000000000000000000000000000003001',
   none: '0x0000000000000000000000000000000000009901',
+  /** Chủ agent 1 (mock cố định để xem trước app agent). */
+  agentOwner1: '0x0000000000000000000000000000000000004001',
+  /** Manager chi nhánh 1 và 4; Staff chi nhánh 2. */
+  agentManager: '0x0000000000000000000000000000000000003001',
+  /** Chủ agent 2 + Manager chi nhánh đầu của agent 3. */
+  agentDual: '0x0000000000000000000000000000000000003002',
+  /** Staff (không quản lý). */
+  agentStaff: '0x0000000000000000000000000000000000003004',
 } as const
 
 function addr(seed: number, slot: number): string {
@@ -140,9 +148,11 @@ export function buildMockState(seed: number): MockPlatformState {
     const owner = addr(seed, id)
     const status = STATUSES[id - 1]!
     const allowedServices = id % 3 === 0 ? 7 : id % 2 === 0 ? 3 : 1
+    const resolvedOwner =
+      id === 1 ? PREVIEW_WALLETS.agentOwner1 : id === 2 ? PREVIEW_WALLETS.agentDual : owner
     agents.push({
       id,
-      owner,
+      owner: resolvedOwner,
       pendingOwner: '0x0000000000000000000000000000000000000000',
       status,
       createdAt: 1_700_000_000 + id * 10_000,
@@ -153,7 +163,7 @@ export function buildMockState(seed: number): MockPlatformState {
     agentProfiles.set(id, {
       version: 1,
       agentId: id,
-      owner,
+      owner: resolvedOwner,
       profile: {
         storeName: AGENT_NAMES[id - 1] ?? `Agent ${id}`,
         storeAddress: `${id * 11} Nguyễn Huệ, Q.${(id % 5) + 1}, TP.HCM`,
@@ -368,6 +378,16 @@ export function buildMockState(seed: number): MockPlatformState {
       },
     ])
   }
+  const grant = (branchId: number, account: string, role: number) => {
+    const branch = branches.find((x) => x.id === branchId)
+    const grantedBy = agents.find((a) => a.id === branch?.agentId)?.owner ?? PREVIEW_WALLETS.owner
+    members.set(branchId, [{ account: normalizeHexAddress(account), role, grantedBy, grantedAt: 1_700_000_100 }])
+  }
+  grant(1, PREVIEW_WALLETS.agentManager, 2)
+  grant(2, PREVIEW_WALLETS.agentManager, 1)
+  grant(4, PREVIEW_WALLETS.agentManager, 2)
+  grant(5, PREVIEW_WALLETS.agentDual, 2)
+  grant(6, PREVIEW_WALLETS.agentStaff, 1)
 
   return {
     seed,

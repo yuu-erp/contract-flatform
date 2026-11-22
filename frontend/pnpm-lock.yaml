@@ -8,6 +8,76 @@ importers:
 
   .: {}
 
+  apps/agent:
+    dependencies:
+      '@meta-platform/chain':
+        specifier: workspace:*
+        version: link:../../packages/chain
+      '@meta-platform/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@metanodejs/fiai-sdk':
+        specifier: /Users/yuu/Downloads/metanode-finsdk/packages/fiai-sdk
+        version: link:../../../../../Downloads/metanode-finsdk/packages/fiai-sdk
+      '@tanstack/react-query':
+        specifier: ^5.102.8
+        version: 5.108.1(@types/react@19.3.0)(react@19.3.1)
+      lucide-react:
+        specifier: ^1.46.0
+        version: 1.76.0(@types/react@19.3.0)(react@19.3.1)
+      react:
+        specifier: ^19.2.8
+        version: 19.3.1
+      react-dom:
+        specifier: ^19.2.8
+        version: 19.3.1(react@19.3.1)
+      react-router-dom:
+        specifier: ^7.18.3
+        version: 7.18.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      sonner:
+        specifier: ^2.0.8
+        version: 2.0.8(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+    devDependencies:
+      '@eslint/js':
+        specifier: ^10.0.1
+        version: 10.0.1(eslint@10.15.0(jiti@2.7.0))
+      '@tailwindcss/vite':
+        specifier: ^4.1.12
+        version: 4.3.5(vite@7.3.8(@types/node@24.19.2)(jiti@2.7.0)(lightningcss@1.33.0))
+      '@types/react':
+        specifier: ^19.2.18
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.2.7
+        version: 19.3.0(@types/react@19.3.0)
+      '@vitejs/plugin-react':
+        specifier: ^5.0.2
+        version: 5.2.0(vite@7.3.8(@types/node@24.19.2)(jiti@2.7.0)(lightningcss@1.33.0))
+      eslint:
+        specifier: ^10.10.0
+        version: 10.15.0(jiti@2.7.0)
+      globals:
+        specifier: ^17.12.0
+        version: 17.14.0
+      playwright:
+        specifier: ^1.65.1
+        version: 1.65.1
+      tailwindcss:
+        specifier: ^4.1.12
+        version: 4.3.5
+      typescript:
+        specifier: ~5.7.2
+        version: 5.7.3
+      typescript-eslint:
+        specifier: ^8.69.0
+        version: 8.73.0(eslint@10.15.0(jiti@2.7.0))(typescript@5.7.3)
+      vite:
+        specifier: ^7.3.8
+        version: 7.3.8(@types/node@24.19.2)(jiti@2.7.0)(lightningcss@1.33.0)
+      vitest:
+        specifier: ^3.0.5
+        version: 3.2.7(@types/node@24.19.2)(jiti@2.7.0)(jsdom@26.1.0)(lightningcss@1.33.0)
+
   apps/platform:
     dependencies:
       '@meta-platform/chain':
@@ -17,8 +87,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       '@metanodejs/fiai-sdk':
-        specifier: ^2.1.1
-        version: 2.1.1
+        specifier: /Users/yuu/Downloads/metanode-finsdk/packages/fiai-sdk
+        version: link:../../../../../Downloads/metanode-finsdk/packages/fiai-sdk
       '@metanodejs/mtn-contract':
         specifier: ^1.0.8
         version: 1.0.8

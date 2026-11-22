@@ -83,8 +83,10 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
     async agentCount() {
       return state.agents.length
     },
-    async agentIdOf(_owner: string) {
-      return 0
+    async agentIdOf(owner: string) {
+      const a = normalizeHexAddress(owner)
+      const row = state.agents.find((x) => normalizeHexAddress(x.owner) === a)
+      return row?.id ?? 0
     },
     async getAgent(agentId: number) {
       const row = state.agents.find((a) => a.id === agentId)
@@ -160,6 +162,13 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
     async mainBranchOf(agentId: number) {
       return state.branches.find((b) => b.agentId === agentId && b.isMain)?.id ?? 0
     },
+    async branchByDomain(domain: string) {
+      const d = domain.trim().toLowerCase()
+      for (const profile of state.branchProfiles.values()) {
+        if (profile.domain.trim().toLowerCase() === d) return profile.branchId
+      }
+      return 0
+    },
     async createBranch(_agentId: number, _init: unknown) {
       await simulateTx(store)
     },
@@ -198,14 +207,27 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
   }
 
   const agentAccess = {
-    async effectiveRoleOf(_branchId: number, _account: string) {
-      return 0
+    async effectiveRoleOf(branchId: number, account: string) {
+      const a = normalizeHexAddress(account)
+      const agent = state.branches.find((b) => b.id === branchId)?.agentId
+      if (agent != null) {
+        const owner = state.agents.find((x) => x.id === agent)?.owner
+        if (owner && normalizeHexAddress(owner) === a) return 3
+      }
+      const list = state.members.get(branchId) ?? []
+      const hit = list.find((m) => normalizeHexAddress(m.account) === a)
+      return hit?.role ?? 0
     },
     async membersOf(branchId: number, offset: number, limit: number) {
       return (state.members.get(branchId) ?? []).slice(offset, offset + limit)
     },
-    async branchesOfAccount(_account: string, _offset: number, _limit: number) {
-      return [] as number[]
+    async branchesOfAccount(account: string, offset: number, limit: number) {
+      const ids: number[] = []
+      for (const b of state.branches) {
+        const role = await agentAccess.effectiveRoleOf(b.id, account)
+        if (role >= 2) ids.push(b.id)
+      }
+      return ids.slice(offset, offset + limit)
     },
   }
 
@@ -287,7 +309,7 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
     from: normalizeHexAddress(from),
     access: access as PlatformContracts['access'],
     agents: agents as PlatformContracts['agents'],
-    branches: branches as PlatformContracts['branches'],
+    branches: branches as unknown as PlatformContracts['branches'],
     agentAccess: agentAccess as PlatformContracts['agentAccess'],
     salesSettings: salesSettings as PlatformContracts['salesSettings'],
     ledger: ledger as PlatformContracts['ledger'],

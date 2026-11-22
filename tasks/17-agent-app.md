@@ -58,16 +58,16 @@ Mọi nút ghi khoá kèm lý do (tooltip) khi: hệ pause, agent không Active,
 ### Task A0: Tách khối dùng chung sang `packages/ui/src/domain`
 
 - [x] Chuyển từ `apps/platform` sang `packages/ui/src/domain/` (giữ test, sửa import ở `platform`): `AuditLogPanel`, bảng bút toán (+ `ledger-display`), `wallet-buckets`, `payment-methods`, `services-label`, `chart-data`, khối tổng quan chi nhánh (KPI + biểu đồ + phục vụ tại chỗ), khối hiển thị thuế/phương thức chỉ đọc, `useAppTx`.
-- [ ] App `platform` vẫn build/test xanh, `shots` không đổi giao diện.
+- [x] App `platform` vẫn build/test xanh, `shots` không đổi giao diện.
 - [ ] Commit `refactor(ui): tách khối dashboard dùng chung cho platform và agent`.
 
 ### Task A1: Khung app `agent`, xem trước giả, chụp màn hình
 
-- [ ] `apps/agent` theo khung `platform` (shadcn sidebar, `NavUser`, `SiteHeader`, `PageHeader`, toast, banner pause). Tiêu đề: "Meta Agent"; header hiện tên cửa hàng + (manager) tên chi nhánh và domain.
-- [ ] `createMockContracts`: thêm domain cho mọi chi nhánh (đã có), thêm thành viên: ví giả `0x…3001` là Manager chi nhánh 1 và 4, Staff chi nhánh 2; ví `0x…3002` vừa là chủ agent 2 vừa là Manager chi nhánh của agent 3.
-- [ ] `VITE_PREVIEW=mock`: menu người dùng có công tắc ví giả (Chủ agent 1 · Manager `0x…3001` · Chủ + Manager `0x…3002` · Staff · Không quyền) và ô nhập `domain` để thử.
-- [ ] `pnpm --filter agent shots`: chụp mọi route cho (a) chủ agent, (b) manager với `?domain=` chi nhánh 1, (c) màn chọn chi nhánh, (d) không quyền, (e) domain không tồn tại — 1440 sáng/tối, 390 sáng. Hỗ trợ `PW_CHROMIUM_PATH`.
-- [ ] Commit `feat(agent): khung ứng dụng, xem trước dữ liệu giả, chụp màn hình`.
+- [x] `apps/agent` theo khung `platform` (shadcn sidebar, `NavUser`, `SiteHeader`, `PageHeader`, toast, banner pause). Tiêu đề: "Meta Agent"; header hiện tên cửa hàng + (manager) tên chi nhánh và domain.
+- [x] `createMockContracts`: thêm domain cho mọi chi nhánh (đã có), thêm thành viên: ví giả `0x…3001` là Manager chi nhánh 1 và 4, Staff chi nhánh 2; ví `0x…3002` vừa là chủ agent 2 vừa là Manager chi nhánh của agent 3.
+- [x] `VITE_PREVIEW=mock`: menu người dùng có công tắc ví giả (Chủ agent 1 · Manager `0x…3001` · Chủ + Manager `0x…3002` · Staff · Không quyền) và ô nhập `domain` để thử.
+- [x] `pnpm --filter agent shots`: chụp mọi route cho (a) chủ agent, (b) manager với `?domain=` chi nhánh 1, (c) màn chọn chi nhánh, (d) không quyền, (e) domain không tồn tại — 1440 sáng/tối, 390 sáng. Hỗ trợ `PW_CHROMIUM_PATH`.
+- [x] Commit `feat(agent): khung ứng dụng, xem trước dữ liệu giả, chụp màn hình`.
 
 ### Task A2: Xác định vai trò theo `?domain`
 
