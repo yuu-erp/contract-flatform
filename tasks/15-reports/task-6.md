@@ -39,3 +39,9 @@ platform: 18 passed
 
 - Admin vẫn không vào `/system` (Navigate `/`).
 - Giải mã before/after: thử profile agent/chi nhánh; còn lại hex rút gọn.
+
+## Sửa sau review (`task-6-review.md`)
+
+- `SystemPage`: thẻ **Vùng nguy hiểm** + `ConfirmDialog` cho pause/unpause, gỡ admin, đề xuất owner, `setPoster` (địa chỉ đầy đủ, mô tả mask/loại bút toán).
+- `sonner` + `Toaster` ở `main.tsx`; `useAppTx` toast chờ ký / thành công / lỗi `decodeContractError`; bỏ toast tự chế `CreateAgentDialog`.
+- `buildAuditSearchQuery` + `termAddress('R', …)`; test `audit-search.test.ts`; lọc ngày một đầu (`audit-date-range`, `AUDIT_TS_MAX`).

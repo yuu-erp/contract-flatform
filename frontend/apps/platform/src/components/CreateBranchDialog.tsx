@@ -1,4 +1,5 @@
-import { useContracts, useTx } from '@meta-platform/chain'
+import { useContracts } from '@meta-platform/chain'
+import { useAppTx } from '../hooks/use-app-tx'
 import { Button, Input, utf8Length } from '@meta-platform/ui'
 import { Dialog } from 'radix-ui'
 import { useState } from 'react'
@@ -14,7 +15,7 @@ type Props = {
 
 export function CreateBranchDialog({ agentId, agentAllowedServices, onCreated }: Props) {
   const contracts = useContracts()
-  const tx = useTx()
+  const tx = useAppTx()
   const { canWrite, adminOnlyHint } = usePlatformWrite()
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState<CreateBranchForm>({

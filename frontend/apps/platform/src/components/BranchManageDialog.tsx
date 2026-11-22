@@ -1,5 +1,6 @@
 import type { BranchView } from '@meta-platform/chain'
-import { useContracts, useTx } from '@meta-platform/chain'
+import { useContracts } from '@meta-platform/chain'
+import { useAppTx } from '../hooks/use-app-tx'
 import { Button, Input, utf8Length } from '@meta-platform/ui'
 import { Dialog } from 'radix-ui'
 import { useEffect, useState } from 'react'
@@ -36,7 +37,7 @@ export function BranchManageDialog({
   onDone,
 }: Props) {
   const contracts = useContracts()
-  const tx = useTx()
+  const tx = useAppTx()
   const { canWrite, adminOnlyHint } = usePlatformWrite()
   const [reason, setReason] = useState('')
   const [reasonError, setReasonError] = useState<string | null>(null)

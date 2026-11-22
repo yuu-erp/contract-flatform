@@ -2,7 +2,10 @@ import { useAuditLog, type AuditFilter, type PlatformAuditRecord } from '@meta-p
 import { Address, Button, DataTable, Input } from '@meta-platform/ui'
 import { Dialog } from 'radix-ui'
 import { useMemo, useState } from 'react'
+import { toast } from 'sonner'
 import { auditRowSummary, formatAuditBytes } from '../lib/audit-display'
+import { auditDateRangeFromIso } from '../lib/audit-date-range'
+import { isValidEthAddress } from '../lib/address'
 
 export type AuditLogPanelProps = {
   locked?: Partial<AuditFilter>
@@ -11,14 +14,6 @@ export type AuditLogPanelProps = {
 }
 
 type AuditFilterDraft = AuditFilter & { dateFrom?: string; dateTo?: string }
-
-function dateToStartTs(iso: string): number {
-  return Math.floor(new Date(`${iso}T00:00:00`).getTime() / 1000)
-}
-
-function dateToEndTs(iso: string): number {
-  return Math.floor(new Date(`${iso}T23:59:59`).getTime() / 1000)
-}
 
 export function AuditLogPanel({ locked, hideAgent, hideBranch }: AuditLogPanelProps) {
   const [draft, setDraft] = useState<AuditFilterDraft>({})
@@ -60,15 +55,17 @@ export function AuditLogPanel({ locked, hideAgent, hideBranch }: AuditLogPanelPr
   ]
 
   const applyFilters = () => {
+    const actor = draft.actor?.trim()
+    if (actor && !isValidEthAddress(actor)) {
+      toast.error('Địa chỉ người làm không hợp lệ — cần 0x và 40 chữ hex.')
+      return
+    }
     const next: AuditFilter = {
       agentId: draft.agentId,
       branchId: draft.branchId,
       action: draft.action?.trim() || undefined,
-      actor: draft.actor?.trim() || undefined,
-    }
-    if (draft.dateFrom && draft.dateTo) {
-      next.fromTs = dateToStartTs(draft.dateFrom)
-      next.toTs = dateToEndTs(draft.dateTo)
+      actor: actor || undefined,
+      ...auditDateRangeFromIso(draft.dateFrom, draft.dateTo),
     }
     setFilter(next)
     setPage(0)
@@ -107,8 +104,18 @@ export function AuditLogPanel({ locked, hideAgent, hideBranch }: AuditLogPanelPr
           value={draft.actor ?? ''}
           onChange={(e) => setDraft({ ...draft, actor: e.target.value })}
         />
-        <Input className="w-36" type="date" onChange={(e) => setDraft({ ...draft, dateFrom: e.target.value })} />
-        <Input className="w-36" type="date" onChange={(e) => setDraft({ ...draft, dateTo: e.target.value })} />
+        <Input
+          className="w-36"
+          type="date"
+          value={draft.dateFrom ?? ''}
+          onChange={(e) => setDraft({ ...draft, dateFrom: e.target.value || undefined })}
+        />
+        <Input
+          className="w-36"
+          type="date"
+          value={draft.dateTo ?? ''}
+          onChange={(e) => setDraft({ ...draft, dateTo: e.target.value || undefined })}
+        />
         <Button type="button" variant="outline" onClick={applyFilters}>
           Lọc
         </Button>

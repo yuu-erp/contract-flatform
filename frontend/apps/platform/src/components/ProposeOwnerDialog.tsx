@@ -1,4 +1,5 @@
-import { useContracts, useTx } from '@meta-platform/chain'
+import { useContracts } from '@meta-platform/chain'
+import { useAppTx } from '../hooks/use-app-tx'
 import { Button, Input } from '@meta-platform/ui'
 import { Dialog } from 'radix-ui'
 import { useState } from 'react'
@@ -12,7 +13,7 @@ type Props = {
 
 export function ProposeOwnerDialog({ agentId, open, onOpenChange, onDone }: Props) {
   const contracts = useContracts()
-  const tx = useTx()
+  const tx = useAppTx()
   const { canWrite, adminOnlyHint } = usePlatformWrite()
   const [newOwner, setNewOwner] = useState('')
   const [error, setError] = useState<string | null>(null)

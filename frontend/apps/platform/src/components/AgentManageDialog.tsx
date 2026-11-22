@@ -1,4 +1,5 @@
-import { useContracts, useTx } from '@meta-platform/chain'
+import { useContracts } from '@meta-platform/chain'
+import { useAppTx } from '../hooks/use-app-tx'
 import { Button, Input, utf8Length } from '@meta-platform/ui'
 import { Dialog } from 'radix-ui'
 import { useEffect, useState } from 'react'
@@ -20,7 +21,7 @@ type Props = {
 export function AgentManageDialog({ row, mode, open, onOpenChange, onDone }: Props) {
   const contracts = useContracts()
   const { role, paused } = usePlatformRole()
-  const tx = useTx()
+  const tx = useAppTx()
   const canWrite = Boolean(role?.isAdmin && !paused)
 
   const [reason, setReason] = useState('')

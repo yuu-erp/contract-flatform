@@ -1,4 +1,5 @@
-import { useContracts, useTx } from '@meta-platform/chain'
+import { useContracts } from '@meta-platform/chain'
+import { useAppTx } from '../hooks/use-app-tx'
 import { Button, utf8Length } from '@meta-platform/ui'
 import { Dialog } from 'radix-ui'
 import { useState } from 'react'
@@ -21,13 +22,11 @@ const emptyForm = (): CreateAgentForm => ({
 export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
   const contracts = useContracts()
   const { role, paused } = usePlatformRole()
-  const tx = useTx()
+  const tx = useAppTx()
   const canCreate = Boolean(role?.isAdmin && !paused)
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState<CreateAgentForm>(emptyForm)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
-  const [toast, setToast] = useState<string | null>(null)
-
   const toggleService = (bit: number) => {
     setForm((prev) => ({
       ...prev,
@@ -170,12 +169,10 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
                     {
                       invalidate: [['agents', 'all']],
                       onSuccess: () => {
-                        setToast('Đã tạo agent.')
                         setOpen(false)
                         reset()
                         onCreated?.()
                       },
-                      onError: (msg) => setToast(msg),
                     },
                   )
                 }}
@@ -186,11 +183,6 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
-      {toast && (
-        <p className="fixed bottom-4 right-4 z-50 rounded-lg border border-border bg-background px-3 py-2 text-sm shadow-lg">
-          {toast}
-        </p>
-      )}
     </>
   )
 }
