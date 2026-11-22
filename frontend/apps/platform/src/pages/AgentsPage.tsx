@@ -19,7 +19,7 @@ export function AgentsPage() {
   const [q, setQ] = useState('')
   const [status, setStatus] = useState<number | null>(null)
   const [servicesMask, setServicesMask] = useState<number | null>(null)
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(0)
 
   const filtered = useMemo(
     () =>
@@ -118,7 +118,7 @@ export function AgentsPage() {
           value={q}
           onChange={(e) => {
             setQ(e.target.value)
-            setPage(1)
+            setPage(0)
           }}
         />
         <select
@@ -126,7 +126,7 @@ export function AgentsPage() {
           value={status ?? ''}
           onChange={(e) => {
             setStatus(e.target.value ? Number(e.target.value) : null)
-            setPage(1)
+            setPage(0)
           }}
         >
           <option value="">Mọi trạng thái</option>
@@ -140,7 +140,7 @@ export function AgentsPage() {
           onChange={(e) => {
             const v = e.target.value
             setServicesMask(v ? Number(v) : null)
-            setPage(1)
+            setPage(0)
           }}
         >
           <option value="">Mọi dịch vụ</option>
@@ -163,7 +163,7 @@ export function AgentsPage() {
         emptyTitle="Không có agent phù hợp"
       />
       <p className="text-xs text-muted-foreground">
-        Trang {page}/{totalPages} · {total} agent (tìm kiếm phía client, giới hạn ~1000 agent)
+        Trang {page + 1}/{totalPages} · {total} agent (tìm kiếm phía client, giới hạn ~1000 agent)
       </p>
         </CardContent>
       </Card>

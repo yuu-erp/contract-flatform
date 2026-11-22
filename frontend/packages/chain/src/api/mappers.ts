@@ -202,6 +202,10 @@ export function mapTaxQuote(value: unknown): TaxQuote {
   }
 }
 
+export function mapAgentTaxBps(value: unknown): number {
+  return asNumber(unwrapValue(value))
+}
+
 export function mapBranchTax(value: unknown): BranchTax {
   const raw = unwrapValue(value)
   if (Array.isArray(raw)) {

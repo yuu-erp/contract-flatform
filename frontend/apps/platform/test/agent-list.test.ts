@@ -46,11 +46,11 @@ describe('agent list (150 rows)', () => {
   })
 
   it('phân trang 20', () => {
+    const page0 = paginateAgents(all, 0, 20)
     const page1 = paginateAgents(all, 1, 20)
-    const page2 = paginateAgents(all, 2, 20)
-    expect(page1.items).toHaveLength(20)
-    expect(page1.totalPages).toBe(8)
-    expect(page1.items[0].id).toBe(1)
-    expect(page2.items[0].id).toBe(21)
+    expect(page0.items).toHaveLength(20)
+    expect(page0.totalPages).toBe(8)
+    expect(page0.items[0].id).toBe(1)
+    expect(page1.items[0].id).toBe(21)
   })
 })

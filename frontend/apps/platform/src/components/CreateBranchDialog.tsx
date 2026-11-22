@@ -8,10 +8,11 @@ import { validateCreateBranchForm, type CreateBranchForm } from '../lib/validate
 
 type Props = {
   agentId: number
+  agentAllowedServices: number
   onCreated?: () => void
 }
 
-export function CreateBranchDialog({ agentId, onCreated }: Props) {
+export function CreateBranchDialog({ agentId, agentAllowedServices, onCreated }: Props) {
   const contracts = useContracts()
   const tx = useTx()
   const { canWrite, adminOnlyHint } = usePlatformWrite()
@@ -103,7 +104,7 @@ export function CreateBranchDialog({ agentId, onCreated }: Props) {
                 onClick={() => {
                   void tx.run(
                     async () => {
-                      const err = validateCreateBranchForm(form)
+                      const err = validateCreateBranchForm(form, agentAllowedServices)
                       setErrors(err)
                       if (Object.keys(err).length > 0) throw new Error('invalid')
                       const init = {

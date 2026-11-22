@@ -14,6 +14,7 @@ import {
   mapBranchProfileRecord,
   mapBranch,
   mapBranchIdList,
+  mapAgentTaxBps,
   mapBranchTax,
   mapEntry,
   mapMembers,
@@ -201,8 +202,8 @@ export class SalesSettingsApi {
     return mapBranchTax(await this.inner.branchTaxOf(String(branchId), String(service)))
   }
 
-  async agentTaxOf(agentId: number, service: number): Promise<BranchTax> {
-    return mapBranchTax(await this.inner.agentTaxOf(String(agentId), String(service)))
+  async agentTaxOf(agentId: number, service: number): Promise<number> {
+    return mapAgentTaxBps(await this.inner.agentTaxOf(String(agentId), String(service)))
   }
 
   async agentPaymentMethodsOf(agentId: number): Promise<number> {

@@ -61,6 +61,7 @@ export function BranchDetailPage() {
   const tab = searchParams.get('tab') ?? 'overview'
   const setTab = (id: string) => setSearchParams({ tab: id })
   const branch = useBranch(Number.isFinite(branchId) ? branchId : null)
+  const agentForBranch = useAgent(branch.data?.agentId ?? null)
   const contracts = useContracts()
   const profileQ = useQuery({
     queryKey: ['branch-profile', branchId],
@@ -109,6 +110,7 @@ export function BranchDetailPage() {
           branch={view}
           domain={domain}
           profile={profile}
+          agentAllowedServices={agentForBranch.data?.agent.allowedServices ?? 0}
           onRefetch={() => {
             branch.refetch()
             profileQ.refetch()
@@ -161,11 +163,13 @@ function BranchInfoTab({
   branch,
   domain,
   profile,
+  agentAllowedServices,
   onRefetch,
 }: {
   branch: NonNullable<ReturnType<typeof useBranch>['data']>
   domain: string
   profile: BranchFormProfile
+  agentAllowedServices: number
   onRefetch: () => void
 }) {
   const { canWrite, adminOnlyHint } = usePlatformWrite()
@@ -209,6 +213,7 @@ function BranchInfoTab({
           branch={branch}
           domain={domain}
           profile={profile}
+          agentAllowedServices={agentAllowedServices}
           mode={manage.mode}
           open
           onOpenChange={() => setManage(null)}
@@ -220,8 +225,8 @@ function BranchInfoTab({
 }
 
 function BranchMembersTab({ branchId }: { branchId: number }) {
-  const [page, setPage] = useState(1)
-  const members = useMembers(branchId, page - 1)
+  const [page, setPage] = useState(0)
+  const members = useMembers(branchId, page)
   const columns = [
     { key: 'account', header: 'Ví', render: (r: NonNullable<typeof members.data>[0]) => <Address value={r.account} /> },
     { key: 'role', header: 'Vai trò', render: (r: NonNullable<typeof members.data>[0]) => <StatusBadge kind="role" value={r.role} /> },
@@ -257,7 +262,7 @@ function BranchSalesTab({ agentId, branchId }: { agentId: number; branchId: numb
 }
 
 function BranchTransactionsTab({ agentId, branchId }: { agentId: number; branchId: number }) {
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(0)
   const entries = useLedgerEntries(agentId, { branchId }, page)
   type Row = NonNullable<typeof entries.data>['items'][number]
   const columns = [
@@ -279,7 +284,7 @@ function BranchTransactionsTab({ agentId, branchId }: { agentId: number; branchI
 }
 
 function BranchAuditTab({ agentId, branchId }: { agentId: number; branchId: number }) {
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(0)
   const audit = useAuditLog({ agentId, branchId }, page)
   type Row = NonNullable<typeof audit.data>['items'][number]
   const columns = [

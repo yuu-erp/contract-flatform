@@ -5,7 +5,11 @@ import { Dialog } from 'radix-ui'
 import { useEffect, useState } from 'react'
 import { usePlatformWrite } from '../hooks/use-platform-write'
 import { SERVICE_MASK } from '../lib/validate-create-agent'
-import { validateCreateBranchForm, type BranchFormProfile } from '../lib/validate-create-branch'
+import {
+  isValidBranchDomain,
+  validateBranchProfileForm,
+  type BranchFormProfile,
+} from '../lib/validate-create-branch'
 import { validateReason } from '../lib/validate-reason'
 
 export type BranchManageMode = 'edit' | 'suspend' | 'resume' | 'delete' | 'domain' | 'timezone' | 'main'
@@ -14,13 +18,23 @@ type Props = {
   branch: BranchView
   domain: string
   profile: BranchFormProfile
+  agentAllowedServices: number
   mode: BranchManageMode
   open: boolean
   onOpenChange: (open: boolean) => void
   onDone?: () => void
 }
 
-export function BranchManageDialog({ branch, domain, profile, mode, open, onOpenChange, onDone }: Props) {
+export function BranchManageDialog({
+  branch,
+  domain,
+  profile,
+  agentAllowedServices,
+  mode,
+  open,
+  onOpenChange,
+  onDone,
+}: Props) {
   const contracts = useContracts()
   const tx = useTx()
   const { canWrite, adminOnlyHint } = usePlatformWrite()
@@ -142,17 +156,17 @@ export function BranchManageDialog({ branch, domain, profile, mode, open, onOpen
                   async () => {
                     const b = contracts!.branches
                     if (mode === 'edit') {
-                      const err = validateCreateBranchForm({
-                        domain,
-                        services,
-                        tzOffsetMinutes: tz,
-                        name: form.name,
-                        location: form.location,
-                        phone: form.phone,
-                        longlat: form.longlat,
-                        note: form.note,
-                      })
-                      delete err.domain
+                      const err = validateBranchProfileForm(
+                        {
+                          name: form.name,
+                          location: form.location,
+                          phone: form.phone,
+                          longlat: form.longlat,
+                          note: form.note,
+                          services,
+                        },
+                        agentAllowedServices,
+                      )
                       setFieldErrors(err)
                       if (Object.keys(err).length > 0) throw new Error('invalid')
                       await b.updateBranchProfile(branch.id, {
@@ -165,8 +179,8 @@ export function BranchManageDialog({ branch, domain, profile, mode, open, onOpen
                       if (services !== branch.services) await b.setBranchServices(branch.id, services)
                     } else if (mode === 'domain') {
                       const d = newDomain.trim().toLowerCase()
-                      if (!d || d !== newDomain.trim().toLowerCase()) {
-                        setFieldErrors({ domain: 'Domain phải viết thường' })
+                      if (!isValidBranchDomain(d)) {
+                        setFieldErrors({ domain: 'Domain không hợp lệ' })
                         throw new Error('invalid')
                       }
                       await b.setBranchDomain(branch.id, d)

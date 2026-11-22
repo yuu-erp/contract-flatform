@@ -134,11 +134,17 @@ export function AgentDetailPage() {
 
       {tab === 'overview' && <AgentOverviewTab agentId={agentId} branches={branchList} />}
       {tab === 'branches' && (
-        <AgentBranchesTab agentId={agentId} rows={branchList} loading={branches.isLoading} onRefetch={() => branches.refetch()} />
+        <AgentBranchesTab
+          agentId={agentId}
+          agentAllowedServices={view.allowedServices}
+          rows={branchList}
+          loading={branches.isLoading}
+          onRefetch={() => branches.refetch()}
+        />
       )}
       {tab === 'profile' && <AgentProfileTab row={listRow} onRefetch={() => agent.refetch()} />}
       {tab === 'sales' && <AgentSalesTab agentId={agentId} branchIds={branchList.map((b) => b.branchId)} rows={branchList} />}
-      {tab === 'wallets' && <AgentWalletsTab agentId={agentId} />}
+      {tab === 'wallets' && <AgentWalletsTab agentId={agentId} branches={branchList} />}
       {tab === 'transactions' && <AgentTransactionsTab agentId={agentId} branches={branchList} />}
       {tab === 'audit' && <AgentAuditTab agentId={agentId} />}
     </div>
@@ -228,11 +234,13 @@ function AgentOverviewTab({
 
 function AgentBranchesTab({
   agentId,
+  agentAllowedServices,
   rows,
   loading,
   onRefetch,
 }: {
   agentId: number
+  agentAllowedServices: number
   rows: { branchId: number; name: string; domain: string }[]
   loading: boolean
   onRefetch: () => void
@@ -254,7 +262,7 @@ function AgentBranchesTab({
     <Card>
       <CardHeader className="flex flex-row items-center justify-between gap-2">
         <CardTitle>Chi nhánh</CardTitle>
-        <CreateBranchDialog agentId={agentId} onCreated={onRefetch} />
+        <CreateBranchDialog agentId={agentId} agentAllowedServices={agentAllowedServices} onCreated={onRefetch} />
       </CardHeader>
       <CardContent>
         <DataTable
@@ -343,8 +351,8 @@ function AgentSalesTab({
           <CardTitle>Agent</CardTitle>
         </CardHeader>
         <CardContent className="space-y-1">
-          <p>Thuế NET: {d.taxNet.isSet ? formatBps(d.taxNet.bps) : 'Mặc định'}</p>
-          <p>Thuế IQR: {d.taxIqr.isSet ? formatBps(d.taxIqr.bps) : 'Mặc định'}</p>
+          <p>Thuế NET: {formatBps(d.taxNet)}</p>
+          <p>Thuế IQR: {formatBps(d.taxIqr)}</p>
           <p>Kiểu giá NET: {d.exNet ? 'Tách thuế' : 'Đã gồm thuế (khoá)'}</p>
           <p>Kiểu giá IQR: {d.exIqr ? 'Tách thuế' : 'Đã gồm thuế'}</p>
           <p>Phương thức: {formatPaymentMethods(d.methods)}</p>
@@ -373,9 +381,24 @@ function AgentSalesTab({
   )
 }
 
-function AgentWalletsTab({ agentId }: { agentId: number }) {
+function AgentWalletsTab({
+  agentId,
+  branches,
+}: {
+  agentId: number
+  branches: { branchId: number; name: string }[]
+}) {
+  const contracts = useContracts()
   const [customer, setCustomer] = useState('')
-  const wallet = useCustomerWallet(agentId, customer.trim() || null)
+  const trimmed = customer.trim()
+  const validCustomer = /^0x[0-9a-fA-F]{40}$/.test(trimmed) ? trimmed : null
+  const wallet = useCustomerWallet(agentId, validCustomer)
+  const liability = useQuery({
+    queryKey: ['wallet-liability', agentId],
+    enabled: !!contracts,
+    queryFn: () => contracts!.ledger.walletLiability(agentId),
+  })
+  const nameById = useMemo(() => new Map(branches.map((b) => [b.branchId, b.name])), [branches])
   const rows = bucketRowsFromPortions(wallet.data?.buckets ?? [])
   return (
     <Card>
@@ -383,10 +406,18 @@ function AgentWalletsTab({ agentId }: { agentId: number }) {
         <CardTitle>Ví khách</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p>
-          Dư nợ tổng agent: tra qua tab Tổng quan hoặc nhập ví khách bên dưới.
+        <p className="text-sm">
+          Dư nợ tổng agent:{' '}
+          {liability.isLoading ? '…' : <Money value={liability.data ?? 0n} />}
         </p>
-        <Input placeholder="0x… ví khách" value={customer} onChange={(e) => setCustomer(e.target.value)} />
+        <Input
+          placeholder="0x… ví khách"
+          value={customer}
+          onChange={(e) => setCustomer(e.target.value)}
+        />
+        {trimmed && !validCustomer ? (
+          <p className="text-sm text-destructive">Địa chỉ ví không hợp lệ (0x + 40 hex).</p>
+        ) : null}
         {wallet.isFetching ? <PageLoader message="Đang tra…" /> : null}
         {wallet.data ? (
           <div className="space-y-2 text-sm">
@@ -403,7 +434,7 @@ function AgentWalletsTab({ agentId }: { agentId: number }) {
               <tbody>
                 {rows.map((row) => (
                   <tr key={`${row.branchId}-${row.amount}`} className="border-t border-border">
-                    <td className="py-1">{row.branchId}</td>
+                    <td className="py-1">{nameById.get(row.branchId) ?? `Chi nhánh #${row.branchId}`}</td>
                     <td className="py-1 text-right">
                       <Money value={row.amount} />
                     </td>
@@ -426,7 +457,7 @@ function AgentTransactionsTab({
   branches: { branchId: number; name: string }[]
 }) {
   const [branchId, setBranchId] = useState<number | undefined>()
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(0)
   const entries = useLedgerEntries(agentId, { branchId }, page)
   type TxRow = NonNullable<typeof entries.data>['items'][number]
   const columns = [
@@ -451,7 +482,7 @@ function AgentTransactionsTab({
           value={branchId ?? ''}
           onChange={(e) => {
             setBranchId(e.target.value ? Number(e.target.value) : undefined)
-            setPage(1)
+            setPage(0)
           }}
         >
           <option value="">Mọi chi nhánh</option>
@@ -479,7 +510,7 @@ function AgentTransactionsTab({
 }
 
 function AgentAuditTab({ agentId }: { agentId: number }) {
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(0)
   const audit = useAuditLog({ agentId }, page)
   type AuditRow = NonNullable<typeof audit.data>['items'][number]
   const columns = [

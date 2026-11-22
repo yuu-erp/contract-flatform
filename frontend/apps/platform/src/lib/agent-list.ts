@@ -26,16 +26,4 @@ export function filterAndSearchAgents(rows: AgentListRow[], filters: AgentListFi
   return list
 }
 
-export function paginateAgents<T>(rows: T[], page: number, pageSize: number) {
-  const total = rows.length
-  const totalPages = Math.max(1, Math.ceil(total / pageSize))
-  const safePage = Math.min(Math.max(1, page), totalPages)
-  const start = (safePage - 1) * pageSize
-  return {
-    items: rows.slice(start, start + pageSize),
-    page: safePage,
-    pageSize,
-    total,
-    totalPages,
-  }
-}
+export { paginateAgents, pageOffset } from './pagination'

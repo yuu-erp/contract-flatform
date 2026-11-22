@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   mapAgent,
+  mapAgentTaxBps,
   mapBranch,
   mapBranchTax,
   mapEntry,
@@ -94,5 +95,11 @@ describe('api mappers', () => {
       total: 110_000n,
     })
     expect(mapBranchTax([true, 800])).toEqual({ isSet: true, bps: 800 })
+  })
+
+  it('mapAgentTaxBps đọc uint16 scalar từ SDK', () => {
+    expect(mapAgentTaxBps('800')).toBe(800)
+    expect(mapAgentTaxBps(800)).toBe(800)
+    expect(mapAgentTaxBps({ '': '800' })).toBe(800)
   })
 })

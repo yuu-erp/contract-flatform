@@ -48,3 +48,21 @@ fmt (2 script + DeployPlatform test đã format), build, sizes, layout, forge te
 
 - `AgentManageDialog` / hành động agent đã có từ `867643e`; Task 5 gắn vào trang chi tiết thay vì chỉ danh sách.
 - Task 6: `/system` và `/audit` toàn hệ vẫn placeholder SystemPage / audit list (một phần UI pause đã có từ `867643e`).
+
+## Sửa sau review (`task-5-review.md`)
+
+1. Phân trang 0-based: `useState(0)`, `paginateAgents` + `pageOffset`, test `pagination.test.ts`; `AgentsPage` đồng bộ.
+2. `mapAgentTaxBps` / `agentTaxOf` trả `uint16`; test chain mapper; tab Thuế hiển thị `formatBps` đúng.
+3. `validate-create-branch`: domain, SĐT, longlat, ServiceMask + `allowedServices` agent; test 3 case; `BranchManageDialog` dùng chung.
+4. **Dời Task 8:** bộ lọc giao dịch (loại, khách, ngày) và chi tiết bút toán — làm chung app `agent`.
+5. Tab Ví khách: kiểm `0x`+40 hex, dư nợ tổng `walletLiability`, cột tên chi nhánh.
+
+```bash
+cd frontend && pnpm -r build && pnpm -r lint && pnpm -r test
+```
+
+```
+packages/chain: 33 passed (thêm mapAgentTaxBps)
+packages/ui: 9 passed
+platform: 15 passed (pagination 2, validate-create-branch 3)
+```
