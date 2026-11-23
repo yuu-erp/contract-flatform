@@ -94,11 +94,11 @@ Mọi nút ghi khoá kèm lý do (tooltip) khi: hệ pause, agent không Active,
 
 ### Task A5: Cài đặt thuế và phương thức thanh toán
 
-- [ ] `/settings` theo bảng Màn hình. Đọc `agentTaxOf`, `branchTaxOf`, `isTaxExclusive`, `agentPaymentMethodsOf`, `paymentMethodsOf`; ghi `setAgentTax`, `setBranchTax`, `clearBranchTax`, `setTaxExclusive`, `setAgentPaymentMethods`, `setBranchPaymentMethods`.
-- [ ] Nhập thuế dạng phần trăm (`8,5` → 850 bps), chặn > 100 %; checkbox phương thức ↔ bitmask; chi nhánh có lựa chọn "Theo agent" (= 0); cảnh báo khi tập chi nhánh không còn phương thức nào sau khi thu hẹp tập agent.
-- [ ] Xem trước: nhập số tiền + dịch vụ → `quoteTax` hiện thuế và khách trả.
-- [ ] Test: `parsePercentToBps('8,5') == 850`, `'100' == 10000`, `'100,01'` lỗi; `CASH|WALLET == 9`; "Theo agent" = 0; tập hiệu lực chi nhánh = (chi nhánh || agent) & agent.
-- [ ] Commit `feat(agent): cài đặt thuế và phương thức thanh toán`.
+- [x] `/settings` theo bảng Màn hình. Đọc `agentTaxOf`, `branchTaxOf`, `isTaxExclusive`, `agentPaymentMethodsOf`, `paymentMethodsOf`; ghi `setAgentTax`, `setBranchTax`, `clearBranchTax`, `setTaxExclusive`, `setAgentPaymentMethods`, `setBranchPaymentMethods`.
+- [x] Nhập thuế dạng phần trăm (`8,5` → 850 bps), chặn > 100 %; checkbox phương thức ↔ bitmask; chi nhánh có lựa chọn "Theo agent" (= 0); cảnh báo khi tập chi nhánh không còn phương thức nào sau khi thu hẹp tập agent.
+- [x] Xem trước: nhập số tiền + dịch vụ → `quoteTax` hiện thuế và khách trả.
+- [x] Test: `parsePercentToBps('8,5') == 850`, `'100' == 10000`, `'100,01'` lỗi; `CASH|WALLET == 9`; "Theo agent" = 0; tập hiệu lực chi nhánh = (chi nhánh || agent) & agent.
+- [x] Commit `feat(agent): cài đặt thuế và phương thức thanh toán`.
 
 ### Task A6: Ví khách, Giao dịch, Nhật ký
 

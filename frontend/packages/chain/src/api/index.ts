@@ -254,6 +254,30 @@ export class SalesSettingsApi {
   async isTaxExclusive(agentId: number, service: number): Promise<boolean> {
     return Boolean(unwrapValue(await this.inner.isTaxExclusive(String(agentId), String(service))))
   }
+
+  async setAgentTax(agentId: number, service: number, bps: number): Promise<void> {
+    await this.inner.setAgentTax(String(agentId), String(service), String(bps))
+  }
+
+  async setBranchTax(branchId: number, service: number, bps: number): Promise<void> {
+    await this.inner.setBranchTax(String(branchId), String(service), String(bps))
+  }
+
+  async clearBranchTax(branchId: number, service: number): Promise<void> {
+    await this.inner.clearBranchTax(String(branchId), String(service))
+  }
+
+  async setTaxExclusive(agentId: number, service: number, exclusive: boolean): Promise<void> {
+    await this.inner.setTaxExclusive(String(agentId), String(service), exclusive)
+  }
+
+  async setAgentPaymentMethods(agentId: number, methods: number): Promise<void> {
+    await this.inner.setAgentPaymentMethods(String(agentId), String(methods))
+  }
+
+  async setBranchPaymentMethods(branchId: number, methods: number): Promise<void> {
+    await this.inner.setBranchPaymentMethods(String(branchId), String(methods))
+  }
 }
 
 export class PlatformAccessApi {

@@ -70,7 +70,9 @@ export function BranchSalesSettingsReadonly({ agentId, branchId, branchName }: {
       <CardContent className="space-y-2 pt-6 text-sm">
         <p>Thuế NET: {bt.net.isSet ? formatBps(bt.net.bps) : 'Theo agent'}</p>
         <p>Thuế IQR: {bt.iqr.isSet ? formatBps(bt.iqr.bps) : 'Theo agent'}</p>
-        <p>Phương thức: {formatPaymentMethods(bt.methods)}</p>
+        <p>Kiểu giá NET: đã gồm thuế (khoá)</p>
+        <p>Kiểu giá IQR: {sales.data?.exIqr ? 'Tách thuế' : 'Đã gồm thuế'}</p>
+        <p>Phương thức hiệu lực: {formatPaymentMethods(bt.methods)}</p>
       </CardContent>
     </Card>
   )

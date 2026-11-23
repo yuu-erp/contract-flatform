@@ -1,3 +1,10 @@
+import {
+  DEFAULT_AGENT_PAYMENT_METHODS,
+  MAX_TAX_BPS,
+  PAYMENT_CASH,
+  SERVICE_IQR,
+  SERVICE_NET,
+} from '../sales-settings'
 import { METRIC } from '../metrics'
 import { calendarDay, localCalendarParts } from '../days'
 import { normalizeHexAddress } from '../address'
@@ -25,8 +32,6 @@ const AGENT_NAMES = [
 
 /** Contract: 1 Active, 2 Suspended, 3 Deleted (0 = None). */
 const STATUSES = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3]
-
-const SERVICE_IQR = 2
 
 function allowsIqr(mask: number): boolean {
   return (mask & SERVICE_IQR) !== 0
@@ -68,6 +73,71 @@ export type MockPlatformState = {
   walletLiability: Map<number, bigint>
   nextDocId: number
   posterWriters: Set<string>
+  sales: MockSalesState
+}
+
+export type MockSalesState = {
+  agentTax: Map<number, Record<number, number>>
+  branchTaxPlus: Map<number, Record<number, number>>
+  taxExclusive: Map<number, Record<number, boolean>>
+  agentMethods: Map<number, number>
+  branchMethods: Map<number, number>
+}
+
+function agentMethodsEff(state: MockPlatformState, agentId: number): number {
+  const raw = state.sales.agentMethods.get(agentId) ?? 0
+  return raw === 0 ? DEFAULT_AGENT_PAYMENT_METHODS : raw
+}
+
+export function mockAgentTaxOf(state: MockPlatformState, agentId: number, service: number): number {
+  return state.sales.agentTax.get(agentId)?.[service] ?? 0
+}
+
+export function mockBranchTaxOf(state: MockPlatformState, branchId: number, service: number) {
+  const row = state.sales.branchTaxPlus.get(branchId)?.[service]
+  if (row == null) return { isSet: false, bps: 0 }
+  return { isSet: true, bps: row }
+}
+
+export function mockTaxExclusive(state: MockPlatformState, agentId: number, service: number): boolean {
+  return state.sales.taxExclusive.get(agentId)?.[service] ?? false
+}
+
+export function mockAgentPaymentMethodsOf(state: MockPlatformState, agentId: number): number {
+  return agentMethodsEff(state, agentId)
+}
+
+export function mockPaymentMethodsOf(state: MockPlatformState, branches: BranchView[], branchId: number): number {
+  const branch = branches.find((b) => b.id === branchId)
+  if (!branch) return 0
+  const agentEff = agentMethodsEff(state, branch.agentId)
+  const stored = state.sales.branchMethods.get(branchId) ?? 0
+  return (stored === 0 ? agentEff : stored) & agentEff
+}
+
+export function mockQuoteTax(
+  state: MockPlatformState,
+  branches: BranchView[],
+  branchId: number,
+  service: number,
+  amount: bigint,
+) {
+  const branch = branches.find((b) => b.id === branchId)
+  if (!branch) throw new Error('BranchNotFound')
+  const agentId = branch.agentId
+  const override = state.sales.branchTaxPlus.get(branchId)?.[service]
+  const bps = override != null ? override : (state.sales.agentTax.get(agentId)?.[service] ?? 0)
+  const exclusive = mockTaxExclusive(state, agentId, service)
+  let tax: bigint
+  let total: bigint
+  if (exclusive) {
+    tax = (amount * BigInt(bps)) / BigInt(MAX_TAX_BPS)
+    total = amount + tax
+  } else {
+    tax = (amount * BigInt(bps)) / (BigInt(MAX_TAX_BPS) + BigInt(bps))
+    total = amount
+  }
+  return { bps, exclusive, tax, total }
 }
 
 export const PREVIEW_WALLETS = {
@@ -404,6 +474,24 @@ export function buildMockState(seed: number): MockPlatformState {
   upsertMember(5, PREVIEW_WALLETS.agentDual, 2)
   upsertMember(6, PREVIEW_WALLETS.agentStaff, 1)
 
+  const sales: MockSalesState = {
+    agentTax: new Map([
+      [
+        1,
+        {
+          [SERVICE_NET]: 800,
+          [SERVICE_IQR]: 1_000,
+        },
+      ],
+    ]),
+    branchTaxPlus: new Map([
+      [2, { [SERVICE_IQR]: 1_200 }],
+    ]),
+    taxExclusive: new Map([[1, { [SERVICE_NET]: false, [SERVICE_IQR]: false }]]),
+    agentMethods: new Map([[1, PAYMENT_CASH]]),
+    branchMethods: new Map([[2, 6]]),
+  }
+
   return {
     seed,
     owner: PREVIEW_WALLETS.owner,
@@ -427,6 +515,7 @@ export function buildMockState(seed: number): MockPlatformState {
     walletLiability,
     nextDocId: docId,
     posterWriters: new Set([normalizeHexAddress('0x0000000000000000000000000000000000000a01')]),
+    sales,
   }
 }
 

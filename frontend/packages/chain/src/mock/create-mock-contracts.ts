@@ -21,9 +21,16 @@ import {
   buildMockState,
   MOCK_ADDRESSES,
   MockStore,
+  mockAgentPaymentMethodsOf,
+  mockAgentTaxOf,
+  mockBranchTaxOf,
+  mockPaymentMethodsOf,
+  mockQuoteTax,
+  mockTaxExclusive,
   PREVIEW_WALLETS,
   type MockPlatformState,
 } from './mock-store'
+import { ALL_PAYMENT_METHODS, MAX_TAX_BPS, SERVICE_NET } from '../sales-settings'
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -353,25 +360,90 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
     },
   }
 
+  const assertAgentOwner = (agentId: number) => {
+    const row = state.agents.find((a) => a.id === agentId)
+    if (!row) throw new Error('AgentNotFound')
+    if (normalizeHexAddress(row.owner) !== normalizeHexAddress(from)) throw new Error('NotAgentOwner')
+    if (row.status !== 1) throw new Error('AgentNotActive')
+  }
+
+  const writableBranch = (branchId: number) => {
+    const br = state.branches.find((b) => b.id === branchId)
+    if (!br) throw new Error('BranchNotFound')
+    assertAgentOwner(br.agentId)
+    if (br.status !== 1) throw new Error('BranchNotActive')
+    return br
+  }
+
   const salesSettings = {
-    async quoteTax(_branchId: number, _service: number, amount: bigint) {
-      const tax = (amount * 8n) / 100n
-      return { bps: 800, exclusive: false, tax, total: amount + tax }
+    async quoteTax(branchId: number, service: number, amount: bigint) {
+      return mockQuoteTax(state, state.branches, Number(branchId), Number(service), amount)
     },
-    async branchTaxOf(_branchId: number, _service: number) {
-      return { isSet: false, bps: 0 }
+    async branchTaxOf(branchId: number, service: number) {
+      return mockBranchTaxOf(state, Number(branchId), Number(service))
     },
-    async agentTaxOf(_agentId: number, _service: number) {
-      return 800
+    async agentTaxOf(agentId: number, service: number) {
+      return mockAgentTaxOf(state, Number(agentId), Number(service))
     },
-    async agentPaymentMethodsOf(_agentId: number) {
-      return 9
+    async agentPaymentMethodsOf(agentId: number) {
+      return mockAgentPaymentMethodsOf(state, Number(agentId))
     },
-    async paymentMethodsOf(_branchId: number) {
-      return 0
+    async paymentMethodsOf(branchId: number) {
+      return mockPaymentMethodsOf(state, state.branches, Number(branchId))
     },
-    async isTaxExclusive(_agentId: number, _service: number) {
-      return false
+    async isTaxExclusive(agentId: number, service: number) {
+      return mockTaxExclusive(state, Number(agentId), Number(service))
+    },
+    async setAgentTax(agentId: number, service: number, bps: number) {
+      await simulateTx(store, from)
+      assertAgentOwner(Number(agentId))
+      const s = Number(service)
+      const v = Number(bps)
+      if (v > MAX_TAX_BPS) throw new Error('TaxTooHigh')
+      const row = state.sales.agentTax.get(Number(agentId)) ?? {}
+      row[s] = v
+      state.sales.agentTax.set(Number(agentId), row)
+    },
+    async setBranchTax(branchId: number, service: number, bps: number) {
+      await simulateTx(store, from)
+      writableBranch(Number(branchId))
+      const v = Number(bps)
+      if (v > MAX_TAX_BPS) throw new Error('TaxTooHigh')
+      const cur = state.sales.branchTaxPlus.get(Number(branchId)) ?? {}
+      cur[Number(service)] = v
+      state.sales.branchTaxPlus.set(Number(branchId), cur)
+    },
+    async clearBranchTax(branchId: number, service: number) {
+      await simulateTx(store, from)
+      writableBranch(Number(branchId))
+      const cur = state.sales.branchTaxPlus.get(Number(branchId))
+      if (!cur) return
+      delete cur[Number(service)]
+      state.sales.branchTaxPlus.set(Number(branchId), cur)
+    },
+    async setTaxExclusive(agentId: number, service: number, exclusive: boolean) {
+      await simulateTx(store, from)
+      assertAgentOwner(Number(agentId))
+      if (exclusive && Number(service) === SERVICE_NET) throw new Error('TaxModeNotAllowed')
+      const row = state.sales.taxExclusive.get(Number(agentId)) ?? {}
+      row[Number(service)] = Boolean(exclusive)
+      state.sales.taxExclusive.set(Number(agentId), row)
+    },
+    async setAgentPaymentMethods(agentId: number, methods: number) {
+      await simulateTx(store, from)
+      assertAgentOwner(Number(agentId))
+      const m = Number(methods)
+      if (m === 0 || (m & ~ALL_PAYMENT_METHODS) !== 0) throw new Error('InvalidMethods')
+      state.sales.agentMethods.set(Number(agentId), m)
+    },
+    async setBranchPaymentMethods(branchId: number, methods: number) {
+      await simulateTx(store, from)
+      const br = writableBranch(Number(branchId))
+      const m = Number(methods)
+      if ((m & ~ALL_PAYMENT_METHODS) !== 0) throw new Error('InvalidMethods')
+      const agentEff = mockAgentPaymentMethodsOf(state, br.agentId)
+      if (m !== 0 && (m & ~agentEff) !== 0) throw new Error('MethodsNotAllowed')
+      state.sales.branchMethods.set(Number(branchId), m)
     },
   }
 
