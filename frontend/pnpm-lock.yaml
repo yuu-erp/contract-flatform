@@ -17,8 +17,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       '@metanodejs/fiai-sdk':
-        specifier: ^2.1.1
-        version: 2.1.1
+        specifier: /Users/lekhaihoan/Documents/CONG_TY/metanode-finsdk/packages/fiai-sdk
+        version: link:../../../../CONG_TY/metanode-finsdk/packages/fiai-sdk
       '@tanstack/react-query':
         specifier: ^5.102.8
         version: 5.108.1(@types/react@19.3.0)(react@19.3.1)
@@ -87,8 +87,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       '@metanodejs/fiai-sdk':
-        specifier: ^2.1.1
-        version: 2.1.1
+        specifier: /Users/lekhaihoan/Documents/CONG_TY/metanode-finsdk/packages/fiai-sdk
+        version: link:../../../../CONG_TY/metanode-finsdk/packages/fiai-sdk
       '@metanodejs/mtn-contract':
         specifier: ^1.0.8
         version: 1.0.8
@@ -160,8 +160,8 @@ importers:
   packages/chain:
     dependencies:
       '@metanodejs/fiai-sdk':
-        specifier: ^2.1.1
-        version: 2.1.1
+        specifier: /Users/lekhaihoan/Documents/CONG_TY/metanode-finsdk/packages/fiai-sdk
+        version: link:../../../../CONG_TY/metanode-finsdk/packages/fiai-sdk
       '@metanodejs/mtn-contract':
         specifier: ^1.0.8
         version: 1.0.8
@@ -698,9 +698,6 @@ packages:
 
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
-
-  '@metanodejs/fiai-sdk@2.1.1':
-    resolution: {integrity: sha512-hh0qb1xCFcwK4wMVMqrEo6XITHMTd3cRInD3uXb4Lcp+fthsHSc/nUtLbCmSDpwkM63UTFRM91wGEKz2cJmBwQ==}
 
   '@metanodejs/mtn-contract@1.0.8':
     resolution: {integrity: sha512-7bW9HmD3hGXcYjbtLD26XPItBfocf7k3bce6ejWZqnBmf7sNmRqHUBsFIjEscKknz0ItE+B3w0lxiIV0GfTg8g==}
@@ -3304,10 +3301,6 @@ snapshots:
       keyv: 5.6.0
 
   '@keyv/serialize@1.1.1': {}
-
-  '@metanodejs/fiai-sdk@2.1.1':
-    dependencies:
-      nanoid: 5.1.16
 
   '@metanodejs/mtn-contract@1.0.8':
     dependencies:

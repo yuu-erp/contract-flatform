@@ -6,6 +6,13 @@ import { fileURLToPath } from 'node:url'
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 /** Chặn đường dẫn tuyệt đối / file: / link: / ~user (không chặn semver ~1.2.3). */
 const BAD_PREFIX = /^(?:\/|file:|link:|~\/|\.\.\/)/
+/** Cho phép SDK ví Meta trỏ thẳng vào checkout local (quyết định dự án). */
+const ALLOWED_LOCAL_DEPS = new Map([
+  [
+    '@metanodejs/fiai-sdk',
+  '/Users/lekhaihoan/Documents/CONG_TY/metanode-finsdk/packages/fiai-sdk',
+  ],
+])
 
 async function* walkPackageJson(dir) {
   const entries = await readdir(dir, { withFileTypes: true })
@@ -25,8 +32,11 @@ function checkDepsRecord(record, file, section) {
   if (!record || typeof record !== 'object') return errors
   for (const [name, version] of Object.entries(record)) {
     if (typeof version !== 'string') continue
-    if (BAD_PREFIX.test(version.trim())) {
-      errors.push(`${file}: ${section}.${name} = "${version}" (dùng npm semver, local chỉ qua FIAI_SDK_PATH)`)
+    const v = version.trim()
+    if (BAD_PREFIX.test(v)) {
+      const allowed = ALLOWED_LOCAL_DEPS.get(name)
+      if (allowed && v === allowed) continue
+      errors.push(`${file}: ${section}.${name} = "${version}" (dùng npm semver; SDK local chỉ @metanodejs/fiai-sdk đúng đường dẫn cho phép)`)
     }
   }
   return errors
