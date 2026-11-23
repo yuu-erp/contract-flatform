@@ -86,11 +86,11 @@ Mọi nút ghi khoá kèm lý do (tooltip) khi: hệ pause, agent không Active,
 
 ### Task A4: Nhân sự
 
-- [ ] `/staff` theo ma trận `core-access.md` §3. Hàm thuần `allowedStaffActions(viewer, target)` → tập hành động hợp lệ (`grantManager`, `grantStaff`, `demoteToStaff`, `promoteToManager`, `revoke`, `renounce`) — nút ngoài tập này ẩn.
-- [ ] Cấp vai trò: kiểm địa chỉ, chặn ví là chủ agent (`AccountIsAgentOwner`) trước khi gửi nếu biết; lỗi contract hiện toast tiếng Việt (`NotAuthorized`, `TooManyMembers`, `TooManyBranches`, `AccountIsPlatformRole`, `RoleUnchanged`).
-- [ ] Thu hồi / rời chi nhánh qua `ConfirmDialog`.
-- [ ] Test `allowedStaffActions`: chủ với Manager/Staff; manager với Staff (thu hồi được), với Manager khác (không gì), với ví chưa có vai trò (chỉ cấp Staff), với chính mình (chỉ rời).
-- [ ] Commit `feat(agent): nhân sự theo ma trận quyền`.
+- [x] `/staff` theo ma trận `core-access.md` §3. Hàm thuần `allowedStaffActions(viewer, target)` → tập hành động hợp lệ (`grantManager`, `grantStaff`, `demoteToStaff`, `promoteToManager`, `revoke`, `renounce`) — nút ngoài tập này ẩn.
+- [x] Cấp vai trò: kiểm địa chỉ, chặn ví là chủ agent (`AccountIsAgentOwner`) trước khi gửi nếu biết; lỗi contract hiện toast tiếng Việt (`NotAuthorized`, `TooManyMembers`, `TooManyBranches`, `AccountIsPlatformRole`, `RoleUnchanged`).
+- [x] Thu hồi / rời chi nhánh qua `ConfirmDialog`.
+- [x] Test `allowedStaffActions`: chủ với Manager/Staff; manager với Staff (thu hồi được), với Manager khác (không gì), với ví chưa có vai trò (chỉ cấp Staff), với chính mình (chỉ rời).
+- [x] Commit `feat(agent): nhân sự theo ma trận quyền`.
 
 ### Task A5: Cài đặt thuế và phương thức thanh toán
 

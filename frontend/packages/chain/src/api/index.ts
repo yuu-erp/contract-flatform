@@ -166,6 +166,26 @@ export class AgentAccessApi {
   async branchesOfAccount(account: string, offset: number, limit: number): Promise<number[]> {
     return mapBranchIdList(await this.inner.branchesOfAccount(account, String(offset), String(limit)))
   }
+
+  async memberCountOf(branchId: number): Promise<number> {
+    return asNumber(await this.inner.memberCountOf(String(branchId)))
+  }
+
+  async roleOf(branchId: number, account: string): Promise<number> {
+    return asNumber(await this.inner.roleOf(String(branchId), account))
+  }
+
+  async grantRole(branchId: number, account: string, role: number): Promise<void> {
+    await this.inner.grantRole(String(branchId), account, String(role))
+  }
+
+  async revokeRole(branchId: number, account: string): Promise<void> {
+    await this.inner.revokeRole(String(branchId), account)
+  }
+
+  async renounceRole(branchId: number): Promise<void> {
+    await this.inner.renounceRole(String(branchId))
+  }
 }
 
 export class LedgerApi {

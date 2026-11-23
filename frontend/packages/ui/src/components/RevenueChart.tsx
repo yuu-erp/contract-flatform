@@ -50,8 +50,22 @@ export function RevenueChart({
           />
           <Legend
             verticalAlign="top"
-            height={28}
-            formatter={(value) => (value === 'net' ? 'NET (thuần)' : 'IQR')}
+            height={32}
+            content={({ payload }) => {
+              const order = ['net', 'iqr'] as const
+              const colorOf = (key: string) =>
+                payload?.find((p) => p.value === key)?.color ?? (key === 'net' ? 'var(--chart-1)' : 'var(--chart-2)')
+              return (
+                <ul className="flex list-none flex-wrap items-center justify-center gap-4 pb-1 text-sm text-muted-foreground">
+                  {order.map((key) => (
+                    <li key={key} className="flex items-center gap-1.5">
+                      <span className="size-2.5 shrink-0 rounded-sm" style={{ background: colorOf(key) }} aria-hidden />
+                      <span>{key === 'net' ? 'NET' : 'IQR'}</span>
+                    </li>
+                  ))}
+                </ul>
+              )
+            }}
           />
           <Bar dataKey="net" stackId="a" fill="var(--chart-1)" name="net" />
           <Bar dataKey="iqr" stackId="a" fill="var(--chart-2)" name="iqr" radius={[4, 4, 0, 0]} />

@@ -26,6 +26,12 @@ const AGENT_NAMES = [
 /** Contract: 1 Active, 2 Suspended, 3 Deleted (0 = None). */
 const STATUSES = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3]
 
+const SERVICE_IQR = 2
+
+function allowsIqr(mask: number): boolean {
+  return (mask & SERVICE_IQR) !== 0
+}
+
 const SERVED_METRICS = new Set<number>([
   METRIC.netServedHere,
   METRIC.iqrServedHere,
@@ -186,7 +192,9 @@ export function buildMockState(seed: number): MockPlatformState {
       }
       row[METRIC.netGross] = gross
       row[METRIC.netTax] = gross / 12n
-      row[METRIC.iqrGross] = BigInt(rng.int(0, gross > 2_000_000n ? 2_000_000 : Number(gross)))
+      if (allowsIqr(allowedServices)) {
+        row[METRIC.iqrGross] = BigInt(rng.int(0, gross > 2_000_000n ? 2_000_000 : Number(gross)))
+      }
       row[METRIC.walletTopup] = BigInt(rng.int(50_000, 500_000))
       row[METRIC.cashIn] = gross / 4n
       if (rng.chance(0.12)) row[METRIC.netRefund] = gross / 8n
@@ -378,16 +386,23 @@ export function buildMockState(seed: number): MockPlatformState {
       },
     ])
   }
-  const grant = (branchId: number, account: string, role: number) => {
+  const upsertMember = (branchId: number, account: string, role: number, grantedBy?: string) => {
     const branch = branches.find((x) => x.id === branchId)
-    const grantedBy = agents.find((a) => a.id === branch?.agentId)?.owner ?? PREVIEW_WALLETS.owner
-    members.set(branchId, [{ account: normalizeHexAddress(account), role, grantedBy, grantedAt: 1_700_000_100 }])
+    const granter = grantedBy ?? agents.find((a) => a.id === branch?.agentId)?.owner ?? PREVIEW_WALLETS.owner
+    const a = normalizeHexAddress(account)
+    const list = (members.get(branchId) ?? []).filter((m) => normalizeHexAddress(m.account) !== a)
+    list.push({ account: a, role, grantedBy: normalizeHexAddress(granter), grantedAt: 1_700_000_100 + list.length })
+    members.set(branchId, list)
   }
-  grant(1, PREVIEW_WALLETS.agentManager, 2)
-  grant(2, PREVIEW_WALLETS.agentManager, 1)
-  grant(4, PREVIEW_WALLETS.agentManager, 2)
-  grant(5, PREVIEW_WALLETS.agentDual, 2)
-  grant(6, PREVIEW_WALLETS.agentStaff, 1)
+  upsertMember(1, PREVIEW_WALLETS.agentManager, 2)
+  upsertMember(1, PREVIEW_WALLETS.agentStaff, 1)
+  upsertMember(1, addr(seed, 701), 1)
+  upsertMember(1, addr(seed, 702), 1)
+  upsertMember(2, PREVIEW_WALLETS.agentManager, 1)
+  upsertMember(2, addr(seed, 703), 1)
+  upsertMember(4, PREVIEW_WALLETS.agentManager, 2)
+  upsertMember(5, PREVIEW_WALLETS.agentDual, 2)
+  upsertMember(6, PREVIEW_WALLETS.agentStaff, 1)
 
   return {
     seed,

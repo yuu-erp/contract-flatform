@@ -23,6 +23,7 @@ import {
   OverviewFiltersBar,
   buildDailyChart,
   PLATFORM_TZ_MINUTES,
+  previousDayRange,
   SCOPE_AGENT,
 } from '@meta-platform/ui'
 import { useQuery } from '@tanstack/react-query'
@@ -57,12 +58,21 @@ export function OwnerOverviewPanel({
     access.focusBranchId ?? 'all',
   )
   const { fromDay, toDay } = useMemo(() => resolveRangeDays(range, PLATFORM_TZ_MINUTES), [range])
+  const prev = useMemo(() => previousDayRange(fromDay, toDay), [fromDay, toDay])
   const rollup = useRollup({
     ledger: contracts?.ledger ?? null,
     scope: SCOPE_AGENT,
     id: access.agentId,
     fromDay,
     toDay,
+  })
+  const prevRollup = useRollup({
+    ledger: contracts?.ledger ?? null,
+    scope: SCOPE_AGENT,
+    id: access.agentId,
+    fromDay: prev.fromDay,
+    toDay: prev.toDay,
+    enabled: prev.fromDay <= prev.toDay && prev.toDay >= 0,
   })
   const rankings = useBranchRankings(branchList, fromDay, toDay, service)
   const filteredRankings = useMemo(() => {
@@ -72,7 +82,9 @@ export function OwnerOverviewPanel({
   }, [rankings.data, branchFilter])
 
   const sum = useMemo(() => sumDays(rollup.data ?? []), [rollup.data])
+  const prevSum = useMemo(() => sumDays(prevRollup.data ?? []), [prevRollup.data])
   const rev = revenue(sum, service)
+  const prevRev = revenue(prevSum, service)
   const chart = useMemo(
     () => buildDailyChart(rollup.data ?? [], fromDay, toDay, PLATFORM_TZ_MINUTES, service),
     [rollup.data, fromDay, toDay, service],
@@ -108,9 +120,9 @@ export function OwnerOverviewPanel({
       ) : (
         <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <KpiTile label="Doanh thu thuần" value={rev.net} />
-            <KpiTile label="Gộp" value={rev.gross} />
-            <KpiTile label="Dư nợ ví khách" value={liability.data ?? 0n} />
+            <KpiTile label="Doanh thu thuần" value={rev.net} previous={prevRev.net} />
+            <KpiTile label="Gộp" value={rev.gross} previous={prevRev.gross} />
+            <KpiTile label="Dư nợ ví khách (hiện tại)" value={liability.data ?? 0n} />
           </div>
           <Card>
             <CardHeader>

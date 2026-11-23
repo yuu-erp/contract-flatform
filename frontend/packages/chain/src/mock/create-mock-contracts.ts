@@ -206,20 +206,45 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
     },
   }
 
+  const upsertMember = (branchId: number, account: string, role: number, grantedBy: string) => {
+    const a = normalizeHexAddress(account)
+    const list = (state.members.get(branchId) ?? []).filter((m) => normalizeHexAddress(m.account) !== a)
+    list.push({
+      account: a,
+      role,
+      grantedBy: normalizeHexAddress(grantedBy),
+      grantedAt: Math.floor(Date.now() / 1000),
+    })
+    state.members.set(branchId, list)
+  }
+
   const agentAccess = {
     async effectiveRoleOf(branchId: number, account: string) {
       const a = normalizeHexAddress(account)
       const agent = state.branches.find((b) => b.id === branchId)?.agentId
       if (agent != null) {
-        const owner = state.agents.find((x) => x.id === agent)?.owner
+        const ag = state.agents.find((x) => x.id === agent)
+        if (ag && ag.status === 3) return 0
+        const owner = ag?.owner
         if (owner && normalizeHexAddress(owner) === a) return 3
       }
+      const branch = state.branches.find((b) => b.id === branchId)
+      if (branch?.status === 3) return 0
       const list = state.members.get(branchId) ?? []
       const hit = list.find((m) => normalizeHexAddress(m.account) === a)
       return hit?.role ?? 0
     },
     async membersOf(branchId: number, offset: number, limit: number) {
       return (state.members.get(branchId) ?? []).slice(offset, offset + limit)
+    },
+    async memberCountOf(branchId: number) {
+      return (state.members.get(branchId) ?? []).length
+    },
+    async roleOf(branchId: number, account: string) {
+      const a = normalizeHexAddress(account)
+      const list = state.members.get(branchId) ?? []
+      const hit = list.find((m) => normalizeHexAddress(m.account) === a)
+      return hit?.role ?? 0
     },
     async branchesOfAccount(account: string, offset: number, limit: number) {
       const ids: number[] = []
@@ -228,6 +253,48 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
         if (role >= 2) ids.push(b.id)
       }
       return ids.slice(offset, offset + limit)
+    },
+    async grantRole(branchId: number, account: string, role: number) {
+      await simulateTx(store, from)
+      if (state.paused) throw new Error('EnforcedPause')
+      const branch = state.branches.find((b) => b.id === branchId)
+      if (!branch) throw new Error('BranchNotFound')
+      if (branch.status !== 1) throw new Error('BranchNotActive')
+      const agent = state.agents.find((a) => a.id === branch.agentId)
+      if (!agent || agent.status !== 1) throw new Error('AgentNotActive')
+      const a = normalizeHexAddress(account)
+      if (a === '0x0000000000000000000000000000000000000000') throw new Error('ZeroAddress')
+      if (normalizeHexAddress(agent.owner) === a) throw new Error('AccountIsAgentOwner')
+      const platformOwner = normalizeHexAddress(state.owner)
+      if (a === platformOwner || a === normalizeHexAddress(state.pendingOwner)) throw new Error('AccountIsPlatformRole')
+      if (state.admins.map(normalizeHexAddress).includes(a)) throw new Error('AccountIsPlatformRole')
+      const list = state.members.get(branchId) ?? []
+      if (list.length >= 200) throw new Error('TooManyMembers')
+      const current = list.find((m) => normalizeHexAddress(m.account) === a)
+      if (current && current.role === role) throw new Error('RoleUnchanged')
+      upsertMember(branchId, account, role, from)
+    },
+    async revokeRole(branchId: number, account: string) {
+      await simulateTx(store, from)
+      if (state.paused) throw new Error('EnforcedPause')
+      const a = normalizeHexAddress(account)
+      const list = state.members.get(branchId) ?? []
+      if (!list.some((m) => normalizeHexAddress(m.account) === a)) throw new Error('NotMember')
+      state.members.set(
+        branchId,
+        list.filter((m) => normalizeHexAddress(m.account) !== a),
+      )
+    },
+    async renounceRole(branchId: number) {
+      await simulateTx(store, from)
+      if (state.paused) throw new Error('EnforcedPause')
+      const a = normalizeHexAddress(from)
+      const list = state.members.get(branchId) ?? []
+      if (!list.some((m) => normalizeHexAddress(m.account) === a)) throw new Error('NotMember')
+      state.members.set(
+        branchId,
+        list.filter((m) => normalizeHexAddress(m.account) !== a),
+      )
     },
   }
 
