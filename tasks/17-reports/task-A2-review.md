@@ -10,14 +10,15 @@ Chạy lại: `pnpm lint` (có `check-deps: OK`), build 4 gói xanh, test xanh (
 - `resolveAgentAccess` thuần, đúng bảng "Quy tắc vai trò" (đủ 9 test). Chủ agent mở domain của chính mình → giao diện chủ, chọn sẵn chi nhánh; Staff/None → "không phải quản lý của <domain>"; domain không có / đã xoá → `domain-not-found`.
 - Xem trước bỏ bảng cứng; ảnh chụp xác nhận màn "Chọn chi nhánh" (ví 3001: 2 chi nhánh, có icon, tên agent, domain, là liên kết thật) và "Không có quyền" (ví Staff 3004 với `agent1-cn1.mock.local`) đều ra từ logic thật trên dữ liệu giả.
 
-## Quan trọng
+## Quyết định của người dùng về SDK (2026-11-23) — thay điểm "Quan trọng" cũ
 
-### 1. `pnpm-lock.yaml` còn đường dẫn local → `pnpm install --frozen-lockfile` (mặc định ở CI) lỗi
-```
-ERR_PNPM_OUTDATED_LOCKFILE ... packages/ui/package.json
-  @metanodejs/fiai-sdk (lockfile: /Users/lekhaihoan/Documents/CONG_TY/metanode-finsdk/packages/fiai-sdk, manifest: ^2.1.1)
-```
-Sửa: `pnpm install` (không frozen) rồi commit `pnpm-lock.yaml`; kiểm lại bằng `pnpm install --frozen-lockfile`. Mở rộng `check-deps.mjs`: (a) quét `pnpm-lock.yaml`, báo lỗi nếu có `specifier:` bắt đầu bằng `/`, `~/`, `file:`, `link:` trỏ ra ngoài `frontend/`; (b) quét `pnpm.overrides` trong `frontend/package.json` và `pnpm-workspace.yaml`.
+Người dùng **giữ** `"@metanodejs/fiai-sdk": "/Users/lekhaihoan/Documents/CONG_TY/metanode-finsdk/packages/fiai-sdk"` trong mọi `package.json` của `frontend/`. Reviewer không nêu lại điểm này.
+
+Việc cần làm cho khớp:
+- Đưa cả 4 `package.json` về đường dẫn trên, chạy `pnpm install` để `pnpm-lock.yaml` khớp (kiểm `pnpm install --frozen-lockfile` chạy được **trên máy người dùng**).
+- `check-deps.mjs`: cho phép riêng `@metanodejs/fiai-sdk` (danh sách cho phép), vẫn chặn đường dẫn local với mọi gói khác.
+- Giữ `FIAI_SDK_PATH` trong `vite.config.ts` (không hại) hoặc bỏ — tuỳ người làm; cập nhật `frontend/README.md` cho đúng cách đang dùng.
+- Reviewer khi chạy trên container sẽ tạm đổi sang bản npm `^2.1.1` (không commit).
 
 ## Nhỏ
 2. Màn "Không có quyền" khi có `domain`: thêm nút "Đổi ví" và liên kết "Mở không kèm domain" (về `/agent/`), để người dùng tự gỡ.
