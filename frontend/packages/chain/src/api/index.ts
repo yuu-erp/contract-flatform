@@ -111,6 +111,10 @@ export class BranchRegistryApi {
     return asNumber(await this.inner.mainBranchOf(String(agentId)))
   }
 
+  async branchByDomain(domain: string): Promise<number> {
+    return asNumber(await this.inner.branchByDomain(domain))
+  }
+
   async createBranch(agentId: number, init: unknown): Promise<void> {
     await this.inner.createBranch(String(agentId), init)
   }

@@ -71,11 +71,11 @@ Mọi nút ghi khoá kèm lý do (tooltip) khi: hệ pause, agent không Active,
 
 ### Task A2: Xác định vai trò theo `?domain`
 
-- [ ] `packages/chain/src/agent-access.ts`: hàm thuần `resolveAgentAccess(input) → AgentAccess` theo đúng bảng "Quy tắc vai trò" (input đã đọc sẵn: `domain?`, `ownedAgentId`, `branchIdByDomain`, `branch`, `agentOfBranch`, `agentStatus`, `roleInBranch`, `managedBranches`); hook `useAgentAccess()` đọc chain (`branchByDomain`, `getBranch`, `getAgent`, `agentIdOf`, `effectiveRoleOf`, `branchesOfAccount` + `getBranchProfile` cho danh sách chọn).
-- [ ] `readDomainParam(location)` chuẩn hoá (trim, chữ thường); `withDomain(path)` giữ `?domain` khi tạo link.
-- [ ] Route guard: manager vào `/branches*` → chuyển về `/`; mọi truy vấn của manager dùng `branchId` của domain, **không** lấy từ URL khác.
-- [ ] Test (bắt buộc, đủ 9 dòng bảng): mỗi dòng một test cho `resolveAgentAccess`; `readDomainParam('?domain=%20Q1.VN%20')` → `'q1.vn'`; `withDomain('/staff')` giữ `?domain=q1.vn`.
-- [ ] Commit `feat(agent): xác định vai trò chủ agent / manager theo domain`.
+- [x] `packages/chain/src/agent-access.ts`: hàm thuần `resolveAgentAccess(input) → AgentAccess` theo đúng bảng "Quy tắc vai trò" (input đã đọc sẵn: `domain?`, `ownedAgentId`, `branchIdByDomain`, `branch`, `agentOfBranch`, `agentStatus`, `roleInBranch`, `managedBranches`); hook `useAgentAccess()` đọc chain (`branchByDomain`, `getBranch`, `getAgent`, `agentIdOf`, `effectiveRoleOf`, `branchesOfAccount` + `getBranchProfile` cho danh sách chọn).
+- [x] `readDomainParam(location)` chuẩn hoá (trim, chữ thường); `withDomain(path)` giữ `?domain` khi tạo link.
+- [x] Route guard: manager vào `/branches*` → chuyển về `/`; mọi truy vấn của manager dùng `branchId` của domain, **không** lấy từ URL khác.
+- [x] Test (bắt buộc, đủ 9 dòng bảng): mỗi dòng một test cho `resolveAgentAccess`; `readDomainParam('?domain=%20Q1.VN%20')` → `'q1.vn'`; `withDomain('/staff')` giữ `?domain=q1.vn`.
+- [x] Commit `feat(agent): xác định vai trò chủ agent / manager theo domain`.
 
 ### Task A3: Tổng quan và Chi nhánh
 

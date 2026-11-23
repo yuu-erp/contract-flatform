@@ -1,8 +1,8 @@
+import type { AgentAccess } from '@meta-platform/chain'
 import { BranchOverviewPanel, Card, CardContent, CardHeader, CardTitle, EmptyState } from '@meta-platform/ui'
 import { useOutletContext } from 'react-router-dom'
-import type { PreviewAccess } from '../preview/preview-access'
 
-type Ctx = { access: PreviewAccess; domain?: string }
+type Ctx = { access: AgentAccess; domain?: string }
 
 export function OverviewPage() {
   const { access } = useOutletContext<Ctx>()

@@ -1,5 +1,5 @@
 import { formatWalletAddress } from '@meta-platform/chain'
-import { Button, Input } from '@meta-platform/ui'
+import { Button } from '@meta-platform/ui'
 import type { PreviewAgentRole } from './PreviewBootstrap'
 import { usePreviewAgentWallet } from './PreviewBootstrap'
 
@@ -12,10 +12,13 @@ const ROLES: { id: PreviewAgentRole; label: string }[] = [
 ]
 
 export function PreviewRoleMenu() {
-  const { role, setRole, address, previewDomain, setPreviewDomain } = usePreviewAgentWallet()
+  const { role, setRole, address } = usePreviewAgentWallet()
   return (
     <div className="space-y-2 rounded-lg border border-dashed border-amber-500/50 bg-amber-500/5 p-3 text-sm">
       <p className="font-medium text-amber-900 dark:text-amber-100">Chế độ xem trước</p>
+      <p className="text-xs text-muted-foreground">
+        Đổi ví giả — vai trò theo chain giả và <code className="font-mono">?domain=</code> trên URL.
+      </p>
       <p className="font-mono text-xs text-muted-foreground">{formatWalletAddress(address)}</p>
       <div className="flex flex-wrap gap-1">
         {ROLES.map((r) => (
@@ -23,15 +26,6 @@ export function PreviewRoleMenu() {
             {r.label}
           </Button>
         ))}
-      </div>
-      <div className="flex flex-wrap items-center gap-2 pt-1">
-        <span className="text-xs text-muted-foreground">Domain</span>
-        <Input
-          className="h-8 max-w-md flex-1 text-xs"
-          placeholder="agent1-cn1.mock.local"
-          value={previewDomain}
-          onChange={(e) => setPreviewDomain(e.target.value)}
-        />
       </div>
     </div>
   )

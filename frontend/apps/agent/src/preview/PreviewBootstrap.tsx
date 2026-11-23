@@ -21,8 +21,6 @@ type PreviewWalletCtx = {
   role: PreviewAgentRole
   setRole: (role: PreviewAgentRole) => void
   address: string
-  previewDomain: string
-  setPreviewDomain: (domain: string) => void
 }
 
 const PreviewWalletContext = createContext<PreviewWalletCtx | null>(null)
@@ -36,16 +34,15 @@ function readStoredRole(): PreviewAgentRole {
 
 export function PreviewBootstrap({ children }: PropsWithChildren) {
   const [role, setRole] = useState<PreviewAgentRole>(() => readStoredRole())
-  const [previewDomain, setPreviewDomain] = useState(() => readDomainFromLocation())
   const address = walletForRole[role]
   const contracts = useMemo(() => createMockContracts(42, address), [address])
 
   useEffect(() => {
-    syncDomainInUrl(previewDomain)
-  }, [previewDomain])
+    window.sessionStorage.setItem('agent-preview-role', role)
+  }, [role])
 
   return (
-    <PreviewWalletContext value={{ role, setRole, address, previewDomain, setPreviewDomain }}>
+    <PreviewWalletContext value={{ role, setRole, address }}>
       <ContractsProvider value={contracts}>
         <PreviewWalletQuerySync address={address} />
         {children}
@@ -54,22 +51,11 @@ export function PreviewBootstrap({ children }: PropsWithChildren) {
   )
 }
 
-function readDomainFromLocation(): string {
-  const params = new URLSearchParams(window.location.search)
-  return params.get('domain')?.trim() ?? ''
-}
-
-function syncDomainInUrl(domain: string) {
-  const url = new URL(window.location.href)
-  if (domain.trim()) url.searchParams.set('domain', domain.trim())
-  else url.searchParams.delete('domain')
-  window.history.replaceState({}, '', url.toString())
-}
-
 function PreviewWalletQuerySync({ address }: { address: string }) {
   const queryClient = useQueryClient()
   useEffect(() => {
     queryClient.setQueryData(activeWalletQueryKey, { address, name: `Preview ${address.slice(-4)}` })
+    void queryClient.invalidateQueries({ queryKey: ['agentAccess'] })
   }, [address, queryClient])
   return null
 }

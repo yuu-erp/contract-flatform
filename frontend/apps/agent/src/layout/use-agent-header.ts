@@ -1,7 +1,7 @@
+import type { AgentAccess } from '@meta-platform/chain'
 import { useLocation } from 'react-router-dom'
-import type { PreviewAccess } from '../preview/preview-access'
 
-export function useAgentHeader(access: PreviewAccess | null): { title: string; subtitle?: string } {
+export function useAgentHeader(access: AgentAccess | null): { title: string; subtitle?: string } {
   const { pathname } = useLocation()
   const routeTitle =
     pathname === '/'
@@ -23,13 +23,13 @@ export function useAgentHeader(access: PreviewAccess | null): { title: string; s
   if (!access) return { title: routeTitle }
   if (access.kind === 'manager') {
     return {
-      title: access.storeName,
-      subtitle: `${access.branchName} · ${access.domain}`,
+      title: access.storeName ?? 'Meta Agent',
+      subtitle: `${access.branchName ?? 'Chi nhánh'} · ${access.domain}`,
     }
   }
   if (access.kind === 'owner') {
     return {
-      title: access.storeName,
+      title: access.storeName ?? 'Meta Agent',
       subtitle: access.focusDomain ? `Chi nhánh: ${access.focusDomain}` : routeTitle,
     }
   }
