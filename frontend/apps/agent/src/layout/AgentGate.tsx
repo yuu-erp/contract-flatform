@@ -1,5 +1,5 @@
-import type { AgentAccess } from '@meta-platform/chain'
-import { NoAccessScreen } from '@meta-platform/ui'
+import { useConnectWallet, type AgentAccess } from '@meta-platform/chain'
+import { Button, NoAccessScreen, useWalletTheme } from '@meta-platform/ui'
 import { Building2, MapPin } from 'lucide-react'
 
 export function AgentGate({ access }: { access: AgentAccess }) {
@@ -49,7 +49,31 @@ export function AgentGate({ access }: { access: AgentAccess }) {
     )
   }
   if (access.kind === 'no-access') {
-    return <NoAccessScreen title="Không có quyền" description={access.message} />
+    return <NoAccessWithDomainHint access={access} />
   }
   return null
+}
+
+function NoAccessWithDomainHint({ access }: { access: Extract<AgentAccess, { kind: 'no-access' }> }) {
+  const theme = useWalletTheme()
+  const connect = useConnectWallet(theme)
+  const showDomainActions = Boolean(access.domain)
+  return (
+    <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-8 text-center">
+      <NoAccessScreen title="Không có quyền" description={access.message} className="min-h-0 p-0" />
+      {showDomainActions ? (
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <Button type="button" variant="default" disabled={connect.isPending} onClick={() => void connect.mutate()}>
+            Đổi ví
+          </Button>
+          <a
+            href="?"
+            className="inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-4 text-sm font-medium hover:bg-muted"
+          >
+            Mở không kèm domain
+          </a>
+        </div>
+      ) : null}
+    </div>
+  )
 }

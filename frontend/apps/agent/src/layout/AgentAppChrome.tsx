@@ -23,7 +23,7 @@ import { AgentGate } from './AgentGate'
 import { useAgentHeader } from './use-agent-header'
 import { agentChainId } from '../config/deployments'
 import { isPreviewMock } from '../preview/env'
-import { PreviewRoleMenu } from '../preview/PreviewRoleMenu'
+import { AgentPreviewNavUser } from '../preview/AgentPreviewNavUser'
 
 type MenuItem = { to: string; label: string; end?: boolean; icon: LucideIcon }
 
@@ -77,14 +77,18 @@ export function AgentAppChrome() {
       subtitle={header.subtitle ?? 'Dashboard chủ / quản lý'}
       menu={allowed ? menu : [{ to: withDomain('/', domain), label: 'Tổng quan', end: true, icon: LayoutDashboard }]}
       chainLabel={String(agentChainId)}
-      sidebarFooter={<SidebarWallet />}
+      sidebarFooter={
+        <div className="space-y-2">
+          {isPreviewMock() ? <AgentPreviewNavUser /> : null}
+          <SidebarWallet />
+        </div>
+      }
       headerWallet={<WalletSwitcher className="shrink-0 md:hidden" />}
       topbarTitle={header.title}
       headerExtra={<ThemeToggle />}
       paused={paused}
       main={
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4">
-          {isPreviewMock() ? <PreviewRoleMenu /> : null}
           {access.kind === 'manager' && location.pathname.startsWith('/branches') ? (
             <Navigate to={withDomain('/', domain)} replace />
           ) : allowed ? (

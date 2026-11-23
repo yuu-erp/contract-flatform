@@ -2,6 +2,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -46,6 +47,11 @@ export function RevenueChart({
               border: `1px solid ${grid}`,
               borderRadius: 8,
             }}
+          />
+          <Legend
+            verticalAlign="top"
+            height={28}
+            formatter={(value) => (value === 'net' ? 'NET (thuần)' : 'IQR')}
           />
           <Bar dataKey="net" stackId="a" fill="var(--chart-1)" name="net" />
           <Bar dataKey="iqr" stackId="a" fill="var(--chart-2)" name="iqr" radius={[4, 4, 0, 0]} />

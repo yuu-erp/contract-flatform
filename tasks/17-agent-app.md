@@ -79,10 +79,10 @@ Mọi nút ghi khoá kèm lý do (tooltip) khi: hệ pause, agent không Active,
 
 ### Task A3: Tổng quan và Chi nhánh
 
-- [ ] `/` theo bảng Màn hình cho cả hai vai trò (chủ: UTC+7; manager: múi giờ chi nhánh).
-- [ ] `/branches`, `/branches/:branchId` (chủ). Nút "Mở link quản lý" copy `https://<origin>/agent/?domain=<domain>`.
-- [ ] Test: tổng quan manager chỉ gọi `rollup(SCOPE_BRANCH, branchId, …)` (không gọi phạm vi agent); bảng so sánh chi nhánh của chủ cộng đúng.
-- [ ] Commit `feat(agent): tổng quan và chi nhánh`.
+- [x] `/` theo bảng Màn hình cho cả hai vai trò (chủ: UTC+7; manager: múi giờ chi nhánh).
+- [x] `/branches`, `/branches/:branchId` (chủ). Nút "Mở link quản lý" copy `https://<origin>/agent/?domain=<domain>`.
+- [x] Test: tổng quan manager chỉ gọi `rollup(SCOPE_BRANCH, branchId, …)` (không gọi phạm vi agent); bảng so sánh chi nhánh của chủ cộng đúng.
+- [x] Commit `feat(agent): tổng quan và chi nhánh`.
 
 ### Task A4: Nhân sự
 
