@@ -69,6 +69,13 @@ async function applyTheme(page, mode) {
   }, mode)
 }
 
+async function waitForPageReady(page, timeoutMs = 15_000) {
+  const loader = page.locator('[data-page-loader]')
+  if ((await loader.count()) === 0) return
+  await loader.first().waitFor({ state: 'detached', timeout: timeoutMs })
+  await page.waitForTimeout(200)
+}
+
 async function setPreviewRole(page, role) {
   await page.evaluate((r) => {
     window.sessionStorage.setItem('agent-preview-role', r)
@@ -115,7 +122,11 @@ async function main() {
         for (const [name, route] of routes) {
           await page.goto(`${ORIGIN}${role.search}#${route}`, { waitUntil: 'networkidle' })
           await applyTheme(page, job.theme)
-          await page.waitForTimeout(400)
+          try {
+            await waitForPageReady(page, 15_000)
+          } catch (err) {
+            throw new Error(`loader timeout on ${role.tag}/${name}: ${err.message}`)
+          }
           const file = path.join(shotsDir, `${role.tag}--${name}--${job.tag}.png`)
           await page.screenshot({ path: file, fullPage: true })
           console.log('shot', file)

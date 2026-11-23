@@ -1,4 +1,4 @@
-import { SERVICE_IQR, SERVICE_NET, useContracts } from '@meta-platform/chain'
+import { decodeContractError, SERVICE_IQR, SERVICE_NET, useContracts } from '@meta-platform/chain'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
@@ -93,7 +93,11 @@ export function TaxQuotePreview({
             <dd className="font-medium">{formatVnd(quote.data.total)}</dd>
           </dl>
         ) : null}
-        {quote.isError ? <p className="text-destructive text-sm">Không gọi được quoteTax.</p> : null}
+        {quote.isError ? (
+          <p className="text-destructive text-sm">
+            {decodeContractError(quote.error ?? new Error('Không gọi được quoteTax.'))}
+          </p>
+        ) : null}
       </CardContent>
     </Card>
   )

@@ -31,6 +31,7 @@ import {
   type MockPlatformState,
 } from './mock-store'
 import { ALL_PAYMENT_METHODS, MAX_TAX_BPS, SERVICE_NET } from '../sales-settings'
+import { mockBig, mockId } from './mock-params'
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -46,8 +47,10 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
   const store = new MockStore(state)
 
   const access = {
-    async platformAdmins(offset: number, limit: number) {
-      return { page: state.admins.slice(offset, offset + limit) }
+    async platformAdmins(offset: unknown, limit: unknown) {
+      const o = mockId(offset)
+      const lim = mockId(limit)
+      return { page: state.admins.slice(o, o + lim) }
     },
     async paused() {
       return state.paused
@@ -109,17 +112,20 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
       const row = state.agents.find((x) => normalizeHexAddress(x.owner) === a)
       return row?.id ?? 0
     },
-    async getAgent(agentId: number) {
-      const row = state.agents.find((a) => a.id === agentId)
+    async getAgent(agentId: unknown) {
+      const id = mockId(agentId)
+      const row = state.agents.find((a) => a.id === id)
       if (!row) throw new Error('AgentNotFound')
       return row
     },
-    async getAgentProfile(agentId: number) {
-      const profile = state.agentProfiles.get(agentId)
+    async getAgentProfile(agentId: unknown) {
+      const id = mockId(agentId)
+      const profile = state.agentProfiles.get(id)
       if (!profile) throw new Error('AgentNotFound')
       return profile
     },
-    async createAgent(owner: string, allowedServices: number, profile: AgentProfile) {
+    async createAgent(owner: string, allowedServices: unknown, profile: AgentProfile) {
+      const services = mockId(allowedServices)
       await simulateTx(store, owner)
       state.agents.unshift({
         id: state.agents.length + 1,
@@ -129,59 +135,62 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
         createdAt: Math.floor(Date.now() / 1000),
         updatedAt: Math.floor(Date.now() / 1000),
         profileDocId: 1n,
-        allowedServices,
+        allowedServices: services,
       })
       void profile
     },
-    async updateAgentProfile(agentId: number, profile: AgentProfile) {
+    async updateAgentProfile(agentId: unknown, profile: AgentProfile) {
       await simulateTx(store)
-      const p = state.agentProfiles.get(agentId)
+      const p = state.agentProfiles.get(mockId(agentId))
       if (p) p.profile = profile
     },
-    async setAgentServices(agentId: number, allowedServices: number) {
+    async setAgentServices(agentId: unknown, allowedServices: unknown) {
       await simulateTx(store)
-      const a = state.agents.find((x) => x.id === agentId)
-      if (a) a.allowedServices = allowedServices
+      const id = mockId(agentId)
+      const a = state.agents.find((x) => x.id === id)
+      if (a) a.allowedServices = mockId(allowedServices)
     },
-    async suspendAgent(agentId: number, _reason: string) {
+    async suspendAgent(agentId: unknown, _reason: string) {
       await simulateTx(store)
-      const a = state.agents.find((x) => x.id === agentId)
+      const a = state.agents.find((x) => x.id === mockId(agentId))
       if (a) a.status = 1
     },
-    async resumeAgent(agentId: number, _reason: string) {
+    async resumeAgent(agentId: unknown, _reason: string) {
       await simulateTx(store)
-      const a = state.agents.find((x) => x.id === agentId)
+      const a = state.agents.find((x) => x.id === mockId(agentId))
       if (a) a.status = 0
     },
-    async deleteAgent(agentId: number, _reason: string) {
+    async deleteAgent(agentId: unknown, _reason: string) {
       await simulateTx(store)
-      const a = state.agents.find((x) => x.id === agentId)
+      const a = state.agents.find((x) => x.id === mockId(agentId))
       if (a) a.status = 2
     },
-    async proposeAgentOwner(_agentId: number, newOwner: string) {
+    async proposeAgentOwner(_agentId: unknown, newOwner: string) {
       await simulateTx(store, newOwner)
     },
   }
 
   const branches = {
-    async agentOf(branchId: number) {
-      return state.branches.find((b) => b.id === branchId)?.agentId ?? 0
+    async agentOf(branchId: unknown) {
+      return state.branches.find((b) => b.id === mockId(branchId))?.agentId ?? 0
     },
-    async branchCountOf(agentId: number) {
-      return state.branches.filter((b) => b.agentId === agentId).length
+    async branchCountOf(agentId: unknown) {
+      return state.branches.filter((b) => b.agentId === mockId(agentId)).length
     },
-    async getBranch(branchId: number) {
-      const row = state.branches.find((b) => b.id === branchId)
+    async getBranch(branchId: unknown) {
+      const id = mockId(branchId)
+      const row = state.branches.find((b) => b.id === id)
       if (!row) throw new Error('BranchNotFound')
       return row
     },
-    async getBranchProfile(branchId: number) {
-      const row = state.branchProfiles.get(branchId)
+    async getBranchProfile(branchId: unknown) {
+      const row = state.branchProfiles.get(mockId(branchId))
       if (!row) throw new Error('BranchNotFound')
       return row
     },
-    async mainBranchOf(agentId: number) {
-      return state.branches.find((b) => b.agentId === agentId && b.isMain)?.id ?? 0
+    async mainBranchOf(agentId: unknown) {
+      const id = mockId(agentId)
+      return state.branches.find((b) => b.agentId === id && b.isMain)?.id ?? 0
     },
     async branchByDomain(domain: string) {
       const d = domain.trim().toLowerCase()
@@ -193,9 +202,9 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
     async createBranch(_agentId: number, _init: unknown) {
       await simulateTx(store)
     },
-    async updateBranchProfile(branchId: number, profile: BranchProfile) {
+    async updateBranchProfile(branchId: unknown, profile: BranchProfile) {
       await simulateTx(store)
-      const row = state.branchProfiles.get(branchId)
+      const row = state.branchProfiles.get(mockId(branchId))
       if (row) row.profile = profile
     },
     async setBranchDomain(_branchId: number, _domain: string) {
@@ -210,19 +219,19 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
     async setMainBranch(_branchId: number) {
       await simulateTx(store)
     },
-    async suspendBranch(branchId: number, _reason: string) {
+    async suspendBranch(branchId: unknown, _reason: string) {
       await simulateTx(store)
-      const b = state.branches.find((x) => x.id === branchId)
+      const b = state.branches.find((x) => x.id === mockId(branchId))
       if (b) b.status = 1
     },
-    async resumeBranch(branchId: number, _reason: string) {
+    async resumeBranch(branchId: unknown, _reason: string) {
       await simulateTx(store)
-      const b = state.branches.find((x) => x.id === branchId)
+      const b = state.branches.find((x) => x.id === mockId(branchId))
       if (b) b.status = 0
     },
-    async deleteBranch(branchId: number, _reason: string) {
+    async deleteBranch(branchId: unknown, _reason: string) {
       await simulateTx(store)
-      const b = state.branches.find((x) => x.id === branchId)
+      const b = state.branches.find((x) => x.id === mockId(branchId))
       if (b) b.status = 2
     },
   }
@@ -240,45 +249,52 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
   }
 
   const agentAccess = {
-    async effectiveRoleOf(branchId: number, account: string) {
+    async effectiveRoleOf(branchId: unknown, account: string) {
+      const bid = mockId(branchId)
       const a = normalizeHexAddress(account)
-      const agent = state.branches.find((b) => b.id === branchId)?.agentId
+      const agent = state.branches.find((b) => b.id === bid)?.agentId
       if (agent != null) {
         const ag = state.agents.find((x) => x.id === agent)
         if (ag && ag.status === 3) return 0
         const owner = ag?.owner
         if (owner && normalizeHexAddress(owner) === a) return 3
       }
-      const branch = state.branches.find((b) => b.id === branchId)
+      const branch = state.branches.find((b) => b.id === bid)
       if (branch?.status === 3) return 0
-      const list = state.members.get(branchId) ?? []
+      const list = state.members.get(bid) ?? []
       const hit = list.find((m) => normalizeHexAddress(m.account) === a)
       return hit?.role ?? 0
     },
-    async membersOf(branchId: number, offset: number, limit: number) {
-      return { out: (state.members.get(branchId) ?? []).slice(offset, offset + limit) }
+    async membersOf(branchId: unknown, offset: unknown, limit: unknown) {
+      const id = mockId(branchId)
+      const o = mockId(offset)
+      const lim = mockId(limit)
+      return { out: (state.members.get(id) ?? []).slice(o, o + lim) }
     },
-    async memberCountOf(branchId: number) {
-      return (state.members.get(branchId) ?? []).length
+    async memberCountOf(branchId: unknown) {
+      return (state.members.get(mockId(branchId)) ?? []).length
     },
-    async roleOf(branchId: number, account: string) {
+    async roleOf(branchId: unknown, account: string) {
       const a = normalizeHexAddress(account)
-      const list = state.members.get(branchId) ?? []
+      const list = state.members.get(mockId(branchId)) ?? []
       const hit = list.find((m) => normalizeHexAddress(m.account) === a)
       return hit?.role ?? 0
     },
-    async branchesOfAccount(account: string, offset: number, limit: number) {
+    async branchesOfAccount(account: string, offset: unknown, limit: unknown) {
+      const o = mockId(offset)
+      const lim = mockId(limit)
       const ids: number[] = []
       for (const b of state.branches) {
         const role = await agentAccess.effectiveRoleOf(b.id, account)
         if (role >= 2) ids.push(b.id)
       }
-      return { out: ids.slice(offset, offset + limit) }
+      return { out: ids.slice(o, o + lim) }
     },
-    async grantRole(branchId: number, account: string, role: number) {
+    async grantRole(branchId: unknown, account: string, role: unknown) {
       await simulateTx(store, from)
       if (state.paused) throw new Error('EnforcedPause')
-      const branch = state.branches.find((b) => b.id === branchId)
+      const bid = mockId(branchId)
+      const branch = state.branches.find((b) => b.id === bid)
       if (!branch) throw new Error('BranchNotFound')
       if (branch.status !== 1) throw new Error('BranchNotActive')
       const agent = state.agents.find((a) => a.id === branch.agentId)
@@ -289,42 +305,47 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
       const platformOwner = normalizeHexAddress(state.owner)
       if (a === platformOwner || a === normalizeHexAddress(state.pendingOwner)) throw new Error('AccountIsPlatformRole')
       if (state.admins.map(normalizeHexAddress).includes(a)) throw new Error('AccountIsPlatformRole')
-      const list = state.members.get(branchId) ?? []
+      const list = state.members.get(bid) ?? []
       if (list.length >= 200) throw new Error('TooManyMembers')
+      const r = mockId(role)
       const current = list.find((m) => normalizeHexAddress(m.account) === a)
-      if (current && current.role === role) throw new Error('RoleUnchanged')
-      upsertMember(branchId, account, role, from)
+      if (current && current.role === r) throw new Error('RoleUnchanged')
+      upsertMember(bid, account, r, from)
     },
-    async revokeRole(branchId: number, account: string) {
+    async revokeRole(branchId: unknown, account: string) {
       await simulateTx(store, from)
       if (state.paused) throw new Error('EnforcedPause')
+      const bid = mockId(branchId)
       const a = normalizeHexAddress(account)
-      const list = state.members.get(branchId) ?? []
+      const list = state.members.get(bid) ?? []
       if (!list.some((m) => normalizeHexAddress(m.account) === a)) throw new Error('NotMember')
       state.members.set(
-        branchId,
+        bid,
         list.filter((m) => normalizeHexAddress(m.account) !== a),
       )
     },
-    async renounceRole(branchId: number) {
+    async renounceRole(branchId: unknown) {
       await simulateTx(store, from)
       if (state.paused) throw new Error('EnforcedPause')
+      const bid = mockId(branchId)
       const a = normalizeHexAddress(from)
-      const list = state.members.get(branchId) ?? []
+      const list = state.members.get(bid) ?? []
       if (!list.some((m) => normalizeHexAddress(m.account) === a)) throw new Error('NotMember')
       state.members.set(
-        branchId,
+        bid,
         list.filter((m) => normalizeHexAddress(m.account) !== a),
       )
     },
   }
 
   const ledger = {
-    async rollup(scope: number, id: number, fromDay: number, toDay: number) {
-      return { out: store.sliceRollup(scope, id, fromDay, toDay) }
+    async rollup(scope: unknown, id: unknown, fromDay: unknown, toDay: unknown) {
+      return {
+        out: store.sliceRollup(mockId(scope), mockId(id), mockId(fromDay), mockId(toDay)),
+      }
     },
-    async bucketsOf(agentId: number, customer: string) {
-      const key = `${agentId}:${normalizeHexAddress(customer)}`
+    async bucketsOf(agentId: unknown, customer: string) {
+      const key = `${mockId(agentId)}:${normalizeHexAddress(customer)}`
       return state.walletBuckets.get(key) ?? []
     },
     async portionsOf(_refId: string) {
@@ -342,21 +363,21 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
         refunded: 0n,
       }
     },
-    async balanceOf(agentId: number, customer: string) {
-      const key = `${agentId}:${normalizeHexAddress(customer)}`
+    async balanceOf(agentId: unknown, customer: string) {
+      const key = `${mockId(agentId)}:${normalizeHexAddress(customer)}`
       return { sum: state.walletBalance.get(key) ?? 0n }
     },
-    async walletLiability(agentId: number) {
-      return state.walletLiability.get(agentId) ?? 0n
+    async walletLiability(agentId: unknown) {
+      return state.walletLiability.get(mockId(agentId)) ?? 0n
     },
     async posterKinds(poster: string) {
       const a = normalizeHexAddress(poster)
       if (a === normalizeHexAddress(state.poster.address)) return state.poster.mask
       return 0
     },
-    async setPoster(poster: string, kindsMask: number) {
+    async setPoster(poster: string, kindsMask: unknown) {
       await simulateTx(store, poster)
-      state.poster = { address: normalizeHexAddress(poster), mask: kindsMask }
+      state.poster = { address: normalizeHexAddress(poster), mask: mockId(kindsMask) }
     },
   }
 
@@ -376,74 +397,80 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
   }
 
   const salesSettings = {
-    async quoteTax(branchId: number, service: number, amount: bigint) {
-      return mockQuoteTax(state, state.branches, Number(branchId), Number(service), amount)
+    async quoteTax(branchId: unknown, service: unknown, amount: unknown) {
+      return mockQuoteTax(state, state.branches, mockId(branchId), mockId(service), mockBig(amount))
     },
-    async branchTaxOf(branchId: number, service: number) {
-      return mockBranchTaxOf(state, Number(branchId), Number(service))
+    async branchTaxOf(branchId: unknown, service: unknown) {
+      return mockBranchTaxOf(state, mockId(branchId), mockId(service))
     },
-    async agentTaxOf(agentId: number, service: number) {
-      return mockAgentTaxOf(state, Number(agentId), Number(service))
+    async agentTaxOf(agentId: unknown, service: unknown) {
+      return mockAgentTaxOf(state, mockId(agentId), mockId(service))
     },
-    async agentPaymentMethodsOf(agentId: number) {
-      return mockAgentPaymentMethodsOf(state, Number(agentId))
+    async agentPaymentMethodsOf(agentId: unknown) {
+      return mockAgentPaymentMethodsOf(state, mockId(agentId))
     },
-    async paymentMethodsOf(branchId: number) {
-      return mockPaymentMethodsOf(state, state.branches, Number(branchId))
+    async paymentMethodsOf(branchId: unknown) {
+      return mockPaymentMethodsOf(state, state.branches, mockId(branchId))
     },
-    async isTaxExclusive(agentId: number, service: number) {
-      return mockTaxExclusive(state, Number(agentId), Number(service))
+    async isTaxExclusive(agentId: unknown, service: unknown) {
+      return mockTaxExclusive(state, mockId(agentId), mockId(service))
     },
-    async setAgentTax(agentId: number, service: number, bps: number) {
+    async setAgentTax(agentId: unknown, service: unknown, bps: unknown) {
       await simulateTx(store, from)
-      assertAgentOwner(Number(agentId))
-      const s = Number(service)
-      const v = Number(bps)
+      const aid = mockId(agentId)
+      assertAgentOwner(aid)
+      const s = mockId(service)
+      const v = mockId(bps)
       if (v > MAX_TAX_BPS) throw new Error('TaxTooHigh')
-      const row = state.sales.agentTax.get(Number(agentId)) ?? {}
+      const row = state.sales.agentTax.get(aid) ?? {}
       row[s] = v
-      state.sales.agentTax.set(Number(agentId), row)
+      state.sales.agentTax.set(aid, row)
     },
-    async setBranchTax(branchId: number, service: number, bps: number) {
+    async setBranchTax(branchId: unknown, service: unknown, bps: unknown) {
       await simulateTx(store, from)
-      writableBranch(Number(branchId))
-      const v = Number(bps)
+      const bid = mockId(branchId)
+      writableBranch(bid)
+      const v = mockId(bps)
       if (v > MAX_TAX_BPS) throw new Error('TaxTooHigh')
-      const cur = state.sales.branchTaxPlus.get(Number(branchId)) ?? {}
-      cur[Number(service)] = v
-      state.sales.branchTaxPlus.set(Number(branchId), cur)
+      const cur = state.sales.branchTaxPlus.get(bid) ?? {}
+      cur[mockId(service)] = v
+      state.sales.branchTaxPlus.set(bid, cur)
     },
-    async clearBranchTax(branchId: number, service: number) {
+    async clearBranchTax(branchId: unknown, service: unknown) {
       await simulateTx(store, from)
-      writableBranch(Number(branchId))
-      const cur = state.sales.branchTaxPlus.get(Number(branchId))
+      const bid = mockId(branchId)
+      writableBranch(bid)
+      const cur = state.sales.branchTaxPlus.get(bid)
       if (!cur) return
-      delete cur[Number(service)]
-      state.sales.branchTaxPlus.set(Number(branchId), cur)
+      delete cur[mockId(service)]
+      state.sales.branchTaxPlus.set(bid, cur)
     },
-    async setTaxExclusive(agentId: number, service: number, exclusive: boolean) {
+    async setTaxExclusive(agentId: unknown, service: unknown, exclusive: boolean) {
       await simulateTx(store, from)
-      assertAgentOwner(Number(agentId))
-      if (exclusive && Number(service) === SERVICE_NET) throw new Error('TaxModeNotAllowed')
-      const row = state.sales.taxExclusive.get(Number(agentId)) ?? {}
-      row[Number(service)] = Boolean(exclusive)
-      state.sales.taxExclusive.set(Number(agentId), row)
+      const aid = mockId(agentId)
+      assertAgentOwner(aid)
+      if (exclusive && mockId(service) === SERVICE_NET) throw new Error('TaxModeNotAllowed')
+      const row = state.sales.taxExclusive.get(aid) ?? {}
+      row[mockId(service)] = Boolean(exclusive)
+      state.sales.taxExclusive.set(aid, row)
     },
-    async setAgentPaymentMethods(agentId: number, methods: number) {
+    async setAgentPaymentMethods(agentId: unknown, methods: unknown) {
       await simulateTx(store, from)
-      assertAgentOwner(Number(agentId))
-      const m = Number(methods)
+      const aid = mockId(agentId)
+      assertAgentOwner(aid)
+      const m = mockId(methods)
       if (m === 0 || (m & ~ALL_PAYMENT_METHODS) !== 0) throw new Error('InvalidMethods')
-      state.sales.agentMethods.set(Number(agentId), m)
+      state.sales.agentMethods.set(aid, m)
     },
-    async setBranchPaymentMethods(branchId: number, methods: number) {
+    async setBranchPaymentMethods(branchId: unknown, methods: unknown) {
       await simulateTx(store, from)
-      const br = writableBranch(Number(branchId))
-      const m = Number(methods)
+      const bid = mockId(branchId)
+      const br = writableBranch(bid)
+      const m = mockId(methods)
       if ((m & ~ALL_PAYMENT_METHODS) !== 0) throw new Error('InvalidMethods')
       const agentEff = mockAgentPaymentMethodsOf(state, br.agentId)
       if (m !== 0 && (m & ~agentEff) !== 0) throw new Error('MethodsNotAllowed')
-      state.sales.branchMethods.set(Number(branchId), m)
+      state.sales.branchMethods.set(bid, m)
     },
   }
 

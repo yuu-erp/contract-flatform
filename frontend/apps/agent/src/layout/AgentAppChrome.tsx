@@ -1,6 +1,7 @@
-import { readDomainParam, useAgentAccess, useContracts, withDomain } from '@meta-platform/chain'
+import { decodeContractError, readDomainParam, useAgentAccess, useContracts, withDomain } from '@meta-platform/chain'
 import {
   AppShell,
+  ErrorState,
   PageLoader,
   SidebarWallet,
   ThemeToggle,
@@ -27,6 +28,11 @@ import { AgentPreviewNavUser } from '../preview/AgentPreviewNavUser'
 
 type MenuItem = { to: string; label: string; end?: boolean; icon: LucideIcon }
 
+/** Dùng trong test và UI khi useAgentAccess lỗi. */
+export function agentAccessErrorMessage(error: unknown): string {
+  return decodeContractError(error ?? new Error('Không xác định được vai trò.'))
+}
+
 function menuForManager(domain?: string): MenuItem[] {
   return [
     { to: withDomain('/', domain), label: 'Tổng quan', end: true, icon: LayoutDashboard },
@@ -48,7 +54,7 @@ function menuForOwner(domain?: string): MenuItem[] {
 
 export function AgentAppChrome() {
   const contracts = useContracts()
-  const { data: access, isLoading, isFetching } = useAgentAccess()
+  const { data: access, isLoading, isFetching, isError, error, refetch, isRefetching } = useAgentAccess()
   const location = useLocation()
   const navigate = useNavigate()
   const domain = readDomainParam(location.search || (typeof window !== 'undefined' ? window.location.search : ''))
@@ -64,7 +70,17 @@ export function AgentAppChrome() {
   }, [access?.kind, domain, location.pathname, navigate])
 
   if (!contracts) return <PageLoader message="Đang tải hợp đồng…" />
-  if (isLoading || isFetching) return <PageLoader message="Đang xác định vai trò…" />
+  if (isError) {
+    return (
+      <div className="mx-auto flex min-h-svh w-full max-w-lg items-center p-4">
+        <ErrorState
+          message={agentAccessErrorMessage(error)}
+          onRetry={() => void refetch()}
+        />
+      </div>
+    )
+  }
+  if (isLoading || isFetching || isRefetching) return <PageLoader message="Đang xác định vai trò…" />
   if (!access) return <PageLoader message="Đang tải…" />
 
   const allowed = access.kind === 'owner' || access.kind === 'manager'

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { METRIC } from '../src/metrics'
-import { buildMockState, createMockContracts } from '../src/mock'
+import { SERVICE_NET } from '../src/sales-settings'
+import { Role } from '../src/roles'
+import { buildMockState, createMockContracts, PREVIEW_WALLETS } from '../src/mock'
 
 const SERVED = new Set([
   METRIC.netServedHere,
@@ -64,6 +66,34 @@ describe('createMockContracts', () => {
         expect(branchTotals[i]).toBe(agentTotals[i])
       }
     }
+  })
+
+  it('API: mọi chi nhánh getBranch/getBranchProfile với id string', async () => {
+    const c = createMockContracts(42)
+    const state = buildMockState(42)
+    for (const b of state.branches) {
+      const id = String(b.id)
+      const row = await c.branches.getBranch(id)
+      expect(row.id).toBe(b.id)
+      const profile = await c.branches.getBranchProfile(id)
+      expect(profile.branchId).toBe(b.id)
+      expect(profile.domain.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('API: manager3001 có effectiveRoleOf >= Manager ở chi nhánh 1', async () => {
+    const c = createMockContracts(42)
+    const role = await c.agentAccess.effectiveRoleOf('1', PREVIEW_WALLETS.agentManager)
+    expect(role).toBeGreaterThanOrEqual(Role.Manager)
+  })
+
+  it('API: quoteTax branch 1 NET 100.000đ đã gồm 8%', async () => {
+    const c = createMockContracts(42, PREVIEW_WALLETS.agentOwner1)
+    const q = await c.salesSettings.quoteTax(1, SERVICE_NET, 100_000n)
+    expect(q.bps).toBe(800)
+    expect(q.exclusive).toBe(false)
+    expect(q.tax).toBe(7_407n)
+    expect(q.total).toBe(100_000n)
   })
 
   it('tổng rollup agent = rollup nền tảng (trừ served-here)', () => {

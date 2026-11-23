@@ -13,3 +13,11 @@
 ## Kiểm tra
 
 `pnpm -r build && pnpm lint && pnpm -r test && pnpm --filter agent shots` xanh (chain 75 test, gồm `sales-settings.test.ts`).
+
+## Sửa sau review
+
+- Mock: `mockId` / `mockBig` ở biên `create-mock-contracts`; test API (chi nhánh, manager3001, `quoteTax` 100.000₫).
+- `AgentAppChrome`: `isError` + `ErrorState` / Thử lại; `agentAccessErrorMessage` + test.
+- `TaxQuotePreview`: `decodeContractError` khi lỗi.
+- `PageLoader` `data-page-loader`; shots chờ loader ≤ 15s.
+- UI: chú thích trường `/settings` (`sales-settings-help.tsx`).
