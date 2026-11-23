@@ -18,6 +18,13 @@ describe('decodeContractError', () => {
     expect(decodeContractError(new Error('OwnerIsAgentMember'))).toMatch(/thành viên agent/)
   })
 
+  it('đọc selector từ error.data RPC Code 3', () => {
+    const selector = `0x${keccak256Hex('InvalidSortSlot()').slice(0, 8)}`
+    expect(decodeContractError({ code: 3, message: 'execution reverted', data: selector })).toBe(
+      'sortSlot FullDB không hợp lệ (0–15).',
+    )
+  })
+
   it('prefers InvalidServices over InvalidService substring', () => {
     expect(decodeContractError(new Error('revert InvalidServices()'))).toBe(
       'Phải có NET hoặc IQR.',

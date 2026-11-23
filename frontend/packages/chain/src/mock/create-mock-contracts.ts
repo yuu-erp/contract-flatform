@@ -1,8 +1,22 @@
 import { normalizeHexAddress } from '../address'
 import type { AgentProfile, BranchProfile } from '../decode'
 import type { PlatformRole } from '../roles'
-import type { PlatformContracts } from '../react/contracts-context'
+import {
+  AgentAccessApi,
+  AgentRegistryApi,
+  BranchRegistryApi,
+  LedgerApi,
+  PlatformAccessApi,
+  SalesSettingsApi,
+} from '../api'
+import type { AgentAccessContract } from '../contracts/agent-access.contract'
+import type { AgentRegistryContract } from '../contracts/agent-registry.contract'
+import type { BranchRegistryContract } from '../contracts/branch-registry.contract'
 import type { HistoryIndexContract } from '../contracts/history-index.contract'
+import type { LedgerContract } from '../contracts/ledger.contract'
+import type { PlatformAccessContract } from '../contracts/platform-access.contract'
+import type { SalesSettingsContract } from '../contracts/sales-settings.contract'
+import type { PlatformContracts } from '../react/contracts-context'
 import {
   buildMockState,
   MOCK_ADDRESSES,
@@ -26,7 +40,7 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
 
   const access = {
     async platformAdmins(offset: number, limit: number) {
-      return state.admins.slice(offset, offset + limit)
+      return { page: state.admins.slice(offset, offset + limit) }
     },
     async paused() {
       return state.paused
@@ -75,7 +89,7 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
       return state.admins.length
     },
     async agentRoleSources() {
-      return [state.agents[0]!.owner, state.agents[1]!.owner]
+      return { out: [state.agents[0]!.owner, state.agents[1]!.owner] }
     },
   }
 
@@ -235,7 +249,7 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
       return hit?.role ?? 0
     },
     async membersOf(branchId: number, offset: number, limit: number) {
-      return (state.members.get(branchId) ?? []).slice(offset, offset + limit)
+      return { out: (state.members.get(branchId) ?? []).slice(offset, offset + limit) }
     },
     async memberCountOf(branchId: number) {
       return (state.members.get(branchId) ?? []).length
@@ -252,7 +266,7 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
         const role = await agentAccess.effectiveRoleOf(b.id, account)
         if (role >= 2) ids.push(b.id)
       }
-      return ids.slice(offset, offset + limit)
+      return { out: ids.slice(offset, offset + limit) }
     },
     async grantRole(branchId: number, account: string, role: number) {
       await simulateTx(store, from)
@@ -300,7 +314,7 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
 
   const ledger = {
     async rollup(scope: number, id: number, fromDay: number, toDay: number) {
-      return store.sliceRollup(scope, id, fromDay, toDay)
+      return { out: store.sliceRollup(scope, id, fromDay, toDay) }
     },
     async bucketsOf(agentId: number, customer: string) {
       const key = `${agentId}:${normalizeHexAddress(customer)}`
@@ -323,7 +337,7 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
     },
     async balanceOf(agentId: number, customer: string) {
       const key = `${agentId}:${normalizeHexAddress(customer)}`
-      return state.walletBalance.get(key) ?? 0n
+      return { sum: state.walletBalance.get(key) ?? 0n }
     },
     async walletLiability(agentId: number) {
       return state.walletLiability.get(agentId) ?? 0n
@@ -363,7 +377,7 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
 
   const history = {
     async search(agentId: unknown, kind: unknown, q: unknown) {
-      return store.search(Number(agentId), String(kind), q)
+      return { page: store.search(Number(agentId), String(kind), q) }
     },
     async canWrite(writer: unknown, kind: unknown) {
       const w = normalizeHexAddress(String(writer))
@@ -374,12 +388,12 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
   return {
     addresses: MOCK_ADDRESSES,
     from: normalizeHexAddress(from),
-    access: access as PlatformContracts['access'],
-    agents: agents as PlatformContracts['agents'],
-    branches: branches as unknown as PlatformContracts['branches'],
-    agentAccess: agentAccess as PlatformContracts['agentAccess'],
-    salesSettings: salesSettings as PlatformContracts['salesSettings'],
-    ledger: ledger as PlatformContracts['ledger'],
+    access: new PlatformAccessApi(access as unknown as PlatformAccessContract),
+    agents: new AgentRegistryApi(agents as unknown as AgentRegistryContract),
+    branches: new BranchRegistryApi(branches as unknown as BranchRegistryContract),
+    agentAccess: new AgentAccessApi(agentAccess as unknown as AgentAccessContract),
+    salesSettings: new SalesSettingsApi(salesSettings as unknown as SalesSettingsContract),
+    ledger: new LedgerApi(ledger as unknown as LedgerContract),
     history,
   }
 }

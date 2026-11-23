@@ -1,15 +1,12 @@
 import { normalizeHexAddress } from './address'
 import type { HistoryIndexContract } from './contracts/history-index.contract'
-import { asHexData, asNumber, asRecord, unwrapValue } from './normalize'
+import { asHexData, asNumber, asRecord, unwrapNamed, unwrapValue } from './normalize'
 
 const PAGE_FIELDS = ['total', 'docIds', 'data'] as const
 
 /** SDK có thể trả Page dạng tuple, object, hoặc bọc trong `page`. */
 export function parseHistorySearchPage(result: unknown): Record<string, unknown> {
-  let raw = unwrapValue(result)
-  if (raw && typeof raw === 'object' && !Array.isArray(raw) && 'page' in (raw as object)) {
-    raw = unwrapValue((raw as Record<string, unknown>).page)
-  }
+  const raw = unwrapNamed(unwrapValue(result), 'page')
   return asRecord(raw, PAGE_FIELDS)
 }
 
@@ -50,7 +47,7 @@ export function termAddress(prefix: string, address: string): SearchTerm {
   return { prefix, value: normalizeHexAddress(address) }
 }
 
-function toSearchQuery(q: SearchQuery) {
+export function toSearchQuery(q: SearchQuery) {
   const limit = q.limit ?? 100
   return {
     filters: q.filters ?? [],
@@ -59,7 +56,7 @@ function toSearchQuery(q: SearchQuery) {
       min: r.min.toString(),
       max: r.max.toString(),
     })),
-    sortSlot: String(q.sortSlot ?? -1),
+    sortSlot: String(q.sortSlot ?? 0),
     ascending: q.ascending ?? false,
     offset: String(q.offset ?? 0),
     limit: String(Math.min(Math.max(limit, 1), 100)),

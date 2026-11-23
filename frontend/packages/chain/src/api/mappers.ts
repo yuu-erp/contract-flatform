@@ -6,6 +6,7 @@ import {
   asNumber,
   asRecord,
   asString,
+  unwrapNamed,
   unwrapValue,
 } from '../normalize'
 import type { BranchProfileRecord } from '../decode'
@@ -142,20 +143,19 @@ export function mapMember(value: unknown): MemberView {
 }
 
 export function mapMembers(value: unknown): MemberView[] {
-  const raw = unwrapValue(value)
+  const raw = unwrapNamed(unwrapValue(value), 'out')
   if (!Array.isArray(raw)) return []
   return raw.map((item) => mapMember(item))
 }
 
 export function mapBranchIdList(value: unknown): number[] {
-  const raw = unwrapValue(value)
-  const list = Array.isArray(raw) ? raw : (asRecord(raw, ['out']).out as unknown)
-  if (!Array.isArray(list)) return []
-  return list.map((id) => asNumber(id))
+  const raw = unwrapNamed(unwrapValue(value), 'out')
+  if (!Array.isArray(raw)) return []
+  return raw.map((id) => asNumber(id))
 }
 
 export function mapRollup(value: unknown): bigint[][] {
-  const raw = unwrapValue(value)
+  const raw = unwrapNamed(unwrapValue(value), 'out')
   if (!Array.isArray(raw)) return []
   return raw.map((row) => asBigIntArray32(row))
 }
@@ -216,18 +216,13 @@ export function mapBranchTax(value: unknown): BranchTax {
 }
 
 export function mapAddressList(value: unknown): string[] {
-  const raw = unwrapValue(value)
+  const raw = unwrapNamed(unwrapValue(value), 'out')
   if (!Array.isArray(raw)) return []
   return raw.map((addr) => toAddress(asString(addr)))
 }
 
 export function mapAddressPage(value: unknown): string[] {
-  const raw = unwrapValue(value)
-  if (Array.isArray(raw)) {
-    return raw.map((addr) => toAddress(asString(addr)))
-  }
-  const record = asRecord(raw, ['page'])
-  const page = record.page
-  if (!Array.isArray(page)) return []
-  return page.map((addr) => toAddress(asString(addr)))
+  const raw = unwrapNamed(unwrapValue(value), 'page')
+  if (!Array.isArray(raw)) return []
+  return raw.map((addr) => toAddress(asString(addr)))
 }

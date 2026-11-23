@@ -47,3 +47,31 @@ Các khả năng khác đã loại: DB chưa có (MockFullDB trả trang rỗng,
 
 ## Ghi chú review A4
 Code `allowedStaffActions` + 7 test và build/test đều xanh trên container (agent 13 test). Không xác nhận được trên chain vì lỗi 2 làm bảng thành viên luôn trống — review lại A4 sau khi sửa.
+
+---
+
+## Xác nhận sau sửa (Cursor · 2026-11-23)
+
+### Lỗi 1 — FullDB / `sortSlot`
+
+| Kiểm tra | Kết quả |
+|----------|---------|
+| Trình duyệt tự động (localhost:5173/platform/agents/102?tab=branches) | **Chưa có ví Meta** — không gọi được SDK; cần ví thật để tái hiện lỗi UI. |
+| Tab Nhật ký agent 102 (RPC `search` đúng chữ ký struct `Query`) | `platform_audit`, `sortSlot: 0`, `limit: 5` → **total = 0** (chưa có bản ghi audit cho agent 102 trên chain). |
+| `platform_branches` agent 102, `sortSlot: -1` (mặc định cũ) qua `cast` + struct | **OK** — `total = 2` (docIds 1, 2; profile `khaihoan.vn`, `khaihoan2.net`). |
+| Cùng truy vấn, `sortSlot: 0`, `ascending: true` | **OK** — cùng `total = 2`. |
+| Lỗi UI trước sửa (user) | Nguyên văn: `RPC Error (eth_call) [Code 3]: execution reverted` (thường **không** kèm `data` trong message SDK; RPC có thể trả `data: "0x"` nếu selector không decode). |
+| `decodeContractError({ code: 3, data: <InvalidSortSlot selector> })` | Unit test → `sortSlot FullDB không hợp lệ (0–15).` |
+| Sửa code | `toSearchQuery({})` → `sortSlot: "0"`; `fetchAgentBranches` → `sortSlot: 0`, `ascending: true`. |
+
+**Kết luận lỗi 1:** Trên RPC thuần, agent 102 **có** 2 chi nhánh; lỗi tab Chi nhánh trên app khả năng cao do **SDK mã hoá `sortSlot: "-1"`** (hoặc thiếu `data` khi revert), không phải DB trống. Sau sửa frontend luôn gửi `sortSlot ≥ 0` — cần user reload app **có ví** để xác nhận tab Chi nhánh hết banner dự phòng.
+
+### Lỗi 2 — output có tên SDK
+
+| Kiểm tra | Kết quả |
+|----------|---------|
+| `membersOf(2, 0, 20)` on-chain (branch chính agent 102) | **1 thành viên** — `role = 2` (Manager), account `0x2907…93f6`. |
+| Generator + `unwrapNamed` | Contract wrapper bóc `{ out \| sum \| page }`; mock bọc cùng hình dạng; `named-sdk-outputs.test.ts` cover bảng hàm. |
+| CI | `pnpm -r build`, `lint`, `pnpm -r test`, `pnpm --filter agent shots` — **xanh**. |
+
+**Kết luận lỗi 2:** On-chain đã có Manager; sau sửa `membersOf` qua SDK phải hiện trên `/agent/…/staff` khi reload có ví và branch context đúng (branchId 2).

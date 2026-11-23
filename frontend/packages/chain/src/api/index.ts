@@ -5,7 +5,7 @@ import type { LedgerContract } from '../contracts/ledger.contract'
 import type { SalesSettingsContract } from '../contracts/sales-settings.contract'
 import type { PlatformAccessContract } from '../contracts/platform-access.contract'
 import { resolvePlatformRole, type PlatformRole } from '../roles'
-import { asBigInt, asNumber, asString, unwrapValue } from '../normalize'
+import { asBigInt, asNumber, asString, unwrapNamed, unwrapValue } from '../normalize'
 import { toAddress } from '../address'
 import {
   mapAddressList,
@@ -210,7 +210,7 @@ export class LedgerApi {
   }
 
   async balanceOf(agentId: number, customer: string): Promise<bigint> {
-    return asBigInt(await this.inner.balanceOf(String(agentId), customer))
+    return asBigInt(unwrapNamed(await this.inner.balanceOf(String(agentId), customer), 'sum'))
   }
 
   async walletLiability(agentId: number): Promise<bigint> {

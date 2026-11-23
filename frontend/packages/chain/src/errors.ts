@@ -74,6 +74,7 @@ const MESSAGES: Record<string, string> = {
   NoPendingOwner: 'Agent không có đề xuất chủ mới.',
   AlreadyMainBranch: 'Chi nhánh đã là chi nhánh chính.',
   NotAgentOwner: 'Chỉ chủ agent được đổi cài đặt này.',
+  InvalidSortSlot: 'sortSlot FullDB không hợp lệ (0–15).',
 }
 
 function signatureOf(entry: AbiEntry): string {
@@ -115,7 +116,11 @@ function collectText(value: unknown, out: string[], depth: number): void {
     return
   }
   if (typeof value === 'object') {
-    for (const item of Object.values(value)) collectText(item, out, depth + 1)
+    const record = value as Record<string, unknown>
+    for (const key of ['data', 'error', 'cause', 'body', 'details', 'message']) {
+      if (key in record) collectText(record[key], out, depth + 1)
+    }
+    for (const item of Object.values(record)) collectText(item, out, depth + 1)
   }
 }
 

@@ -457,7 +457,7 @@ function applySearch(docs: SearchDoc[], agentScope: number, kind: string, query:
       return v >= r.min && v <= r.max
     })
   }
-  const sortSlot = query.sortSlot ?? -1
+  const sortSlot = query.sortSlot ?? 0
   if (sortSlot === 0) {
     list = [...list].sort((a, b) => (query.ascending ? 1 : -1) * (Number(a.slot0) - Number(b.slot0)))
   }

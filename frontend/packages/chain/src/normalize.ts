@@ -7,6 +7,15 @@ export function unwrapValue(value: unknown): unknown {
   return value
 }
 
+/** Bóc output có tên từ SDK (`{ out: x }`) sau `unwrapValue`. */
+export function unwrapNamed(value: unknown, name: string): unknown {
+  const bare = unwrapValue(value)
+  if (bare && typeof bare === 'object' && !Array.isArray(bare) && name in (bare as object)) {
+    return (bare as Record<string, unknown>)[name]
+  }
+  return bare
+}
+
 export function asRecord(value: unknown, fields: readonly string[]): Record<string, unknown> {
   const raw = unwrapValue(value)
   if (Array.isArray(raw)) {

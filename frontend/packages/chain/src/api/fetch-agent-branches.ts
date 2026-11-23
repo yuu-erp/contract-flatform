@@ -27,6 +27,8 @@ export async function fetchAgentBranches(
 
   try {
     const page = await searchFullDB(history, agentId, 'platform_branches', {
+      sortSlot: 0,
+      ascending: true,
       limit: 100,
       offset: 0,
     })

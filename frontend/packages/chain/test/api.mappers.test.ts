@@ -58,6 +58,21 @@ describe('api mappers', () => {
     ).toBe(42n)
   })
 
+  it('mapMembers maps named SDK output', () => {
+    const members = mapMembers({
+      out: [
+        {
+          account: '0x00000000000000000000000000000000000000aa',
+          role: 2,
+          grantedBy: '0x00000000000000000000000000000000000000bb',
+          grantedAt: 123,
+        },
+      ],
+    })
+    expect(members).toHaveLength(1)
+    expect(members[0]!.role).toBe(2)
+  })
+
   it('mapMembers maps member tuples', () => {
     const members = mapMembers([
       {
