@@ -16,7 +16,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Alert, AlertDescription, AlertTitle } from '../../components/ui/alert'
 import { Button } from '../../components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
 import { Checkbox } from '../../components/ui/checkbox'
 import { Input } from '../../components/ui/input'
 import { Label } from '../../components/ui/label'
@@ -26,6 +26,22 @@ import { useAppTx } from '../hooks/use-app-tx'
 import { METHOD_BITS, formatPaymentMethods } from '../lib/payment-methods'
 import { TaxQuotePreview } from './TaxQuotePreview'
 import type { SalesBranchRow } from './SalesSettingsReadonly'
+import {
+  FieldHelp,
+  HELP_BRANCH_EFFECTIVE_ZERO,
+  HELP_BRANCH_OVERRIDE,
+  HELP_BRANCH_PAYMENT_CUSTOM,
+  HELP_BRANCH_PAYMENT_FOLLOW,
+  HELP_BRANCH_TAX_CLEAR,
+  HELP_PAYMENT_AGENT,
+  HELP_PAYMENT_BITS,
+  HELP_TAX_AGENT,
+  HELP_TAX_IQR,
+  HELP_TAX_MODE_IQR,
+  HELP_TAX_MODE_NET,
+  HELP_TAX_NET,
+  SALES_SETTINGS_INTRO_OWNER,
+} from '../lib/sales-settings-help'
 
 type SalesData = NonNullable<ReturnType<typeof useAgentSalesRead>['data']>
 
@@ -52,12 +68,13 @@ export function AgentSalesSettingsEditor({
 
   return (
     <div className="space-y-4">
+      <FieldHelp>{SALES_SETTINGS_INTRO_OWNER}</FieldHelp>
       {warnings.length > 0 ? (
         <Alert variant="destructive">
           <AlertTitle>Phương thức thanh toán</AlertTitle>
           <AlertDescription>
             Các chi nhánh sau không còn phương thức nào sau khi thu hẹp tập agent:{' '}
-            {warnings.map((w) => w.name).join(', ')}.
+            {warnings.map((w) => w.name).join(', ')}. {HELP_BRANCH_EFFECTIVE_ZERO}
           </AlertDescription>
         </Alert>
       ) : null}
@@ -68,6 +85,7 @@ export function AgentSalesSettingsEditor({
       <Card>
         <CardHeader>
           <CardTitle>Ghi đè theo chi nhánh</CardTitle>
+          <CardDescription>{HELP_BRANCH_OVERRIDE}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {branches.map((b) => (
@@ -130,16 +148,32 @@ function AgentTaxCard({ agentId, data }: { agentId: number; data: SalesData }) {
     <Card>
       <CardHeader>
         <CardTitle>Thuế mức agent</CardTitle>
+        <CardDescription>{HELP_TAX_AGENT}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4 text-sm">
-        <div className="flex flex-wrap gap-4">
-          <PercentField id="tax-net" label="Thuế NET (%)" value={net} onChange={setNet} onSave={() => saveTax(SERVICE_NET, net)} />
-          <PercentField id="tax-iqr" label="Thuế IQR (%)" value={iqr} onChange={setIqr} onSave={() => saveTax(SERVICE_IQR, iqr)} />
+        <div className="flex flex-wrap gap-6">
+          <PercentField
+            id="tax-net"
+            label="Thuế NET (%)"
+            hint={HELP_TAX_NET}
+            value={net}
+            onChange={setNet}
+            onSave={() => saveTax(SERVICE_NET, net)}
+          />
+          <PercentField
+            id="tax-iqr"
+            label="Thuế IQR (%)"
+            hint={HELP_TAX_IQR}
+            value={iqr}
+            onChange={setIqr}
+            onSave={() => saveTax(SERVICE_IQR, iqr)}
+          />
         </div>
-        <p className="text-muted-foreground">Kiểu giá NET: đã gồm thuế (khoá).</p>
-        <MotionRow
+        <FieldHelp>{HELP_TAX_MODE_NET}</FieldHelp>
+        <MotionRowBlock
           id="iqr-exclusive"
           label="IQR tách thuế (chưa gồm)"
+          hint={HELP_TAX_MODE_IQR}
           checked={data.exIqr}
           onCheckedChange={(v) => saveExclusive(v === true)}
         />
@@ -177,8 +211,10 @@ function AgentPaymentCard({ agentId, agentMask }: { agentId: number; agentMask: 
     <Card>
       <CardHeader>
         <CardTitle>Phương thức thanh toán (agent)</CardTitle>
+        <CardDescription>{HELP_PAYMENT_AGENT}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3 text-sm">
+        <FieldHelp>{HELP_PAYMENT_BITS}</FieldHelp>
         <PaymentChecks mask={mask} onChange={setMask} agentMask={ALL_PAYMENT_METHODS} />
         <p className="text-muted-foreground">Hiệu lực: {formatPaymentMethods(mask)}</p>
         <Button type="button" size="sm" onClick={save}>
@@ -266,6 +302,7 @@ function BranchSalesOverride({
   return (
     <div className="space-y-3 border-b border-border pb-4 last:border-0">
       <p className="font-medium">{branch.name}</p>
+      <FieldHelp>{HELP_BRANCH_TAX_CLEAR}</FieldHelp>
       <div className="flex flex-wrap items-center gap-3">
         <MotionRow
           id={`ov-net-${branch.branchId}`}
@@ -308,9 +345,10 @@ function BranchSalesOverride({
           </Button>
         )}
       </div>
-      <MotionRow
+      <MotionRowBlock
         id={`follow-${branch.branchId}`}
         label="Phương thức: Theo agent (= 0)"
+        hint={HELP_BRANCH_PAYMENT_FOLLOW}
         checked={followAgent}
         onCheckedChange={(v) => {
           const on = v === true
@@ -319,7 +357,10 @@ function BranchSalesOverride({
         }}
       />
       {!followAgent ? (
-        <PaymentChecks mask={branchMask} onChange={setBranchMask} agentMask={agentMethods} />
+        <>
+          <FieldHelp>{HELP_BRANCH_PAYMENT_CUSTOM}</FieldHelp>
+          <PaymentChecks mask={branchMask} onChange={setBranchMask} agentMask={agentMethods} />
+        </>
       ) : null}
       <p className="text-muted-foreground">
         Hiệu lực chi nhánh: {formatPaymentMethods(effectiveMethods)}
@@ -341,19 +382,22 @@ function BranchSalesOverride({
 function PercentField({
   id,
   label,
+  hint,
   value,
   onChange,
   onSave,
 }: {
   id: string
   label: string
+  hint?: string
   value: string
   onChange: (v: string) => void
   onSave: () => void
 }) {
   return (
-    <div className="space-y-1">
+    <div className="max-w-md space-y-1">
       <Label htmlFor={id}>{label}</Label>
+      {hint ? <FieldHelp className="mb-1">{hint}</FieldHelp> : null}
       <div className="flex gap-2">
         <Input id={id} value={value} onChange={(e) => onChange(e.target.value)} className="w-28" />
         <Button type="button" size="sm" variant="secondary" onClick={onSave}>
@@ -379,6 +423,27 @@ function MotionRow({
     <div className="flex items-center gap-2">
       <Checkbox id={id} checked={checked} onCheckedChange={onCheckedChange} />
       <Label htmlFor={id}>{label}</Label>
+    </div>
+  )
+}
+
+function MotionRowBlock({
+  id,
+  label,
+  hint,
+  checked,
+  onCheckedChange,
+}: {
+  id: string
+  label: string
+  hint?: string
+  checked: boolean
+  onCheckedChange: (v: boolean | 'indeterminate') => void
+}) {
+  return (
+    <div className="space-y-1">
+      <MotionRow id={id} label={label} checked={checked} onCheckedChange={onCheckedChange} />
+      {hint ? <FieldHelp className="pl-6">{hint}</FieldHelp> : null}
     </div>
   )
 }

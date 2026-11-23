@@ -1,6 +1,7 @@
 export * from './lib/ledger-display'
 export * from './lib/wallet-buckets'
 export * from './lib/payment-methods'
+export * from './lib/sales-settings-help'
 export * from './lib/services-label'
 export * from './lib/chart-data'
 export * from './lib/audit-display'

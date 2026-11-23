@@ -24,6 +24,7 @@ Hỏi lần lượt, gặp câu "có" đầu tiên thì dừng.
 6. **Mọi thay đổi ở S và F** đều phát **E** kèm đủ dữ liệu để dựng lại bản ghi F.
 
 Hai luật đi kèm:
+
 - **Không** dùng kết quả `querySearch` hay `getDataDocument` trong hàm ghi.
 - Dữ liệu chủ (thực đơn, bảng giá, máy trạm…) ở **S** vì đơn hàng và phiên cần giá. Nếu cần tìm theo tên thì **đồng thời** ghi chỉ mục vào F. S là nguồn sự thật, F chỉ là bản sao để tìm.
 
@@ -97,7 +98,7 @@ Cột: **S** = trường giữ trong storage · **F** = DB và nhãn trong FullD
 | Hạng, chính sách tiêu điểm | cấu hình | — | `TierChanged` |
 | Chiến dịch | cấu hình, ngân sách còn lại, trạng thái | mô tả hiển thị | `CampaignChanged` |
 | Voucher | catalog, instance **chưa dùng** (chủ, hạn) | instance đã dùng hoặc hết hạn | `VoucherIssued/Redeemed` |
-| Yêu cầu tích thủ công | yêu cầu **chờ duyệt** | yêu cầu đã duyệt hoặc từ chối | `ManualRequest*` |
+| Yêu cầu tích thủ công | yêu cầu **chờ duyệt** | yêu cầu đã duyệt hoặc từ chối | `ManualRequest`* |
 
 ## 4. Tên DB trong FullDB
 

@@ -25,6 +25,10 @@ export function SettingsPage() {
   if (access.kind === 'manager') {
     return (
       <div className="space-y-4">
+        <p className="text-sm text-muted-foreground">
+          Quản lý chỉ xem cấu hình bán hàng của chi nhánh mình; mọi thay đổi thuế hoặc phương thức do chủ agent thực
+          hiện ở app không có <code className="text-xs">?domain=</code> hoặc mở đúng domain với ví chủ.
+        </p>
         <BranchSalesSettingsReadonly
           agentId={access.agentId}
           branchId={access.branchId}

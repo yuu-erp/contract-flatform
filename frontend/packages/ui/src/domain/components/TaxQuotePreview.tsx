@@ -1,7 +1,7 @@
 import { SERVICE_IQR, SERVICE_NET, useContracts } from '@meta-platform/chain'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
 import { Input } from '../../components/ui/input'
 import { Label } from '../../components/ui/label'
 import {
@@ -13,6 +13,12 @@ import {
 } from '../../components/ui/select'
 import { formatBps, formatVnd } from '../../lib/format'
 import { PageLoader } from '../../components/PageLoader'
+import {
+  FieldHelp,
+  HELP_QUOTE_AMOUNT,
+  HELP_QUOTE_PREVIEW,
+  HELP_QUOTE_SERVICE,
+} from '../lib/sales-settings-help'
 
 export function TaxQuotePreview({
   branchId,
@@ -44,12 +50,14 @@ export function TaxQuotePreview({
     <Card>
       <CardHeader>
         <CardTitle>Xem trước quoteTax</CardTitle>
+        <CardDescription>{HELP_QUOTE_PREVIEW}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4 text-sm">
         {branchLabel ? <p className="text-muted-foreground">Chi nhánh: {branchLabel}</p> : null}
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="quote-amount">Số tiền (đồng)</Label>
+            <FieldHelp>{HELP_QUOTE_AMOUNT}</FieldHelp>
             <Input
               id="quote-amount"
               inputMode="numeric"
@@ -59,6 +67,7 @@ export function TaxQuotePreview({
           </div>
           <div className="space-y-2">
             <Label>Dịch vụ</Label>
+            <FieldHelp>{HELP_QUOTE_SERVICE}</FieldHelp>
             <Select value={String(service)} onValueChange={(v) => setService(Number(v))}>
               <SelectTrigger>
                 <SelectValue />
