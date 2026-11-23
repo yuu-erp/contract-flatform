@@ -69,4 +69,4 @@ Chạy lại trên container: build/lint xanh, test xanh (chain 80, ui 16, agent
 - Câu cảnh báo vẫn là "…sau khi thu hẹp tập agent" và cả khối chữ đỏ (`AgentSalesSettingsEditor.tsx:76`) → "Các chi nhánh sau hiện không có phương thức thanh toán nào: …", khối cảnh báo vàng.
 - Trang manager: tiêu đề thẻ và nhãn quote vẫn là domain (`SettingsPage.tsx:35,37` dùng `access.domain`) → dùng `access.branchName`, domain làm dòng phụ.
 - Ảnh `owner--settings--1440-light.png`: menu "Nhân sự" có nền xám còn "Cài đặt" không được tô (mục đang mở phải được tô). Kiểm lại trạng thái active của `NavLink` khi vào thẳng `#/settings`; nếu chỉ do chuột còn nằm trên menu khi chụp thì thêm `page.mouse.move(0, 0)` trước khi chụp.
-- Ảnh tổng quan owner: "Doanh thu thuần" 29.794.690 ₫ **lớn hơn** "Gộp" 29.734.690 ₫. Thuần = gộp − hoàn − giảm nên không thể lớn hơn gộp. Kiểm công thức KPI (hoặc dữ liệu giả) và thêm test bất biến `net <= gross` cho mock.
+- (Không phải lỗi) Ảnh tổng quan owner: "Doanh thu thuần" > "Gộp" là hợp lệ vì thuần = gộp − hoàn + điều chỉnh tăng − điều chỉnh giảm (`metrics.ts:69`). Nên thêm dòng phụ dưới ô "Thuần" ghi rõ phần hoàn/điều chỉnh để người xem không thấy vô lý.
