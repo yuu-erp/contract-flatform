@@ -22,7 +22,7 @@ export function ProposeOwnerDialog({ agentId, open, onOpenChange, onDone }: Prop
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-overlay" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 w-[min(100%-2rem,28rem)] -translate-x-1/2 -translate-y-1/2 z-50 rounded-2xl bg-background p-6 text-[15px] shadow-[0_0_15px_rgb(101_119_134/0.2)] outline-none">
+        <Dialog.Content className="fixed top-1/2 left-1/2 w-[min(100%-2rem,28rem)] -translate-x-1/2 -translate-y-1/2 z-50 rounded-2xl bg-background p-6 text-[0.9375rem] shadow-[0_0_15px_rgb(101_119_134/0.2)] outline-none">
           <Dialog.Title className="text-xl leading-6 font-extrabold">Đề xuất ví chủ mới</Dialog.Title>
           <Dialog.Description className="mt-1 text-sm text-muted-foreground">
             {adminOnlyHint ?? 'Ví mới phải accept on-chain sau khi đề xuất.'}

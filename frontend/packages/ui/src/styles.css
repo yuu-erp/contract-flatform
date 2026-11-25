@@ -172,8 +172,8 @@
   body {
     @apply bg-background text-foreground antialiased tabular-nums;
     margin: 0;
-    font-size: 15px;
-    line-height: 20px;
+    font-size: 0.9375rem;
+    line-height: 1.25rem;
     font-family:
       'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';

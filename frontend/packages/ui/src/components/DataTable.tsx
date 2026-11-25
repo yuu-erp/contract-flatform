@@ -49,11 +49,11 @@ export function DataTable<T>({
   return (
     <div className={cn('space-y-3', className)}>
       <div className="overflow-x-auto rounded-2xl border border-border bg-card">
-        <table className="w-full text-[15px]">
+        <table className="w-full text-[0.9375rem]">
           <thead className="text-left text-muted-foreground">
             <tr>
               {columns.map((col) => (
-                <th key={col.key} className={cn('px-4 py-3 text-[13px] font-medium', col.className)}>
+                <th key={col.key} className={cn('px-4 py-3 text-[0.8125rem] font-medium', col.className)}>
                   {col.header}
                 </th>
               ))}

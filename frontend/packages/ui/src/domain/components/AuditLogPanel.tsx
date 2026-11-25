@@ -211,8 +211,8 @@ function AuditTimeline({
   onPageChange: (page: number) => void
   onOpen: (docId: number) => void
 }) {
-  if (loading) return <p className="px-4 py-8 text-center text-[15px] text-muted-foreground">Đang tải…</p>
-  if (rows.length === 0) return <p className="px-4 py-8 text-center text-[15px] text-muted-foreground">Chưa có nhật ký</p>
+  if (loading) return <p className="px-4 py-8 text-center text-[0.9375rem] text-muted-foreground">Đang tải…</p>
+  if (rows.length === 0) return <p className="px-4 py-8 text-center text-[0.9375rem] text-muted-foreground">Chưa có nhật ký</p>
   return (
     <>
       {rows.map((row) => {
@@ -226,14 +226,14 @@ function AuditTimeline({
           >
             <HashAvatar seed={r.actor} size={40} />
             <span className="min-w-0 flex-1">
-              <span className="flex min-w-0 items-center gap-1 text-[15px] leading-5">
+              <span className="flex min-w-0 items-center gap-1 text-[0.9375rem] leading-5">
                 <span className="truncate font-bold">{formatWalletAddress(r.actor)}</span>
                 <span className="shrink-0 text-muted-foreground">
                   · {new Date(r.timestamp * 1000).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}
                 </span>
               </span>
-              <span className="mt-0.5 block text-[15px] leading-5">{auditRowSummary(r)}</span>
-              {r.reason ? <span className="mt-0.5 block text-[15px] leading-5 text-muted-foreground">“{r.reason}”</span> : null}
+              <span className="mt-0.5 block text-[0.9375rem] leading-5">{auditRowSummary(r)}</span>
+              {r.reason ? <span className="mt-0.5 block text-[0.9375rem] leading-5 text-muted-foreground">“{r.reason}”</span> : null}
             </span>
           </button>
         )

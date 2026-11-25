@@ -14,8 +14,8 @@ export function EmptyState({
 }) {
   return (
     <div className={cn('mx-auto flex max-w-[400px] flex-col items-start justify-center gap-2 px-8 py-10 text-left', className)}>
-      <p className="text-[31px] leading-9 font-extrabold tracking-tight">{title}</p>
-      {description ? <p className="text-[15px] text-muted-foreground">{description}</p> : null}
+      <p className="text-[1.9375rem] leading-9 font-extrabold tracking-tight">{title}</p>
+      {description ? <p className="text-[0.9375rem] text-muted-foreground">{description}</p> : null}
       {action}
     </div>
   )

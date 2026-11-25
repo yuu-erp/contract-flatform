@@ -14,6 +14,7 @@ Học bố cục, màu và nhịp chữ của X; **không** dùng logo, tên hay
 - Nền `dim`/`dark` bật thêm lớp `.dark` để các biến thể `dark:` cũ vẫn chạy.
 - Mỗi app gọi `initDisplay()` trong `main.tsx` trước khi render (tránh nháy màu).
 - Đổi trong hộp `DisplaySettingsDialog` (mục "Hiển thị" ở thanh trái). `ThemeToggle` chỉ bật nhanh sáng ↔ tối.
+- Cỡ chữ 5 nấc (`data-font-size`: 13 / 14 / **15** / 16 / 17px) đặt cỡ gốc của `<html>`; mặc định 15px. Cỡ chữ trong mã viết bằng `rem` (vd. `text-[0.9375rem]` = 15px ở cỡ gốc 16) để co giãn theo; đừng viết `text-[15px]`.
 - Màu biểu đồ NET/IQR **cố định** (`--chart-1`, `--chart-2`), không đổi theo màu chủ đạo.
 
 Token trong `styles.css`: `--background`, `--foreground`, `--muted(-foreground)`, `--border`, `--input`, `--hover` (nền khi rê vào nút/menu), `--row-hover` (nền khi rê vào hàng), `--overlay`, `--primary` (= màu chủ đạo), `--success/--warning/--danger`.
@@ -36,6 +37,6 @@ Token trong `styles.css`: `--background`, `--foreground`, `--muted(-foreground)`
 | `HashAvatar`, `hashCover` | avatar tròn / ảnh bìa sinh màu từ ví hoặc tên |
 | `KpiTile` | số liệu: nhãn 13px, số 23px đậm, xu hướng xanh/đỏ |
 
-Quy ước chữ: thân 15px, phụ 13px, tiêu đề khối 20px `font-extrabold`, số lớn 31–40px. Nút luôn `rounded-full font-bold`; ô nhập bo 4px; thẻ bo 16px; hộp thoại bo 16px với bóng mờ, nền phủ `bg-overlay`.
+Quy ước chữ (ở cỡ gốc 16px; thực tế nhân 15/16 với cỡ mặc định): thân 15px, phụ 13px, tiêu đề khối 20px `font-extrabold`, số lớn 31–40px. Nút luôn `rounded-full font-bold`; ô nhập bo 4px; thẻ bo 16px; hộp thoại bo 16px với bóng mờ, nền phủ `bg-overlay`.
 
 App `platform` đã dùng `ColumnShell`. App `agent` vẫn dùng `AppShell` cũ (đã nhận màu mới); chuyển sang `ColumnShell` là việc sau.

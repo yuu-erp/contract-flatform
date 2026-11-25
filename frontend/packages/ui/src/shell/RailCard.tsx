@@ -19,7 +19,7 @@ export function RailCard({
       <h2 className="px-4 pt-3 pb-1 text-xl leading-6 font-extrabold tracking-tight">{title}</h2>
       <div className="flex flex-col">{children}</div>
       {footerLink ? (
-        <Link to={footerLink.to} className="block px-4 py-3 text-[15px] text-primary transition-colors hover:bg-row-hover">
+        <Link to={footerLink.to} className="block px-4 py-3 text-[0.9375rem] text-primary transition-colors hover:bg-row-hover">
           {footerLink.label}
         </Link>
       ) : null}

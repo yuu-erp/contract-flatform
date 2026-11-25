@@ -14,7 +14,7 @@ export function ListPager({
 }) {
   if (pageCount <= 1 && !summary) return null
   return (
-    <div className="flex items-center justify-between gap-3 px-4 py-3 text-[15px]">
+    <div className="flex items-center justify-between gap-3 px-4 py-3 text-[0.9375rem]">
       <span className="text-muted-foreground">{summary ?? `Trang ${page + 1} / ${pageCount}`}</span>
       {pageCount > 1 ? (
         <div className="flex items-center gap-1">

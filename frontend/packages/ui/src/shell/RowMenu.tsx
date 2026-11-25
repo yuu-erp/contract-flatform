@@ -36,7 +36,7 @@ export function RowMenu({ items, label = 'Thêm' }: { items: RowMenuItem[]; labe
                 disabled={item.disabled}
                 onSelect={item.onSelect}
                 className={cn(
-                  'flex cursor-pointer items-center gap-3 px-4 py-3 text-[15px] font-bold outline-none data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[highlighted]:bg-row-hover',
+                  'flex cursor-pointer items-center gap-3 px-4 py-3 text-[0.9375rem] font-bold outline-none data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[highlighted]:bg-row-hover',
                   item.danger && 'text-danger',
                 )}
               >

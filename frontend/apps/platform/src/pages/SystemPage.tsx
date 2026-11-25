@@ -129,7 +129,7 @@ export function SystemPage() {
 
       <ColumnSection title={<>Trạng thái hệ thống</>} description={<>Tạm dừng chặn mọi giao dịch ghi (agent, chi nhánh, sổ tiền…). Owner hoặc Admin bật/tắt được.</>}>
         <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
-          <p className={`inline-flex items-center gap-2 text-[17px] font-bold ${paused ? 'text-danger' : 'text-success'}`}>
+          <p className={`inline-flex items-center gap-2 text-[1.0625rem] font-bold ${paused ? 'text-danger' : 'text-success'}`}>
             <span className="size-2.5 rounded-full bg-current" />
             {paused ? 'Hệ đang tạm dừng' : 'Hệ đang chạy'}
           </p>
@@ -156,9 +156,9 @@ export function SystemPage() {
 
       <ColumnSection title={<>Phân quyền nền tảng</>} description={<>Theo contract hiện tại.</>}>
         <div className="">
-          <table className="w-full text-[15px]">
+          <table className="w-full text-[0.9375rem]">
             <thead>
-              <tr className="border-b border-border text-left text-[13px] text-muted-foreground">
+              <tr className="border-b border-border text-left text-[0.8125rem] text-muted-foreground">
                 <th className="py-2 font-medium">Việc</th>
                 <th className="py-2 text-center font-medium">Owner</th>
                 <th className="py-2 text-center font-medium">Admin</th>
@@ -185,7 +185,7 @@ export function SystemPage() {
                 key={a}
                 avatar={<HashAvatar seed={a} size={40} />}
                 title={formatWalletAddress(a)}
-                subtitle={<span className="font-mono text-[13px]">{a}</span>}
+                subtitle={<span className="font-mono text-[0.8125rem]">{a}</span>}
                 right={
                   isOwner ? (
                     <Button
@@ -232,7 +232,7 @@ export function SystemPage() {
         <div className="space-y-2 text-sm">
           <Input placeholder="Writer 0x…" value={canWriteWriter} onChange={(e) => setCanWriteWriter(e.target.value)} />
           <select
-            className="h-10 w-full rounded-md border border-input bg-transparent px-2 text-[15px]"
+            className="h-10 w-full rounded-md border border-input bg-transparent px-2 text-[0.9375rem]"
             value={canWriteKind}
             onChange={(e) => setCanWriteKind(e.target.value as (typeof FULLDB_KINDS)[number])}
           >

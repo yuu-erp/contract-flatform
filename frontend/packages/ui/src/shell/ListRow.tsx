@@ -27,12 +27,12 @@ export function ListRow({
     <>
       {avatar ? <div className="shrink-0">{avatar}</div> : null}
       <div className="min-w-0 flex-1">
-        <div className="flex min-w-0 items-center gap-1 text-[15px] leading-5">
+        <div className="flex min-w-0 items-center gap-1 text-[0.9375rem] leading-5">
           <span className="truncate font-bold">{title}</span>
           {meta ? <span className="shrink-0 truncate text-muted-foreground">{meta}</span> : null}
         </div>
-        {subtitle ? <div className="truncate text-[15px] leading-5 text-muted-foreground">{subtitle}</div> : null}
-        {children ? <div className="mt-1 text-[15px] leading-5">{children}</div> : null}
+        {subtitle ? <div className="truncate text-[0.9375rem] leading-5 text-muted-foreground">{subtitle}</div> : null}
+        {children ? <div className="mt-1 text-[0.9375rem] leading-5">{children}</div> : null}
       </div>
     </>
   )
@@ -73,7 +73,7 @@ export function ColumnSection({
         <div className={cn('mb-3 flex items-start justify-between gap-3', flush && 'px-4 pt-3')}>
           <div className="min-w-0">
             {title ? <h2 className="text-xl leading-6 font-extrabold tracking-tight">{title}</h2> : null}
-            {description ? <p className="mt-0.5 text-[15px] text-muted-foreground">{description}</p> : null}
+            {description ? <p className="mt-0.5 text-[0.9375rem] text-muted-foreground">{description}</p> : null}
           </div>
           {right ? <div className="shrink-0">{right}</div> : null}
         </div>

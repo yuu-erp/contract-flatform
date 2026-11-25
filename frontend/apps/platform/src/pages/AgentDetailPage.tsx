@@ -144,7 +144,7 @@ export function AgentDetailPage() {
               disabled={!canWrite}
               title={tenantWriteBlockedReason ?? undefined}
               onClick={() => setManage('edit')}
-              className="h-9 rounded-full border border-input px-4 text-[15px] font-bold transition-colors hover:bg-hover disabled:opacity-50"
+              className="h-9 rounded-full border border-input px-4 text-[0.9375rem] font-bold transition-colors hover:bg-hover disabled:opacity-50"
             >
               Sửa hồ sơ
             </button>
@@ -155,10 +155,10 @@ export function AgentDetailPage() {
             {name}
             <StatusBadge kind="agent" value={view.status} />
           </h2>
-          <p className="text-[15px] text-muted-foreground">{formatWalletAddress(view.owner)} · ví chủ</p>
+          <p className="text-[0.9375rem] text-muted-foreground">{formatWalletAddress(view.owner)} · ví chủ</p>
         </div>
-        {profile.profile.note ? <p className="mt-3 text-[15px]">{profile.profile.note}</p> : null}
-        <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[15px] text-muted-foreground">
+        {profile.profile.note ? <p className="mt-3 text-[0.9375rem]">{profile.profile.note}</p> : null}
+        <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[0.9375rem] text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <Store className="size-[18px]" /> {formatAllowedServices(view.allowedServices)}
           </span>
@@ -180,12 +180,12 @@ export function AgentDetailPage() {
           ) : null}
         </div>
         {hasPending ? (
-          <p className="mt-2 inline-flex items-center gap-1 text-[15px] text-muted-foreground">
+          <p className="mt-2 inline-flex items-center gap-1 text-[0.9375rem] text-muted-foreground">
             <Clock className="size-[18px]" /> Chờ ví mới nhận quyền chủ:{' '}
             <span className="font-bold text-foreground">{formatWalletAddress(view.pendingOwner)}</span>
           </p>
         ) : null}
-        <div className="mt-3 flex gap-5 text-[15px]">
+        <div className="mt-3 flex gap-5 text-[0.9375rem]">
           <span>
             <span className="font-bold">{branches.isLoading ? '…' : branchList.length}</span>{' '}
             <span className="text-muted-foreground">Chi nhánh</span>
@@ -295,7 +295,7 @@ function AgentOverviewTab({
           </ColumnSection>
           <ColumnSection flush title="So sánh chi nhánh">
             {(rankings.data ?? []).length === 0 ? (
-              <p className="px-4 pb-3 text-[15px] text-muted-foreground">Chưa có chi nhánh.</p>
+              <p className="px-4 pb-3 text-[0.9375rem] text-muted-foreground">Chưa có chi nhánh.</p>
             ) : (
               rankings.data!.map((row) => (
                 <ListRow
@@ -306,7 +306,7 @@ function AgentOverviewTab({
                   meta={`· #${row.branchId}`}
                   subtitle="Doanh thu thuần"
                   right={
-                    <span className="pt-2.5 text-[15px] font-extrabold tabular-nums">
+                    <span className="pt-2.5 text-[0.9375rem] font-extrabold tabular-nums">
                       <Money value={row.net} />
                     </span>
                   }
@@ -341,11 +341,11 @@ function AgentBranchesTab({
   return (
     <>
       <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
-        <p className="text-[15px] text-muted-foreground">{rows.length} chi nhánh</p>
+        <p className="text-[0.9375rem] text-muted-foreground">{rows.length} chi nhánh</p>
         <CreateBranchDialog agentId={agentId} agentAllowedServices={agentAllowedServices} onCreated={onRefetch} />
       </div>
       {warning ? (
-        <p className="border-b border-border bg-warning/15 px-4 py-2.5 text-[15px]">{warning}</p>
+        <p className="border-b border-border bg-warning/15 px-4 py-2.5 text-[0.9375rem]">{warning}</p>
       ) : null}
       {error ? (
         <ErrorState message={error} onRetry={onRefetch} />

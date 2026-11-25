@@ -117,7 +117,7 @@ export function ColumnShell({
                   onClick={primaryAction.onClick}
                   disabled={primaryAction.disabled}
                   title={primaryAction.title ?? primaryAction.label}
-                  className="mt-4 inline-flex size-[52px] items-center justify-center rounded-full bg-primary text-[17px] font-bold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 xl:h-[52px] xl:w-[90%] xl:self-start"
+                  className="mt-4 inline-flex size-[52px] items-center justify-center rounded-full bg-primary text-[1.0625rem] font-bold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 xl:h-[52px] xl:w-[90%] xl:self-start"
                 >
                   <primaryAction.icon className="size-6 xl:hidden" strokeWidth={2.4} />
                   <span className="hidden xl:inline">{primaryAction.label}</span>
@@ -133,8 +133,8 @@ export function ColumnShell({
                 >
                   {account.avatar}
                   <span className="hidden min-w-0 flex-1 xl:block">
-                    <span className="block truncate text-[15px] font-bold">{account.name}</span>
-                    <span className="block truncate text-[15px] text-muted-foreground">{account.handle}</span>
+                    <span className="block truncate text-[0.9375rem] font-bold">{account.name}</span>
+                    <span className="block truncate text-[0.9375rem] text-muted-foreground">{account.handle}</span>
                   </span>
                   <Ellipsis className="hidden size-5 xl:block" />
                 </button>
@@ -204,7 +204,7 @@ export function ColumnShell({
             <Dialog.Overlay className="fixed inset-0 z-40 bg-overlay sm:hidden" />
             <Dialog.Content className="fixed inset-y-0 left-0 z-50 flex w-[min(85%,300px)] flex-col overflow-y-auto bg-background shadow-xl outline-none sm:hidden">
               <div className="flex items-center justify-between px-4 py-3">
-                <Dialog.Title className="text-[17px] font-bold">{brand}</Dialog.Title>
+                <Dialog.Title className="text-[1.0625rem] font-bold">{brand}</Dialog.Title>
                 <button type="button" aria-label="Đóng" className="rounded-full p-1.5 hover:bg-hover" onClick={() => setMobileOpen(false)}>
                   <Close className="size-5" />
                 </button>
@@ -212,8 +212,8 @@ export function ColumnShell({
               {account ? (
                 <div className="px-4 pb-3">
                   {account.avatar}
-                  <p className="mt-2 text-[17px] font-bold">{account.name}</p>
-                  <p className="text-[15px] text-muted-foreground">{account.handle}</p>
+                  <p className="mt-2 text-[1.0625rem] font-bold">{account.name}</p>
+                  <p className="text-[0.9375rem] text-muted-foreground">{account.handle}</p>
                 </div>
               ) : null}
               <div className="border-t border-border py-2">

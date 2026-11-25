@@ -11,7 +11,7 @@ import { PLATFORM_TZ_MINUTES } from '../lib/scopes'
 function Stat({ label, value, tone }: { label: string; value: React.ReactNode; tone?: 'ok' | 'warn' }) {
   return (
     <RailRow className="flex items-center justify-between gap-3">
-      <span className="text-[15px] text-muted-foreground">{label}</span>
+      <span className="text-[0.9375rem] text-muted-foreground">{label}</span>
       <span
         className={
           tone === 'ok'
@@ -54,7 +54,7 @@ export function PlatformRightRail() {
       {role?.isPendingOwner ? (
         <RailCard title="Nhận quyền owner">
           <RailRow>
-            <p className="text-[15px] text-muted-foreground">Ví này được đề xuất làm Owner nền tảng.</p>
+            <p className="text-[0.9375rem] text-muted-foreground">Ví này được đề xuất làm Owner nền tảng.</p>
             <button
               type="button"
               disabled={tx.pending || !contracts}
@@ -63,7 +63,7 @@ export function PlatformRightRail() {
                   invalidate: [['platform-role'], ['system-snapshot']],
                 })
               }
-              className="mt-3 h-9 rounded-full bg-foreground px-4 text-[15px] font-bold text-background hover:bg-foreground/85 disabled:opacity-50"
+              className="mt-3 h-9 rounded-full bg-foreground px-4 text-[0.9375rem] font-bold text-background hover:bg-foreground/85 disabled:opacity-50"
             >
               Nhận quyền owner
             </button>
@@ -83,16 +83,16 @@ export function PlatformRightRail() {
 
       <RailCard title="Agent nổi bật · 7 ngày" footerLink={{ to: '/agents', label: 'Xem tất cả agent' }}>
         {top.isLoading ? (
-          <RailRow className="text-[15px] text-muted-foreground">Đang tải…</RailRow>
+          <RailRow className="text-[0.9375rem] text-muted-foreground">Đang tải…</RailRow>
         ) : top.data.length === 0 ? (
-          <RailRow className="text-[15px] text-muted-foreground">Chưa có doanh thu.</RailRow>
+          <RailRow className="text-[0.9375rem] text-muted-foreground">Chưa có doanh thu.</RailRow>
         ) : (
           top.data.slice(0, 4).map((row, i) => (
             <RailRow key={row.agentId} to={`/agents/${row.agentId}`} className="flex items-center gap-3">
               <HashAvatar seed={row.owner} label={row.name || String(row.agentId)} size={40} />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[15px] font-bold">{row.name || `Agent #${row.agentId}`}</p>
-                <p className="truncate text-[13px] text-muted-foreground">
+                <p className="truncate text-[0.9375rem] font-bold">{row.name || `Agent #${row.agentId}`}</p>
+                <p className="truncate text-[0.8125rem] text-muted-foreground">
                   #{i + 1} · <Money value={row.net} />
                 </p>
               </div>
@@ -101,7 +101,7 @@ export function PlatformRightRail() {
         )}
       </RailCard>
 
-      <p className="px-4 text-[13px] leading-5 text-muted-foreground">
+      <p className="px-4 text-[0.8125rem] leading-5 text-muted-foreground">
         Số liệu đọc trực tiếp từ Ledger on-chain · Ngày kinh doanh UTC+7
       </p>
     </>

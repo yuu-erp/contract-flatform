@@ -36,8 +36,8 @@ export function KpiTile({ label, value, previous, format = 'vnd', className }: K
 
   return (
     <div className={cn('rounded-2xl border border-border bg-card px-4 py-3 text-card-foreground', className)}>
-      <p className="text-[13px] text-muted-foreground">{label}</p>
-      <p className="mt-1 text-[19px] leading-6 font-extrabold tracking-tight whitespace-nowrap tabular-nums sm:text-[23px] sm:leading-7">{displayValue(current, format)}</p>
+      <p className="text-[0.8125rem] text-muted-foreground">{label}</p>
+      <p className="mt-1 text-[1.1875rem] leading-6 font-extrabold tracking-tight whitespace-nowrap tabular-nums sm:text-[1.4375rem] sm:leading-7">{displayValue(current, format)}</p>
       {trend ? <TrendText text={trend} /> : null}
     </div>
   )
@@ -46,6 +46,6 @@ function TrendText({ text }: { text: string }) {
   const up = text.startsWith('+')
   const down = text.startsWith('-') || text.startsWith('−')
   return (
-    <p className={cn('mt-1 text-[13px]', up ? 'text-success' : down ? 'text-danger' : 'text-muted-foreground')}>{text}</p>
+    <p className={cn('mt-1 text-[0.8125rem]', up ? 'text-success' : down ? 'text-danger' : 'text-muted-foreground')}>{text}</p>
   )
 }

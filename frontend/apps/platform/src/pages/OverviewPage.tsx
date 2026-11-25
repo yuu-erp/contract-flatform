@@ -123,10 +123,10 @@ export function OverviewPage() {
       ) : (
         <>
           <ColumnSection>
-            <p className="text-[15px] text-muted-foreground">Doanh thu thuần</p>
-            <p className="mt-1 text-[40px] leading-[48px] font-extrabold tracking-tight tabular-nums">{formatVnd(rev.net)}</p>
+            <p className="text-[0.9375rem] text-muted-foreground">Doanh thu thuần</p>
+            <p className="mt-1 text-[2.5rem] leading-[3rem] font-extrabold tracking-tight tabular-nums">{formatVnd(rev.net)}</p>
             {trend ? (
-              <p className={`mt-1 text-[15px] font-bold ${trend.up ? 'text-success' : 'text-danger'}`}>
+              <p className={`mt-1 text-[0.9375rem] font-bold ${trend.up ? 'text-success' : 'text-danger'}`}>
                 {trend.text} <span className="font-normal text-muted-foreground">so với kỳ trước</span>
               </p>
             ) : null}
@@ -141,7 +141,7 @@ export function OverviewPage() {
             <button
               type="button"
               onClick={() => setShowMore((v) => !v)}
-              className="mt-3 inline-flex items-center gap-1 text-[15px] text-primary hover:underline"
+              className="mt-3 inline-flex items-center gap-1 text-[0.9375rem] text-primary hover:underline"
             >
               {showMore ? 'Ẩn bớt' : 'Thêm chỉ số tiền thu & ví'}
               <ChevronDown className={`size-4 transition-transform ${showMore ? 'rotate-180' : ''}`} />
@@ -160,7 +160,7 @@ export function OverviewPage() {
 
           <ColumnSection title="Doanh thu theo ngày" description="NET / IQR theo ngày kinh doanh (UTC+7)">
             {!hasData ? (
-              <p className="py-6 text-[15px] text-muted-foreground">Chưa có giao dịch trong khoảng này.</p>
+              <p className="py-6 text-[0.9375rem] text-muted-foreground">Chưa có giao dịch trong khoảng này.</p>
             ) : (
               <RevenueChart data={chart} />
             )}
@@ -184,7 +184,7 @@ export function OverviewPage() {
                     to={`/agents/${row.agentId}`}
                     avatar={
                       <div className="flex items-center gap-3">
-                        <span className="w-6 text-right text-[15px] font-bold text-muted-foreground tabular-nums">
+                        <span className="w-6 text-right text-[0.9375rem] font-bold text-muted-foreground tabular-nums">
                           {rankPage * DEFAULT_RANK_PAGE_SIZE + i + 1}
                         </span>
                         <HashAvatar seed={row.owner} label={row.name || String(row.agentId)} size={40} />
@@ -198,7 +198,7 @@ export function OverviewPage() {
                       </span>
                     }
                     right={
-                      <span className="pt-2.5 text-[15px] font-extrabold tabular-nums">
+                      <span className="pt-2.5 text-[0.9375rem] font-extrabold tabular-nums">
                         <Money value={row.net} />
                       </span>
                     }

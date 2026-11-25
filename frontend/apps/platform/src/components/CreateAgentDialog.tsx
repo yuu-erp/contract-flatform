@@ -77,7 +77,7 @@ export function CreateAgentDialog({
       >
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-overlay" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 max-h-[90dvh] w-[min(100%-2rem,36rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto z-50 rounded-2xl bg-background p-6 text-[15px] shadow-[0_0_15px_rgb(101_119_134/0.2)] outline-none">
+          <Dialog.Content className="fixed top-1/2 left-1/2 max-h-[90dvh] w-[min(100%-2rem,36rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto z-50 rounded-2xl bg-background p-6 text-[0.9375rem] shadow-[0_0_15px_rgb(101_119_134/0.2)] outline-none">
             <Dialog.Title className="text-xl leading-6 font-extrabold">Tạo agent</Dialog.Title>
             <Dialog.Description className="mt-1 text-sm text-muted-foreground">
               Ví đăng nhập phải là Admin nền tảng. Ví chủ agent phải là ví merchant khác — không trùng Owner/Admin
@@ -87,7 +87,7 @@ export function CreateAgentDialog({
               <label className="block space-y-1">
                 <span>Ví chủ</span>
                 <input
-                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[15px] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[0.9375rem] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   value={form.owner}
                   onChange={(e) => setForm({ ...form, owner: e.target.value })}
                   placeholder="0x…"
@@ -97,7 +97,7 @@ export function CreateAgentDialog({
               <label className="block space-y-1">
                 <span>Tên cửa hàng ({utf8Length(form.storeName.trim())}/100 byte)</span>
                 <input
-                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[15px] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[0.9375rem] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   value={form.storeName}
                   onChange={(e) => setForm({ ...form, storeName: e.target.value })}
                 />
@@ -106,7 +106,7 @@ export function CreateAgentDialog({
               <label className="block space-y-1">
                 <span>Địa chỉ</span>
                 <input
-                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[15px] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[0.9375rem] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   value={form.storeAddress}
                   onChange={(e) => setForm({ ...form, storeAddress: e.target.value })}
                 />
@@ -115,7 +115,7 @@ export function CreateAgentDialog({
               <label className="block space-y-1">
                 <span>Số điện thoại</span>
                 <input
-                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[15px] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[0.9375rem] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   value={form.storePhone}
                   onChange={(e) => setForm({ ...form, storePhone: e.target.value })}
                 />
@@ -124,7 +124,7 @@ export function CreateAgentDialog({
               <label className="block space-y-1">
                 <span>Ghi chú</span>
                 <textarea
-                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[15px] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[0.9375rem] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   rows={2}
                   value={form.note}
                   onChange={(e) => setForm({ ...form, note: e.target.value })}

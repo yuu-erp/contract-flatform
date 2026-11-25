@@ -48,7 +48,7 @@ export function ColumnHeader({
         ) : null}
         <div className="min-w-0 flex-1 py-1.5">
           <h1 className="truncate text-xl leading-6 font-extrabold tracking-tight">{title}</h1>
-          {subtitle ? <p className="truncate text-[13px] leading-4 text-muted-foreground">{subtitle}</p> : null}
+          {subtitle ? <p className="truncate text-[0.8125rem] leading-4 text-muted-foreground">{subtitle}</p> : null}
         </div>
         {right ? <div className="flex shrink-0 items-center gap-1">{right}</div> : null}
       </div>

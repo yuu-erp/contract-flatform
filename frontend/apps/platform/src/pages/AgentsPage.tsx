@@ -131,7 +131,7 @@ export function AgentsPage() {
           })}
         </div>
         {tenantWriteBlockedReason ? (
-          <p className="text-[13px] text-muted-foreground">{tenantWriteBlockedReason} — chỉ xem.</p>
+          <p className="text-[0.8125rem] text-muted-foreground">{tenantWriteBlockedReason} — chỉ xem.</p>
         ) : null}
       </div>
 
@@ -156,7 +156,7 @@ export function AgentsPage() {
                 subtitle={formatWalletAddress(row.owner)}
                 right={<RowMenu items={menuFor(row)} label={`Hành động cho ${name}`} />}
               >
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.8125rem] text-muted-foreground">
                   <StatusBadge kind="agent" value={row.status} />
                   <span>{formatAllowedServices(row.allowedServices)}</span>
                   <span>

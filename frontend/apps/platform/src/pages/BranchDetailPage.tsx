@@ -101,7 +101,7 @@ export function BranchDetailPage() {
               disabled={!canWrite}
               title={tenantWriteBlockedReason ?? undefined}
               onClick={() => setManage('edit')}
-              className="h-9 rounded-full border border-input px-4 text-[15px] font-bold transition-colors hover:bg-hover disabled:opacity-50"
+              className="h-9 rounded-full border border-input px-4 text-[0.9375rem] font-bold transition-colors hover:bg-hover disabled:opacity-50"
             >
               Sửa hồ sơ
             </button>
@@ -114,9 +114,9 @@ export function BranchDetailPage() {
             <span className="rounded-full bg-primary/15 px-2 py-0.5 text-xs font-bold text-primary">Chi nhánh chính</span>
           ) : null}
         </h2>
-        <p className="text-[15px] text-muted-foreground">{domain}</p>
-        {profile.note ? <p className="mt-3 text-[15px]">{profile.note}</p> : null}
-        <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[15px] text-muted-foreground">
+        <p className="text-[0.9375rem] text-muted-foreground">{domain}</p>
+        {profile.note ? <p className="mt-3 text-[0.9375rem]">{profile.note}</p> : null}
+        <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[0.9375rem] text-muted-foreground">
           {profile.location ? (
             <span className="inline-flex items-center gap-1">
               <MapPin className="size-[18px]" /> {profile.location}
@@ -131,7 +131,7 @@ export function BranchDetailPage() {
             <Clock className="size-[18px]" /> {tz}
           </span>
         </div>
-        <p className="mt-3 text-[15px]">
+        <p className="mt-3 text-[0.9375rem]">
           Thuộc{' '}
           <Link to={`/agents/${view.agentId}`} className="font-bold hover:underline">
             {agentName}
@@ -199,9 +199,9 @@ function BranchMembersTab({ branchId }: { branchId: number }) {
           key={r.account}
           avatar={<HashAvatar seed={r.account} size={40} />}
           title={formatWalletAddress(r.account)}
-          subtitle={<span className="font-mono text-[13px]">{r.account}</span>}
+          subtitle={<span className="font-mono text-[0.8125rem]">{r.account}</span>}
           right={
-            <span className="mt-1 rounded-full border border-input px-3 py-1 text-[13px] font-bold">
+            <span className="mt-1 rounded-full border border-input px-3 py-1 text-[0.8125rem] font-bold">
               {ROLE_LABEL[r.role] ?? `Vai trò ${r.role}`}
             </span>
           }

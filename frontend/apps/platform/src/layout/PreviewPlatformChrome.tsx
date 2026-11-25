@@ -17,7 +17,7 @@ function PreviewRoleItems() {
   const { role, setRole } = usePreviewWallet()
   return (
     <>
-      <p className="px-4 pb-1 text-[13px] font-bold text-muted-foreground">Xem trước với vai trò</p>
+      <p className="px-4 pb-1 text-[0.8125rem] font-bold text-muted-foreground">Xem trước với vai trò</p>
       {PREVIEW_ROLES.map((r) => (
         <AccountMenuItem key={r.id} active={role === r.id} onClick={() => setRole(r.id)}>
           {r.label}

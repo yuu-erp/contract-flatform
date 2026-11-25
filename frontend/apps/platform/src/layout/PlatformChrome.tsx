@@ -22,8 +22,8 @@ export function NoPlatformAccess({ address, extra }: { address?: string; extra?:
     <>
       <ColumnHeader title="Không có quyền" />
       <div className="px-8 py-10">
-        <h2 className="text-[31px] leading-9 font-extrabold tracking-tight">Ví này chưa được cấp quyền</h2>
-        <p className="mt-2 text-[15px] text-muted-foreground">
+        <h2 className="text-[1.9375rem] leading-9 font-extrabold tracking-tight">Ví này chưa được cấp quyền</h2>
+        <p className="mt-2 text-[0.9375rem] text-muted-foreground">
           {address ? `Ví ${formatWalletAddress(address)} không phải Owner hay Admin nền tảng. ` : ''}
           Chọn ví khác ở menu tài khoản.
         </p>
@@ -111,15 +111,15 @@ function LoginPanel({ pending, onLogin }: { pending: boolean; onLogin: () => voi
     <>
       <ColumnHeader title="Đăng nhập" />
       <div className="px-8 py-12">
-        <h2 className="text-[31px] leading-9 font-extrabold tracking-tight">Quản trị nền tảng on-chain</h2>
-        <p className="mt-3 text-[17px] text-muted-foreground">
+        <h2 className="text-[1.9375rem] leading-9 font-extrabold tracking-tight">Quản trị nền tảng on-chain</h2>
+        <p className="mt-3 text-[1.0625rem] text-muted-foreground">
           Theo dõi doanh thu toàn hệ, quản lý agent và chi nhánh. Cần ví được cấp Owner hoặc Admin nền tảng.
         </p>
         <button
           type="button"
           disabled={pending}
           onClick={onLogin}
-          className="mt-8 inline-flex h-[52px] w-full max-w-[300px] items-center justify-center gap-2 rounded-full bg-primary text-[17px] font-bold text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+          className="mt-8 inline-flex h-[52px] w-full max-w-[300px] items-center justify-center gap-2 rounded-full bg-primary text-[1.0625rem] font-bold text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
         >
           {pending ? <Loader2 className="size-5 animate-spin" /> : <Wallet className="size-5" />}
           Chọn ví

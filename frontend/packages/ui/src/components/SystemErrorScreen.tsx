@@ -46,26 +46,26 @@ export function SystemErrorScreen({
       <span className="flex size-14 items-center justify-center rounded-full bg-danger/10 text-danger">
         <CloudOff className="size-7" strokeWidth={2.2} />
       </span>
-      <h2 className="mt-5 text-[31px] leading-9 font-extrabold tracking-tight">{title}</h2>
-      <p className="mt-2 text-[15px] text-muted-foreground">{description}</p>
+      <h2 className="mt-5 text-[1.9375rem] leading-9 font-extrabold tracking-tight">{title}</h2>
+      <p className="mt-2 text-[0.9375rem] text-muted-foreground">{description}</p>
       {onRetry ? (
         <>
           <button
             type="button"
             onClick={onRetry}
             disabled={retrying}
-            className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-[15px] font-bold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+            className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-[0.9375rem] font-bold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
           >
             {retrying ? <Loader2 className="size-[18px] animate-spin" /> : <RotateCw className="size-[18px]" />}
             {retrying ? 'Đang thử lại…' : 'Thử lại'}
           </button>
           {autoRetrySeconds > 0 && !retrying ? (
-            <p className="mt-3 text-[13px] text-muted-foreground">Tự thử lại sau {left} giây.</p>
+            <p className="mt-3 text-[0.8125rem] text-muted-foreground">Tự thử lại sau {left} giây.</p>
           ) : null}
         </>
       ) : null}
       {detail ? (
-        <details className="mt-6 w-full text-[13px] text-muted-foreground">
+        <details className="mt-6 w-full text-[0.8125rem] text-muted-foreground">
           <summary className="cursor-pointer select-none hover:text-foreground">Chi tiết kỹ thuật</summary>
           <pre className="mt-2 max-h-40 overflow-auto rounded-md border border-border bg-muted p-3 font-mono text-xs whitespace-pre-wrap break-all">
             {detail}

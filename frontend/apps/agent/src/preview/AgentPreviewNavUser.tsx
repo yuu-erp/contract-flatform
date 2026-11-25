@@ -15,7 +15,7 @@ export function AgentPreviewNavUser() {
   const { role, setRole } = usePreviewAgentWallet()
   return (
     <div className="rounded-md border border-dashed border-amber-500/40 bg-amber-500/5 p-2">
-      <p className="mb-1.5 text-[10px] font-medium uppercase tracking-wide text-amber-900 dark:text-amber-100">
+      <p className="mb-1.5 text-[0.625rem] font-medium uppercase tracking-wide text-amber-900 dark:text-amber-100">
         Xem trước ví
       </p>
       <div className="flex flex-col gap-0.5">

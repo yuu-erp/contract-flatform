@@ -17,7 +17,7 @@ export const PLATFORM_NAV: ShellNavItem[] = [
 /** Dải cảnh báo khi hệ tạm dừng, đặt trên cùng cột giữa. */
 export function PausedBanner() {
   return (
-    <div className="border-b border-border bg-warning/15 px-4 py-2.5 text-[15px] text-foreground">
+    <div className="border-b border-border bg-warning/15 px-4 py-2.5 text-[0.9375rem] text-foreground">
       <span className="font-bold">Hệ đang tạm dừng.</span>{' '}
       <span className="text-muted-foreground">Mọi thao tác ghi on-chain bị khoá cho tới khi mở lại.</span>
     </div>
@@ -89,7 +89,7 @@ export function AccountMenuItem({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="flex w-full items-center justify-between px-4 py-3 text-left text-[15px] font-bold transition-colors hover:bg-row-hover disabled:opacity-50"
+      className="flex w-full items-center justify-between px-4 py-3 text-left text-[0.9375rem] font-bold transition-colors hover:bg-row-hover disabled:opacity-50"
     >
       {children}
       {active ? <span className="size-2.5 rounded-full bg-primary" /> : null}

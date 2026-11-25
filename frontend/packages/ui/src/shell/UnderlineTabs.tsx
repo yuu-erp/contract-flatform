@@ -29,7 +29,7 @@ export function UnderlineTabs<T extends string>({
           >
             <span
               className={cn(
-                'relative flex h-[53px] items-center text-[15px] whitespace-nowrap',
+                'relative flex h-[53px] items-center text-[0.9375rem] whitespace-nowrap',
                 active ? 'font-bold text-foreground' : 'font-medium text-muted-foreground',
               )}
             >
