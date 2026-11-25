@@ -17,8 +17,8 @@ export function OverviewFiltersBar({
   className?: string
 }) {
   return (
-    <div className={`flex flex-wrap items-start justify-between gap-3 ${className ?? ''}`}>
-      <RangePicker value={range} onChange={onRangeChange} className="min-w-0" />
+    <div className={`flex flex-col gap-3 ${className ?? ''}`}>
+      <RangePicker value={range} onChange={onRangeChange} />
       <ServiceFilter value={service} onChange={onServiceChange} />
     </div>
   )

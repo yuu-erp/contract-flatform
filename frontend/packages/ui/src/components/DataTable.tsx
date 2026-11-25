@@ -23,7 +23,6 @@ export function DataTable<T>({
   onRetry,
   emptyTitle = 'Không có dữ liệu',
   className,
-  bare,
 }: {
   columns: DataTableColumn<T>[]
   rows: T[]
@@ -36,8 +35,6 @@ export function DataTable<T>({
   onRetry?: () => void
   emptyTitle?: string
   className?: string
-  /** Bỏ viền ngoài khi bảng nằm trong Panel. */
-  bare?: boolean
 }) {
   const pageCount = Math.max(1, Math.ceil(total / pageSize))
 
@@ -50,13 +47,13 @@ export function DataTable<T>({
   }
 
   return (
-    <div className={cn(bare ? '' : 'space-y-3', className)}>
-      <div className={cn('overflow-x-auto', !bare && 'rounded-2xl border border-border bg-card')}>
+    <div className={cn('space-y-3', className)}>
+      <div className="overflow-x-auto rounded-2xl border border-border bg-card">
         <table className="w-full text-[15px]">
           <thead className="text-left text-muted-foreground">
             <tr>
               {columns.map((col) => (
-                <th key={col.key} className={cn('px-4 py-3 text-[13px] font-medium first:pl-5 last:pr-5', col.className)}>
+                <th key={col.key} className={cn('px-4 py-3 text-[13px] font-medium', col.className)}>
                   {col.header}
                 </th>
               ))}
@@ -66,7 +63,7 @@ export function DataTable<T>({
             {rows.map((row, index) => (
               <tr key={index} className="border-t border-border transition-colors hover:bg-row-hover">
                 {columns.map((col) => (
-                  <td key={col.key} className={cn('px-4 py-3 first:pl-5 last:pr-5', col.className)}>
+                  <td key={col.key} className={cn('px-4 py-3', col.className)}>
                     {col.render(row)}
                   </td>
                 ))}
@@ -75,7 +72,7 @@ export function DataTable<T>({
           </tbody>
         </table>
       </div>
-      <div className={cn('flex items-center justify-between text-sm', bare && 'border-t border-border px-5 py-3')}>
+      <div className="flex items-center justify-between text-sm">
         <span className="text-muted-foreground">
           Trang {page + 1} / {pageCount}
         </span>

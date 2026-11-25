@@ -5,10 +5,9 @@ import {
   useConnectWallet,
   usePlatformContracts,
 } from '@meta-platform/chain'
-import { HashAvatar, PageHeader, PageLoader, Panel, useWalletTheme, type DashboardAccount } from '@meta-platform/ui'
+import { ColumnHeader, HashAvatar, PageLoader, useWalletTheme, type ShellAccount } from '@meta-platform/ui'
 import { Loader2, Wallet } from 'lucide-react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
-import { AcceptOwnerCard } from '../components/OverviewCards'
 import { platformRoleLabel } from '../components/PlatformRoleStatus'
 import { platformChainId, platformDeployments } from '../config/deployments'
 import { usePlatformRole } from '../hooks/use-platform-role'
@@ -19,13 +18,17 @@ import { PreviewPlatformChrome } from './PreviewPlatformChrome'
 /** Màn "không có quyền" trong cột giữa. */
 export function NoPlatformAccess({ address, extra }: { address?: string; extra?: React.ReactNode }) {
   return (
-    <div className="mx-auto max-w-[560px] pt-10">
-      <PageHeader
-        title="Ví này chưa được cấp quyền"
-        description={`${address ? `Ví ${formatWalletAddress(address)} không phải Owner hay Admin nền tảng. ` : ''}Chọn ví khác ở menu tài khoản.`}
-      />
-      {extra ? <Panel flush>{extra}</Panel> : null}
-    </div>
+    <>
+      <ColumnHeader title="Không có quyền" />
+      <div className="px-8 py-10">
+        <h2 className="text-[31px] leading-9 font-extrabold tracking-tight">Ví này chưa được cấp quyền</h2>
+        <p className="mt-2 text-[15px] text-muted-foreground">
+          {address ? `Ví ${formatWalletAddress(address)} không phải Owner hay Admin nền tảng. ` : ''}
+          Chọn ví khác ở menu tài khoản.
+        </p>
+        {extra ? <div className="mt-6">{extra}</div> : null}
+      </div>
+    </>
   )
 }
 
@@ -42,15 +45,10 @@ export function PlatformGate({ noAccessExtra }: { noAccessExtra?: React.ReactNod
   if (!role.isOwner && !role.isAdmin && location.pathname.startsWith('/system')) {
     return <Navigate to="/" replace />
   }
-  return (
-    <>
-      <AcceptOwnerCard />
-      <Outlet />
-    </>
-  )
+  return <Outlet />
 }
 
-function useLiveAccount(roleText: string | null): DashboardAccount | undefined {
+function useLiveAccount(roleText: string | null): ShellAccount | undefined {
   const theme = useWalletTheme()
   const { data: wallet } = useActiveWallet()
   const connect = useConnectWallet(theme)
@@ -79,9 +77,10 @@ function PlatformChromeWithContracts() {
 
 function LoginPanel({ pending, onLogin }: { pending: boolean; onLogin: () => void }) {
   return (
-    <div className="mx-auto max-w-[560px] pt-16">
-      <div>
-        <h2 className="text-[40px] leading-[48px] font-extrabold tracking-tight">Quản trị nền tảng on-chain</h2>
+    <>
+      <ColumnHeader title="Đăng nhập" />
+      <div className="px-8 py-12">
+        <h2 className="text-[31px] leading-9 font-extrabold tracking-tight">Quản trị nền tảng on-chain</h2>
         <p className="mt-3 text-[17px] text-muted-foreground">
           Theo dõi doanh thu toàn hệ, quản lý agent và chi nhánh. Cần ví được cấp Owner hoặc Admin nền tảng.
         </p>
@@ -95,7 +94,7 @@ function LoginPanel({ pending, onLogin }: { pending: boolean; onLogin: () => voi
           Chọn ví
         </button>
       </div>
-    </div>
+    </>
   )
 }
 
