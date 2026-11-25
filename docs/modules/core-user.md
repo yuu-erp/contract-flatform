@@ -43,21 +43,57 @@ Một contract dùng chung cho mọi agent; dữ liệu khoá theo `agentId`, gi
 | **A. Ví điện thoại** (app webview của agent) | khách có app | app ký `register(agentId, username, …)` → ví đó vừa là định danh vừa là ví điều khiển |
 | **B. Quét QR trên máy trạm** | khách có app, ngồi máy | máy hiện QR chứa ví phiên tạm → app ký uỷ quyền có hạn cho ví phiên → máy đăng nhập. Không gõ mật khẩu ở máy công cộng |
 | **C. Username + mật khẩu** | khách không dùng app | xem §4.1 |
+| **E. OTP do nhân viên cấp** | khách quên mật khẩu / không mang điện thoại | xem §4.3 |
 | **D. Nhân viên đăng ký hộ** | khách mới tại quầy | nhân viên (hoặc khách) nhập username + mật khẩu ban đầu → tạo tài khoản theo cách C; ghi `registeredBy`, `registeredBranch` |
 
-### 4.1 Mật khẩu: **không lưu gì về mật khẩu on-chain** (đề xuất)
+### 4.1 Mật khẩu lưu ở đâu — phân tích
 
-Hệ cũ lưu băm mật khẩu `bytes32` on-chain. Ai cũng đọc được, nên có thể dò offline mật khẩu yếu.
+**Mọi thứ đã lên chain đều công khai vĩnh viễn**: ai cũng đọc được storage, calldata của giao dịch, event, và cả giao dịch đang chờ trong mempool. Vì vậy câu hỏi không phải "giấu mật khẩu ở đâu trên chain", mà là "để lộ thứ gì thì vẫn an toàn".
 
-Đề xuất **ví sinh từ mật khẩu**, phía client:
+| Cách | On-chain có gì | Kiểm mật khẩu thế nào | Đánh giá |
+|---|---|---|---|
+| **1. Băm nhanh** (hệ cũ: `bytes32` = keccak/sha) | bản băm | client gửi băm, contract so | **Không an toàn.** Đọc bản băm rồi thử mật khẩu offline: GPU thử hàng tỉ lần/giây, mật khẩu 8 ký tự thường bị lộ trong vài phút. Thêm: thứ gửi lên để so (băm hoặc mật khẩu) nằm trong calldata công khai → ai xem giao dịch là dùng lại được |
+| **2. Băm chậm** (bcrypt/scrypt/argon2) lưu on-chain | bản băm chậm | contract **không chạy nổi** scrypt/argon2 (gas quá lớn) → client vẫn phải gửi băm lên để so | **Không được.** Gửi băm lên = gửi "mật khẩu tương đương", lộ trong calldata/mempool, dùng lại được |
+| **3. Mã hoá mật khẩu** rồi lưu | bản mã | phải giải mã | **Không được.** Khoá giải mã để đâu? Để on-chain thì công khai; không có backend để giữ khoá |
+| **4. Server riêng** lưu bcrypt (như web thường) | không có gì | server kiểm | An toàn nhất về mật khẩu, nhưng **hệ chưa có backend** (`docs/04` câu 5) và mất tính "chạy hoàn toàn on-chain" |
+| **5. Ví sinh từ mật khẩu** (đề xuất) | chỉ một **địa chỉ** | client sinh khoá từ mật khẩu, **ký** giao dịch; contract kiểm chữ ký | **Dùng được.** Mật khẩu và khoá không bao giờ rời máy, không có gì để dùng lại từ giao dịch. Rủi ro duy nhất: thử mật khẩu offline từ địa chỉ công khai (xem dưới) |
 
-`khoá riêng = scrypt(mật khẩu, salt = "meta-net:" + agentId + ":" + username, chi phí cao)`
+**Kết luận: mật khẩu không nên lưu on-chain dưới bất kỳ dạng nào.** On-chain chỉ lưu địa chỉ ví sinh ra từ mật khẩu (cách 5).
 
-- `agentId` nằm trong salt vì username chỉ duy nhất **trong một agent**. Hai người cùng username ở hai agent mà trùng mật khẩu vẫn ra hai địa chỉ khác nhau.
-- Đăng ký: client sinh khoá → địa chỉ → địa chỉ đó là định danh. Đăng nhập máy trạm: sinh lại khoá → ký uỷ quyền cho ví phiên → xoá khoá khỏi bộ nhớ. On-chain chỉ có địa chỉ.
-- Điểm yếu còn lại: mật khẩu quá yếu vẫn dò được vì địa chỉ công khai. Giảm bằng scrypt chậm (~1 giây/lần thử), mật khẩu tối thiểu 8 ký tự, khuyến khích cách A/B.
-- **Đổi mật khẩu** = sinh địa chỉ mới, thêm làm ví điều khiển, gỡ ví cũ.
-- **Quên mật khẩu**: nhân viên xác minh tại quầy → quản lý/chủ agent gắn ví điều khiển mới (`recover`). Phạm vi thiệt hại chỉ trong agent đó.
+#### Cách 5 hoạt động
+
+`khoá riêng = scrypt(mật khẩu, salt = "meta-net:" + agentId + ":" + username, N = 2^17, r = 8, p = 1)` → địa chỉ đăng nhập.
+
+- `AgentUserRegistry` lưu `loginAddress` của tài khoản (một ví điều khiển). Địa chỉ định danh `account` không đổi.
+- Đăng nhập: máy trạm hỏi username + mật khẩu → sinh khoá (~0,5–1 giây) → ký uỷ quyền cho ví phiên của máy → xoá khoá khỏi bộ nhớ.
+- **Người dùng đổi mật khẩu**: sinh địa chỉ mới từ mật khẩu mới → ký bằng khoá cũ (chứng minh biết mật khẩu cũ) → contract thay `loginAddress`.
+- **Staff đặt lại mật khẩu** (khách quên): staff nhập mật khẩu mới cùng khách → client sinh địa chỉ mới → staff gửi `resetPassword(agentId, account, newLoginAddress)`. **Không cần mật khẩu cũ.** Event `PasswordReset(agentId, account, staff, branchId)` + nhật ký `platform_audit` ghi staff nào đổi cho tài khoản nào, ở chi nhánh nào. Mọi ví phiên đang mở của tài khoản bị thu hồi.
+- Staff biết mật khẩu mới vừa đặt → app nhắc khách đổi lại ở lần đăng nhập sau.
+
+#### Mức an toàn của cách 5
+
+- **Kẻ tấn công cần gì:** địa chỉ đăng nhập (công khai) + username + agentId (công khai) → thử từng mật khẩu, mỗi lần một phép scrypt.
+- **Tốn bao nhiêu:** scrypt ~128 MB RAM/lần thử, chống GPU tốt. Ước lượng: ~1.000 lần/giây cho một kẻ tấn công có nhiều máy. So với băm nhanh của hệ cũ (hàng tỉ lần/giây), chậm hơn khoảng **một triệu lần**.
+  - Mật khẩu nằm trong danh sách phổ biến (`123456`, `matkhau1`…): vẫn lộ trong vài giây đến vài phút.
+  - 8 ký tự ngẫu nhiên (chữ + số): ~2,8×10^14 khả năng → hàng nghìn năm.
+- **Salt có agentId + username** → không dùng bảng tính sẵn; phải tấn công từng tài khoản một.
+- **Thiệt hại nếu bị lộ** giới hạn trong một agent: chỉ là số xu chơi máy / gọi món tại agent đó. Đề xuất **không có tính năng chuyển xu giữa khách** và **không rút xu ra tiền mặt** (hoàn tiền chỉ qua staff tại quầy, đã có trong Ledger) → kẻ chiếm tài khoản phải ra tận quán mới dùng được.
+- **Bắt buộc khi đặt mật khẩu:** tối thiểu 8 ký tự, chặn danh sách mật khẩu phổ biến và mật khẩu chứa username/SĐT (kiểm ở client).
+
+### 4.2 Đăng nhập bằng QR
+
+Máy trạm sinh ví phiên tạm, hiện QR (địa chỉ ví phiên + máy + hạn). App điện thoại của khách quét, ký uỷ quyền cho ví phiên trong `DelegateRegistry`. Không có bí mật nào đi qua máy công cộng. An toàn nhất trong 3 cách.
+
+### 4.3 OTP do staff cấp
+
+Khó ở chỗ: gửi OTP lên chain để kiểm thì OTP lộ trong mempool, người khác có thể chen giao dịch dùng trước. Cách xử lý: **OTP cũng là ví sinh, dùng một lần**.
+
+1. Staff chọn tài khoản → client sinh OTP ngẫu nhiên 8 ký tự (chữ + số, bỏ ký tự dễ nhầm) → `otpAddress = scrypt(OTP, salt = agentId + account + nonce)`.
+2. Staff gửi `issueOtp(agentId, account, otpAddress, expiresAt)`; hạn **5 phút**, dùng **một lần**. Event + nhật ký ghi staff nào cấp cho ai. OTP đọc cho khách, không lên chain.
+3. Khách nhập OTP ở máy → máy sinh lại khoá → ký uỷ quyền ví phiên → contract xoá `otpAddress`.
+4. Dò OTP từ `otpAddress` trong 5 phút: ~2,8×10^12 khả năng × scrypt → không khả thi.
+
+OTP chỉ mở phiên chơi trên máy. Muốn đặt lại mật khẩu vẫn phải qua staff `resetPassword` (§4.1).
 
 ## 5. Dữ liệu người dùng
 
@@ -69,13 +105,14 @@ On-chain, storage của `AgentUserRegistry` (cần tra khi ghi):
 | `username` | duy nhất **trong agent**, chữ thường `a-z0-9._`, 3–24 ký tự; tra `accountOf(agentId, username)`. Đổi được, lịch sử qua event |
 | `status` | `Active` / `Blocked` (agent chặn), kèm lý do |
 | `createdAt`, `registeredBy`, `registeredBranch` | thống kê, đối soát |
-| `profileDocId` | hồ sơ trong FullDB (tên hiển thị, avatar…) |
+| `loginAddress` | địa chỉ sinh từ mật khẩu (§4.1); đổi khi đổi / đặt lại mật khẩu |
+| `profileDocId` | hồ sơ trong FullDB (tên hiển thị, SĐT, họ tên, ngày sinh, avatar) |
 
 - Danh sách người dùng của agent có index + phân trang (nguyên tắc 2), phục vụ app agent và cyber.
 - Thống kê (đăng ký mới theo ngày, tổng người dùng) theo agent và chi nhánh: bộ đếm ngày như Ledger rollup, không vòng lặp, không `rebuild…` như hệ cũ.
 - Bị `Blocked`: không mở máy, không nạp, không gọi món ở agent đó. Số dư vẫn còn, hoàn theo quy định Ledger.
 - Hạng, điểm, voucher thuộc Loyalty (theo agent), không nằm ở đây.
-- Dữ liệu cá nhân (SĐT, họ tên…) **chờ chốt** (câu hỏi 2).
+- Dữ liệu cá nhân (SĐT, họ tên, ngày sinh) **lưu rõ trong FullDB**, giống hồ sơ agent (người dùng chốt 2026-11-26). Lưu ý: dữ liệu đã lên chain công khai và không xoá được.
 
 ## 6. Quyền
 
@@ -83,8 +120,11 @@ On-chain, storage của `AgentUserRegistry` (cần tra khi ghi):
 |---|---|
 | Tự đăng ký, sửa hồ sơ, đổi username, thêm/gỡ ví điều khiển | chính tài khoản (hoặc ví điều khiển của nó) |
 | Đăng ký hộ khách | Staff trở lên của một chi nhánh đang hoạt động thuộc agent |
+| Nạp tiền / xác nhận nạp | Staff trở lên, **trừ** khi tài khoản được nạp là của chính staff đó (nhân viên vẫn được làm khách) |
 | Chặn / mở người dùng | Manager trở lên hoặc chủ agent |
-| Khôi phục tài khoản (gắn ví điều khiển mới) | chờ chốt (câu hỏi 3) |
+| Đổi mật khẩu | chính tài khoản (ký bằng khoá từ mật khẩu cũ) |
+| Đặt lại mật khẩu khi quên (không cần mật khẩu cũ) | Staff trở lên của agent; ghi log staff, tài khoản, chi nhánh |
+| Cấp OTP đăng nhập | Staff trở lên của agent; hạn 5 phút, dùng 1 lần, ghi log |
 | Nền tảng (owner/admin) | chỉ xem và thống kê; không sửa người dùng của agent (`core-operator.md` R: nền tảng không có quyền nghiệp vụ trong agent) |
 
 Agent bị tạm dừng: người dùng của agent chỉ đọc (theo R5).
@@ -108,11 +148,16 @@ Agent bị tạm dừng: người dùng của agent chỉ đọc (theo R5).
 
 Sau U1–U2 mới viết đặc tả **NET** (máy trạm, phiên chơi), vì phiên chơi cần tài khoản và ví phiên.
 
-## 9. Câu hỏi cần người dùng chốt
+## 9. Đã chốt (người dùng, 2026-11-26)
 
-1. **Mật khẩu:** đồng ý "ví sinh từ mật khẩu" (§4.1, không lưu băm on-chain) thay cho cách hệ cũ không?
-2. **Dữ liệu cá nhân khách** (SĐT, họ tên, ngày sinh): lưu rõ trong FullDB, chỉ lưu băm SĐT để tra cứu, hay không lưu? SĐT chỉ ~10 chữ số nên băm vẫn dò ngược được; chỉ "không lưu" mới thật sự kín. Dữ liệu đã lên chain không xoá được.
-3. **Quên mật khẩu:** ai được khôi phục: quản lý chi nhánh nơi khách đăng ký, mọi quản lý của agent, hay chỉ chủ agent?
-4. **Đăng nhập máy trạm:** cần OTP do nhân viên cấp không, hay chỉ QR + mật khẩu?
-5. **Hệ cũ:** gộp khách các chi nhánh về agent, username trùng thì giữ của ai? Đề xuất: người đăng ký sớm nhất giữ, người sau thêm hậu tố, có báo cho khách.
-6. Nhân viên/quản lý có được làm khách tại chính agent mình không? Đề xuất: được, nhưng không tự nạp / tự xác nhận nạp cho chính mình.
+1. Người dùng thuộc agent, không có tài khoản toàn hệ.
+2. Dữ liệu cá nhân khách lưu rõ trong FullDB như hồ sơ agent.
+3. Quên mật khẩu: staff đặt lại, không cần mật khẩu cũ, ghi log staff nào đổi cho tài khoản nào. Người dùng tự đổi mật khẩu được.
+4. Ba cách đăng nhập máy trạm: OTP do staff cấp, username + mật khẩu, quét QR.
+5. Gộp hệ cũ: username trùng thì người đăng ký sớm nhất giữ, người sau thêm hậu tố (vd. `teo` → `teo.2`), báo cho khách.
+6. Nhân viên được làm khách tại agent mình, nhưng không tự nạp / tự xác nhận nạp cho chính mình.
+
+## 10. Còn chờ chốt
+
+1. **Cách lưu mật khẩu:** đồng ý cách 5 (ví sinh từ mật khẩu, §4.1) không?
+2. **Không chuyển xu giữa khách, không rút xu ra tiền** (giới hạn thiệt hại khi lộ mật khẩu): đồng ý không?
