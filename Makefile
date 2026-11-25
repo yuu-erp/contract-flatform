@@ -45,6 +45,7 @@ abi:
 	forge inspect AgentAccess abi --json > abi/AgentAccess.json
 	forge inspect SalesSettings abi --json > abi/SalesSettings.json
 	forge inspect Ledger abi --json > abi/Ledger.json
+	forge inspect AgentUserRegistry abi --json > abi/AgentUserRegistry.json
 
 # Chỉ người dùng chạy. Cần PRIVATE_KEY và RPC_URL trong .env (foundry nạp .env; rpc "platform" = ${RPC_URL}).
 # FOUNDry doc: bien trong .env duoc nap; neu FULLDB khong ap dung, chay: FULLDB=0x... make deploy
@@ -55,6 +56,11 @@ deploy:
 # Cần PRIVATE_KEY (owner) trong .env.
 deploy-agent-access:
 	forge script script/DeployAgentAccess.s.sol --rpc-url platform --broadcast
+
+# Chỉ người dùng chạy. Hệ đã deploy trước khi có người dùng theo agent: thêm AgentUserRegistry,
+# đọc/ghi deployments/platform-<chainid>.json. Cần PRIVATE_KEY (owner) trong .env.
+deploy-users:
+	forge script script/DeployAgentUsers.s.sol --rpc-url platform --broadcast
 
 # Chỉ người dùng chạy. Cần PRIVATE_KEY (owner), ACCESS_PROXY, ADMIN, ALLOW=true|false.
 set-admin:
@@ -72,7 +78,7 @@ deploy-mock-fulldb:
 # deployments/platform-<chainid>.json. Cần PRIVATE_KEY (owner). Ví dụ: make upgrade CONTRACT=AgentRegistry
 # Target tự chạy kiểm storage layout trước. Hướng dẫn: docs/07-deploy-va-nang-cap.md.
 upgrade:
-	@test -n "$(CONTRACT)" || (echo "Thiếu CONTRACT=PlatformAccess|HistoryIndex|AgentRegistry|BranchRegistry|AgentAccess|SalesSettings|Ledger" && exit 1)
+	@test -n "$(CONTRACT)" || (echo "Thiếu CONTRACT=PlatformAccess|HistoryIndex|AgentRegistry|BranchRegistry|AgentAccess|SalesSettings|Ledger|AgentUserRegistry" && exit 1)
 	python3 scripts/storage_layout.py check
 	CONTRACT=$(CONTRACT) forge script script/UpgradeProxy.s.sol --rpc-url platform --broadcast
 

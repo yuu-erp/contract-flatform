@@ -10,10 +10,11 @@ import {BranchRegistry} from "../src/core/tenant/BranchRegistry.sol";
 import {AgentAccess} from "../src/core/access/AgentAccess.sol";
 import {SalesSettings} from "../src/core/payment/SalesSettings.sol";
 import {Ledger} from "../src/core/ledger/Ledger.sol";
+import {AgentUserRegistry} from "../src/core/user/AgentUserRegistry.sol";
 
 /// @notice Nâng cấp một proxy UUPS của tầng quản trị lên implementation mới (build từ mã hiện tại).
 ///         Env: `PRIVATE_KEY` (PLATFORM_OWNER), `CONTRACT` (PlatformAccess | HistoryIndex | AgentRegistry |
-///         BranchRegistry | AgentAccess | SalesSettings | Ledger), tuỳ chọn `UPGRADE_CALL` (calldata hex gọi kèm, ví dụ một `reinitializer`),
+///         BranchRegistry | AgentAccess | SalesSettings | Ledger | AgentUserRegistry), tuỳ chọn `UPGRADE_CALL` (calldata hex gọi kèm, ví dụ một `reinitializer`),
 ///         tuỳ chọn `DRY_RUN=true` (mô phỏng, không ghi file deployments; dùng với lệnh không `--broadcast`).
 ///         Địa chỉ proxy đọc từ `deployments/platform-<chainid>.json`; sau khi nâng, ghi đè khoá `<key>Impl`.
 ///         Người dùng tự chạy `make upgrade CONTRACT=...` sau `make layout`. Không hard-code khoá.
@@ -32,6 +33,7 @@ contract UpgradeProxy is Script {
         if (h == keccak256("AgentAccess")) return "agentAccess";
         if (h == keccak256("SalesSettings")) return "salesSettings";
         if (h == keccak256("Ledger")) return "ledger";
+        if (h == keccak256("AgentUserRegistry")) return "users";
         revert(string.concat("CONTRACT khong hop le: ", name));
     }
 
@@ -44,6 +46,7 @@ contract UpgradeProxy is Script {
         if (h == keccak256("AgentAccess")) return address(new AgentAccess());
         if (h == keccak256("SalesSettings")) return address(new SalesSettings());
         if (h == keccak256("Ledger")) return address(new Ledger());
+        if (h == keccak256("AgentUserRegistry")) return address(new AgentUserRegistry());
         revert(string.concat("CONTRACT khong hop le: ", name));
     }
 

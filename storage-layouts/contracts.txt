@@ -7,6 +7,7 @@ impl    src/core/tenant/BranchRegistry.sol:BranchRegistry
 impl    src/core/access/AgentAccess.sol:AgentAccess
 impl    src/core/payment/SalesSettings.sol:SalesSettings
 impl    src/core/ledger/Ledger.sol:Ledger
+impl    src/core/user/AgentUserRegistry.sol:AgentUserRegistry
 harness test/layout/CoreLayouts.sol:PlatformAccessLayout
 harness test/layout/CoreLayouts.sol:PlatformAccessedLayout
 harness test/layout/CoreLayouts.sol:HistoryIndexLayout
@@ -15,3 +16,4 @@ harness test/layout/CoreLayouts.sol:BranchRegistryLayout
 harness test/layout/CoreLayouts.sol:AgentAccessLayout
 harness test/layout/CoreLayouts.sol:SalesSettingsLayout
 harness test/layout/CoreLayouts.sol:LedgerLayout
+harness test/layout/CoreLayouts.sol:AgentUserRegistryLayout

@@ -1,6 +1,6 @@
 # Người dùng theo agent (`core/user`)
 
-Trạng thái: **Kế hoạch, chờ duyệt** (Claude Code, 2026-11-26). Chưa có code.
+Trạng thái: **U1 đã triển khai** (Claude Code, 2026-11-26): `src/core/user/AgentUserRegistry.sol`, interface `src/interfaces/IAgentUserRegistry.sol`. U2–U4 chưa làm.
 
 ## 1. Bài toán
 
@@ -174,6 +174,31 @@ Agent bị tạm dừng: người dùng của agent chỉ đọc (theo R5).
 | U4 | UI: app cyber (đăng nhập người chơi, đăng ký hộ, danh sách người dùng), app agent (Người dùng), app platform (thống kê) | U1–U3 |
 
 Sau U1–U2 mới viết đặc tả **NET** (máy trạm, phiên chơi), vì phiên chơi cần tài khoản và ví phiên.
+
+## 8a. U1 đã triển khai — `AgentUserRegistry`
+
+| Hàm | Ai gọi | Ghi chú |
+|---|---|---|
+| `registerBySig` | ai cũng gửi hộ; ký bởi `account` | khách tự đăng ký (app webview). EIP-712 `Register`, phủ cả hồ sơ → người gửi hộ không sửa được |
+| `registerByStaff` | Staff+ của chi nhánh thuộc agent | khách mới tại quầy; nhật ký `user_register` |
+| `changePasswordBySig` | ai cũng gửi hộ; ký bởi `loginAddress` hiện tại | đổi `loginAddress`, `loginEpoch++`, `nonce++` |
+| `resetPassword` | Staff+ | quên mật khẩu, không cần mật khẩu cũ; event `UserLoginChanged(byStaff = true)` + nhật ký `user_password_reset` (actor = staff) |
+| `changeUsernameBySig`, `updateProfileBySig` | ký bởi `loginAddress` | |
+| `updateProfileByStaff` | Staff+ | nhật ký `user_profile` |
+| `issueOtp` | Staff+ | `otpAddress` sinh từ OTP ở client; hạn ≤ 10 phút; nhật ký `user_otp` |
+| `consumeOtp` | chỉ `DelegateRegistry` (U2) | dùng một lần |
+| `setBlocked` | Manager+ | bắt buộc lý do; nhật ký `user_block` / `user_unblock` |
+| `setDelegateRegistry` | `PLATFORM_OWNER` | nối U2 |
+
+Đọc: `getUser`, `getProfile`, `accountOf(agentId, username)`, `accountOfLogin(agentId, login)`, `isActive`, `otpOf`, `userCount`, `usersOf` (phân trang ≤ 100), `userCountOfBranch`, `newUsersByDay` / `newUsersByBranchDay` (≤ 93 ngày), `domainSeparator`.
+
+Lưu trữ: storage giữ username → account, loginAddress → account, trạng thái, nonce, `loginEpoch`; hồ sơ (tên, SĐT, họ tên, ngày sinh, ghi chú) ở FullDB kind `users`, db `mp1_users_<agentId>`. Mọi hàm ghi kiểm `requireAgentWritable` (hệ không pause, agent Active) và chi nhánh Active thuộc agent.
+
+Bất biến (test `test/invariant/AgentUserRegistry.invariant.t.sol`): username ↔ account 1-1 trong agent; mỗi tài khoản đúng một `loginAddress` và nó trỏ ngược về tài khoản; một địa chỉ không đồng thời là đăng nhập / định danh / OTP của hai tài khoản.
+
+Kích thước: 24.180 byte (còn 396 byte so với trần 24 KB).
+
+Deploy: hệ mới qua `make deploy`; hệ 991 đang chạy qua `make deploy-users` (docs/07 §4.3).
 
 ## 9. Đã chốt (người dùng, 2026-11-26)
 
