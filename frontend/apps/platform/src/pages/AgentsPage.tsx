@@ -1,12 +1,9 @@
 import { formatWalletAddress, useAgents } from '@meta-platform/chain'
 import {
-  ColumnHeader,
-  EmptyState,
-  ErrorState,
+  DataTable,
   HashAvatar,
-  ListPager,
-  ListRow,
-  PageLoader,
+  PageHeader,
+  Panel,
   RowMenu,
   SearchPill,
   StatusBadge,
@@ -14,7 +11,9 @@ import {
   formatAllowedServices,
   type RowMenuItem,
 } from '@meta-platform/ui'
-import { Pause, Pencil, Play, Trash2 } from 'lucide-react'
+import { Pause, Pencil, Play, Plus, Trash2 } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { CreateAgentDialog } from '../components/CreateAgentDialog'
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AgentManageDialog, type AgentManageMode } from '../components/AgentManageDialog'
@@ -40,6 +39,7 @@ function formatDate(ts: number): string {
 export function AgentsPage() {
   const agents = useAgents()
   const { canWrite, tenantWriteBlockedReason } = usePlatformWrite()
+  const [createOpen, setCreateOpen] = useState(false)
   const [params, setParams] = useSearchParams()
   const [manage, setManage] = useState<{ row: AgentListRow; mode: AgentManageMode } | null>(null)
   const [q, setQ] = useState(params.get('q') ?? '')
@@ -68,7 +68,7 @@ export function AgentsPage() {
     () => filterAndSearchAgents(all, { q, status: tab === 'all' ? null : Number(tab), servicesMask }),
     [all, q, tab, servicesMask],
   )
-  const { items, total, totalPages } = useMemo(() => paginateAgents(filtered, page, AGENTS_PAGE_SIZE), [filtered, page])
+  const { items, total } = useMemo(() => paginateAgents(filtered, page, AGENTS_PAGE_SIZE), [filtered, page])
   const branchCounts = useBranchCounts(items.map((i) => i.id))
 
   const menuFor = (row: AgentListRow): RowMenuItem[] => {
@@ -82,95 +82,153 @@ export function AgentsPage() {
 
   return (
     <>
-      <ColumnHeader title="Agent" subtitle={`${counts.all} agent on-chain`}>
-        <UnderlineTabs
-          tabs={[
-            { value: 'all', label: 'Tất cả' },
-            { value: '1', label: 'Hoạt động', count: counts['1'] },
-            { value: '2', label: 'Tạm dừng', count: counts['2'] },
-            { value: '3', label: 'Đã xoá', count: counts['3'] },
-          ]}
-          value={tab}
-          onChange={(v) => {
-            setTab(v)
-            setPage(0)
-          }}
-        />
-      </ColumnHeader>
+      <PageHeader
+        title="Agent"
+        description={`${counts.all} agent on-chain · tìm kiếm phía client (tối đa ~1000 agent)`}
+        actions={
+          <button
+            type="button"
+            disabled={!canWrite}
+            title={tenantWriteBlockedReason ?? undefined}
+            onClick={() => setCreateOpen(true)}
+            className="inline-flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-[15px] font-bold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+          >
+            <Plus className="size-5" strokeWidth={2.6} /> Tạo agent
+          </button>
+        }
+      />
 
-      <div className="space-y-3 border-b border-border px-4 py-3">
-        <SearchPill
-          value={q}
-          onChange={(v) => {
-            setQ(v)
-            setPage(0)
-            if (!v && urlQ) setParams({}, { replace: true })
-          }}
-          placeholder="Tìm theo tên, SĐT, id, ví…"
-        />
-        <div className="flex flex-wrap gap-2">
-          {SERVICE_CHIPS.map((chip) => {
-            const active = servicesMask === chip.mask
-            return (
-              <button
-                key={chip.label}
-                type="button"
-                onClick={() => {
-                  setServicesMask(chip.mask)
-                  setPage(0)
-                }}
-                className={
-                  active
-                    ? 'h-8 rounded-full bg-foreground px-3.5 text-sm font-bold text-background'
-                    : 'h-8 rounded-full border border-input px-3.5 text-sm font-bold hover:bg-hover'
-                }
-              >
-                {chip.label}
-              </button>
-            )
-          })}
+      <Panel flush>
+        <div className="border-b border-border">
+          <UnderlineTabs
+            className="max-w-[640px]"
+            tabs={[
+              { value: 'all', label: 'Tất cả', count: counts.all },
+              { value: '1', label: 'Hoạt động', count: counts['1'] },
+              { value: '2', label: 'Tạm dừng', count: counts['2'] },
+              { value: '3', label: 'Đã xoá', count: counts['3'] },
+            ]}
+            value={tab}
+            onChange={(v) => {
+              setTab(v)
+              setPage(0)
+            }}
+          />
         </div>
-        {tenantWriteBlockedReason ? (
-          <p className="text-[13px] text-muted-foreground">{tenantWriteBlockedReason} — chỉ xem.</p>
-        ) : null}
-      </div>
+        <div className="flex flex-wrap items-center gap-3 border-b border-border px-5 py-3">
+          <SearchPill
+            value={q}
+            onChange={(v) => {
+              setQ(v)
+              setPage(0)
+              if (!v && urlQ) setParams({}, { replace: true })
+            }}
+            placeholder="Tìm theo tên, SĐT, id, ví…"
+            className="h-10 w-full max-w-[360px]"
+          />
+          <div className="flex flex-wrap gap-2">
+            {SERVICE_CHIPS.map((chip) => {
+              const active = servicesMask === chip.mask
+              return (
+                <button
+                  key={chip.label}
+                  type="button"
+                  onClick={() => {
+                    setServicesMask(chip.mask)
+                    setPage(0)
+                  }}
+                  className={
+                    active
+                      ? 'h-8 rounded-full bg-foreground px-3.5 text-sm font-bold text-background'
+                      : 'h-8 rounded-full border border-input px-3.5 text-sm font-bold hover:bg-hover'
+                  }
+                >
+                  {chip.label}
+                </button>
+              )
+            })}
+          </div>
+          {tenantWriteBlockedReason ? (
+            <span className="ml-auto text-[13px] text-muted-foreground">{tenantWriteBlockedReason} — chỉ xem</span>
+          ) : null}
+        </div>
+        <DataTable
+          bare
+          columns={[
+            {
+              key: 'agent',
+              header: 'Agent',
+              render: (row: AgentListRow) => {
+                const name = row.profileName || `Agent #${row.id}`
+                return (
+                  <Link to={`/agents/${row.id}`} className="group flex items-center gap-3">
+                    <HashAvatar seed={row.owner} label={name} size={40} />
+                    <span className="min-w-0">
+                      <span className="block truncate font-bold group-hover:underline">{name}</span>
+                      <span className="block text-[13px] text-muted-foreground">
+                        #{row.id}
+                        {row.storePhone ? ` · ${row.storePhone}` : ''}
+                      </span>
+                    </span>
+                  </Link>
+                )
+              },
+            },
+            {
+              key: 'owner',
+              header: 'Ví chủ',
+              className: 'font-mono text-[13px] text-muted-foreground',
+              render: (row: AgentListRow) => formatWalletAddress(row.owner),
+            },
+            {
+              key: 'status',
+              header: 'Trạng thái',
+              render: (row: AgentListRow) => <StatusBadge kind="agent" value={row.status} />,
+            },
+            {
+              key: 'services',
+              header: 'Dịch vụ',
+              render: (row: AgentListRow) => formatAllowedServices(row.allowedServices),
+            },
+            {
+              key: 'branches',
+              header: 'Chi nhánh',
+              className: 'text-right tabular-nums',
+              render: (row: AgentListRow) => branchCounts.data?.get(row.id) ?? '…',
+            },
+            {
+              key: 'created',
+              header: 'Ngày tạo',
+              className: 'text-muted-foreground tabular-nums',
+              render: (row: AgentListRow) => formatDate(row.createdAt ?? 0),
+            },
+            {
+              key: 'actions',
+              header: '',
+              className: 'w-12 text-right',
+              render: (row: AgentListRow) => (
+                <RowMenu items={menuFor(row)} label={`Hành động cho ${row.profileName || row.id}`} />
+              ),
+            },
+          ]}
+          rows={items}
+          page={page}
+          pageSize={AGENTS_PAGE_SIZE}
+          total={total}
+          onPageChange={setPage}
+          loading={agents.isLoading}
+          error={agents.error ? agents.error.message : null}
+          onRetry={() => agents.refetch()}
+          emptyTitle="Không có agent phù hợp"
+        />
+      </Panel>
 
-      {agents.isLoading ? (
-        <PageLoader message="Đang tải agent…" />
-      ) : agents.error ? (
-        <ErrorState message={agents.error.message} onRetry={() => agents.refetch()} />
-      ) : items.length === 0 ? (
-        <EmptyState title="Không có agent phù hợp" description="Thử bỏ bớt bộ lọc hoặc đổi từ khoá." />
-      ) : (
-        <>
-          {items.map((row) => {
-            const name = row.profileName || `Agent #${row.id}`
-            const branches = branchCounts.data?.get(row.id)
-            return (
-              <ListRow
-                key={row.id}
-                to={`/agents/${row.id}`}
-                avatar={<HashAvatar seed={row.owner} label={name} size={44} />}
-                title={name}
-                meta={`· #${row.id}`}
-                subtitle={formatWalletAddress(row.owner)}
-                right={<RowMenu items={menuFor(row)} label={`Hành động cho ${name}`} />}
-              >
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-foreground">
-                  <StatusBadge kind="agent" value={row.status} />
-                  <span>{formatAllowedServices(row.allowedServices)}</span>
-                  <span>
-                    <span className="font-bold text-foreground">{branches ?? '…'}</span> chi nhánh
-                  </span>
-                  <span>Tạo {formatDate(row.createdAt ?? 0)}</span>
-                </div>
-              </ListRow>
-            )
-          })}
-          <ListPager page={page} pageCount={totalPages} onPageChange={setPage} summary={`${total} agent`} />
-        </>
-      )}
-
+      <CreateAgentDialog
+        showTrigger={false}
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        onCreated={() => agents.refetch()}
+      />
       {manage ? (
         <AgentManageDialog
           row={manage.row}

@@ -3,12 +3,11 @@ import { formatWalletAddress, useActiveWallet, useContracts } from '@meta-platfo
 import {
   Address,
   Button,
-  ColumnHeader,
-  ColumnSection,
+  PageHeader,
+  Panel,
   ConfirmDialog,
   HashAvatar,
   Input,
-  ListRow,
 } from '@meta-platform/ui'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
@@ -125,9 +124,10 @@ export function SystemPage() {
 
   return (
     <>
-      <ColumnHeader title="Hệ thống" subtitle="Owner và Admin bật/tắt hệ thống · cấu hình hệ chỉ Owner" />
+      <PageHeader title="Hệ thống" description="Owner và Admin bật/tắt hệ thống · cấu hình hệ chỉ Owner" />
+      <div className="grid items-start gap-4 lg:grid-cols-2">
 
-      <ColumnSection title={<>Trạng thái hệ thống</>} description={<>Tạm dừng chặn mọi giao dịch ghi (agent, chi nhánh, sổ tiền…). Owner hoặc Admin bật/tắt được.</>}>
+      <Panel title={<>Trạng thái hệ thống</>} description={<>Tạm dừng chặn mọi giao dịch ghi (agent, chi nhánh, sổ tiền…). Owner hoặc Admin bật/tắt được.</>}>
         <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
           <p className={`inline-flex items-center gap-2 text-[17px] font-bold ${paused ? 'text-danger' : 'text-success'}`}>
             <span className="size-2.5 rounded-full bg-current" />
@@ -152,9 +152,9 @@ export function SystemPage() {
             </Button>
           </div>
         </div>
-      </ColumnSection>
+      </Panel>
 
-      <ColumnSection title={<>Phân quyền nền tảng</>} description={<>Theo contract hiện tại.</>}>
+      <Panel title={<>Phân quyền nền tảng</>} description={<>Theo contract hiện tại.</>}>
         <div className="">
           <table className="w-full text-[15px]">
             <thead>
@@ -175,32 +175,31 @@ export function SystemPage() {
             </tbody>
           </table>
         </div>
-      </ColumnSection>
+      </Panel>
 
-      <ColumnSection title={<>Quản trị viên</>}>
+      <Panel title={<>Quản trị viên</>}>
         <div className="space-y-3 text-sm">
-          <div className="-mx-4">
+          <ul className="-mx-5 mb-3 border-y border-border">
             {data?.admins.map((a) => (
-              <ListRow
-                key={a}
-                avatar={<HashAvatar seed={a} size={40} />}
-                title={formatWalletAddress(a)}
-                subtitle={<span className="font-mono text-[13px]">{a}</span>}
-                right={
-                  isOwner ? (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      disabled={tx.pending}
-                      onClick={() => setConfirm({ type: 'removeAdmin', account: a })}
-                    >
-                      Gỡ
-                    </Button>
-                  ) : null
-                }
-              />
+              <li key={a} className="flex items-center gap-3 border-b border-border px-5 py-3 last:border-b-0">
+                <HashAvatar seed={a} size={36} />
+                <span className="min-w-0 flex-1">
+                  <span className="block font-bold">{formatWalletAddress(a)}</span>
+                  <span className="block truncate font-mono text-[13px] text-muted-foreground">{a}</span>
+                </span>
+                {isOwner ? (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={tx.pending}
+                    onClick={() => setConfirm({ type: 'removeAdmin', account: a })}
+                  >
+                    Gỡ
+                  </Button>
+                ) : null}
+              </li>
             ))}
-          </div>
+          </ul>
           <div className="flex flex-wrap gap-2">
             <Input placeholder="0x… admin mới" value={newAdmin} onChange={(e) => setNewAdmin(e.target.value)} />
             <Button
@@ -216,9 +215,9 @@ export function SystemPage() {
             </Button>
           </div>
         </div>
-      </ColumnSection>
+      </Panel>
 
-      <ColumnSection title={<>Nguồn vai trò agent (đọc)</>}>
+      <Panel title={<>Nguồn vai trò agent (đọc)</>}>
         <div className="space-y-1 text-sm">
           {data?.sources.map((s) => (
             <div key={s}>
@@ -226,9 +225,9 @@ export function SystemPage() {
             </div>
           ))}
         </div>
-      </ColumnSection>
+      </Panel>
 
-      <ColumnSection title={<>Tra quyền ghi FullDB</>}>
+      <Panel title={<>Tra quyền ghi FullDB</>}>
         <div className="space-y-2 text-sm">
           <Input placeholder="Writer 0x…" value={canWriteWriter} onChange={(e) => setCanWriteWriter(e.target.value)} />
           <select
@@ -258,9 +257,9 @@ export function SystemPage() {
             <p>{canWriteResult ? 'Được phép ghi' : 'Không được phép'}</p>
           ) : null}
         </div>
-      </ColumnSection>
+      </Panel>
 
-      <ColumnSection title={<>Ledger poster (đọc)</>}>
+      <Panel title={<>Ledger poster (đọc)</>}>
         <div className="space-y-3 text-sm">
           <Input placeholder="Poster 0x…" value={posterAddr} onChange={(e) => setPosterAddr(e.target.value)} />
           <Button
@@ -299,9 +298,9 @@ export function SystemPage() {
             ))}
           </fieldset>
         </div>
-      </ColumnSection>
+      </Panel>
 
-      <ColumnSection className="bg-danger/[0.03]" title={<><span className="text-danger">Vùng nguy hiểm (chỉ Owner)</span></>} description={<>Thao tác bất khả đảo — cần xác nhận trước khi gửi giao dịch.</>}>
+      <Panel tone="danger" className="lg:col-span-2" title={<>Vùng nguy hiểm (chỉ Owner)</>} description={<>Thao tác bất khả đảo — cần xác nhận trước khi gửi giao dịch.</>}>
         <div className="space-y-6 text-sm">
           <section className="space-y-2">
             <p className="font-medium">Chuyển owner (hai bước)</p>
@@ -347,7 +346,8 @@ export function SystemPage() {
             </Button>
           </section>
         </div>
-      </ColumnSection>
+      </Panel>
+      </div>
 
       {!isOwner && data ? (
         <p className="text-sm text-muted-foreground">

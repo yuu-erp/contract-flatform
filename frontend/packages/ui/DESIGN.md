@@ -18,24 +18,28 @@ Học bố cục, màu và nhịp chữ của X; **không** dùng logo, tên hay
 
 Token trong `styles.css`: `--background`, `--foreground`, `--muted(-foreground)`, `--border`, `--input`, `--hover` (nền khi rê vào nút/menu), `--row-hover` (nền khi rê vào hàng), `--overlay`, `--primary` (= màu chủ đạo), `--success/--warning/--danger`.
 
-## Bố cục: `ColumnShell` (`src/shell/`)
+## Bố cục dashboard: `DashboardShell` (`src/shell/`)
 
-- Trái 88px (thu gọn) / 275px (≥1280px): logo, menu chữ 20px (đậm khi đang mở), "Hiển thị", nút hành động chính dạng viên thuốc, tài khoản ở đáy (bấm mở menu).
-- Giữa 600px, viền hai bên. Mỗi trang bắt đầu bằng `ColumnHeader` (dính, nền mờ, nút quay lại) + `UnderlineTabs` nếu có tab.
-- Phải 290/350px (≥1024px): `SearchPill`, các `RailCard`.
-- Điện thoại: thanh tab dưới, nút hành động nổi, avatar ở header mở ngăn kéo.
+Giữ phong cách X (màu, chữ, nút viên thuốc) nhưng bố cục là dashboard:
+
+- **Sidebar trái** 76px (thu gọn chỉ icon) / 264px (≥1280px): logo + tên, menu viên thuốc (mục đang mở đậm + nền nhạt), "Hiển thị", nút hành động chính (vd. "Tạo agent"), tài khoản ở đáy (bấm mở menu).
+- **Thanh trên** dính, nền mờ: ô tìm kiếm bên trái; chip trạng thái + nút Hiển thị bên phải.
+- **Nội dung** rộng tối đa 1440px, dạng lưới: `PageHeader` (tiêu đề 31px + mô tả + hành động), hàng KPI 4 cột, `Panel` cho biểu đồ / bảng / thẻ phụ.
+- **Điện thoại**: nút menu mở ngăn kéo; KPI 2 cột; cột phụ của bảng ẩn bớt.
 
 ## Thành phần
 
 | Thành phần | Dùng khi |
 |---|---|
-| `ColumnSection` | khối nội dung trong cột giữa, ngăn bằng đường kẻ (`flush` cho danh sách) |
-| `ListRow` | hàng kiểu "người để theo dõi": avatar, tên đậm, dòng phụ, nội dung, hành động phải |
-| `RowMenu` | nút "…" mở menu hành động của hàng / trang hồ sơ |
-| `ListPager` | phân trang cuối danh sách |
+| `PageHeader` | đầu mỗi trang |
+| `Panel` | thẻ khối dashboard (tiêu đề 20px đậm, mô tả, hành động; `flush` cho bảng sát viền; `tone="danger"`) |
+| `DataTable bare` | bảng nằm trong `Panel` (không viền ngoài, phân trang ở chân) |
+| `UnderlineTabs` | tab gạch chân màu chủ đạo (trạng thái agent, tab trang chi tiết) |
+| `RowMenu` | nút "…" mở menu hành động của hàng / trang chi tiết |
+| `SearchPill` | ô tìm bo tròn |
 | `HashAvatar`, `hashCover` | avatar tròn / ảnh bìa sinh màu từ ví hoặc tên |
 | `KpiTile` | số liệu: nhãn 13px, số 23px đậm, xu hướng xanh/đỏ |
 
-Quy ước chữ: thân 15px, phụ 13px, tiêu đề khối 20px `font-extrabold`, số lớn 31–40px. Nút luôn `rounded-full font-bold`; ô nhập bo 4px; thẻ bo 16px; hộp thoại bo 16px với bóng mờ, nền phủ `bg-overlay`.
+Quy ước chữ: thân 15px, phụ 13px, tiêu đề thẻ 20px `font-extrabold`, tiêu đề trang 31px. Nút luôn `rounded-full font-bold`; ô nhập bo 4px; thẻ bo 16px; hộp thoại bo 16px với bóng mờ, nền phủ `bg-overlay`.
 
-App `platform` đã dùng `ColumnShell`. App `agent` vẫn dùng `AppShell` cũ (đã nhận màu mới); chuyển sang `ColumnShell` là việc sau.
+App `platform` dùng `DashboardShell`. App `agent` vẫn dùng `AppShell` cũ (đã nhận màu mới); chuyển sang `DashboardShell` là việc sau.

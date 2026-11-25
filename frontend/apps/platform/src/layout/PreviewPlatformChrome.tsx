@@ -1,5 +1,5 @@
 import { useActiveWallet, useContracts } from '@meta-platform/chain'
-import { HashAvatar, PageLoader, type ShellAccount } from '@meta-platform/ui'
+import { HashAvatar, PageLoader, type DashboardAccount } from '@meta-platform/ui'
 import { platformRoleLabel } from '../components/PlatformRoleStatus'
 import { usePlatformRole } from '../hooks/use-platform-role'
 import { usePreviewWallet, type PreviewRole } from '../preview/PreviewBootstrap'
@@ -35,7 +35,7 @@ export function PreviewPlatformChrome() {
   if (!contracts) return <PageLoader message="Đang tải dữ liệu giả…" />
 
   const address = wallet?.address ?? '0x0'
-  const account: ShellAccount = {
+  const account: DashboardAccount = {
     avatar: <HashAvatar seed={address} size={40} />,
     name: loading ? 'Đang kiểm tra…' : platformRoleLabel(role, false),
     handle: `Xem trước · ${address.slice(0, 6)}…${address.slice(-4)}`,
@@ -44,7 +44,7 @@ export function PreviewPlatformChrome() {
 
   return (
     <PlatformShell account={account}>
-      <PlatformGate noAccessExtra={<div className="rounded-2xl border border-border py-2"><PreviewRoleItems /></div>} />
+      <PlatformGate noAccessExtra={<div className="py-2"><PreviewRoleItems /></div>} />
     </PlatformShell>
   )
 }

@@ -9,15 +9,13 @@ import {
   type ServiceFilter,
 } from '@meta-platform/chain'
 import {
-  ColumnHeader,
-  ColumnSection,
+  DataTable,
   EmptyState,
-  ErrorState,
   HashAvatar,
   KpiTile,
-  ListRow,
   Money,
   PageLoader,
+  Panel,
   RevenueChart,
   RowMenu,
   StatusBadge,
@@ -31,7 +29,7 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { CalendarDays, Clock, MapPin, Pause, Phone, Play, Store, Trash2, UserRoundCog } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import {
   AgentSalesSettingsReadonly,
   AuditLogPanel,
@@ -43,6 +41,7 @@ import {
   PLATFORM_TZ_MINUTES,
   SCOPE_AGENT,
 } from '@meta-platform/ui'
+import { BackLink } from '../components/BackLink'
 import { AgentManageDialog, type AgentManageMode } from '../components/AgentManageDialog'
 import { CreateBranchDialog } from '../components/CreateBranchDialog'
 import { ProposeOwnerDialog } from '../components/ProposeOwnerDialog'
@@ -90,12 +89,7 @@ export function AgentDetailPage() {
   if (!validId) return <EmptyState title="Agent không hợp lệ" />
   if (agent.isLoading) return <PageLoader message="Đang tải agent…" />
   if (agent.isError || !agent.data) {
-    return (
-      <>
-        <ColumnHeader title="Agent" back="/agents" />
-        <EmptyState title="Không tải được agent" description={agent.error?.message} />
-      </>
-    )
+    return <EmptyState title="Không tải được agent" description={agent.error?.message} />
   }
 
   const { agent: view, profile } = agent.data
@@ -125,19 +119,25 @@ export function AgentDetailPage() {
 
   return (
     <>
-      <ColumnHeader
-        title={name}
-        subtitle={`Agent #${view.id} · ${branches.isLoading ? '…' : branchList.length} chi nhánh`}
-        back="/agents"
-      />
-
-      <div className="h-[150px]" style={{ background: hashCover(view.owner) }} />
-      <div className="px-4 pt-3">
-        <div className="flex items-start justify-between">
-          <div className="-mt-[72px] rounded-full border-4 border-background bg-background">
-            <HashAvatar seed={view.owner} label={name} size={112} />
+      <BackLink to="/agents" label="Danh sách agent" />
+      <Panel flush className="mb-4">
+        <div className="h-28" style={{ background: hashCover(view.owner) }} />
+        <div className="flex flex-wrap items-end justify-between gap-4 px-5 pt-1">
+          <div className="flex min-w-0 items-end gap-4">
+            <div className="-mt-12 shrink-0 rounded-full border-4 border-card bg-card">
+              <HashAvatar seed={view.owner} label={name} size={96} />
+            </div>
+            <div className="min-w-0 pb-1">
+              <h1 className="flex flex-wrap items-center gap-2 text-[26px] leading-8 font-extrabold tracking-tight">
+                {name}
+                <StatusBadge kind="agent" value={view.status} />
+              </h1>
+              <p className="text-[15px] text-muted-foreground">
+                Agent #{view.id} · ví chủ <span className="font-mono">{formatWalletAddress(view.owner)}</span>
+              </p>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 pb-1">
             <RowMenu items={menu} label="Thêm hành động" />
             <button
               type="button"
@@ -150,17 +150,12 @@ export function AgentDetailPage() {
             </button>
           </div>
         </div>
-        <div className="mt-3">
-          <h2 className="flex items-center gap-2 text-xl leading-6 font-extrabold">
-            {name}
-            <StatusBadge kind="agent" value={view.status} />
-          </h2>
-          <p className="text-[15px] text-muted-foreground">{formatWalletAddress(view.owner)} · ví chủ</p>
-        </div>
-        {profile.profile.note ? <p className="mt-3 text-[15px]">{profile.profile.note}</p> : null}
-        <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[15px] text-muted-foreground">
+        <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 px-5 text-[15px] text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <Store className="size-[18px]" /> {formatAllowedServices(view.allowedServices)}
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="font-bold text-foreground">{branches.isLoading ? '…' : branchList.length}</span> chi nhánh
           </span>
           {profile.profile.storeAddress ? (
             <span className="inline-flex items-center gap-1">
@@ -178,28 +173,18 @@ export function AgentDetailPage() {
               {new Date(view.createdAt * 1000).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}
             </span>
           ) : null}
+          {hasPending ? (
+            <span className="inline-flex items-center gap-1">
+              <Clock className="size-[18px]" /> Chờ ví mới nhận quyền chủ:{' '}
+              <span className="font-mono text-foreground">{formatWalletAddress(view.pendingOwner)}</span>
+            </span>
+          ) : null}
         </div>
-        {hasPending ? (
-          <p className="mt-2 inline-flex items-center gap-1 text-[15px] text-muted-foreground">
-            <Clock className="size-[18px]" /> Chờ ví mới nhận quyền chủ:{' '}
-            <span className="font-bold text-foreground">{formatWalletAddress(view.pendingOwner)}</span>
-          </p>
-        ) : null}
-        <div className="mt-3 flex gap-5 text-[15px]">
-          <span>
-            <span className="font-bold">{branches.isLoading ? '…' : branchList.length}</span>{' '}
-            <span className="text-muted-foreground">Chi nhánh</span>
-          </span>
-          <span>
-            <span className="font-bold">{view.status === 1 ? 'Đang bán' : view.status === 2 ? 'Tạm dừng' : 'Đã xoá'}</span>{' '}
-            <span className="text-muted-foreground">Trạng thái</span>
-          </span>
+        {profile.profile.note ? <p className="mt-2 px-5 text-[15px]">{profile.profile.note}</p> : null}
+        <div className="mt-3 border-t border-border">
+          <UnderlineTabs className="max-w-[860px]" tabs={[...TABS]} value={tab} onChange={setTab} />
         </div>
-      </div>
-
-      <div className="mt-3 border-b border-border">
-        <UnderlineTabs tabs={[...TABS]} value={tab} onChange={setTab} />
-      </div>
+      </Panel>
 
       {tab === 'overview' && <AgentOverviewTab agentId={agentId} branches={branchList} />}
       {tab === 'branches' && (
@@ -213,24 +198,10 @@ export function AgentDetailPage() {
           onRefetch={() => branches.refetch()}
         />
       )}
-      {tab === 'sales' && (
-        <div className="px-4 py-3">
-          <AgentSalesSettingsReadonly agentId={agentId} branches={branchList} />
-        </div>
-      )}
-      {tab === 'wallets' && (
-        <div className="px-4 py-3">
-          <CustomerWalletPanel agentId={agentId} branches={branchList} />
-        </div>
-      )}
-      {tab === 'transactions' && (
-        <div className="px-4 py-3">
-          <LedgerEntriesPanel agentId={agentId} branches={branchList} />
-        </div>
-      )}
-      {tab === 'audit' && (
-        <AuditLogPanel locked={{ agentId }} hideAgent variant="list" />
-      )}
+      {tab === 'sales' && <AgentSalesSettingsReadonly agentId={agentId} branches={branchList} />}
+      {tab === 'wallets' && <CustomerWalletPanel agentId={agentId} branches={branchList} />}
+      {tab === 'transactions' && <LedgerEntriesPanel agentId={agentId} branches={branchList} />}
+      {tab === 'audit' && <AuditLogPanel locked={{ agentId }} hideAgent />}
 
       {manage ? (
         <AgentManageDialog
@@ -275,49 +246,54 @@ function AgentOverviewTab({
   })
 
   return (
-    <>
-      <div className="border-b border-border px-4 py-3">
-        <OverviewFiltersBar range={range} onRangeChange={setRange} service={serviceUi} onServiceChange={setServiceUi} />
-      </div>
+    <div className="space-y-4">
+      <OverviewFiltersBar range={range} onRangeChange={setRange} service={serviceUi} onServiceChange={setServiceUi} />
       {rollup.isLoading ? (
         <PageLoader message="Đang tải số liệu…" />
       ) : (
         <>
-          <ColumnSection>
-            <div className="grid grid-cols-2 gap-3">
-              <KpiTile label="Doanh thu thuần" value={rev.net} className="col-span-2" />
-              <KpiTile label="Gộp" value={rev.gross} />
-              <KpiTile label="Dư nợ ví khách" value={liability.data ?? 0n} />
-            </div>
-          </ColumnSection>
-          <ColumnSection title="Doanh thu theo ngày">
-            <RevenueChart data={chart} />
-          </ColumnSection>
-          <ColumnSection flush title="So sánh chi nhánh">
-            {(rankings.data ?? []).length === 0 ? (
-              <p className="px-4 pb-3 text-[15px] text-muted-foreground">Chưa có chi nhánh.</p>
-            ) : (
-              rankings.data!.map((row) => (
-                <ListRow
-                  key={row.branchId}
-                  to={`/branches/${row.branchId}`}
-                  avatar={<HashAvatar seed={`branch-${row.branchId}`} label={row.name || String(row.branchId)} size={40} />}
-                  title={row.name || `Chi nhánh #${row.branchId}`}
-                  meta={`· #${row.branchId}`}
-                  subtitle="Doanh thu thuần"
-                  right={
-                    <span className="pt-2.5 text-[15px] font-extrabold tabular-nums">
-                      <Money value={row.net} />
-                    </span>
-                  }
-                  className="last:border-b-0"
-                />
-              ))
-            )}
-          </ColumnSection>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+            <KpiTile label="Doanh thu thuần" value={rev.net} />
+            <KpiTile label="Gộp" value={rev.gross} />
+            <KpiTile label="Dư nợ ví khách" value={liability.data ?? 0n} />
+          </div>
+          <div className="grid items-start gap-4 xl:grid-cols-3">
+            <Panel title="Doanh thu theo ngày" className="xl:col-span-2">
+              <RevenueChart data={chart} />
+            </Panel>
+            <Panel title="So sánh chi nhánh" description="Doanh thu thuần trong khoảng đã chọn">
+              {(rankings.data ?? []).length === 0 ? (
+                <p className="text-[15px] text-muted-foreground">Chưa có chi nhánh.</p>
+              ) : (
+                <ul className="space-y-3">
+                  {rankings.data!.map((row) => {
+                    const max = rankings.data!.reduce((m, r) => (r.net > m ? r.net : m), 0n)
+                    const pct = max > 0n ? Number((row.net * 1000n) / max) / 10 : 0
+                    return (
+                      <li key={row.branchId}>
+                        <Link to={`/branches/${row.branchId}`} className="group block">
+                          <span className="flex items-baseline justify-between gap-2">
+                            <span className="truncate text-[15px] font-bold group-hover:underline">
+                              {row.name || `Chi nhánh #${row.branchId}`}
+                            </span>
+                            <span className="shrink-0 text-[13px] font-bold tabular-nums">
+                              <Money value={row.net} />
+                            </span>
+                          </span>
+                          <span className="mt-1 block h-1.5 overflow-hidden rounded-full bg-muted">
+                            <span className="block h-full rounded-full bg-primary" style={{ width: `${Math.max(pct, 2)}%` }} />
+                          </span>
+                        </Link>
+                      </li>
+                    )
+                  })}
+                </ul>
+              )}
+            </Panel>
+          </div>
         </>
       )}
-    </>
+    </div>
   )
 }
 
@@ -339,32 +315,39 @@ function AgentBranchesTab({
   onRefetch: () => void
 }) {
   return (
-    <>
-      <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
-        <p className="text-[15px] text-muted-foreground">{rows.length} chi nhánh</p>
-        <CreateBranchDialog agentId={agentId} agentAllowedServices={agentAllowedServices} onCreated={onRefetch} />
-      </div>
-      {warning ? (
-        <p className="border-b border-border bg-warning/15 px-4 py-2.5 text-[15px]">{warning}</p>
-      ) : null}
-      {error ? (
-        <ErrorState message={error} onRetry={onRefetch} />
-      ) : loading ? (
-        <PageLoader message="Đang tải chi nhánh…" />
-      ) : rows.length === 0 ? (
-        <EmptyState title="Chưa có chi nhánh" description="Tạo chi nhánh đầu tiên để agent bắt đầu bán." />
-      ) : (
-        rows.map((r) => (
-          <ListRow
-            key={r.branchId}
-            to={`/branches/${r.branchId}`}
-            avatar={<HashAvatar seed={`branch-${r.branchId}`} label={r.name || String(r.branchId)} size={40} />}
-            title={r.name || `Chi nhánh #${r.branchId}`}
-            meta={`· #${r.branchId}`}
-            subtitle={r.domain}
-          />
-        ))
-      )}
-    </>
+    <Panel
+      flush
+      title="Chi nhánh"
+      description={`${rows.length} chi nhánh`}
+      actions={<CreateBranchDialog agentId={agentId} agentAllowedServices={agentAllowedServices} onCreated={onRefetch} />}
+    >
+      {warning ? <p className="border-y border-border bg-warning/15 px-5 py-2.5 text-[15px]">{warning}</p> : null}
+      <DataTable
+        bare
+        columns={[
+          {
+            key: 'name',
+            header: 'Chi nhánh',
+            render: (r: (typeof rows)[0]) => (
+              <Link to={`/branches/${r.branchId}`} className="group flex items-center gap-3">
+                <HashAvatar seed={`branch-${r.branchId}`} label={r.name || String(r.branchId)} size={36} />
+                <span className="font-bold group-hover:underline">{r.name || `Chi nhánh #${r.branchId}`}</span>
+              </Link>
+            ),
+          },
+          { key: 'domain', header: 'Domain', className: 'text-muted-foreground', render: (r: (typeof rows)[0]) => r.domain },
+          { key: 'id', header: 'ID', className: 'text-right tabular-nums', render: (r: (typeof rows)[0]) => `#${r.branchId}` },
+        ]}
+        rows={rows}
+        loading={loading}
+        error={error}
+        onRetry={onRefetch}
+        emptyTitle="Chưa có chi nhánh"
+        page={0}
+        pageSize={Math.max(rows.length, 1)}
+        total={rows.length}
+        onPageChange={() => {}}
+      />
+    </Panel>
   )
 }
