@@ -20,6 +20,7 @@ import {
   ledgerKindsMaskLabels,
 } from '../lib/ledger-poster'
 import { usePlatformRole } from '../hooks/use-platform-role'
+import { usePlatformWrite } from '../hooks/use-platform-write'
 
 const FULLDB_KINDS = [
   'platform_agents',
@@ -27,6 +28,17 @@ const FULLDB_KINDS = [
   'platform_audit',
   'ledger',
 ] as const
+
+const PERMISSION_ROWS: [string, boolean][] = [
+  ['Xem thống kê, nhật ký', true],
+  ['Tạo / sửa / tạm dừng / xoá agent', true],
+  ['Đổi ví chủ agent', true],
+  ['Tạo / sửa / xoá chi nhánh', true],
+  ['Tạm dừng / mở lại hệ thống', true],
+  ['Thêm / gỡ Admin, chuyển Owner', false],
+  ['Writer FullDB, Ledger poster, nguồn vai trò', false],
+  ['Nâng cấp contract (proxy)', false],
+]
 
 type ConfirmKind =
   | { type: 'pause' }
@@ -43,6 +55,7 @@ export function SystemPage() {
 
   const walletAddr = wallet?.address?.toLowerCase() ?? ''
   const isOwner = Boolean(role?.isOwner && walletAddr)
+  const { canPause, canUnpause, isAdmin } = usePlatformWrite()
 
   const systemQuery = useQuery({
     queryKey: ['system-snapshot'],
@@ -115,8 +128,67 @@ export function SystemPage() {
     <div className="mx-auto max-w-3xl space-y-4">
       <div>
         <h2 className="text-2xl font-semibold tracking-tight">Quản trị hệ thống</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Chỉ PLATFORM_OWNER. Pause, admin, owner, FullDB và Ledger poster.</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Owner và Admin tạm dừng / mở lại hệ thống. Quản trị viên, chuyển owner, FullDB và Ledger poster chỉ Owner.
+        </p>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Trạng thái hệ thống</CardTitle>
+          <CardDescription>
+            Tạm dừng chặn mọi giao dịch ghi (agent, chi nhánh, sổ tiền…). Owner hoặc Admin bật/tắt được.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-wrap items-center justify-between gap-3 text-sm">
+          <p className="font-medium">{paused ? 'Hệ đang tạm dừng' : 'Hệ đang chạy'}</p>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="destructive"
+              size="sm"
+              disabled={!canPause || tx.pending}
+              onClick={() => setConfirm({ type: 'pause' })}
+            >
+              Tạm dừng hệ thống
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              disabled={!canUnpause || tx.pending}
+              onClick={() => setConfirm({ type: 'unpause' })}
+            >
+              Mở lại hệ thống
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Phân quyền nền tảng</CardTitle>
+          <CardDescription>Theo contract hiện tại.</CardDescription>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border text-left text-xs text-muted-foreground">
+                <th className="py-2 font-medium">Việc</th>
+                <th className="py-2 text-center font-medium">Owner</th>
+                <th className="py-2 text-center font-medium">Admin</th>
+              </tr>
+            </thead>
+            <tbody>
+              {PERMISSION_ROWS.map(([label, admin]) => (
+                <tr key={label} className="border-b border-border/60 last:border-0">
+                  <td className="py-2">{label}</td>
+                  <td className="py-2 text-center">✓</td>
+                  <td className="py-2 text-center text-muted-foreground">{admin ? '✓' : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -241,33 +313,10 @@ export function SystemPage() {
 
       <Card className="border-destructive/50">
         <CardHeader>
-          <CardTitle className="text-destructive">Vùng nguy hiểm</CardTitle>
+          <CardTitle className="text-destructive">Vùng nguy hiểm (chỉ Owner)</CardTitle>
           <CardDescription>Thao tác bất khả đảo — cần xác nhận trước khi gửi giao dịch.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6 text-sm">
-          <section className="space-y-2">
-            <p className="font-medium">Tạm dừng toàn hệ</p>
-            <p>{paused ? 'Hệ đang tạm dừng' : 'Hệ đang chạy'}</p>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant="destructive"
-                size="sm"
-                disabled={!isOwner || paused || tx.pending}
-                onClick={() => setConfirm({ type: 'pause' })}
-              >
-                Tạm dừng (pause)
-              </Button>
-              <Button
-                variant="default"
-                size="sm"
-                disabled={!isOwner || !paused || tx.pending}
-                onClick={() => setConfirm({ type: 'unpause' })}
-              >
-                Mở lại (unpause)
-              </Button>
-            </div>
-          </section>
-
           <section className="space-y-2">
             <p className="font-medium">Gỡ quản trị viên</p>
             <ul className="space-y-2">
@@ -335,7 +384,8 @@ export function SystemPage() {
 
       {!isOwner && data ? (
         <p className="text-sm text-muted-foreground">
-          Đăng nhập ví owner ({formatWalletAddress(data.owner)}) để ghi.
+          {isAdmin ? 'Ví Admin chỉ bật/tắt hệ thống ở trang này. ' : ''}
+          Các mục cấu hình hệ cần ví Owner ({formatWalletAddress(data.owner)}).
         </p>
       ) : null}
 
@@ -358,7 +408,7 @@ function describeConfirm(kind: ConfirmKind): { title: string; description: strin
       return {
         title: 'Tạm dừng toàn hệ?',
         description:
-          'Mọi giao dịch ghi on-chain (agent, chi nhánh, sổ tiền, …) sẽ bị chặn cho đến khi unpause. Admin chỉ đọc được dashboard.',
+          'Mọi giao dịch ghi on-chain (agent, chi nhánh, sổ tiền, …) bị chặn cho đến khi mở lại. Owner hoặc Admin mở lại được.',
       }
     case 'unpause':
       return {

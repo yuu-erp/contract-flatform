@@ -34,7 +34,7 @@ describe('createMockContracts', () => {
   it('giao dịch giả chờ ~800ms', async () => {
     const c = createMockContracts(1, '0x0000000000000000000000000000000000001001')
     const t0 = Date.now()
-    await c.access.unpause()
+    await c.access.pause()
     expect(Date.now() - t0).toBeGreaterThanOrEqual(750)
   })
 

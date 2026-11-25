@@ -4,7 +4,7 @@ import { Button, Input, utf8Length } from '@meta-platform/ui'
 import { Dialog } from 'radix-ui'
 import { useEffect, useState } from 'react'
 import type { AgentListRow } from '../lib/agent-list'
-import { usePlatformRole } from '../hooks/use-platform-role'
+import { usePlatformWrite } from '../hooks/use-platform-write'
 import { SERVICE_MASK, validateCreateAgentForm, type CreateAgentForm } from '../lib/validate-create-agent'
 import { validateReason } from '../lib/validate-reason'
 
@@ -20,9 +20,8 @@ type Props = {
 
 export function AgentManageDialog({ row, mode, open, onOpenChange, onDone }: Props) {
   const contracts = useContracts()
-  const { role, paused } = usePlatformRole()
+  const { canWrite, paused } = usePlatformWrite()
   const tx = useAppTx()
-  const canWrite = Boolean(role?.isAdmin && !paused)
 
   const [reason, setReason] = useState('')
   const [reasonError, setReasonError] = useState<string | null>(null)
@@ -85,10 +84,10 @@ export function AgentManageDialog({ row, mode, open, onOpenChange, onDone }: Pro
           <Dialog.Title className="text-lg font-semibold">{titles[mode]}</Dialog.Title>
           <Dialog.Description className="mt-1 text-sm text-muted-foreground">
             {canWrite
-              ? 'Giao dịch ghi on-chain — cần ví PLATFORM_ADMIN.'
+              ? 'Giao dịch ghi on-chain bằng ví Owner hoặc Admin nền tảng.'
               : paused
-                ? 'Hệ đang pause. Mở lại ở Hệ thống trước khi ghi.'
-                : 'Chỉ PLATFORM_ADMIN được ghi.'}
+                ? 'Hệ đang tạm dừng. Mở lại ở mục Hệ thống trước khi ghi.'
+                : 'Chỉ Owner hoặc Admin nền tảng được ghi.'}
           </Dialog.Description>
 
           <div className="mt-4 space-y-3 text-sm">

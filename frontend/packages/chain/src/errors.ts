@@ -7,7 +7,7 @@ const MESSAGES: Record<string, string> = {
   InvalidStoreName: 'Tên cửa hàng phải từ 1 đến 100 byte UTF-8.',
   FieldTooLong: 'Một trường văn bản dài quá giới hạn của contract.',
   InvalidPhone: 'SĐT chỉ gồm chữ số và + - . ( ) hoặc khoảng trắng, tối đa 20 ký tự.',
-  NotPlatformAdmin: 'Ví này không phải PLATFORM_ADMIN.',
+  NotPlatformAdmin: 'Cần ví PLATFORM_OWNER hoặc PLATFORM_ADMIN.',
   EnforcedPause: 'Hệ đang tạm dừng (pause).',
   ExpectedPause: 'Hệ đang chạy, không cần mở lại.',
   EmptyReason: 'Cần nhập lý do.',

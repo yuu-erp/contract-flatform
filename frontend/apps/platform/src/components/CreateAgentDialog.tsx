@@ -3,7 +3,7 @@ import { useAppTx } from '@meta-platform/ui'
 import { Button, utf8Length } from '@meta-platform/ui'
 import { Dialog } from 'radix-ui'
 import { useState } from 'react'
-import { usePlatformRole } from '../hooks/use-platform-role'
+import { usePlatformWrite } from '../hooks/use-platform-write'
 import {
   SERVICE_MASK,
   validateCreateAgentForm,
@@ -21,9 +21,8 @@ const emptyForm = (): CreateAgentForm => ({
 
 export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
   const contracts = useContracts()
-  const { role, paused } = usePlatformRole()
+  const { canWrite: canCreate, adminOnlyHint } = usePlatformWrite()
   const tx = useAppTx()
-  const canCreate = Boolean(role?.isAdmin && !paused)
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState<CreateAgentForm>(emptyForm)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -44,16 +43,12 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
       <div className="flex max-w-xs flex-col items-end gap-1 text-right">
         <Button
           disabled={!canCreate}
-          title={canCreate ? undefined : 'Cần ví PLATFORM_ADMIN (Owner không ghi được createAgent).'}
+          title={adminOnlyHint ?? undefined}
           onClick={() => setOpen(true)}
         >
           Tạo agent
         </Button>
-        {!canCreate && role?.isOwner ? (
-          <p className="text-xs text-muted-foreground">
-            Ví Owner chỉ quản trị hệ thống; tạo agent cần ví Admin (cấp bằng make set-admin).
-          </p>
-        ) : null}
+        {!canCreate && adminOnlyHint ? <p className="text-xs text-muted-foreground">{adminOnlyHint}</p> : null}
       </div>
       <Dialog.Root
         open={open}

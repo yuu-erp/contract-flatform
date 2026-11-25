@@ -10,7 +10,6 @@ import {
   NoAccessScreen,
   PageLoader,
   SidebarWallet,
-  StatusBadge,
   ThemeToggle,
   WalletSwitcher,
   useWalletTheme,
@@ -18,6 +17,7 @@ import {
 import { LayoutDashboard, ScrollText, Settings, Users, type LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { PlatformRoleBadge } from '../components/PlatformRoleBadge'
 import { PlatformRoleStrip } from '../components/PlatformRoleStrip'
 import { PlatformRoleStatus } from '../components/PlatformRoleStatus'
 import { platformChainId, platformDeployments } from '../config/deployments'
@@ -56,7 +56,7 @@ function PlatformSession() {
     )
   }
 
-  if (!role.isOwner && location.pathname.startsWith('/system')) {
+  if (!role.isOwner && !role.isAdmin && location.pathname.startsWith('/system')) {
     return <Navigate to="/" replace />
   }
 
@@ -75,7 +75,7 @@ function PlatformChromeWithContracts() {
   const pageTitle = useDashboardTitle()
   const roleBadge =
     role && !loading ? (
-      <StatusBadge kind="role" value={role.isOwner ? 3 : 2} className="hidden lg:inline-flex" />
+      <PlatformRoleBadge role={role} />
     ) : null
 
   return (

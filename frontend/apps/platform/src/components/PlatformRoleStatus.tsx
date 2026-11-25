@@ -34,12 +34,12 @@ export function PlatformRoleStatus({
           </span>
         ) : null}
         {role?.isAdmin && !role.isOwner ? (
-          <span className="rounded-full border border-border bg-muted px-2.5 py-1">Ghi agent/chi nhánh: Admin</span>
-        ) : null}
-        {role?.isOwner && !role.isAdmin ? (
           <span className="rounded-full border border-border bg-muted px-2.5 py-1">
-            Owner: xem toàn hệ; ghi agent qua ví Admin
+            Admin: vận hành agent, chi nhánh, tạm dừng hệ thống
           </span>
+        ) : null}
+        {role?.isOwner ? (
+          <span className="rounded-full border border-border bg-muted px-2.5 py-1">Owner: toàn quyền</span>
         ) : null}
       </div>
     </div>

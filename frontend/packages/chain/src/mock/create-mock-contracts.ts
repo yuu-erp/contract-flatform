@@ -45,6 +45,23 @@ async function simulateTx(store: MockStore, address?: string) {
 export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS.owner): PlatformContracts {
   const state = buildMockState(seed)
   const store = new MockStore(state)
+  const caller = normalizeHexAddress(from)
+  const isOwnerCaller = () => caller === normalizeHexAddress(state.owner)
+  /** Giống `onlyPlatformAdmin` trên contract: owner hoặc admin. */
+  const requirePlatformAdmin = () => {
+    if (!isOwnerCaller() && !state.admins.some((a) => normalizeHexAddress(a) === caller)) {
+      throw new Error('NotPlatformAdmin')
+    }
+  }
+  /** Ghi agent/chi nhánh: owner hoặc admin, hệ không pause. */
+  const requireTenantWrite = () => {
+    requirePlatformAdmin()
+    if (state.paused) throw new Error('EnforcedPause')
+  }
+  /** Việc chỉ owner: thêm/bớt admin, đổi owner, poster. */
+  const requirePlatformOwner = () => {
+    if (!isOwnerCaller()) throw new Error('NotPlatformOwner')
+  }
 
   const access = {
     async platformAdmins(offset: unknown, limit: unknown) {
@@ -54,6 +71,17 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
     },
     async paused() {
       return state.paused
+    },
+    // Hàm thô giống contract — lớp PlatformAccessApi gọi các hàm này.
+    async owner() {
+      return state.owner
+    },
+    async pendingOwner() {
+      return state.pendingOwner
+    },
+    async isPlatformAdmin(account: string) {
+      const a = normalizeHexAddress(account)
+      return state.admins.some((x) => normalizeHexAddress(x) === a)
     },
     async resolvePlatformRole(account: string): Promise<PlatformRole> {
       const a = normalizeHexAddress(account)
@@ -70,18 +98,24 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
       return state.pendingOwner
     },
     async pause() {
+      requirePlatformAdmin()
+      if (state.paused) throw new Error('EnforcedPause')
       await simulateTx(store)
       state.paused = true
     },
     async unpause() {
+      requirePlatformAdmin()
+      if (!state.paused) throw new Error('ExpectedPause')
       await simulateTx(store)
       state.paused = false
     },
     async addPlatformAdmin(account: string) {
+      requirePlatformOwner()
       await simulateTx(store, account)
       state.admins.push(normalizeHexAddress(account))
     },
     async removePlatformAdmin(account: string) {
+      requirePlatformOwner()
       await simulateTx(store, account)
       const a = normalizeHexAddress(account)
       state.admins = state.admins.filter((x) => normalizeHexAddress(x) !== a)
@@ -92,6 +126,7 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
       state.pendingOwner = PREVIEW_WALLETS.none
     },
     async transferOwnership(newOwner: string) {
+      requirePlatformOwner()
       await simulateTx(store, newOwner)
       state.pendingOwner = normalizeHexAddress(newOwner)
     },
@@ -125,6 +160,7 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
       return profile
     },
     async createAgent(owner: string, allowedServices: unknown, profile: AgentProfile) {
+      requireTenantWrite()
       const services = mockId(allowedServices)
       await simulateTx(store, owner)
       state.agents.unshift({
@@ -140,32 +176,38 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
       void profile
     },
     async updateAgentProfile(agentId: unknown, profile: AgentProfile) {
+      requireTenantWrite()
       await simulateTx(store)
       const p = state.agentProfiles.get(mockId(agentId))
       if (p) p.profile = profile
     },
     async setAgentServices(agentId: unknown, allowedServices: unknown) {
+      requireTenantWrite()
       await simulateTx(store)
       const id = mockId(agentId)
       const a = state.agents.find((x) => x.id === id)
       if (a) a.allowedServices = mockId(allowedServices)
     },
     async suspendAgent(agentId: unknown, _reason: string) {
+      requireTenantWrite()
       await simulateTx(store)
       const a = state.agents.find((x) => x.id === mockId(agentId))
       if (a) a.status = 1
     },
     async resumeAgent(agentId: unknown, _reason: string) {
+      requireTenantWrite()
       await simulateTx(store)
       const a = state.agents.find((x) => x.id === mockId(agentId))
       if (a) a.status = 0
     },
     async deleteAgent(agentId: unknown, _reason: string) {
+      requireTenantWrite()
       await simulateTx(store)
       const a = state.agents.find((x) => x.id === mockId(agentId))
       if (a) a.status = 2
     },
     async proposeAgentOwner(_agentId: unknown, newOwner: string) {
+      requireTenantWrite()
       await simulateTx(store, newOwner)
     },
   }
@@ -173,6 +215,9 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
   const branches = {
     async agentOf(branchId: unknown) {
       return state.branches.find((b) => b.id === mockId(branchId))?.agentId ?? 0
+    },
+    async branchCount() {
+      return state.branches.length
     },
     async branchCountOf(agentId: unknown) {
       return state.branches.filter((b) => b.agentId === mockId(agentId)).length
@@ -200,36 +245,45 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
       return 0
     },
     async createBranch(_agentId: number, _init: unknown) {
+      requireTenantWrite()
       await simulateTx(store)
     },
     async updateBranchProfile(branchId: unknown, profile: BranchProfile) {
+      requireTenantWrite()
       await simulateTx(store)
       const row = state.branchProfiles.get(mockId(branchId))
       if (row) row.profile = profile
     },
     async setBranchDomain(_branchId: number, _domain: string) {
+      requireTenantWrite()
       await simulateTx(store)
     },
     async setBranchServices(_branchId: number, _services: number) {
+      requireTenantWrite()
       await simulateTx(store)
     },
     async setBranchTimezone(_branchId: number, _tz: number) {
+      requireTenantWrite()
       await simulateTx(store)
     },
     async setMainBranch(_branchId: number) {
+      requireTenantWrite()
       await simulateTx(store)
     },
     async suspendBranch(branchId: unknown, _reason: string) {
+      requireTenantWrite()
       await simulateTx(store)
       const b = state.branches.find((x) => x.id === mockId(branchId))
       if (b) b.status = 1
     },
     async resumeBranch(branchId: unknown, _reason: string) {
+      requireTenantWrite()
       await simulateTx(store)
       const b = state.branches.find((x) => x.id === mockId(branchId))
       if (b) b.status = 0
     },
     async deleteBranch(branchId: unknown, _reason: string) {
+      requireTenantWrite()
       await simulateTx(store)
       const b = state.branches.find((x) => x.id === mockId(branchId))
       if (b) b.status = 2
@@ -376,6 +430,7 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
       return 0
     },
     async setPoster(poster: string, kindsMask: unknown) {
+      requirePlatformOwner()
       await simulateTx(store, poster)
       state.poster = { address: normalizeHexAddress(poster), mask: mockId(kindsMask) }
     },

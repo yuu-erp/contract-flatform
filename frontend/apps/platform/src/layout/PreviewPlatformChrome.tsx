@@ -3,13 +3,13 @@ import {
   AppShell,
   PageLoader,
   SidebarWallet,
-  StatusBadge,
   ThemeToggle,
   WalletSwitcher,
   useWalletTheme,
 } from '@meta-platform/ui'
 import { LayoutDashboard, ScrollText, Settings, Users, type LucideIcon } from 'lucide-react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { PlatformRoleBadge } from '../components/PlatformRoleBadge'
 import { PlatformRoleStrip } from '../components/PlatformRoleStrip'
 import { PlatformRoleStatus } from '../components/PlatformRoleStatus'
 import { platformChainId } from '../config/deployments'
@@ -45,7 +45,7 @@ function PreviewSession() {
     )
   }
 
-  if (!role.isOwner && location.pathname.startsWith('/system')) {
+  if (!role.isOwner && !role.isAdmin && location.pathname.startsWith('/system')) {
     return <Navigate to="/" replace />
   }
 
@@ -67,7 +67,7 @@ export function PreviewPlatformChrome() {
   useWalletTheme()
   const roleBadge =
     role && !loading ? (
-      <StatusBadge kind="role" value={role.isOwner ? 3 : 2} className="hidden lg:inline-flex" />
+      <PlatformRoleBadge role={role} />
     ) : null
 
   if (!contracts) return <PageLoader message="Đang tải dữ liệu giả…" />
