@@ -1,16 +1,16 @@
 import { ClipboardList } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { formatNumber } from '../../data/format'
-import { useLauncher } from '../../data/hooks'
+import { usePlayer } from '../../data/hooks'
 import type { FoodItem } from '../../data/types'
 import { FoodCard } from '../../domain'
 import { Button, SearchInput, Tabs } from '../../ui'
-import { ViewHead } from './ViewHead'
+import { ContentPanel, PageHead } from '../../layout/DashboardLayout'
 
 type Cat = 'all' | 'Mì' | 'Nước' | 'Cơm'
 
 export function FoodView() {
-  const { foods } = useLauncher()
+  const { foods } = usePlayer()
   const [cat, setCat] = useState<Cat>('all')
   const [q, setQ] = useState('')
   const [cart, setCart] = useState<Record<string, number>>({})
@@ -23,11 +23,10 @@ export function FoodView() {
   const total = foods.reduce((sum, f) => sum + (cart[f.id] ?? 0) * f.price, 0)
 
   return (
-    <>
-      <ViewHead title="Gọi món" back>
-        <div className="flex-1" />
+    <ContentPanel>
+      <PageHead title="Gọi món">
         <SearchInput value={q} onChange={setQ} placeholder="Tìm kiếm món ăn…" className="w-[240px]" />
-      </ViewHead>
+      </PageHead>
       <div className="mt-4 flex items-center justify-between">
         <Tabs
           items={[
@@ -57,6 +56,6 @@ export function FoodView() {
           <FoodCard key={f.id} item={f} onAdd={add} />
         ))}
       </div>
-    </>
+    </ContentPanel>
   )
 }

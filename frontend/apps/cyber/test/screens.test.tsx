@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it } from 'vitest'
 import { cleanup } from '@testing-library/react'
@@ -42,18 +42,17 @@ describe('các màn hình chính', () => {
     expect(screen.getByRole('button', { name: 'Xác nhận' })).toBeTruthy()
   })
 
-  it('launcher: thêm món vào giỏ', () => {
-    renderAt('/launcher/food')
+  it('người chơi: trang chủ cùng khung dashboard', () => {
+    renderAt('/player')
+    expect(screen.getByText('Xin chào, yuu')).toBeTruthy()
+    expect(screen.getByText('Phiên chơi hiện tại')).toBeTruthy()
+    expect(screen.getByRole('link', { name: /Gọi món/ })).toBeTruthy()
+  })
+
+  it('người chơi: thêm món vào giỏ', () => {
+    renderAt('/player/food')
     fireEvent.click(screen.getByRole('button', { name: 'Thêm Aquafina' }))
     expect(screen.getByText('1 món · 10.000 xu')).toBeTruthy()
     expect((screen.getByRole('button', { name: 'Thêm Mì trộn' }) as HTMLButtonElement).disabled).toBe(true)
-  })
-
-  it('launcher: tìm game', () => {
-    renderAt('/launcher')
-    fireEvent.change(screen.getByPlaceholderText('Tìm kiếm game…'), { target: { value: 'steam' } })
-    const grid = screen.getByRole('button', { name: 'Chơi Steam' })
-    expect(within(grid).getByText('Steam')).toBeTruthy()
-    expect(screen.queryByRole('button', { name: 'Chơi Beat Rush' })).toBeNull()
   })
 })

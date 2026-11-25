@@ -1,15 +1,15 @@
 import { Coins, Sparkles, Ticket } from 'lucide-react'
 import { formatNumber } from '../../data/format'
-import { useLauncher } from '../../data/hooks'
+import { usePlayer } from '../../data/hooks'
 import { VoucherCard } from '../../domain'
 import { Button, Card } from '../../ui'
-import { ViewHead } from './ViewHead'
+import { ContentPanel, PageHead } from '../../layout/DashboardLayout'
 
 export function VouchersView() {
-  const { player, vouchers, voucherShop } = useLauncher()
+  const { player, vouchers, voucherShop } = usePlayer()
   return (
-    <>
-      <ViewHead title="Voucher của tôi" back />
+    <ContentPanel>
+      <PageHead title="Voucher của tôi" />
       <Card className="mt-4 flex max-w-[520px] items-center gap-4 border-[1.5px] border-white/50 px-5 py-4">
         <span className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-[#fb923c] to-[#ef4444] text-white">
           <Coins className="size-6" />
@@ -39,6 +39,6 @@ export function VouchersView() {
           <VoucherCard key={v.id} voucher={v} />
         ))}
       </div>
-    </>
+    </ContentPanel>
   )
 }

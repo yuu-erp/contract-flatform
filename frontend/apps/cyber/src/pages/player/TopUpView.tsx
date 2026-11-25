@@ -1,10 +1,10 @@
 import { ArrowUpDown } from 'lucide-react'
 import { useState } from 'react'
 import { formatNumber } from '../../data/format'
-import { useLauncher } from '../../data/hooks'
+import { usePlayer } from '../../data/hooks'
 import { WalletTxRow } from '../../domain'
 import { Button, Card, cn } from '../../ui'
-import { ViewHead } from './ViewHead'
+import { ContentPanel, PageHead } from '../../layout/DashboardLayout'
 
 /** Tỉ giá nạp: 1 VND = 1 xu (cấu hình theo quán sau). */
 const XU_PER_VND = 1
@@ -29,13 +29,13 @@ function AmountField({ label, value, unit, onChange }: { label: string; value: s
 }
 
 export function TopUpView() {
-  const { player, walletTx } = useLauncher()
+  const { player, walletTx } = usePlayer()
   const [amount, setAmount] = useState('')
   const [method, setMethod] = useState<'cash' | 'bank'>('cash')
   const vnd = Number(amount || 0)
   return (
-    <>
-      <ViewHead title="Nạp tiền" back />
+    <ContentPanel>
+      <PageHead title="Nạp tiền" />
       <div className="mt-4 grid grid-cols-[400px_1fr] gap-4">
         <Card className="p-5">
           <h2 className="text-lg font-extrabold">Nạp tiền</h2>
@@ -79,6 +79,6 @@ export function TopUpView() {
           </div>
         </Card>
       </div>
-    </>
+    </ContentPanel>
   )
 }

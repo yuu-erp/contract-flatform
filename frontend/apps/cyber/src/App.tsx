@@ -1,10 +1,10 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { ComingSoon } from './pages/ComingSoon'
-import { FoodView } from './pages/launcher/FoodView'
-import { GamesView } from './pages/launcher/GamesView'
-import { LauncherLayout } from './pages/launcher/LauncherLayout'
-import { TopUpView } from './pages/launcher/TopUpView'
-import { VouchersView } from './pages/launcher/VouchersView'
+import { FoodView } from './pages/player/FoodView'
+import { PlayerHome } from './pages/player/PlayerHome'
+import { PlayerLayout } from './pages/player/PlayerLayout'
+import { TopUpView } from './pages/player/TopUpView'
+import { VouchersView } from './pages/player/VouchersView'
 import { ManagerFloor } from './pages/manager/ManagerFloor'
 import { ManagerLayout } from './pages/manager/ManagerLayout'
 import { OwnerLayout } from './pages/owner/OwnerLayout'
@@ -29,12 +29,12 @@ export function AppRoutes() {
         <Route index element={<StaffDesk />} />
         <Route path="*" element={<ComingSoon title="Màn Staff" />} />
       </Route>
-      <Route path="launcher" element={<LauncherLayout />}>
-        <Route index element={<GamesView />} />
+      <Route path="player" element={<PlayerLayout />}>
+        <Route index element={<PlayerHome />} />
         <Route path="food" element={<FoodView />} />
         <Route path="topup" element={<TopUpView />} />
         <Route path="vouchers" element={<VouchersView />} />
-        <Route path="*" element={<p className="text-ink-muted">Màn này sẽ làm ở bước sau.</p>} />
+        <Route path="*" element={<ComingSoon title="Màn người chơi" />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

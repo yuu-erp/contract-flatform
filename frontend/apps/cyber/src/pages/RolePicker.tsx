@@ -7,7 +7,7 @@ const ROLES: { to: string; title: string; detail: string; icon: LucideIcon; tone
   { to: '/owner', title: 'Owner', detail: 'Chủ sở hữu agent: toàn bộ chi nhánh, doanh thu, công suất', icon: Crown, tone: 'help' },
   { to: '/manager', title: 'Manager', detail: 'Quản lý một hoặc nhiều chi nhánh: phòng máy, ca, nhân viên', icon: Store, tone: 'reserve' },
   { to: '/staff', title: 'Staff', detail: 'Nhân viên quầy: mở máy, nạp tiền, gọi món, yêu cầu khách', icon: Headset, tone: 'play' },
-  { to: '/launcher', title: 'Người chơi', detail: 'Launcher trên máy trạm: game, giờ còn lại, gọi món, nạp tiền', icon: Gamepad2, tone: 'topup' },
+  { to: '/player', title: 'Người chơi', detail: 'App webview: giờ còn lại, ví, gọi món, nạp tiền, voucher', icon: Gamepad2, tone: 'topup' },
 ]
 
 /** Màn chọn vai trò (bản demo). Bản thật xác định vai trò từ ví / máy trạm. */

@@ -77,6 +77,16 @@ export type Game = {
 
 export type GameIcon = 'flame' | 'swords' | 'cloud' | 'crosshair' | 'shield' | 'car' | 'triangle' | 'music' | 'trophy' | 'sprout'
 
+/** Phiên chơi hiện tại của người chơi (máy đang ngồi). */
+export type PlayerSession = {
+  pcId: string
+  zoneName: string
+  pricePerHour: number
+  startedAt: string
+  usedSec: number
+  remainingSec: number
+}
+
 export type FoodItem = { id: string; name: string; note: string; price: number; category: string; soldOut?: boolean; hue: number }
 
 export type WalletTx = { id: string; label: string; at: string; amount: number; balanceBefore: number }

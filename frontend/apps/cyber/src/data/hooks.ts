@@ -8,6 +8,7 @@ import {
   GAMES,
   HOURLY,
   PLAYER,
+  PLAYER_SESSION,
   REQUESTS,
   SHIFT,
   VOUCHER_SHOP,
@@ -39,8 +40,17 @@ export function useCustomerRequests() {
   return REQUESTS
 }
 
-export function useLauncher() {
-  return { player: PLAYER, games: GAMES, foods: FOODS, walletTx: WALLET_TX, vouchers: VOUCHERS, voucherShop: VOUCHER_SHOP }
+/** Dữ liệu của người chơi đang đăng nhập (app webview). */
+export function usePlayer() {
+  return {
+    player: PLAYER,
+    session: PLAYER_SESSION,
+    recentGames: GAMES.filter((g) => g.lastPlayed),
+    foods: FOODS,
+    walletTx: WALLET_TX,
+    vouchers: VOUCHERS,
+    voucherShop: VOUCHER_SHOP,
+  }
 }
 
 /** Đếm ngược theo giây (thời gian còn lại của phiên chơi). */

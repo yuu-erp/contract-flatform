@@ -1,6 +1,6 @@
 # Cyber — giao diện phòng máy (module NET)
 
-App React cho 4 vai trò: **Owner** (chủ agent), **Manager** (quản lý 1 hoặc nhiều chi nhánh), **Staff** (nhân viên quầy), **Người chơi** (launcher trên máy trạm). Phong cách kính mờ trên hình nền `src/assets/room-bg.webp`.
+App React cho 4 vai trò, cùng một khung dashboard: **Owner** (chủ agent), **Manager** (quản lý 1 hoặc nhiều chi nhánh), **Staff** (nhân viên quầy), **Người chơi** (mở app dạng webview: giờ còn lại, ví, gọi món, nạp tiền, voucher). Phong cách kính mờ trên hình nền `src/assets/room-bg.webp`.
 
 ```bash
 cd frontend/apps/cyber
@@ -13,7 +13,7 @@ pnpm test && pnpm lint && pnpm build
 | Thư mục | Nội dung |
 |---|---|
 | `src/ui/` | Thành phần dùng chung, không gắn nghiệp vụ: `Glass`, `Card`, `Button`, `Chip`, `Tabs`, `SearchInput`, `Avatar`, `UserChip`, `InfoPill`, `IconCluster`, `StatTile`, `ProgressBar`, `RingProgress`, `AreaChart`, `ListRow`, `SideNav`… |
-| `src/domain/` | Thành phần nghiệp vụ NET dùng lại giữa các vai trò: `PcTile`/`PcGrid`, `ZonePanel`, `PcLegend`, `PcDetailCard`, `ShiftCard`, `RequestItem`, `QuickAction`, `BranchRow`, `GameTile`, `FoodCard`, `WalletTxRow`, `VoucherCard`… |
+| `src/domain/` | Thành phần nghiệp vụ NET dùng lại giữa các vai trò: `PcTile`/`PcGrid`, `ZonePanel`, `PcLegend`, `PcDetailCard`, `ShiftCard`, `RequestItem`, `QuickAction`, `BranchRow`, `RecentGameRow`, `FoodCard`, `WalletTxRow`, `VoucherCard`… |
 | `src/layout/` | `Backdrop` (hình nền), `DashboardLayout` (sidebar + thanh trên + nội dung), `ContentPanel`, `SidePanel`, `PageHead` |
 | `src/pages/` | Màn theo vai trò, chỉ ghép từ `ui/` + `domain/` |
 | `src/data/` | Kiểu dữ liệu, định dạng, quy tắc trạng thái máy (`pc.ts`), dữ liệu giả (`mock.ts`) và **hook** (`hooks.ts`) |

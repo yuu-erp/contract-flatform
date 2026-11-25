@@ -12,6 +12,7 @@ import type {
   Member,
   MemberRank,
   Pc,
+  PlayerSession,
   Shift,
   Voucher,
   WalletTx,
@@ -198,6 +199,15 @@ export const VOUCHER_SHOP: Voucher[] = [
   { id: 'vs2', title: 'Đổi 1.000 xu thưởng lấy 10.000 xu chính', expires: '31/12/2026', cost: 1_000 },
   { id: 'vs3', title: 'Đổi 5.000 xu thưởng lấy combo cơm gà', expires: '31/12/2026', cost: 5_000 },
 ]
+
+export const PLAYER_SESSION: PlayerSession = {
+  pcId: 'PC_100',
+  zoneName: 'Khu VIP',
+  pricePerHour: 15_000,
+  startedAt: '21:28',
+  usedSec: 2 * 3600 + 14 * 60 + 8,
+  remainingSec: 1 * 3600 + 46 * 60 + 32,
+}
 
 export const PLAYER: Member = {
   id: 'm-yuu',
