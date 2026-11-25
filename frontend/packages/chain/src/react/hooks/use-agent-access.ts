@@ -4,6 +4,7 @@ import { readDomainParam } from '../../read-domain'
 import { Role } from '../../roles'
 import { type PlatformContracts, useContracts } from '../contracts-context'
 import { useActiveWallet } from '../use-active-wallet'
+import { withTimeout } from '../../network'
 
 export type { AgentAccess }
 
@@ -127,7 +128,8 @@ export function useAgentAccess() {
           managedBranches: [],
         })
       }
-      const input = await buildResolveInput(contracts, account, domain)
+      // RPC chết thì SDK có thể treo: chặn bằng thời hạn để app hiện màn "Lỗi hệ thống".
+      const input = await withTimeout(buildResolveInput(contracts, account, domain), 20_000, 'Xác định vai trò')
       return resolveAgentAccess(input)
     },
   })

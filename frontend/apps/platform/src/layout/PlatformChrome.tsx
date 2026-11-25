@@ -1,11 +1,12 @@
 import {
   ContractsProvider,
   formatWalletAddress,
+  isConnectivityError,
   useActiveWallet,
   useConnectWallet,
   usePlatformContracts,
 } from '@meta-platform/chain'
-import { ColumnHeader, HashAvatar, PageLoader, useWalletTheme, type ShellAccount } from '@meta-platform/ui'
+import { ColumnHeader, HashAvatar, PageLoader, SystemErrorScreen, useWalletTheme, type ShellAccount } from '@meta-platform/ui'
 import { Loader2, Wallet } from 'lucide-react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { platformRoleLabel } from '../components/PlatformRoleStatus'
@@ -32,12 +33,42 @@ export function NoPlatformAccess({ address, extra }: { address?: string; extra?:
   )
 }
 
+/** Màn lỗi hệ thống khi không đọc được chain (RPC chết, chain tắt, hết thời gian). */
+export function PlatformSystemError({
+  error,
+  onRetry,
+  retrying,
+}: {
+  error: unknown
+  onRetry: () => void
+  retrying: boolean
+}) {
+  const network = isConnectivityError(error)
+  return (
+    <>
+      <ColumnHeader title="Lỗi hệ thống" />
+      <SystemErrorScreen
+        title={network ? 'Không kết nối được hệ thống' : 'Không đọc được dữ liệu on-chain'}
+        description={
+          network
+            ? 'Chain hoặc RPC đang tạm ngưng nên chưa kiểm tra được quyền và số liệu. Vui lòng thử lại sau ít phút.'
+            : 'Lệnh đọc contract thất bại. Vui lòng thử lại sau; nếu vẫn lỗi, báo quản trị hệ thống kèm chi tiết bên dưới.'
+        }
+        detail={error instanceof Error ? `${error.name}: ${error.message}` : String(error)}
+        onRetry={onRetry}
+        retrying={retrying}
+      />
+    </>
+  )
+}
+
 /** Gác quyền chung cho cả chế độ thật và xem trước. */
 export function PlatformGate({ noAccessExtra }: { noAccessExtra?: React.ReactNode }) {
-  const { role, loading } = usePlatformRole()
+  const { role, loading, error, retry, retrying } = usePlatformRole()
   const { data: wallet } = useActiveWallet()
   const location = useLocation()
 
+  if (error) return <PlatformSystemError error={error} onRetry={retry} retrying={retrying} />
   if (loading) return <PageLoader message="Đang kiểm tra quyền on-chain…" />
   if (!role?.isOwner && !role?.isAdmin && !role?.isPendingOwner) {
     return <NoPlatformAccess address={wallet?.address} extra={noAccessExtra} />
@@ -66,8 +97,8 @@ function useLiveAccount(roleText: string | null): ShellAccount | undefined {
 }
 
 function PlatformChromeWithContracts() {
-  const { role, loading } = usePlatformRole()
-  const account = useLiveAccount(loading ? null : platformRoleLabel(role, false))
+  const { role, loading, error } = usePlatformRole()
+  const account = useLiveAccount(error ? 'Mất kết nối' : loading ? null : platformRoleLabel(role, false))
   return (
     <PlatformShell account={account}>
       <PlatformGate />

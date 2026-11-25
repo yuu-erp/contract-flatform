@@ -1,6 +1,8 @@
 import {
   ContractsProvider,
   createMockContracts,
+  makeContractsOffline,
+  previewRpcDown,
   PREVIEW_WALLETS,
   activeWalletQueryKey,
 } from '@meta-platform/chain'
@@ -35,7 +37,10 @@ function readStoredRole(): PreviewAgentRole {
 export function PreviewBootstrap({ children }: PropsWithChildren) {
   const [role, setRole] = useState<PreviewAgentRole>(() => readStoredRole())
   const address = walletForRole[role]
-  const contracts = useMemo(() => createMockContracts(42, address), [address])
+  const contracts = useMemo(() => {
+    const mock = createMockContracts(42, address)
+    return previewRpcDown() ? makeContractsOffline(mock) : mock
+  }, [address])
 
   useEffect(() => {
     window.sessionStorage.setItem('agent-preview-role', role)

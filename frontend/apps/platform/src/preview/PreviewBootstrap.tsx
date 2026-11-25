@@ -1,6 +1,8 @@
 import {
   ContractsProvider,
   createMockContracts,
+  makeContractsOffline,
+  previewRpcDown,
   PREVIEW_WALLETS,
   activeWalletQueryKey,
 } from '@meta-platform/chain'
@@ -27,7 +29,10 @@ const PreviewWalletContext = createContext<PreviewWalletCtx | null>(null)
 export function PreviewBootstrap({ children }: PropsWithChildren) {
   const [role, setRole] = useState<PreviewRole>('owner')
   const address = walletForRole[role]
-  const contracts = useMemo(() => createMockContracts(42, address), [address])
+  const contracts = useMemo(() => {
+    const mock = createMockContracts(42, address)
+    return previewRpcDown() ? makeContractsOffline(mock) : mock
+  }, [address])
 
   return (
     <PreviewWalletContext value={{ role, setRole, address }}>

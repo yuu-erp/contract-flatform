@@ -29,7 +29,7 @@ function PreviewRoleItems() {
 
 export function PreviewPlatformChrome() {
   const contracts = useContracts()
-  const { role, loading } = usePlatformRole()
+  const { role, loading, error } = usePlatformRole()
   const { data: wallet } = useActiveWallet()
 
   if (!contracts) return <PageLoader message="Đang tải dữ liệu giả…" />
@@ -37,7 +37,7 @@ export function PreviewPlatformChrome() {
   const address = wallet?.address ?? '0x0'
   const account: ShellAccount = {
     avatar: <HashAvatar seed={address} size={40} />,
-    name: loading ? 'Đang kiểm tra…' : platformRoleLabel(role, false),
+    name: error ? 'Mất kết nối' : loading ? 'Đang kiểm tra…' : platformRoleLabel(role, false),
     handle: `Xem trước · ${address.slice(0, 6)}…${address.slice(-4)}`,
     menu: <PreviewRoleItems />,
   }

@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { CreateAgentDialog } from '../components/CreateAgentDialog'
 import { PlatformRightRail } from '../components/PlatformRightRail'
+import { usePlatformRole } from '../hooks/use-platform-role'
 import { usePlatformWrite } from '../hooks/use-platform-write'
 
 export const PLATFORM_NAV: ShellNavItem[] = [
@@ -26,6 +27,7 @@ export function PausedBanner() {
 /** Khung app platform khi đã có contract: nút "Tạo agent", cột phải, dải tạm dừng. */
 export function PlatformShell({ account, children }: { account?: ShellAccount; children: ReactNode }) {
   const { canWrite, adminOnlyHint, paused, isOperator } = usePlatformWrite()
+  const { error: chainError } = usePlatformRole()
   const [createOpen, setCreateOpen] = useState(false)
   const queryClient = useQueryClient()
 
@@ -46,8 +48,9 @@ export function PlatformShell({ account, children }: { account?: ShellAccount; c
           : undefined
       }
       account={account}
-      rightRail={<PlatformRightRail />}
-      banner={paused ? <PausedBanner /> : null}
+      // Mất kết nối chain: ẩn cột phải để không hiện số liệu / trạng thái sai.
+      rightRail={chainError ? undefined : <PlatformRightRail />}
+      banner={paused && !chainError ? <PausedBanner /> : null}
     >
       {children}
       <CreateAgentDialog

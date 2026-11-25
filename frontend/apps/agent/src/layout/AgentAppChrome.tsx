@@ -1,7 +1,7 @@
-import { decodeContractError, readDomainParam, useAgentAccess, useContracts, withDomain } from '@meta-platform/chain'
+import { decodeContractError, isConnectivityError, readDomainParam, useAgentAccess, useContracts, withDomain } from '@meta-platform/chain'
 import {
   AppShell,
-  ErrorState,
+  SystemErrorScreen,
   PageLoader,
   SidebarWallet,
   ThemeToggle,
@@ -71,11 +71,19 @@ export function AgentAppChrome() {
 
   if (!contracts) return <PageLoader message="Đang tải hợp đồng…" />
   if (isError) {
+    const network = isConnectivityError(error)
     return (
-      <div className="mx-auto flex min-h-svh w-full max-w-lg items-center p-4">
-        <ErrorState
-          message={agentAccessErrorMessage(error)}
+      <div className="flex min-h-svh items-center justify-center bg-background">
+        <SystemErrorScreen
+          title={network ? 'Không kết nối được hệ thống' : 'Không xác định được vai trò'}
+          description={
+            network
+              ? 'Chain hoặc RPC đang tạm ngưng nên chưa đọc được dữ liệu. Vui lòng thử lại sau ít phút.'
+              : agentAccessErrorMessage(error)
+          }
+          detail={error instanceof Error ? `${error.name}: ${error.message}` : String(error)}
           onRetry={() => void refetch()}
+          retrying={isFetching}
         />
       </div>
     )
