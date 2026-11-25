@@ -38,14 +38,23 @@ abstract contract PlatformAccessed is Initializable, UUPSUpgradeable {
         _;
     }
 
+    /// @notice Owner hoặc admin nền tảng. Owner là vai cao nhất nên làm được mọi việc của admin
+    ///         (tạo/sửa/xoá agent, chi nhánh...). Việc chỉ owner làm (nâng cấp, cấu hình hệ) dùng `onlyPlatformOwner`.
     modifier onlyPlatformAdmin() {
-        if (!_accessed().access.isPlatformAdmin(msg.sender)) revert IPlatformAccess.NotPlatformAdmin(msg.sender);
+        _requirePlatformAdmin();
         _;
     }
 
     modifier whenNotPaused() {
         _accessed().access.requireNotPaused();
         _;
+    }
+
+    function _requirePlatformAdmin() internal view {
+        IPlatformAccess a = _accessed().access;
+        if (!a.isPlatformAdmin(msg.sender) && msg.sender != a.owner()) {
+            revert IPlatformAccess.NotPlatformAdmin(msg.sender);
+        }
     }
 
     function _isPlatformRole(address account) internal view returns (bool) {

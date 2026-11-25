@@ -98,7 +98,7 @@ Kiểm domain → `branchIdCount++` → lưu `BranchInfo` (tên, địa chỉ, S
 | Contract | Thư mục | Trách nhiệm |
 |---|---|---|
 | ✅ `PlatformAccess` | `core/access` | **Chỉ tầng quản trị hệ thống:** `PLATFORM_OWNER` = owner của OZ `Ownable2StepUpgradeable` (đổi hai bước, **tắt `renounceOwnership`**), `PLATFORM_ADMIN` (≤ 50 ví, tự viết), pause toàn hệ bằng OZ `PausableUpgradeable`. Không có vai trò agent nào. Lỗi/event phần owner và pause là của OZ (`OwnableUnauthorizedAccount`, `EnforcedPause`, `Paused`…) |
-| ✅ `PlatformAccessed` | `core/access` | Lớp cha abstract cho mọi contract khác: modifier `onlyPlatformOwner`, `onlyPlatformAdmin`, `whenNotPaused`; quyền nâng cấp UUPS = `PLATFORM_OWNER`. **Hỏi owner từ một `PlatformAccess` duy nhất**, không kế thừa `Ownable` riêng, để cả hệ chỉ có một owner (đổi một chỗ là đổi toàn hệ) |
+| ✅ `PlatformAccessed` | `core/access` | Lớp cha abstract cho mọi contract khác: modifier `onlyPlatformOwner`, `onlyPlatformAdmin` (owner **hoặc** admin), `whenNotPaused`; quyền nâng cấp UUPS = `PLATFORM_OWNER`. **Hỏi owner từ một `PlatformAccess` duy nhất**, không kế thừa `Ownable` riêng, để cả hệ chỉ có một owner (đổi một chỗ là đổi toàn hệ) |
 | ✅ `HistoryIndex` | `core/history` | Cổng duy nhất vào FullDB. Writer do owner đăng ký (`setWriter`) và chỉ ghi được các kind owner cấp (`setWriterKind`). Địa chỉ FullDB cố định từ `initialize`, không có `setFullDB` |
 | ✅ `AgentRegistry` | `core/tenant` | Agent: tạo, sửa hồ sơ, dừng, mở lại, xoá mềm, đổi ví chủ. View cho module: `requireAgentWritable(agentId)` |
 | ✅ `BranchRegistry` | `core/tenant` | Chi nhánh, dịch vụ, domain, múi giờ, chi nhánh chính. View `requireWritable(branchId, service)`. **Thuế đã chuyển sang `SalesSettings`** (T14, `docs/modules/core-sales-settings.md`): BranchRegistry không còn hàm/event thuế; hai trường storage `agentTax`, `branchTaxPlusOne` giữ nguyên chỗ nhưng không dùng |
@@ -117,8 +117,10 @@ Kiểm domain → `branchIdCount++` → lưu `BranchInfo` (tên, địa chỉ, S
 
 | Vai trò | Ai | Quyền |
 |---|---|---|
-| `PLATFORM_OWNER` | ví của người dùng (`PRIVATE_KEY`); sau này nên chuyển multisig | nâng cấp contract (UUPS), thêm/bớt `PLATFORM_ADMIN`, đăng ký writer của `HistoryIndex`, ghi `Registry`, pause/unpause toàn hệ. **Không** tự tạo agent (phải là admin; một ví không giữ cả hai vai) |
-| `PLATFORM_ADMIN` | nhân viên vận hành | tạo/sửa hồ sơ/dừng/mở lại/xoá agent; đổi ví chủ agent; tạo/sửa/tạm dừng chi nhánh; bật/tắt dịch vụ. **Không** đặt thuế (thuế là việc của agent) |
+| `PLATFORM_OWNER` | ví của người dùng (`PRIVATE_KEY`); sau này nên chuyển multisig | **Vai cao nhất, làm được mọi việc của admin** (tạo/sửa/xoá agent, chi nhánh, pause...). Thêm phần chỉ owner: nâng cấp contract (UUPS), đổi owner (hai bước), thêm/bớt `PLATFORM_ADMIN`, nguồn vai trò agent, writer `HistoryIndex`, poster `Ledger`, nối `AgentAccess`. Owner vẫn **không** được làm chủ agent hay thành viên chi nhánh (tách vai) |
+| `PLATFORM_ADMIN` | nhân viên vận hành | tạo/sửa hồ sơ/dừng/mở lại/xoá agent; đổi ví chủ agent; tạo/sửa/tạm dừng/xoá chi nhánh; bật/tắt dịch vụ; **pause/unpause toàn hệ**; xem thống kê. **Không** nâng cấp contract, **không** cấu hình hệ (các việc chỉ owner ở dòng trên). **Không** đặt thuế (thuế là việc của agent) |
+
+Quyết định người dùng 2026-11-25: owner làm được mọi thứ; admin không nâng cấp proxy/contract nhưng làm được việc vận hành nặng (pause, CRUD agent). Thực thi: modifier `onlyPlatformAdmin` trong `PlatformAccessed` nhận **owner hoặc admin**; `PlatformAccess.pause/unpause` nhận owner hoặc admin (lỗi `NotPlatformAdmin`); việc chỉ owner dùng `onlyPlatformOwner` / OZ `onlyOwner`. Test ma trận: `test/core/access/PlatformRoleMatrix.t.sol`.
 
 `PLATFORM_OWNER` và `PLATFORM_ADMIN` **không** có quyền nghiệp vụ bên trong agent (không trừ/cộng tiền khách, không sửa đơn).
 

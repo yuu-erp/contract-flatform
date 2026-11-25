@@ -53,13 +53,13 @@ contract BranchRegistryTest is PlatformFixture {
         assertEq(r.profile.longlat, "10.7769,106.7009");
     }
 
-    function test_createBranch_onlyAdmin() public {
+    function test_createBranch_ownerOrAdmin() public {
         vm.prank(agentOwner); // agent không được tạo chi nhánh
         vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformAdmin.selector, agentOwner));
         branches.createBranch(agentId, _branchInit("a.vn", NET));
-        vm.prank(platformOwner);
-        vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformAdmin.selector, platformOwner));
-        branches.createBranch(agentId, _branchInit("a.vn", NET));
+        vm.prank(platformOwner); // owner làm được việc của admin
+        uint64 id = branches.createBranch(agentId, _branchInit("a.vn", NET));
+        assertEq(branches.getBranch(id).agentId, agentId);
     }
 
     function test_createBranch_agentMustBeActive() public {

@@ -3,6 +3,8 @@ pragma solidity 0.8.28;
 
 /// @title IPlatformAccess
 /// @notice Tầng quản trị hệ thống: chỉ có PLATFORM_OWNER (một ví) và PLATFORM_ADMIN (nhiều ví).
+///         Owner làm được mọi việc của admin; chỉ owner nâng cấp contract và cấu hình hệ
+///         (đổi owner, thêm/bớt admin, nguồn vai trò, writer, poster).
 ///         Vai trò trong agent (chủ agent, quản lý, nhân viên) KHÔNG nằm ở đây.
 ///         Phần owner và pause dùng OpenZeppelin (`Ownable2StepUpgradeable`, `PausableUpgradeable`), nên lỗi và event
 ///         của hai phần này là của OZ: `OwnableUnauthorizedAccount`, `OwnershipTransferStarted`, `OwnershipTransferred`,
@@ -12,6 +14,7 @@ interface IPlatformAccess {
     error ZeroAddress();
     /// @notice Contract kế thừa `PlatformAccessed` dùng lỗi này khi người gọi không phải owner.
     error NotPlatformOwner(address caller);
+    /// @notice Người gọi không phải owner cũng không phải admin (việc vận hành: agent, chi nhánh, pause).
     error NotPlatformAdmin(address caller);
     error AlreadyAdmin(address account);
     error NotAdmin(address account);
@@ -51,7 +54,9 @@ interface IPlatformAccess {
     function agentRoleSources() external view returns (address[] memory);
 
     // ─── Pause (OZ Pausable) ────────────────────────────────────────────
+    /// @notice Owner hoặc admin.
     function pause() external;
+    /// @notice Owner hoặc admin.
     function unpause() external;
     function paused() external view returns (bool);
     /// @notice Revert `EnforcedPause` nếu hệ đang dừng. Contract khác gọi trước khi ghi.

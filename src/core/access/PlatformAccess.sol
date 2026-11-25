@@ -157,12 +157,20 @@ contract PlatformAccess is UUPSUpgradeable, Ownable2StepUpgradeable, PausableUpg
 
     // ─── Pause (OZ) ─────────────────────────────────────────────────────
 
-    function pause() external onlyOwner {
+    /// @notice Owner hoặc admin. Dừng khẩn cấp là việc vận hành nên admin cũng làm được.
+    function pause() external {
+        _requireOwnerOrAdmin();
         _pause(); // revert EnforcedPause nếu đã dừng
     }
 
-    function unpause() external onlyOwner {
+    /// @notice Owner hoặc admin.
+    function unpause() external {
+        _requireOwnerOrAdmin();
         _unpause(); // revert ExpectedPause nếu đang chạy
+    }
+
+    function _requireOwnerOrAdmin() private view {
+        if (msg.sender != owner() && _s().adminIndexPlusOne[msg.sender] == 0) revert NotPlatformAdmin(msg.sender);
     }
 
     function paused() public view override(PausableUpgradeable, IPlatformAccess) returns (bool) {

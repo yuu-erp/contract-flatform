@@ -239,11 +239,25 @@ contract PlatformAccessTest is BaseTest {
         vm.stopPrank();
     }
 
-    function test_pause_onlyOwner() public {
+    function test_pause_ownerOrAdmin() public {
         vm.prank(platformOwner);
         access.addPlatformAdmin(platformAdmin);
+
         vm.prank(platformAdmin);
-        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, platformAdmin));
+        access.pause();
+        assertTrue(access.paused());
+        vm.prank(platformAdmin);
+        access.unpause();
+        assertFalse(access.paused());
+
+        vm.prank(stranger);
+        vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformAdmin.selector, stranger));
+        access.pause();
+
+        vm.prank(platformOwner);
+        access.removePlatformAdmin(platformAdmin);
+        vm.prank(platformAdmin);
+        vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformAdmin.selector, platformAdmin));
         access.pause();
     }
 

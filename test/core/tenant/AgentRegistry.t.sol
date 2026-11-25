@@ -76,10 +76,10 @@ contract AgentRegistryTest is PlatformFixture {
         assertEq(registry.getAgent(id).allowedServices, NET | IQR | LOYALTY);
     }
 
-    function test_createAgent_onlyAdmin() public {
-        vm.prank(platformOwner); // owner KHÔNG phải admin: tách vai
-        vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformAdmin.selector, platformOwner));
-        registry.createAgent(agentOwner, NET | IQR | LOYALTY, _profile("x"));
+    function test_createAgent_ownerOrAdmin() public {
+        vm.prank(platformOwner); // owner là vai cao nhất: làm được việc của admin
+        uint64 id = registry.createAgent(agentOwner, NET | IQR | LOYALTY, _profile("x"));
+        assertEq(registry.getAgent(id).owner, agentOwner);
 
         vm.prank(agentOwner);
         vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformAdmin.selector, agentOwner));

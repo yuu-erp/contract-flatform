@@ -198,6 +198,18 @@ Nếu bản mới cần cấu hình thêm (writer kind mới, nguồn vai trò m
 cast send $HISTORY "setWriterKind(address,string,bool)" $AGENTS platform_agents true --rpc-url $RPC_URL --private-key $PRIVATE_KEY
 ```
 
+### 5.4a Đợt nâng 2026-11-25: owner làm được việc của admin
+
+Đổi quyền (không đổi storage, không đổi ABI, không cần `UPGRADE_CALL`). Thứ tự không quan trọng vì không có hàm mới:
+
+```bash
+make upgrade CONTRACT=PlatformAccess   # pause/unpause: owner hoặc admin
+make upgrade CONTRACT=AgentRegistry    # tạo/sửa/xoá agent: owner hoặc admin
+make upgrade CONTRACT=BranchRegistry   # tạo/sửa/xoá chi nhánh: owner hoặc admin
+```
+
+Kiểm sau nâng: mở app `platform` bằng ví owner → nút "Tạo agent" bật và tạo thử được; ví admin bấm được "Tạm dừng hệ thống".
+
 ### 5.5 Quay lại bản cũ
 
 Implementation cũ vẫn nằm trên chain (địa chỉ có trong lịch sử git của file deployments). Quay lại bằng:
