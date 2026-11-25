@@ -1,0 +1,73 @@
+@import 'tailwindcss';
+@import '@fontsource/be-vietnam-pro/400.css';
+@import '@fontsource/be-vietnam-pro/500.css';
+@import '@fontsource/be-vietnam-pro/600.css';
+@import '@fontsource/be-vietnam-pro/700.css';
+@import '@fontsource/be-vietnam-pro/800.css';
+
+/*
+ * Token giao diện Cyber: kính mờ tối pha tím nâu trên hình nền phòng (assets/room-bg.webp).
+ * Màu nhấn tiết chế: xanh lá = đang chơi / tiền vào; vàng = ví KM / sắp hết giờ; cam = nạp tiền;
+ * hồng = gọi hỗ trợ; xanh dương = đặt trước; đỏ = thông báo / nguy hiểm.
+ */
+@theme {
+  --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+
+  --color-ink: #f6f3f8;
+  --color-ink-muted: rgb(246 243 248 / 0.64);
+  --color-ink-dim: rgb(246 243 248 / 0.44);
+
+  --color-glass: rgb(34 22 40 / 0.58);
+  --color-glass-strong: rgb(26 16 32 / 0.72);
+  --color-surface: rgb(255 255 255 / 0.055);
+  --color-surface-hover: rgb(255 255 255 / 0.09);
+  --color-sunken: rgb(0 0 0 / 0.26);
+  --color-edge: rgb(255 255 255 / 0.13);
+  --color-edge-soft: rgb(255 255 255 / 0.08);
+  --color-edge-strong: rgb(255 255 255 / 0.55);
+
+  --color-play: #22c55e;
+  --color-warn: #facc15;
+  --color-topup: #fb923c;
+  --color-help: #f472b6;
+  --color-reserve: #60a5fa;
+  --color-danger: #ef4444;
+  --color-violet: #a78bfa;
+
+  --radius-glass: 22px;
+  --radius-card: 18px;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    color: var(--color-ink);
+    background: #0c0812;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@utility glass {
+  background-color: var(--color-glass);
+  border: 1px solid var(--color-edge);
+  backdrop-filter: blur(26px) saturate(150%);
+  -webkit-backdrop-filter: blur(26px) saturate(150%);
+  box-shadow:
+    0 20px 60px rgb(0 0 0 / 0.35),
+    inset 0 1px 0 rgb(255 255 255 / 0.08);
+}
+
+@utility caption {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink-dim);
+}
