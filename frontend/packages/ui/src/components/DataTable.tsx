@@ -48,12 +48,12 @@ export function DataTable<T>({
 
   return (
     <div className={cn('space-y-3', className)}>
-      <div className="overflow-x-auto rounded-lg border border-border bg-card">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/60 text-left text-muted-foreground">
+      <div className="overflow-x-auto rounded-2xl border border-border bg-card">
+        <table className="w-full text-[15px]">
+          <thead className="text-left text-muted-foreground">
             <tr>
               {columns.map((col) => (
-                <th key={col.key} className={cn('px-4 py-2.5 text-xs font-medium uppercase tracking-wide', col.className)}>
+                <th key={col.key} className={cn('px-4 py-3 text-[13px] font-medium', col.className)}>
                   {col.header}
                 </th>
               ))}
@@ -61,9 +61,9 @@ export function DataTable<T>({
           </thead>
           <tbody>
             {rows.map((row, index) => (
-              <tr key={index} className="border-t border-border transition-colors hover:bg-muted/30">
+              <tr key={index} className="border-t border-border transition-colors hover:bg-row-hover">
                 {columns.map((col) => (
-                  <td key={col.key} className={cn('px-4 py-2.5', col.className)}>
+                  <td key={col.key} className={cn('px-4 py-3', col.className)}>
                     {col.render(row)}
                   </td>
                 ))}

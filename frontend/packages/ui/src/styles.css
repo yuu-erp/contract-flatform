@@ -43,98 +43,115 @@
   --color-danger-foreground: var(--danger-foreground);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
+  --color-hover: var(--hover);
+  --color-row-hover: var(--row-hover);
+  --color-overlay: var(--overlay);
 }
 
+/*
+ * Token kiểu X: 3 nền (data-bg) × 6 màu chủ đạo (data-accent), đặt trên <html> bởi display.ts.
+ * Lớp .dark vẫn bật cho nền Mờ / Tối hẳn để các biến thể dark: hiện có chạy đúng.
+ */
 :root {
-  --radius: 0.625rem;
-  --background: oklch(0.985 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.55 0.17 255);
-  --primary-foreground: oklch(0.985 0 0);
-  --success: oklch(0.59 0.16 145);
-  --success-foreground: oklch(0.985 0 0);
-  --warning: oklch(0.75 0.15 85);
-  --warning-foreground: oklch(0.22 0.02 85);
-  --danger: oklch(0.577 0.245 27.325);
-  --danger-foreground: oklch(0.985 0 0);
+  --radius: 1rem;
+  --background: #ffffff;
+  --foreground: #0f1419;
+  --card: #ffffff;
+  --card-foreground: #0f1419;
+  --popover: #ffffff;
+  --popover-foreground: #0f1419;
+  --secondary: #f7f9f9;
+  --secondary-foreground: #0f1419;
+  --muted: #f7f9f9;
+  --muted-foreground: #536471;
+  --accent: #eff3f4;
+  --accent-foreground: #0f1419;
+  --hover: rgb(15 20 25 / 0.1);
+  --row-hover: rgb(0 0 0 / 0.03);
+  --border: #eff3f4;
+  --input: #cfd9de;
+  --overlay: rgb(0 0 0 / 0.4);
+  --success: #00ba7c;
+  --success-foreground: #ffffff;
+  --warning: #ffd400;
+  --warning-foreground: #0f1419;
+  --danger: #f4212e;
+  --danger-foreground: #ffffff;
+  --destructive: #f4212e;
   --chart-1: #2a78d6;
   --chart-2: #eb6834;
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.96 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --sidebar: oklch(0.99 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.96 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --primary: #1d9bf0;
+  --primary-foreground: #ffffff;
+  --ring: var(--primary);
+  --sidebar: var(--background);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--hover);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.62 0.16 255);
-  --primary-foreground: oklch(0.985 0 0);
-  --success: oklch(0.65 0.17 145);
-  --success-foreground: oklch(0.145 0 0);
-  --warning: oklch(0.72 0.14 85);
-  --warning-foreground: oklch(0.985 0 0);
-  --danger: oklch(0.704 0.191 22.216);
-  --danger-foreground: oklch(0.985 0 0);
+:root[data-bg='dim'] {
+  --background: #15202b;
+  --foreground: #f7f9f9;
+  --card: #15202b;
+  --card-foreground: #f7f9f9;
+  --popover: #15202b;
+  --popover-foreground: #f7f9f9;
+  --secondary: #1e2732;
+  --secondary-foreground: #f7f9f9;
+  --muted: #1e2732;
+  --muted-foreground: #8b98a5;
+  --accent: #273340;
+  --accent-foreground: #f7f9f9;
+  --hover: rgb(247 249 249 / 0.1);
+  --row-hover: rgb(255 255 255 / 0.03);
+  --border: #38444d;
+  --input: #38444d;
+  --overlay: rgb(91 112 131 / 0.4);
   --chart-1: #3987e5;
   --chart-2: #d95926;
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --sidebar: oklch(0.18 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --sidebar: oklch(0.18 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-  }
+:root[data-bg='dark'] {
+  --background: #000000;
+  --foreground: #e7e9ea;
+  --card: #000000;
+  --card-foreground: #e7e9ea;
+  --popover: #000000;
+  --popover-foreground: #e7e9ea;
+  --secondary: #16181c;
+  --secondary-foreground: #e7e9ea;
+  --muted: #16181c;
+  --muted-foreground: #71767b;
+  --accent: #181919;
+  --accent-foreground: #e7e9ea;
+  --hover: rgb(231 233 234 / 0.1);
+  --row-hover: rgb(255 255 255 / 0.03);
+  --border: #2f3336;
+  --input: #333639;
+  --overlay: rgb(91 112 131 / 0.4);
+  --chart-1: #3987e5;
+  --chart-2: #d95926;
+}
+
+:root[data-accent='yellow'] {
+  --primary: #ffd400;
+  --primary-foreground: #0f1419;
+}
+:root[data-accent='pink'] {
+  --primary: #f91880;
+}
+:root[data-accent='purple'] {
+  --primary: #7856ff;
+}
+:root[data-accent='orange'] {
+  --primary: #ff7a00;
+}
+:root[data-accent='green'] {
+  --primary: #00ba7c;
 }
 
 @layer base {
@@ -147,7 +164,6 @@
     @apply h-full;
   }
   html {
-    font-size: 106.25%;
     color-scheme: light;
   }
   html.dark {
@@ -156,7 +172,10 @@
   body {
     @apply bg-background text-foreground antialiased tabular-nums;
     margin: 0;
-    font-family: 'Inter Variable', 'Inter', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 20px;
+    font-family:
+      'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
 }

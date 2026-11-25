@@ -1,4 +1,5 @@
 import {
+  formatWalletAddress,
   revenue,
   sumDays,
   useAgent,
@@ -8,25 +9,29 @@ import {
   type ServiceFilter,
 } from '@meta-platform/chain'
 import {
-  Address,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  DataTable,
+  ColumnHeader,
+  ColumnSection,
   EmptyState,
+  ErrorState,
+  HashAvatar,
   KpiTile,
+  ListRow,
   Money,
   PageLoader,
   RevenueChart,
+  RowMenu,
   StatusBadge,
+  UnderlineTabs,
+  hashCover,
   resolveRangeDays,
   type RangePickerValue,
+  type RowMenuItem,
   type ServiceFilterValue,
 } from '@meta-platform/ui'
 import { useQuery } from '@tanstack/react-query'
+import { CalendarDays, Clock, MapPin, Pause, Phone, Play, Store, Trash2, UserRoundCog } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import {
   AgentSalesSettingsReadonly,
   AuditLogPanel,
@@ -38,35 +43,36 @@ import {
   PLATFORM_TZ_MINUTES,
   SCOPE_AGENT,
 } from '@meta-platform/ui'
-import { AdminOnlyNote } from '../components/AdminOnlyNote'
 import { AgentManageDialog, type AgentManageMode } from '../components/AgentManageDialog'
 import { CreateBranchDialog } from '../components/CreateBranchDialog'
-import { DetailTabs, type DetailTab } from '../components/DetailTabs'
 import { ProposeOwnerDialog } from '../components/ProposeOwnerDialog'
 import { useBranchRankings } from '../hooks/use-branch-rankings'
 import { usePlatformWrite } from '../hooks/use-platform-write'
 import type { AgentListRow } from '../lib/agent-list'
 
-const TABS: DetailTab[] = [
-  { id: 'overview', label: 'Tổng quan' },
-  { id: 'branches', label: 'Chi nhánh' },
-  { id: 'profile', label: 'Hồ sơ & cấu hình' },
-  { id: 'sales', label: 'Thuế & thanh toán' },
-  { id: 'wallets', label: 'Ví khách' },
-  { id: 'transactions', label: 'Giao dịch' },
-  { id: 'audit', label: 'Nhật ký' },
-]
+const TABS = [
+  { value: 'overview', label: 'Tổng quan' },
+  { value: 'branches', label: 'Chi nhánh' },
+  { value: 'sales', label: 'Thuế & thanh toán' },
+  { value: 'wallets', label: 'Ví khách' },
+  { value: 'transactions', label: 'Giao dịch' },
+  { value: 'audit', label: 'Nhật ký' },
+] as const
+type TabId = (typeof TABS)[number]['value']
 
 export function AgentDetailPage() {
   const { agentId: raw } = useParams()
   const agentId = Number(raw)
   const [searchParams, setSearchParams] = useSearchParams()
-  const tab = searchParams.get('tab') ?? 'overview'
-  const setTab = (id: string) => setSearchParams({ tab: id })
+  const rawTab = searchParams.get('tab') ?? 'overview'
+  const tab: TabId = TABS.some((t) => t.value === rawTab) ? (rawTab as TabId) : 'overview'
+  const setTab = (id: TabId) => setSearchParams({ tab: id })
   const validId = Number.isFinite(agentId) && agentId > 0 ? agentId : null
   const agent = useAgent(validId)
   const branches = useAgentBranches(validId)
-  const { adminOnlyHint } = usePlatformWrite()
+  const { canWrite, tenantWriteBlockedReason } = usePlatformWrite()
+  const [manage, setManage] = useState<AgentManageMode | null>(null)
+  const [propose, setPropose] = useState(false)
 
   const branchList = useMemo(
     () =>
@@ -84,10 +90,16 @@ export function AgentDetailPage() {
   if (!validId) return <EmptyState title="Agent không hợp lệ" />
   if (agent.isLoading) return <PageLoader message="Đang tải agent…" />
   if (agent.isError || !agent.data) {
-    return <EmptyState title="Không tải được agent" description={agent.error?.message} />
+    return (
+      <>
+        <ColumnHeader title="Agent" back="/agents" />
+        <EmptyState title="Không tải được agent" description={agent.error?.message} />
+      </>
+    )
   }
 
   const { agent: view, profile } = agent.data
+  const name = profile.profile.storeName || `Agent #${view.id}`
   const listRow: AgentListRow = {
     id: view.id,
     owner: view.owner,
@@ -98,39 +110,96 @@ export function AgentDetailPage() {
     storeAddress: profile.profile.storeAddress,
     createdAt: view.createdAt,
   }
+  const hasPending = Boolean(view.pendingOwner && !/^0x0+$/i.test(view.pendingOwner))
+
+  const menu: RowMenuItem[] = canWrite
+    ? [
+        { label: 'Đề xuất ví chủ mới', icon: UserRoundCog, onSelect: () => setPropose(true) },
+        ...(view.status === 1 ? [{ label: 'Tạm dừng agent', icon: Pause, onSelect: () => setManage('suspend') }] : []),
+        ...(view.status === 2 ? [{ label: 'Mở lại agent', icon: Play, onSelect: () => setManage('resume') }] : []),
+        ...(view.status !== 3
+          ? [{ label: 'Xoá agent', icon: Trash2, danger: true, onSelect: () => setManage('delete') }]
+          : []),
+      ]
+    : []
 
   return (
-    <div className="space-y-4">
-      <AdminOnlyNote hint={adminOnlyHint} />
-      <header className="rounded-xl border border-border bg-card p-4 shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Agent #{view.id}</p>
-            <h2 className="text-2xl font-semibold">{profile.profile.storeName || `Agent #${view.id}`}</h2>
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
-              <StatusBadge kind="agent" value={view.status} />
-              <span>{formatAllowedServices(view.allowedServices)}</span>
-            </div>
-          </div>
-          <Link to="/agents" className="text-sm text-primary hover:underline">
-            ← Danh sách agent
-          </Link>
-        </div>
-        <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
-          <div>
-            <dt className="text-muted-foreground">Ví chủ</dt>
-            <dd>
-              <Address value={view.owner} />
-            </dd>
-          </div>
-          <div>
-            <dt className="text-muted-foreground">Ví chủ đang chờ</dt>
-            <dd>{view.pendingOwner ? <Address value={view.pendingOwner} /> : '—'}</dd>
-          </div>
-        </dl>
-      </header>
+    <>
+      <ColumnHeader
+        title={name}
+        subtitle={`Agent #${view.id} · ${branches.isLoading ? '…' : branchList.length} chi nhánh`}
+        back="/agents"
+      />
 
-      <DetailTabs tabs={TABS} active={tab} onChange={setTab} />
+      <div className="h-[150px]" style={{ background: hashCover(view.owner) }} />
+      <div className="px-4 pt-3">
+        <div className="flex items-start justify-between">
+          <div className="-mt-[72px] rounded-full border-4 border-background bg-background">
+            <HashAvatar seed={view.owner} label={name} size={112} />
+          </div>
+          <div className="flex items-center gap-2">
+            <RowMenu items={menu} label="Thêm hành động" />
+            <button
+              type="button"
+              disabled={!canWrite}
+              title={tenantWriteBlockedReason ?? undefined}
+              onClick={() => setManage('edit')}
+              className="h-9 rounded-full border border-input px-4 text-[15px] font-bold transition-colors hover:bg-hover disabled:opacity-50"
+            >
+              Sửa hồ sơ
+            </button>
+          </div>
+        </div>
+        <div className="mt-3">
+          <h2 className="flex items-center gap-2 text-xl leading-6 font-extrabold">
+            {name}
+            <StatusBadge kind="agent" value={view.status} />
+          </h2>
+          <p className="text-[15px] text-muted-foreground">{formatWalletAddress(view.owner)} · ví chủ</p>
+        </div>
+        {profile.profile.note ? <p className="mt-3 text-[15px]">{profile.profile.note}</p> : null}
+        <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[15px] text-muted-foreground">
+          <span className="inline-flex items-center gap-1">
+            <Store className="size-[18px]" /> {formatAllowedServices(view.allowedServices)}
+          </span>
+          {profile.profile.storeAddress ? (
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="size-[18px]" /> {profile.profile.storeAddress}
+            </span>
+          ) : null}
+          {profile.profile.storePhone ? (
+            <span className="inline-flex items-center gap-1">
+              <Phone className="size-[18px]" /> {profile.profile.storePhone}
+            </span>
+          ) : null}
+          {view.createdAt ? (
+            <span className="inline-flex items-center gap-1">
+              <CalendarDays className="size-[18px]" /> Tạo{' '}
+              {new Date(view.createdAt * 1000).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}
+            </span>
+          ) : null}
+        </div>
+        {hasPending ? (
+          <p className="mt-2 inline-flex items-center gap-1 text-[15px] text-muted-foreground">
+            <Clock className="size-[18px]" /> Chờ ví mới nhận quyền chủ:{' '}
+            <span className="font-bold text-foreground">{formatWalletAddress(view.pendingOwner)}</span>
+          </p>
+        ) : null}
+        <div className="mt-3 flex gap-5 text-[15px]">
+          <span>
+            <span className="font-bold">{branches.isLoading ? '…' : branchList.length}</span>{' '}
+            <span className="text-muted-foreground">Chi nhánh</span>
+          </span>
+          <span>
+            <span className="font-bold">{view.status === 1 ? 'Đang bán' : view.status === 2 ? 'Tạm dừng' : 'Đã xoá'}</span>{' '}
+            <span className="text-muted-foreground">Trạng thái</span>
+          </span>
+        </div>
+      </div>
+
+      <div className="mt-3 border-b border-border">
+        <UnderlineTabs tabs={[...TABS]} value={tab} onChange={setTab} />
+      </div>
 
       {tab === 'overview' && <AgentOverviewTab agentId={agentId} branches={branchList} />}
       {tab === 'branches' && (
@@ -144,12 +213,38 @@ export function AgentDetailPage() {
           onRefetch={() => branches.refetch()}
         />
       )}
-      {tab === 'profile' && <AgentProfileTab row={listRow} onRefetch={() => agent.refetch()} />}
-      {tab === 'sales' && <AgentSalesSettingsReadonly agentId={agentId} branches={branchList} />}
-      {tab === 'wallets' && <CustomerWalletPanel agentId={agentId} branches={branchList} />}
-      {tab === 'transactions' && <LedgerEntriesPanel agentId={agentId} branches={branchList} />}
-      {tab === 'audit' && <AuditLogPanel locked={{ agentId }} hideAgent />}
-    </div>
+      {tab === 'sales' && (
+        <div className="px-4 py-3">
+          <AgentSalesSettingsReadonly agentId={agentId} branches={branchList} />
+        </div>
+      )}
+      {tab === 'wallets' && (
+        <div className="px-4 py-3">
+          <CustomerWalletPanel agentId={agentId} branches={branchList} />
+        </div>
+      )}
+      {tab === 'transactions' && (
+        <div className="px-4 py-3">
+          <LedgerEntriesPanel agentId={agentId} branches={branchList} />
+        </div>
+      )}
+      {tab === 'audit' && (
+        <AuditLogPanel locked={{ agentId }} hideAgent variant="list" />
+      )}
+
+      {manage ? (
+        <AgentManageDialog
+          row={listRow}
+          mode={manage}
+          open
+          onOpenChange={() => setManage(null)}
+          onDone={() => agent.refetch()}
+        />
+      ) : null}
+      {propose ? (
+        <ProposeOwnerDialog agentId={view.id} open onOpenChange={setPropose} onDone={() => agent.refetch()} />
+      ) : null}
+    </>
   )
 }
 
@@ -180,62 +275,49 @@ function AgentOverviewTab({
   })
 
   return (
-    <div className="space-y-4">
-      <OverviewFiltersBar
-        range={range}
-        onRangeChange={setRange}
-        service={serviceUi}
-        onServiceChange={setServiceUi}
-      />
+    <>
+      <div className="border-b border-border px-4 py-3">
+        <OverviewFiltersBar range={range} onRangeChange={setRange} service={serviceUi} onServiceChange={setServiceUi} />
+      </div>
       {rollup.isLoading ? (
-        <PageLoader message="Đang tải KPI…" />
+        <PageLoader message="Đang tải số liệu…" />
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <KpiTile label="Doanh thu thuần" value={rev.net} />
-            <KpiTile label="Gộp" value={rev.gross} />
-            <KpiTile label="Dư nợ ví khách" value={liability.data ?? 0n} />
-          </div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Biểu đồ agent</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <RevenueChart data={chart} />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>So sánh chi nhánh</CardTitle>
-            </CardHeader>
-            <CardContent className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="text-left text-xs uppercase text-muted-foreground">
-                  <tr>
-                    <th className="py-2">Chi nhánh</th>
-                    <th className="py-2 text-right">Thuần</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rankings.data?.map((row) => (
-                    <tr key={row.branchId} className="border-t border-border">
-                      <td className="py-2">
-                        <Link to={`/branches/${row.branchId}`} className="text-primary hover:underline">
-                          {row.name || `#${row.branchId}`}
-                        </Link>
-                      </td>
-                      <td className="py-2 text-right">
-                        <Money value={row.net} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </CardContent>
-          </Card>
+          <ColumnSection>
+            <div className="grid grid-cols-2 gap-3">
+              <KpiTile label="Doanh thu thuần" value={rev.net} className="col-span-2" />
+              <KpiTile label="Gộp" value={rev.gross} />
+              <KpiTile label="Dư nợ ví khách" value={liability.data ?? 0n} />
+            </div>
+          </ColumnSection>
+          <ColumnSection title="Doanh thu theo ngày">
+            <RevenueChart data={chart} />
+          </ColumnSection>
+          <ColumnSection flush title="So sánh chi nhánh">
+            {(rankings.data ?? []).length === 0 ? (
+              <p className="px-4 pb-3 text-[15px] text-muted-foreground">Chưa có chi nhánh.</p>
+            ) : (
+              rankings.data!.map((row) => (
+                <ListRow
+                  key={row.branchId}
+                  to={`/branches/${row.branchId}`}
+                  avatar={<HashAvatar seed={`branch-${row.branchId}`} label={row.name || String(row.branchId)} size={40} />}
+                  title={row.name || `Chi nhánh #${row.branchId}`}
+                  meta={`· #${row.branchId}`}
+                  subtitle="Doanh thu thuần"
+                  right={
+                    <span className="pt-2.5 text-[15px] font-extrabold tabular-nums">
+                      <Money value={row.net} />
+                    </span>
+                  }
+                  className="last:border-b-0"
+                />
+              ))
+            )}
+          </ColumnSection>
         </>
       )}
-    </div>
+    </>
   )
 }
 
@@ -256,95 +338,33 @@ function AgentBranchesTab({
   warning?: string | null
   onRefetch: () => void
 }) {
-  const columns = [
-    { key: 'id', header: 'ID', render: (r: (typeof rows)[0]) => r.branchId },
-    {
-      key: 'name',
-      header: 'Tên',
-      render: (r: (typeof rows)[0]) => (
-        <Link to={`/branches/${r.branchId}`} className="text-primary hover:underline">
-          {r.name || `Chi nhánh #${r.branchId}`}
-        </Link>
-      ),
-    },
-    { key: 'domain', header: 'Domain', render: (r: (typeof rows)[0]) => r.domain },
-  ]
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between gap-2">
-        <CardTitle>Chi nhánh</CardTitle>
+    <>
+      <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
+        <p className="text-[15px] text-muted-foreground">{rows.length} chi nhánh</p>
         <CreateBranchDialog agentId={agentId} agentAllowedServices={agentAllowedServices} onCreated={onRefetch} />
-      </CardHeader>
-      <CardContent className="space-y-2">
-        {warning ? (
-          <p className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-900 dark:text-amber-100">
-            {warning}
-          </p>
-        ) : null}
-        <DataTable
-          columns={columns}
-          rows={rows}
-          loading={loading}
-          error={error}
-          onRetry={onRefetch}
-          emptyTitle="Chưa có chi nhánh"
-          page={1}
-          pageSize={100}
-          total={rows.length}
-          onPageChange={() => {}}
-        />
-      </CardContent>
-    </Card>
-  )
-}
-
-function AgentProfileTab({ row, onRefetch }: { row: AgentListRow; onRefetch: () => void }) {
-  const { canWrite, adminOnlyHint } = usePlatformWrite()
-  const [manage, setManage] = useState<{ mode: AgentManageMode } | null>(null)
-  const [propose, setPropose] = useState(false)
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Hồ sơ & cấu hình</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3 text-sm">
-        <p className="text-muted-foreground">
-          Dialog quản lý agent tái sử dụng từ commit <code>867643e</code> (`AgentManageDialog`).
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            disabled={!canWrite}
-            title={adminOnlyHint ?? undefined}
-            className="rounded-md border px-3 py-1.5 text-sm disabled:opacity-50"
-            onClick={() => setManage({ mode: 'edit' })}
-          >
-            Sửa hồ sơ / dịch vụ
-          </button>
-          <button type="button" disabled={!canWrite} className="rounded-md border px-3 py-1.5 text-sm disabled:opacity-50" onClick={() => setPropose(true)}>
-            Đề xuất ví chủ mới
-          </button>
-          {row.status === 1 ? (
-            <button type="button" disabled={!canWrite} className="rounded-md border px-3 py-1.5 text-sm" onClick={() => setManage({ mode: 'suspend' })}>
-              Tạm dừng
-            </button>
-          ) : null}
-          {row.status === 2 ? (
-            <button type="button" disabled={!canWrite} className="rounded-md border px-3 py-1.5 text-sm" onClick={() => setManage({ mode: 'resume' })}>
-              Mở lại
-            </button>
-          ) : null}
-          {row.status !== 3 ? (
-            <button type="button" disabled={!canWrite} className="rounded-md border px-3 py-1.5 text-sm text-destructive" onClick={() => setManage({ mode: 'delete' })}>
-              Xoá agent
-            </button>
-          ) : null}
-        </div>
-      </CardContent>
-      {manage ? (
-        <AgentManageDialog row={row} mode={manage.mode} open onOpenChange={() => setManage(null)} onDone={onRefetch} />
+      </div>
+      {warning ? (
+        <p className="border-b border-border bg-warning/15 px-4 py-2.5 text-[15px]">{warning}</p>
       ) : null}
-      {propose ? <ProposeOwnerDialog agentId={row.id} open onOpenChange={setPropose} onDone={onRefetch} /> : null}
-    </Card>
+      {error ? (
+        <ErrorState message={error} onRetry={onRefetch} />
+      ) : loading ? (
+        <PageLoader message="Đang tải chi nhánh…" />
+      ) : rows.length === 0 ? (
+        <EmptyState title="Chưa có chi nhánh" description="Tạo chi nhánh đầu tiên để agent bắt đầu bán." />
+      ) : (
+        rows.map((r) => (
+          <ListRow
+            key={r.branchId}
+            to={`/branches/${r.branchId}`}
+            avatar={<HashAvatar seed={`branch-${r.branchId}`} label={r.name || String(r.branchId)} size={40} />}
+            title={r.name || `Chi nhánh #${r.branchId}`}
+            meta={`· #${r.branchId}`}
+            subtitle={r.domain}
+          />
+        ))
+      )}
+    </>
   )
 }

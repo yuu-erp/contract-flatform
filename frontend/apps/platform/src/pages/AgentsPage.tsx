@@ -1,171 +1,176 @@
-import { useAgents } from '@meta-platform/chain'
-import { Address, Card, CardContent, CardDescription, CardHeader, CardTitle, DataTable, Input, StatusBadge } from '@meta-platform/ui'
-import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { formatWalletAddress, useAgents } from '@meta-platform/chain'
+import {
+  ColumnHeader,
+  EmptyState,
+  ErrorState,
+  HashAvatar,
+  ListPager,
+  ListRow,
+  PageLoader,
+  RowMenu,
+  SearchPill,
+  StatusBadge,
+  UnderlineTabs,
+  formatAllowedServices,
+  type RowMenuItem,
+} from '@meta-platform/ui'
+import { Pause, Pencil, Play, Trash2 } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { AgentManageDialog, type AgentManageMode } from '../components/AgentManageDialog'
-import { CreateAgentDialog } from '../components/CreateAgentDialog'
-import { usePlatformWrite } from '../hooks/use-platform-write'
 import { useBranchCounts } from '../hooks/use-branch-counts'
-import { AGENTS_PAGE_SIZE } from '../lib/scopes'
+import { usePlatformWrite } from '../hooks/use-platform-write'
 import { filterAndSearchAgents, paginateAgents, type AgentListRow } from '../lib/agent-list'
-import { formatAllowedServices } from '@meta-platform/ui'
+import { AGENTS_PAGE_SIZE } from '../lib/scopes'
 import { SERVICE_MASK } from '../lib/validate-create-agent'
+
+type StatusTab = 'all' | '1' | '2' | '3'
+
+const SERVICE_CHIPS: { label: string; mask: number | null }[] = [
+  { label: 'Mọi dịch vụ', mask: null },
+  { label: 'NET', mask: SERVICE_MASK.NET },
+  { label: 'IQR', mask: SERVICE_MASK.IQR },
+  { label: 'LOYALTY', mask: SERVICE_MASK.LOYALTY },
+]
+
+function formatDate(ts: number): string {
+  return ts ? new Date(ts * 1000).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : '—'
+}
 
 export function AgentsPage() {
   const agents = useAgents()
-  const { canWrite, paused, isOperator } = usePlatformWrite()
+  const { canWrite, tenantWriteBlockedReason } = usePlatformWrite()
+  const [params, setParams] = useSearchParams()
   const [manage, setManage] = useState<{ row: AgentListRow; mode: AgentManageMode } | null>(null)
-  const [q, setQ] = useState('')
-  const [status, setStatus] = useState<number | null>(null)
+  const [q, setQ] = useState(params.get('q') ?? '')
+  const [tab, setTab] = useState<StatusTab>('all')
   const [servicesMask, setServicesMask] = useState<number | null>(null)
   const [page, setPage] = useState(0)
 
+  // Ô tìm ở cột phải đổi ?q= → đồng bộ vào ô tìm của trang.
+  const urlQ = params.get('q') ?? ''
+  useEffect(() => {
+    setQ(urlQ)
+    setPage(0)
+  }, [urlQ])
+
+  const all = agents.rows as AgentListRow[]
+  const counts = useMemo(() => {
+    const c = { all: all.length, '1': 0, '2': 0, '3': 0 } as Record<StatusTab, number>
+    for (const a of all) {
+      const k = String(a.status) as StatusTab
+      if (k in c) c[k]++
+    }
+    return c
+  }, [all])
+
   const filtered = useMemo(
-    () =>
-      filterAndSearchAgents(agents.rows as AgentListRow[], {
-        q,
-        status,
-        servicesMask,
-      }),
-    [agents.rows, q, status, servicesMask],
+    () => filterAndSearchAgents(all, { q, status: tab === 'all' ? null : Number(tab), servicesMask }),
+    [all, q, tab, servicesMask],
   )
-
-  const { items, total, totalPages } = useMemo(
-    () => paginateAgents(filtered, page, AGENTS_PAGE_SIZE),
-    [filtered, page],
-  )
-
+  const { items, total, totalPages } = useMemo(() => paginateAgents(filtered, page, AGENTS_PAGE_SIZE), [filtered, page])
   const branchCounts = useBranchCounts(items.map((i) => i.id))
 
-  const columns = useMemo(
-    () => [
-      {
-        key: 'id',
-        header: 'ID',
-        render: (row: AgentListRow) => row.id,
-      },
-      {
-        key: 'name',
-        header: 'Tên cửa hàng',
-        render: (row: AgentListRow) => (
-          <Link to={`/agents/${row.id}`} className="text-primary hover:underline">
-            {row.profileName || `Agent #${row.id}`}
-          </Link>
-        ),
-      },
-      {
-        key: 'owner',
-        header: 'Ví chủ',
-        render: (row: AgentListRow) => <Address value={row.owner} />,
-      },
-      {
-        key: 'status',
-        header: 'Trạng thái',
-        render: (row: AgentListRow) => <StatusBadge kind="agent" value={row.status} />,
-      },
-      {
-        key: 'services',
-        header: 'Dịch vụ',
-        render: (row: AgentListRow) => formatAllowedServices(row.allowedServices),
-      },
-      {
-        key: 'branches',
-        header: 'Chi nhánh',
-        render: (row: AgentListRow) => branchCounts.data?.get(row.id) ?? '…',
-      },
-      {
-        key: 'created',
-        header: 'Ngày tạo',
-        render: (row: AgentListRow) =>
-          row.createdAt
-            ? new Date(row.createdAt * 1000).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
-            : '—',
-      },
-      {
-        key: 'actions',
-        header: '',
-        render: (row: AgentListRow) => (
-          <AgentRowActions row={row} canWrite={canWrite} onAction={(mode) => setManage({ row, mode })} />
-        ),
-      },
-    ],
-    [branchCounts.data, canWrite],
-  )
+  const menuFor = (row: AgentListRow): RowMenuItem[] => {
+    if (!canWrite) return []
+    const items: RowMenuItem[] = [{ label: 'Sửa hồ sơ', icon: Pencil, onSelect: () => setManage({ row, mode: 'edit' }) }]
+    if (row.status === 1) items.push({ label: 'Tạm dừng agent', icon: Pause, onSelect: () => setManage({ row, mode: 'suspend' }) })
+    if (row.status === 2) items.push({ label: 'Mở lại agent', icon: Play, onSelect: () => setManage({ row, mode: 'resume' }) })
+    if (row.status !== 3) items.push({ label: 'Xoá agent', icon: Trash2, danger: true, onSelect: () => setManage({ row, mode: 'delete' }) })
+    return items
+  }
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3 space-y-0">
-          <div>
-            <CardTitle>Danh sách agent</CardTitle>
-            <CardDescription>Tìm, lọc và tạo agent mới (Owner hoặc Admin ghi on-chain)</CardDescription>
-          </div>
-          <CreateAgentDialog onCreated={() => agents.refetch()} />
-        </CardHeader>
-        <CardContent className="space-y-4 pt-0">
-      {paused ? (
-        <p className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-950 dark:text-amber-100">
-          Hệ đang tạm dừng — sửa/xoá agent bị khoá. Owner hoặc Admin mở lại tại mục Hệ thống.
-        </p>
-      ) : !isOperator ? (
-        <p className="text-sm text-muted-foreground">Chỉ Owner hoặc Admin nền tảng được sửa và đổi trạng thái agent.</p>
-      ) : null}
-      <div className="flex flex-wrap gap-2">
-        <Input
-          className="min-w-[12rem] flex-1"
-          placeholder="Tìm theo tên, SĐT, id, ví…"
-          value={q}
-          onChange={(e) => {
-            setQ(e.target.value)
+    <>
+      <ColumnHeader title="Agent" subtitle={`${counts.all} agent on-chain`}>
+        <UnderlineTabs
+          tabs={[
+            { value: 'all', label: 'Tất cả' },
+            { value: '1', label: 'Hoạt động', count: counts['1'] },
+            { value: '2', label: 'Tạm dừng', count: counts['2'] },
+            { value: '3', label: 'Đã xoá', count: counts['3'] },
+          ]}
+          value={tab}
+          onChange={(v) => {
+            setTab(v)
             setPage(0)
           }}
         />
-        <select
-          className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-sm"
-          value={status ?? ''}
-          onChange={(e) => {
-            setStatus(e.target.value ? Number(e.target.value) : null)
+      </ColumnHeader>
+
+      <div className="space-y-3 border-b border-border px-4 py-3">
+        <SearchPill
+          value={q}
+          onChange={(v) => {
+            setQ(v)
             setPage(0)
+            if (!v && urlQ) setParams({}, { replace: true })
           }}
-        >
-          <option value="">Mọi trạng thái</option>
-          <option value="1">Hoạt động</option>
-          <option value="2">Tạm dừng</option>
-          <option value="3">Đã xoá</option>
-        </select>
-        <select
-          className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-sm"
-          value={servicesMask ?? ''}
-          onChange={(e) => {
-            const v = e.target.value
-            setServicesMask(v ? Number(v) : null)
-            setPage(0)
-          }}
-        >
-          <option value="">Mọi dịch vụ</option>
-          <option value={String(SERVICE_MASK.NET)}>NET</option>
-          <option value={String(SERVICE_MASK.IQR)}>IQR</option>
-          <option value={String(SERVICE_MASK.LOYALTY)}>LOYALTY</option>
-        </select>
+          placeholder="Tìm theo tên, SĐT, id, ví…"
+        />
+        <div className="flex flex-wrap gap-2">
+          {SERVICE_CHIPS.map((chip) => {
+            const active = servicesMask === chip.mask
+            return (
+              <button
+                key={chip.label}
+                type="button"
+                onClick={() => {
+                  setServicesMask(chip.mask)
+                  setPage(0)
+                }}
+                className={
+                  active
+                    ? 'h-8 rounded-full bg-foreground px-3.5 text-sm font-bold text-background'
+                    : 'h-8 rounded-full border border-input px-3.5 text-sm font-bold hover:bg-hover'
+                }
+              >
+                {chip.label}
+              </button>
+            )
+          })}
+        </div>
+        {tenantWriteBlockedReason ? (
+          <p className="text-[13px] text-muted-foreground">{tenantWriteBlockedReason} — chỉ xem.</p>
+        ) : null}
       </div>
 
-      <DataTable
-        columns={columns}
-        rows={items}
-        page={page}
-        pageSize={AGENTS_PAGE_SIZE}
-        total={total}
-        onPageChange={setPage}
-        loading={agents.isLoading}
-        error={agents.error ? agents.error.message : null}
-        onRetry={() => agents.refetch()}
-        emptyTitle="Không có agent phù hợp"
-      />
-      <p className="text-xs text-muted-foreground">
-        Trang {page + 1}/{totalPages} · {total} agent (tìm kiếm phía client, giới hạn ~1000 agent)
-      </p>
-        </CardContent>
-      </Card>
+      {agents.isLoading ? (
+        <PageLoader message="Đang tải agent…" />
+      ) : agents.error ? (
+        <ErrorState message={agents.error.message} onRetry={() => agents.refetch()} />
+      ) : items.length === 0 ? (
+        <EmptyState title="Không có agent phù hợp" description="Thử bỏ bớt bộ lọc hoặc đổi từ khoá." />
+      ) : (
+        <>
+          {items.map((row) => {
+            const name = row.profileName || `Agent #${row.id}`
+            const branches = branchCounts.data?.get(row.id)
+            return (
+              <ListRow
+                key={row.id}
+                to={`/agents/${row.id}`}
+                avatar={<HashAvatar seed={row.owner} label={name} size={44} />}
+                title={name}
+                meta={`· #${row.id}`}
+                subtitle={formatWalletAddress(row.owner)}
+                right={<RowMenu items={menuFor(row)} label={`Hành động cho ${name}`} />}
+              >
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-foreground">
+                  <StatusBadge kind="agent" value={row.status} />
+                  <span>{formatAllowedServices(row.allowedServices)}</span>
+                  <span>
+                    <span className="font-bold text-foreground">{branches ?? '…'}</span> chi nhánh
+                  </span>
+                  <span>Tạo {formatDate(row.createdAt ?? 0)}</span>
+                </div>
+              </ListRow>
+            )
+          })}
+          <ListPager page={page} pageCount={totalPages} onPageChange={setPage} summary={`${total} agent`} />
+        </>
+      )}
+
       {manage ? (
         <AgentManageDialog
           row={manage.row}
@@ -177,40 +182,6 @@ export function AgentsPage() {
           onDone={() => agents.refetch()}
         />
       ) : null}
-    </div>
-  )
-}
-
-function AgentRowActions({
-  row,
-  canWrite,
-  onAction,
-}: {
-  row: AgentListRow
-  canWrite: boolean
-  onAction: (mode: AgentManageMode) => void
-}) {
-  if (!canWrite) return <span className="text-xs text-muted-foreground">—</span>
-  return (
-    <div className="flex flex-wrap justify-end gap-1">
-      <button type="button" className="text-xs text-primary hover:underline" onClick={() => onAction('edit')}>
-        Sửa
-      </button>
-      {row.status === 1 ? (
-        <button type="button" className="text-xs text-amber-700 hover:underline dark:text-amber-200" onClick={() => onAction('suspend')}>
-          Dừng
-        </button>
-      ) : null}
-      {row.status === 2 ? (
-        <button type="button" className="text-xs text-primary hover:underline" onClick={() => onAction('resume')}>
-          Mở lại
-        </button>
-      ) : null}
-      {row.status !== 3 ? (
-        <button type="button" className="text-xs text-destructive hover:underline" onClick={() => onAction('delete')}>
-          Xoá
-        </button>
-      ) : null}
-    </div>
+    </>
   )
 }

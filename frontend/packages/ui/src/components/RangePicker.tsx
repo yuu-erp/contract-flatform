@@ -60,7 +60,7 @@ export function RangePicker({
 
   return (
     <div className={cn('space-y-2', className)}>
-      <div className="flex flex-wrap gap-2">
+      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 [scrollbar-width:none] [&>button]:shrink-0">
         {presets.map((preset) => (
           <button
             key={preset.id}
@@ -71,10 +71,10 @@ export function RangePicker({
               onChange(preset.id)
             }}
             className={cn(
-              'h-9 rounded-md border border-input bg-background px-3 text-sm shadow-sm transition-colors',
+              'h-8 rounded-full border px-3.5 text-sm font-bold transition-colors',
               activePreset === preset.id
-                ? 'border-primary/30 bg-primary/10 font-medium text-foreground'
-                : 'text-muted-foreground hover:bg-muted/60',
+                ? 'border-transparent bg-foreground text-background'
+                : 'border-input text-foreground hover:bg-hover',
             )}
           >
             {preset.label}
@@ -84,17 +84,17 @@ export function RangePicker({
           type="button"
           onClick={() => setShowCustom((open) => !open)}
           className={cn(
-            'h-9 rounded-md border border-input bg-background px-3 text-sm shadow-sm transition-colors',
+            'h-8 rounded-full border px-3.5 text-sm font-bold transition-colors',
             showCustom
-              ? 'border-primary/30 bg-primary/10 font-medium text-foreground'
-              : 'text-muted-foreground hover:bg-muted/60',
+              ? 'border-transparent bg-foreground text-background'
+              : 'border-input text-foreground hover:bg-hover',
           )}
         >
           Tuỳ chọn
         </button>
       </div>
       {showCustom ? (
-        <div className="flex flex-wrap items-end gap-2 rounded-md border border-border p-3">
+        <div className="flex flex-wrap items-end gap-2 rounded-2xl border border-border p-3">
           <label className="text-xs text-muted-foreground">
             Từ
             <input
@@ -115,7 +115,7 @@ export function RangePicker({
               onChange={(e) => setToDate(e.target.value)}
             />
           </label>
-          <button type="button" className="rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground" onClick={applyCustom}>
+          <button type="button" className="h-8 rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground" onClick={applyCustom}>
             Áp dụng
           </button>
           {customError ? <p className="w-full text-xs text-destructive">{customError}</p> : null}

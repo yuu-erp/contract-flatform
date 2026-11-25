@@ -1,97 +1,100 @@
 import {
   ContractsProvider,
+  formatWalletAddress,
   useActiveWallet,
   useConnectWallet,
   usePlatformContracts,
 } from '@meta-platform/chain'
-import {
-  AppShell,
-  LoginCard,
-  NoAccessScreen,
-  PageLoader,
-  SidebarWallet,
-  ThemeToggle,
-  WalletSwitcher,
-  useWalletTheme,
-} from '@meta-platform/ui'
-import { LayoutDashboard, ScrollText, Settings, Users, type LucideIcon } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { ColumnHeader, HashAvatar, PageLoader, useWalletTheme, type ShellAccount } from '@meta-platform/ui'
+import { Loader2, Wallet } from 'lucide-react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
-import { PlatformRoleBadge } from '../components/PlatformRoleBadge'
-import { PlatformRoleStrip } from '../components/PlatformRoleStrip'
-import { PlatformRoleStatus } from '../components/PlatformRoleStatus'
+import { platformRoleLabel } from '../components/PlatformRoleStatus'
 import { platformChainId, platformDeployments } from '../config/deployments'
-import { useDashboardTitle } from '../hooks/use-dashboard-title'
 import { usePlatformRole } from '../hooks/use-platform-role'
 import { isPreviewMock } from '../preview/env'
+import { AccountMenuItem, BareShell, PlatformShell } from './PlatformShell'
 import { PreviewPlatformChrome } from './PreviewPlatformChrome'
 
-const menuBase: { to: string; label: string; end?: boolean; icon: LucideIcon }[] = [
-  { to: '/', label: 'Tổng quan', end: true, icon: LayoutDashboard },
-  { to: '/agents', label: 'Agent', icon: Users },
-  { to: '/audit', label: 'Nhật ký', icon: ScrollText },
-  { to: '/system', label: 'Hệ thống', icon: Settings },
-]
+/** Màn "không có quyền" trong cột giữa. */
+export function NoPlatformAccess({ address, extra }: { address?: string; extra?: React.ReactNode }) {
+  return (
+    <>
+      <ColumnHeader title="Không có quyền" />
+      <div className="px-8 py-10">
+        <h2 className="text-[31px] leading-9 font-extrabold tracking-tight">Ví này chưa được cấp quyền</h2>
+        <p className="mt-2 text-[15px] text-muted-foreground">
+          {address ? `Ví ${formatWalletAddress(address)} không phải Owner hay Admin nền tảng. ` : ''}
+          Chọn ví khác ở menu tài khoản.
+        </p>
+        {extra ? <div className="mt-6">{extra}</div> : null}
+      </div>
+    </>
+  )
+}
 
-function PlatformSession() {
+/** Gác quyền chung cho cả chế độ thật và xem trước. */
+export function PlatformGate({ noAccessExtra }: { noAccessExtra?: React.ReactNode }) {
   const { role, loading } = usePlatformRole()
   const { data: wallet } = useActiveWallet()
   const location = useLocation()
 
-  if (loading) {
-    return <PageLoader message="Đang kiểm tra quyền on-chain…" />
-  }
-
+  if (loading) return <PageLoader message="Đang kiểm tra quyền on-chain…" />
   if (!role?.isOwner && !role?.isAdmin && !role?.isPendingOwner) {
-    return (
-      <div className="mx-auto w-full max-w-3xl space-y-4">
-        {wallet?.address ? (
-          <PlatformRoleStatus walletAddress={wallet.address} role={role} checking={false} />
-        ) : null}
-        <NoAccessScreen
-          title="Không có quyền"
-          description="Ví này không phải Owner hay Admin nền tảng. Chọn ví khác ở sidebar hoặc header."
-        />
-      </div>
-    )
+    return <NoPlatformAccess address={wallet?.address} extra={noAccessExtra} />
   }
-
   if (!role.isOwner && !role.isAdmin && location.pathname.startsWith('/system')) {
     return <Navigate to="/" replace />
   }
+  return <Outlet />
+}
 
-  return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col">
-      {wallet?.address ? (
-        <PlatformRoleStrip walletAddress={wallet.address} role={role} checking={loading} />
-      ) : null}
-      <Outlet />
-    </div>
-  )
+function useLiveAccount(roleText: string | null): ShellAccount | undefined {
+  const theme = useWalletTheme()
+  const { data: wallet } = useActiveWallet()
+  const connect = useConnectWallet(theme)
+  if (!wallet) return undefined
+  return {
+    avatar: <HashAvatar seed={wallet.address} size={40} />,
+    name: wallet.name?.trim() || roleText || 'Ví đang chọn',
+    handle: `${formatWalletAddress(wallet.address)}${roleText ? ` · ${roleText}` : ''}`,
+    menu: (
+      <AccountMenuItem onClick={() => connect.mutate()} disabled={connect.isPending}>
+        Đổi ví {formatWalletAddress(wallet.address)}
+      </AccountMenuItem>
+    ),
+  }
 }
 
 function PlatformChromeWithContracts() {
-  const { role, loading, paused } = usePlatformRole()
-  const pageTitle = useDashboardTitle()
-  const roleBadge =
-    role && !loading ? (
-      <PlatformRoleBadge role={role} />
-    ) : null
-
+  const { role, loading } = usePlatformRole()
+  const account = useLiveAccount(loading ? null : platformRoleLabel(role, false))
   return (
-    <AppShell
-      title="Meta Platform"
-      subtitle="Dashboard nền tảng"
-      menu={menuBase}
-      chainLabel={String(platformChainId)}
-      sidebarFooter={<SidebarWallet />}
-      headerWallet={<WalletSwitcher className="shrink-0 md:hidden" />}
-      topbarTitle={pageTitle}
-      headerExtra={<ThemeToggle />}
-      roleBadge={roleBadge}
-      paused={paused}
-      main={<PlatformSession />}
-    />
+    <PlatformShell account={account}>
+      <PlatformGate />
+    </PlatformShell>
+  )
+}
+
+function LoginPanel({ pending, onLogin }: { pending: boolean; onLogin: () => void }) {
+  return (
+    <>
+      <ColumnHeader title="Đăng nhập" />
+      <div className="px-8 py-12">
+        <h2 className="text-[31px] leading-9 font-extrabold tracking-tight">Quản trị nền tảng on-chain</h2>
+        <p className="mt-3 text-[17px] text-muted-foreground">
+          Theo dõi doanh thu toàn hệ, quản lý agent và chi nhánh. Cần ví được cấp Owner hoặc Admin nền tảng.
+        </p>
+        <button
+          type="button"
+          disabled={pending}
+          onClick={onLogin}
+          className="mt-8 inline-flex h-[52px] w-full max-w-[300px] items-center justify-center gap-2 rounded-full bg-primary text-[17px] font-bold text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+        >
+          {pending ? <Loader2 className="size-5 animate-spin" /> : <Wallet className="size-5" />}
+          Chọn ví
+        </button>
+      </div>
+    </>
   )
 }
 
@@ -100,36 +103,9 @@ function LivePlatformChrome() {
   const { data: wallet, isPending: walletLoading } = useActiveWallet()
   const connect = useConnectWallet(theme)
   const contracts = usePlatformContracts(platformChainId, platformDeployments)
+  const account = useLiveAccount(null)
 
-  const shellProps = {
-    title: 'Meta Platform' as const,
-    subtitle: 'Dashboard nền tảng' as const,
-    menu: menuBase,
-    chainLabel: String(platformChainId),
-    sidebarFooter: <SidebarWallet />,
-    headerWallet: <WalletSwitcher className="shrink-0 md:hidden" />,
-    headerExtra: <ThemeToggle />,
-    topbarTitle: 'Chào mừng',
-  }
-
-  let main: ReactNode
-
-  if (walletLoading) {
-    main = <PageLoader message="Đang tải ví…" />
-  } else if (!wallet) {
-    main = (
-      <LoginCard
-        heading="Dashboard nền tảng"
-        intro="Đăng nhập ví Meta để xem doanh thu và quản lý agent on-chain."
-        cardTitle="Chọn ví"
-        cardDescription="Cần ví được cấp Owner hoặc Admin nền tảng (PLATFORM_ADMIN)."
-        pending={connect.isPending}
-        onLogin={() => connect.mutate()}
-      />
-    )
-  } else if (!contracts) {
-    main = <PageLoader message="Đang kết nối contract…" />
-  } else {
+  if (wallet && contracts) {
     return (
       <ContractsProvider value={contracts}>
         <PlatformChromeWithContracts />
@@ -137,7 +113,17 @@ function LivePlatformChrome() {
     )
   }
 
-  return <AppShell {...shellProps} main={main} />
+  return (
+    <BareShell account={account}>
+      {walletLoading ? (
+        <PageLoader message="Đang tải ví…" />
+      ) : !wallet ? (
+        <LoginPanel pending={connect.isPending} onLogin={() => connect.mutate()} />
+      ) : (
+        <PageLoader message="Đang kết nối contract…" />
+      )}
+    </BareShell>
+  )
 }
 
 export function PlatformChrome() {

@@ -18,15 +18,17 @@ export function ServiceFilter({
   className?: string
 }) {
   return (
-    <div className={cn('inline-flex rounded-md border border-input bg-background p-0.5 shadow-sm', className)}>
+    <div className={cn('inline-flex gap-1', className)}>
       {options.map((opt) => (
         <button
           key={opt.value}
           type="button"
           onClick={() => onChange(opt.value)}
           className={cn(
-            'rounded px-3 py-1 text-sm transition-colors',
-            value === opt.value ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted',
+            'h-8 rounded-full border px-3.5 text-sm font-bold transition-colors',
+            value === opt.value
+              ? 'border-transparent bg-foreground text-background'
+              : 'border-input text-foreground hover:bg-hover',
           )}
         >
           {opt.label}

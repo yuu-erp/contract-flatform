@@ -3,13 +3,12 @@ import { formatWalletAddress, useActiveWallet, useContracts } from '@meta-platfo
 import {
   Address,
   Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+  ColumnHeader,
+  ColumnSection,
   ConfirmDialog,
+  HashAvatar,
   Input,
+  ListRow,
 } from '@meta-platform/ui'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
@@ -125,23 +124,15 @@ export function SystemPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
-      <div>
-        <h2 className="text-2xl font-semibold tracking-tight">Quản trị hệ thống</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Owner và Admin tạm dừng / mở lại hệ thống. Quản trị viên, chuyển owner, FullDB và Ledger poster chỉ Owner.
-        </p>
-      </div>
+    <>
+      <ColumnHeader title="Hệ thống" subtitle="Owner và Admin bật/tắt hệ thống · cấu hình hệ chỉ Owner" />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Trạng thái hệ thống</CardTitle>
-          <CardDescription>
-            Tạm dừng chặn mọi giao dịch ghi (agent, chi nhánh, sổ tiền…). Owner hoặc Admin bật/tắt được.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-wrap items-center justify-between gap-3 text-sm">
-          <p className="font-medium">{paused ? 'Hệ đang tạm dừng' : 'Hệ đang chạy'}</p>
+      <ColumnSection title={<>Trạng thái hệ thống</>} description={<>Tạm dừng chặn mọi giao dịch ghi (agent, chi nhánh, sổ tiền…). Owner hoặc Admin bật/tắt được.</>}>
+        <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+          <p className={`inline-flex items-center gap-2 text-[17px] font-bold ${paused ? 'text-danger' : 'text-success'}`}>
+            <span className="size-2.5 rounded-full bg-current" />
+            {paused ? 'Hệ đang tạm dừng' : 'Hệ đang chạy'}
+          </p>
           <div className="flex flex-wrap gap-2">
             <Button
               variant="destructive"
@@ -160,18 +151,14 @@ export function SystemPage() {
               Mở lại hệ thống
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </ColumnSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Phân quyền nền tảng</CardTitle>
-          <CardDescription>Theo contract hiện tại.</CardDescription>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <table className="w-full text-sm">
+      <ColumnSection title={<>Phân quyền nền tảng</>} description={<>Theo contract hiện tại.</>}>
+        <div className="">
+          <table className="w-full text-[15px]">
             <thead>
-              <tr className="border-b border-border text-left text-xs text-muted-foreground">
+              <tr className="border-b border-border text-left text-[13px] text-muted-foreground">
                 <th className="py-2 font-medium">Việc</th>
                 <th className="py-2 text-center font-medium">Owner</th>
                 <th className="py-2 text-center font-medium">Admin</th>
@@ -181,27 +168,39 @@ export function SystemPage() {
               {PERMISSION_ROWS.map(([label, admin]) => (
                 <tr key={label} className="border-b border-border/60 last:border-0">
                   <td className="py-2">{label}</td>
-                  <td className="py-2 text-center">✓</td>
-                  <td className="py-2 text-center text-muted-foreground">{admin ? '✓' : '—'}</td>
+                  <td className="py-2 text-center font-bold text-primary">✓</td>
+                  <td className={`py-2 text-center font-bold ${admin ? 'text-primary' : 'text-muted-foreground'}`}>{admin ? '✓' : '—'}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </CardContent>
-      </Card>
+        </div>
+      </ColumnSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Quản trị viên</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <ul className="space-y-1">
+      <ColumnSection title={<>Quản trị viên</>}>
+        <div className="space-y-3 text-sm">
+          <div className="-mx-4">
             {data?.admins.map((a) => (
-              <li key={a} className="flex flex-wrap items-center justify-between gap-2">
-                <Address value={a} />
-              </li>
+              <ListRow
+                key={a}
+                avatar={<HashAvatar seed={a} size={40} />}
+                title={formatWalletAddress(a)}
+                subtitle={<span className="font-mono text-[13px]">{a}</span>}
+                right={
+                  isOwner ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={tx.pending}
+                      onClick={() => setConfirm({ type: 'removeAdmin', account: a })}
+                    >
+                      Gỡ
+                    </Button>
+                  ) : null
+                }
+              />
             ))}
-          </ul>
+          </div>
           <div className="flex flex-wrap gap-2">
             <Input placeholder="0x… admin mới" value={newAdmin} onChange={(e) => setNewAdmin(e.target.value)} />
             <Button
@@ -216,30 +215,24 @@ export function SystemPage() {
               Thêm admin
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </ColumnSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Nguồn vai trò agent (đọc)</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-1 text-sm">
+      <ColumnSection title={<>Nguồn vai trò agent (đọc)</>}>
+        <div className="space-y-1 text-sm">
           {data?.sources.map((s) => (
             <div key={s}>
               <Address value={s} />
             </div>
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </ColumnSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Tra quyền ghi FullDB</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
+      <ColumnSection title={<>Tra quyền ghi FullDB</>}>
+        <div className="space-y-2 text-sm">
           <Input placeholder="Writer 0x…" value={canWriteWriter} onChange={(e) => setCanWriteWriter(e.target.value)} />
           <select
-            className="h-9 w-full rounded-md border px-2"
+            className="h-10 w-full rounded-md border border-input bg-transparent px-2 text-[15px]"
             value={canWriteKind}
             onChange={(e) => setCanWriteKind(e.target.value as (typeof FULLDB_KINDS)[number])}
           >
@@ -264,14 +257,11 @@ export function SystemPage() {
           {canWriteResult != null ? (
             <p>{canWriteResult ? 'Được phép ghi' : 'Không được phép'}</p>
           ) : null}
-        </CardContent>
-      </Card>
+        </div>
+      </ColumnSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Ledger poster (đọc)</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm">
+      <ColumnSection title={<>Ledger poster (đọc)</>}>
+        <div className="space-y-3 text-sm">
           <Input placeholder="Poster 0x…" value={posterAddr} onChange={(e) => setPosterAddr(e.target.value)} />
           <Button
             variant="outline"
@@ -308,34 +298,11 @@ export function SystemPage() {
               </label>
             ))}
           </fieldset>
-        </CardContent>
-      </Card>
+        </div>
+      </ColumnSection>
 
-      <Card className="border-destructive/50">
-        <CardHeader>
-          <CardTitle className="text-destructive">Vùng nguy hiểm (chỉ Owner)</CardTitle>
-          <CardDescription>Thao tác bất khả đảo — cần xác nhận trước khi gửi giao dịch.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6 text-sm">
-          <section className="space-y-2">
-            <p className="font-medium">Gỡ quản trị viên</p>
-            <ul className="space-y-2">
-              {data?.admins.map((a) => (
-                <li key={a} className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="font-mono text-xs break-all">{a}</span>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={!isOwner || tx.pending}
-                    onClick={() => setConfirm({ type: 'removeAdmin', account: a })}
-                  >
-                    Gỡ
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          </section>
-
+      <ColumnSection className="bg-danger/[0.03]" title={<><span className="text-danger">Vùng nguy hiểm (chỉ Owner)</span></>} description={<>Thao tác bất khả đảo — cần xác nhận trước khi gửi giao dịch.</>}>
+        <div className="space-y-6 text-sm">
           <section className="space-y-2">
             <p className="font-medium">Chuyển owner (hai bước)</p>
             <p>
@@ -379,8 +346,8 @@ export function SystemPage() {
               setPoster
             </Button>
           </section>
-        </CardContent>
-      </Card>
+        </div>
+      </ColumnSection>
 
       {!isOwner && data ? (
         <p className="text-sm text-muted-foreground">
@@ -398,7 +365,7 @@ export function SystemPage() {
         pending={tx.pending}
         onConfirm={() => void executeConfirm()}
       />
-    </div>
+    </>
   )
 }
 

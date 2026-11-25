@@ -11,7 +11,7 @@ describe('KpiTile', () => {
 
   it('shows absolute delta when previous is negative', () => {
     render(<KpiTile label="Doanh thu" value={50_000n} previous={-10_000n} format="vnd" />)
-    expect(screen.getByText(/60\.000 ₫ so với kỳ trước/)).toBeTruthy()
+    expect(screen.getByText(/60\.000 ₫ so kỳ trước/)).toBeTruthy()
     expect(screen.queryByText(/NaN/i)).toBeNull()
   })
 })

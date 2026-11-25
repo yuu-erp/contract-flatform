@@ -58,17 +58,16 @@ function routes() {
 }
 
 async function applyTheme(page, mode) {
-  await page.evaluate((m) => {
-    const root = document.documentElement
-    localStorage.setItem('meta-platform-theme', m)
-    if (m === 'dark') {
-      root.classList.add('dark')
-      root.classList.remove('light')
-    } else {
-      root.classList.remove('dark')
-      root.classList.add('light')
-    }
-  }, mode)
+  // Cài đặt Hiển thị (nền + màu chủ đạo) lưu ở localStorage 'meta-display'; reload để áp dụng.
+  const background = mode === 'dark' ? 'dark' : mode === 'dim' ? 'dim' : 'light'
+  const changed = await page.evaluate((bg) => {
+    const raw = localStorage.getItem('meta-display')
+    const cur = raw ? JSON.parse(raw) : {}
+    if (cur.background === bg) return false
+    localStorage.setItem('meta-display', JSON.stringify({ accent: cur.accent ?? 'blue', background: bg }))
+    return true
+  }, background)
+  if (changed) await page.reload({ waitUntil: 'networkidle' })
 }
 
 async function main() {

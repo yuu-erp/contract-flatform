@@ -19,11 +19,27 @@ const emptyForm = (): CreateAgentForm => ({
   allowedServices: SERVICE_MASK.NET,
 })
 
-export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
+export function CreateAgentDialog({
+  onCreated,
+  open: openProp,
+  onOpenChange,
+  showTrigger = true,
+}: {
+  onCreated?: () => void
+  /** Điều khiển từ ngoài (nút "Tạo agent" ở thanh điều hướng). */
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  showTrigger?: boolean
+}) {
   const contracts = useContracts()
   const { canWrite: canCreate, adminOnlyHint } = usePlatformWrite()
   const tx = useAppTx()
-  const [open, setOpen] = useState(false)
+  const [openState, setOpenState] = useState(false)
+  const open = openProp ?? openState
+  const setOpen = (next: boolean) => {
+    setOpenState(next)
+    onOpenChange?.(next)
+  }
   const [form, setForm] = useState<CreateAgentForm>(emptyForm)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const toggleService = (bit: number) => {
@@ -40,6 +56,7 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
 
   return (
     <>
+      {showTrigger ? (
       <div className="flex max-w-xs flex-col items-end gap-1 text-right">
         <Button
           disabled={!canCreate}
@@ -50,6 +67,7 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
         </Button>
         {!canCreate && adminOnlyHint ? <p className="text-xs text-muted-foreground">{adminOnlyHint}</p> : null}
       </div>
+      ) : null}
       <Dialog.Root
         open={open}
         onOpenChange={(next: boolean) => {
@@ -58,9 +76,9 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
         }}
       >
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/40" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 max-h-[90vh] w-[min(100%,32rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-lg border border-border bg-background p-5 shadow-lg">
-            <Dialog.Title className="text-lg font-semibold">Tạo agent</Dialog.Title>
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-overlay" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 max-h-[90dvh] w-[min(100%-2rem,36rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto z-50 rounded-2xl bg-background p-6 text-[15px] shadow-[0_0_15px_rgb(101_119_134/0.2)] outline-none">
+            <Dialog.Title className="text-xl leading-6 font-extrabold">Tạo agent</Dialog.Title>
             <Dialog.Description className="mt-1 text-sm text-muted-foreground">
               Ví đăng nhập phải là Admin nền tảng. Ví chủ agent phải là ví merchant khác — không trùng Owner/Admin
               platform.
@@ -69,7 +87,7 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
               <label className="block space-y-1">
                 <span>Ví chủ</span>
                 <input
-                  className="w-full rounded-md border border-border px-3 py-2"
+                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[15px] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   value={form.owner}
                   onChange={(e) => setForm({ ...form, owner: e.target.value })}
                   placeholder="0x…"
@@ -79,7 +97,7 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
               <label className="block space-y-1">
                 <span>Tên cửa hàng ({utf8Length(form.storeName.trim())}/100 byte)</span>
                 <input
-                  className="w-full rounded-md border border-border px-3 py-2"
+                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[15px] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   value={form.storeName}
                   onChange={(e) => setForm({ ...form, storeName: e.target.value })}
                 />
@@ -88,7 +106,7 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
               <label className="block space-y-1">
                 <span>Địa chỉ</span>
                 <input
-                  className="w-full rounded-md border border-border px-3 py-2"
+                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[15px] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   value={form.storeAddress}
                   onChange={(e) => setForm({ ...form, storeAddress: e.target.value })}
                 />
@@ -97,7 +115,7 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
               <label className="block space-y-1">
                 <span>Số điện thoại</span>
                 <input
-                  className="w-full rounded-md border border-border px-3 py-2"
+                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[15px] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   value={form.storePhone}
                   onChange={(e) => setForm({ ...form, storePhone: e.target.value })}
                 />
@@ -106,7 +124,7 @@ export function CreateAgentDialog({ onCreated }: { onCreated?: () => void }) {
               <label className="block space-y-1">
                 <span>Ghi chú</span>
                 <textarea
-                  className="w-full rounded-md border border-border px-3 py-2"
+                  className="h-10 w-full rounded-md border border-input bg-transparent px-3 text-[15px] outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   rows={2}
                   value={form.note}
                   onChange={(e) => setForm({ ...form, note: e.target.value })}

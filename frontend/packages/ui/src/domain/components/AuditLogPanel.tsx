@@ -9,16 +9,21 @@ import { auditRowSummary, formatAuditBytes } from '../lib/audit-display'
 import { auditDateRangeFromIso } from '../lib/audit-date-range'
 import { isValidEthAddress } from '../lib/address'
 import { Dialog, DialogContent, DialogTitle } from '../../components/ui/dialog'
+import { HashAvatar } from '../../shell/HashAvatar'
+import { ListPager } from '../../shell/ListPager'
+import { formatWalletAddress } from '@meta-platform/chain'
 
 export type AuditLogPanelProps = {
   locked?: Partial<AuditFilter>
   hideAgent?: boolean
   hideBranch?: boolean
+  /** 'list' = dạng dòng thời gian (cột hẹp kiểu X); mặc định bảng. */
+  variant?: 'table' | 'list'
 }
 
 type AuditFilterDraft = AuditFilter & { dateFrom?: string; dateTo?: string }
 
-export function AuditLogPanel({ locked, hideAgent, hideBranch }: AuditLogPanelProps) {
+export function AuditLogPanel({ locked, hideAgent, hideBranch, variant = 'table' }: AuditLogPanelProps) {
   const [draft, setDraft] = useState<AuditFilterDraft>({})
   const [filter, setFilter] = useState<AuditFilter>({})
   const [page, setPage] = useState(0)
@@ -75,8 +80,14 @@ export function AuditLogPanel({ locked, hideAgent, hideBranch }: AuditLogPanelPr
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-2 rounded-xl border border-border bg-card p-3 text-sm">
+    <div className={variant === 'list' ? '' : 'space-y-4'}>
+      <div
+        className={
+          variant === 'list'
+            ? 'flex flex-wrap gap-2 border-b border-border px-4 py-3 text-sm'
+            : 'flex flex-wrap gap-2 rounded-2xl border border-border p-3 text-sm'
+        }
+      >
         {!hideAgent ? (
           <Input
             className="w-28"
@@ -124,6 +135,16 @@ export function AuditLogPanel({ locked, hideAgent, hideBranch }: AuditLogPanelPr
         </Button>
       </div>
 
+      {variant === 'list' ? (
+        <AuditTimeline
+          rows={audit.data?.items ?? []}
+          loading={audit.isLoading}
+          page={page}
+          pageCount={Math.max(1, Math.ceil((audit.data?.total ?? 0) / 20))}
+          onPageChange={setPage}
+          onOpen={setDetailId}
+        />
+      ) : (
       <DataTable
         columns={columns}
         rows={audit.data?.items ?? []}
@@ -134,6 +155,7 @@ export function AuditLogPanel({ locked, hideAgent, hideBranch }: AuditLogPanelPr
         onPageChange={setPage}
         emptyTitle="Chưa có nhật ký"
       />
+      )}
 
       <Dialog open={detailId != null} onOpenChange={(open) => !open && setDetailId(null)}>
         <DialogContent className="max-h-[85vh] overflow-y-auto">
@@ -170,5 +192,53 @@ function AuditPayload({ label, hex }: { label: string; hex: `0x${string}` }) {
         {formatAuditBytes(hex)}
       </pre>
     </div>
+  )
+}
+type TimelineRow = { docId: number; record: PlatformAuditRecord }
+
+function AuditTimeline({
+  rows,
+  loading,
+  page,
+  pageCount,
+  onPageChange,
+  onOpen,
+}: {
+  rows: TimelineRow[]
+  loading: boolean
+  page: number
+  pageCount: number
+  onPageChange: (page: number) => void
+  onOpen: (docId: number) => void
+}) {
+  if (loading) return <p className="px-4 py-8 text-center text-[15px] text-muted-foreground">Đang tải…</p>
+  if (rows.length === 0) return <p className="px-4 py-8 text-center text-[15px] text-muted-foreground">Chưa có nhật ký</p>
+  return (
+    <>
+      {rows.map((row) => {
+        const r = row.record
+        return (
+          <button
+            key={row.docId}
+            type="button"
+            onClick={() => onOpen(row.docId)}
+            className="flex w-full gap-3 border-b border-border px-4 py-3 text-left transition-colors hover:bg-row-hover"
+          >
+            <HashAvatar seed={r.actor} size={40} />
+            <span className="min-w-0 flex-1">
+              <span className="flex min-w-0 items-center gap-1 text-[15px] leading-5">
+                <span className="truncate font-bold">{formatWalletAddress(r.actor)}</span>
+                <span className="shrink-0 text-muted-foreground">
+                  · {new Date(r.timestamp * 1000).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}
+                </span>
+              </span>
+              <span className="mt-0.5 block text-[15px] leading-5">{auditRowSummary(r)}</span>
+              {r.reason ? <span className="mt-0.5 block text-[15px] leading-5 text-muted-foreground">“{r.reason}”</span> : null}
+            </span>
+          </button>
+        )
+      })}
+      <ListPager page={page} pageCount={pageCount} onPageChange={onPageChange} />
+    </>
   )
 }

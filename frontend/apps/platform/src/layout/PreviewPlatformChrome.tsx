@@ -1,90 +1,50 @@
-import { useContracts } from '@meta-platform/chain'
-import {
-  AppShell,
-  PageLoader,
-  SidebarWallet,
-  ThemeToggle,
-  WalletSwitcher,
-  useWalletTheme,
-} from '@meta-platform/ui'
-import { LayoutDashboard, ScrollText, Settings, Users, type LucideIcon } from 'lucide-react'
-import { Navigate, Outlet, useLocation } from 'react-router-dom'
-import { PlatformRoleBadge } from '../components/PlatformRoleBadge'
-import { PlatformRoleStrip } from '../components/PlatformRoleStrip'
-import { PlatformRoleStatus } from '../components/PlatformRoleStatus'
-import { platformChainId } from '../config/deployments'
-import { useDashboardTitle } from '../hooks/use-dashboard-title'
+import { useActiveWallet, useContracts } from '@meta-platform/chain'
+import { HashAvatar, PageLoader, type ShellAccount } from '@meta-platform/ui'
+import { platformRoleLabel } from '../components/PlatformRoleStatus'
 import { usePlatformRole } from '../hooks/use-platform-role'
-import { PreviewRoleMenu } from '../preview/PreviewRoleMenu'
-import { useActiveWallet } from '@meta-platform/chain'
+import { usePreviewWallet, type PreviewRole } from '../preview/PreviewBootstrap'
+import { PlatformGate } from './PlatformChrome'
+import { AccountMenuItem, PlatformShell } from './PlatformShell'
 
-const menuBase: { to: string; label: string; end?: boolean; icon: LucideIcon }[] = [
-  { to: '/', label: 'Tổng quan', end: true, icon: LayoutDashboard },
-  { to: '/agents', label: 'Agent', icon: Users },
-  { to: '/audit', label: 'Nhật ký', icon: ScrollText },
-  { to: '/system', label: 'Hệ thống', icon: Settings },
+const PREVIEW_ROLES: { id: PreviewRole; label: string }[] = [
+  { id: 'owner', label: 'Owner nền tảng' },
+  { id: 'admin', label: 'Admin nền tảng' },
+  { id: 'pending', label: 'Chờ nhận owner' },
+  { id: 'none', label: 'Ví không có quyền' },
 ]
 
-function PreviewSession() {
-  const { role, loading } = usePlatformRole()
-  const { data: wallet } = useActiveWallet()
-  const location = useLocation()
-
-  if (loading) {
-    return <PageLoader message="Đang kiểm tra quyền on-chain…" />
-  }
-
-  if (!role?.isOwner && !role?.isAdmin && !role?.isPendingOwner) {
-    return (
-      <div className="mx-auto w-full max-w-3xl space-y-4">
-        {wallet?.address ? (
-          <PlatformRoleStatus walletAddress={wallet.address} role={role} checking={false} />
-        ) : null}
-        <PreviewRoleMenu />
-      </div>
-    )
-  }
-
-  if (!role.isOwner && !role.isAdmin && location.pathname.startsWith('/system')) {
-    return <Navigate to="/" replace />
-  }
-
+function PreviewRoleItems() {
+  const { role, setRole } = usePreviewWallet()
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col">
-      <PreviewRoleMenu />
-      {wallet?.address ? (
-        <PlatformRoleStrip walletAddress={wallet.address} role={role} checking={loading} />
-      ) : null}
-      <Outlet />
-    </div>
+    <>
+      <p className="px-4 pb-1 text-[13px] font-bold text-muted-foreground">Xem trước với vai trò</p>
+      {PREVIEW_ROLES.map((r) => (
+        <AccountMenuItem key={r.id} active={role === r.id} onClick={() => setRole(r.id)}>
+          {r.label}
+        </AccountMenuItem>
+      ))}
+    </>
   )
 }
 
 export function PreviewPlatformChrome() {
   const contracts = useContracts()
-  const { role, loading, paused } = usePlatformRole()
-  const pageTitle = useDashboardTitle()
-  useWalletTheme()
-  const roleBadge =
-    role && !loading ? (
-      <PlatformRoleBadge role={role} />
-    ) : null
+  const { role, loading } = usePlatformRole()
+  const { data: wallet } = useActiveWallet()
 
   if (!contracts) return <PageLoader message="Đang tải dữ liệu giả…" />
 
+  const address = wallet?.address ?? '0x0'
+  const account: ShellAccount = {
+    avatar: <HashAvatar seed={address} size={40} />,
+    name: loading ? 'Đang kiểm tra…' : platformRoleLabel(role, false),
+    handle: `Xem trước · ${address.slice(0, 6)}…${address.slice(-4)}`,
+    menu: <PreviewRoleItems />,
+  }
+
   return (
-    <AppShell
-      title="Meta Platform"
-      subtitle="Xem trước (mock)"
-      menu={menuBase}
-      chainLabel={String(platformChainId)}
-      sidebarFooter={<SidebarWallet />}
-      headerWallet={<WalletSwitcher className="shrink-0 md:hidden" />}
-      topbarTitle={pageTitle}
-      headerExtra={<ThemeToggle />}
-      roleBadge={roleBadge}
-      paused={paused}
-      main={<PreviewSession />}
-    />
+    <PlatformShell account={account}>
+      <PlatformGate noAccessExtra={<div className="rounded-2xl border border-border py-2"><PreviewRoleItems /></div>} />
+    </PlatformShell>
   )
 }

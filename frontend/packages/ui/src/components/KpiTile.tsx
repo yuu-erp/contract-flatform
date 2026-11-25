@@ -20,13 +20,13 @@ function compareText(current: bigint, previous: bigint, format: KpiTileProps['fo
   if (previous === 0n) return '—'
   if (previous < 0n) {
     const delta = current - previous
-    if (format === 'vnd') return `${formatVnd(delta)} so với kỳ trước`
-    return `${displayValue(delta, format)} so với kỳ trước`
+    if (format === 'vnd') return `${formatVnd(delta)} so kỳ trước`
+    return `${displayValue(delta, format)} so kỳ trước`
   }
   const diff = Number(((current - previous) * 10000n) / previous) / 100
   if (!Number.isFinite(diff)) return null
   const sign = diff > 0 ? '+' : ''
-  return `${sign}${diff.toFixed(2)}% so với kỳ trước`
+  return `${sign}${diff.toFixed(2)}% so kỳ trước`
 }
 
 export function KpiTile({ label, value, previous, format = 'vnd', className }: KpiTileProps) {
@@ -35,10 +35,17 @@ export function KpiTile({ label, value, previous, format = 'vnd', className }: K
   const trend = prev == null ? null : compareText(current, prev, format)
 
   return (
-    <div className={cn('rounded-xl border border-border bg-card p-4 text-card-foreground shadow-sm', className)}>
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
-      <p className="mt-2 text-2xl font-semibold tracking-tight tabular-nums">{displayValue(current, format)}</p>
-      {trend ? <p className="mt-2 text-xs text-muted-foreground">{trend}</p> : null}
+    <div className={cn('rounded-2xl border border-border bg-card px-4 py-3 text-card-foreground', className)}>
+      <p className="text-[13px] text-muted-foreground">{label}</p>
+      <p className="mt-1 text-[19px] leading-6 font-extrabold tracking-tight whitespace-nowrap tabular-nums sm:text-[23px] sm:leading-7">{displayValue(current, format)}</p>
+      {trend ? <TrendText text={trend} /> : null}
     </div>
+  )
+}
+function TrendText({ text }: { text: string }) {
+  const up = text.startsWith('+')
+  const down = text.startsWith('-') || text.startsWith('−')
+  return (
+    <p className={cn('mt-1 text-[13px]', up ? 'text-success' : down ? 'text-danger' : 'text-muted-foreground')}>{text}</p>
   )
 }

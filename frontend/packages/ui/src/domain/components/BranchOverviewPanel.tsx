@@ -32,13 +32,13 @@ export function BranchOverviewPanel({ branchId, tzMinutes }: { branchId: number;
   )
 
   return (
-    <div className="space-y-4">
+    <div className="@container space-y-4">
       <OverviewFiltersBar range={range} onRangeChange={setRange} service={serviceUi} onServiceChange={setServiceUi} />
       {rollup.isLoading ? (
         <PageLoader />
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 @2xl:grid-cols-3">
             <KpiTile label="Doanh thu thuần" value={rev.net} />
             <KpiTile label="Gộp" value={rev.gross} />
             <KpiTile label="Phục vụ tại chỗ thuần" value={served} />
