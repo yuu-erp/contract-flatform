@@ -80,6 +80,33 @@ Một contract dùng chung cho mọi agent; dữ liệu khoá theo `agentId`, gi
 - **Thiệt hại nếu bị lộ** giới hạn trong một agent: chỉ là số xu chơi máy / gọi món tại agent đó. Đề xuất **không có tính năng chuyển xu giữa khách** và **không rút xu ra tiền mặt** (hoàn tiền chỉ qua staff tại quầy, đã có trong Ledger) → kẻ chiếm tài khoản phải ra tận quán mới dùng được.
 - **Bắt buộc khi đặt mật khẩu:** tối thiểu 8 ký tự, chặn danh sách mật khẩu phổ biến và mật khẩu chứa username/SĐT (kiểm ở client).
 
+### 4.1a Tạo ví ngầm cho khách không biết ví (đã chốt phương án A, 2026-11-26)
+
+Khách chỉ nhớ **username + mật khẩu**. Ví được tạo và dùng phía sau, khách không thấy.
+
+Các bước client làm (thư viện trong `packages/chain`):
+
+1. `salt = "meta-net:" + agentId + ":" + username` (username chữ thường).
+2. `seed = scrypt(mật khẩu, salt, N = 2^17, r = 8, p = 1, 32 byte)`: ~0,5–1 giây, ~128 MB RAM.
+3. `khoá riêng = seed` (nếu rơi ngoài khoảng hợp lệ của secp256k1 thì băm lại với hậu tố `:1`, xác suất ~10^-38).
+4. `khoá công khai = secp256k1(khoá riêng)`; `địa chỉ = 20 byte cuối của keccak256(khoá công khai)`. Cách tính địa chỉ y hệt mọi ví Ethereum.
+5. Dùng khoá **ký** thông điệp EIP-712 rồi xoá khoá khỏi bộ nhớ. Không lưu khoá ở đâu cả.
+
+Địa chỉ tính được ở lần đăng ký đầu tiên là **địa chỉ định danh** (`account`, khoá ở Ledger), đồng thời là `loginAddress` đầu tiên. Đổi mật khẩu chỉ đổi `loginAddress`; `account` giữ nguyên.
+
+**Phí gas: khách không trả.** Ví vừa sinh có số dư 0 nên không tự gửi giao dịch được. Mọi thao tác của khách là **chữ ký EIP-712** (đăng ký, đăng nhập, đổi mật khẩu) và **người khác gửi giao dịch**:
+
+| Thao tác | Ai gửi giao dịch (trả gas) |
+|---|---|
+| Nhân viên đăng ký hộ tại quầy | ví staff |
+| Khách tự đăng ký trên app webview | ví relayer của agent (hoặc FreeGas proxy của chain, `docs/07` §6) |
+| Đăng nhập máy trạm | ví của máy trạm (do agent cấp gas) |
+| Khách đổi mật khẩu | relayer / máy trạm |
+
+Contract kiểm chữ ký bằng `ecrecover` (EIP-712, có `nonce` + hạn) nên người gửi hộ không giả mạo hay dùng lại được chữ ký.
+
+**Quy tắc mật khẩu** (kiểm ở client vì phương án A không có máy chủ): tối thiểu 8 ký tự; không chứa username/SĐT; chặn danh sách ~10.000 mật khẩu phổ biến; báo mức mạnh/yếu khi gõ.
+
 ### 4.2 Đăng nhập bằng QR
 
 Máy trạm sinh ví phiên tạm, hiện QR (địa chỉ ví phiên + máy + hạn). App điện thoại của khách quét, ký uỷ quyền cho ví phiên trong `DelegateRegistry`. Không có bí mật nào đi qua máy công cộng. An toàn nhất trong 3 cách.
@@ -156,8 +183,8 @@ Sau U1–U2 mới viết đặc tả **NET** (máy trạm, phiên chơi), vì ph
 4. Ba cách đăng nhập máy trạm: OTP do staff cấp, username + mật khẩu, quét QR.
 5. Gộp hệ cũ: username trùng thì người đăng ký sớm nhất giữ, người sau thêm hậu tố (vd. `teo` → `teo.2`), báo cho khách.
 6. Nhân viên được làm khách tại agent mình, nhưng không tự nạp / tự xác nhận nạp cho chính mình.
+7. Mật khẩu: phương án A, ví sinh từ mật khẩu bằng scrypt, không có máy chủ (§4.1a). Chấp nhận mật khẩu yếu vẫn có thể bị đoán offline; giảm bằng quy tắc mật khẩu.
 
 ## 10. Còn chờ chốt
 
-1. **Cách lưu mật khẩu:** đồng ý cách 5 (ví sinh từ mật khẩu, §4.1) không?
-2. **Không chuyển xu giữa khách, không rút xu ra tiền** (giới hạn thiệt hại khi lộ mật khẩu): đồng ý không?
+1. **Không chuyển xu giữa khách, không rút xu ra tiền** (giới hạn thiệt hại khi lộ mật khẩu): đồng ý không?
