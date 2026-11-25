@@ -14,7 +14,7 @@
   "dependencies": {
     "@meta-platform/chain": "workspace:*",
     "@meta-platform/ui": "workspace:*",
-    "@metanodejs/fiai-sdk": "/Users/lekhaihoan/Documents/CONG_TY/metanode-finsdk/packages/fiai-sdk",
+    "@metanodejs/fiai-sdk": "/Users/yuu/Downloads/metanode-finsdk/packages/fiai-sdk",
     "@tanstack/react-query": "^5.102.8",
     "lucide-react": "^1.46.0",
     "react": "^19.2.8",

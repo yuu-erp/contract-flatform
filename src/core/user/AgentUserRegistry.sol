@@ -435,7 +435,7 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
     }
 
     function _claimUsername(uint64 agentId, string calldata username) private view returns (bytes32 key) {
-        if (!TextRules.isUsername(username)) revert InvalidUsername();
+        if (!TextRules.isUsername(string(username))) revert InvalidUsername();
         key = keccak256(bytes(username));
         if (_s().accountByUsername[agentId][key] != address(0)) revert UsernameTaken(agentId, username);
     }

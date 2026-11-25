@@ -33,13 +33,14 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "peerDependencies": {
-    "@metanodejs/fiai-sdk": "/Users/lekhaihoan/Documents/CONG_TY/metanode-finsdk/packages/fiai-sdk",
+    "@metanodejs/fiai-sdk": "^2.1.1",
     "@tanstack/react-query": "^5.0.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
     "react-router-dom": "^7.0.0"
   },
   "devDependencies": {
+    "@metanodejs/fiai-sdk": "/Users/yuu/Downloads/metanode-finsdk/packages/fiai-sdk",
     "@eslint/js": "^10.0.1",
     "@tanstack/react-query": "^5.102.8",
     "@testing-library/react": "^16.3.0",
