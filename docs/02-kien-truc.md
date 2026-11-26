@@ -156,7 +156,7 @@ Chi tiết: ADR 0031.
 | N3 | `Ledger` 23.158 B (trước 24.403 B) | L5 | Đã tách `LedgerRecorder`, `LedgerWallet` (library ngoài). Còn > 20 KB: tách bộ đếm sang library nếu thêm tính năng | Theo dõi |
 | N4 | `AgentUserRegistry` 21.388 B (trước 24.180 B) | L5 | Đã bỏ thống kê (tuần 3), OTP sang `DelegateRegistry`, thao tác nhân viên sang `CustomerDesk` (tuần 4). Còn > 20 KB: theo dõi | Theo dõi |
 | N5 | ~~`AgentUserRegistry` kiểm "Staff trở lên"~~ | ADR 0033, L1 | `CustomerDesk` kiểm `Permission.can()` (ADR 0035) | **Xong** tuần 4 |
-| N11 | Test bất biến Ledger: kiểm độ phủ "hoàn ví chéo chi nhánh" mỗi lượt fuzz chập chờn theo seed (≈ 1/3 seed hỏng) | CI | Cho handler ưu tiên tạo tình huống hoàn chéo, như đã làm với Duty | Trước khi viết NET |
+| N11 | ~~Test bất biến Ledger chập chờn theo seed~~ | CI | Kịch bản `crossRefund` tràn số khi fuzzer truyền `uint256` max → lấy `b % 3` trước khi cộng; 6/6 seed xanh | **Xong** |
 | N6 | Ghi FullDB nằm trong giao dịch chính, chưa rõ hành vi khi FullDB lỗi | Y1 | ADR 0032 | Chờ đội chain |
 | N7 | `BranchRegistry` bắt buộc domain duy nhất cho mọi chi nhánh | Y2 (Enterprise nhiều văn phòng) | Cho phép chi nhánh không domain | Khi làm Enterprise |
 | N8 | ~~`Ledger.setPoster` chưa có trần, chưa gắn module~~ | C3 | Giấy phép `(moduleId, kindsMask, maxAmount)` (ADR 0031) | **Xong** tuần 3 |

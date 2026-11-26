@@ -155,7 +155,9 @@ contract LedgerHandler is Test {
 
     /// @dev Kịch bản ghép: khách nạp ở hai chi nhánh, trừ hết số dư tại chi nhánh thứ hai (túi chi nhánh khác bị lấy),
     ///      rồi hoàn trọn: xu về túi chi nhánh nạp khác chi nhánh phục vụ.
+    ///      `b % 3` trước khi cộng: fuzzer hay truyền `type(uint256).max`, `b + 1` tràn số sẽ revert cả kịch bản (N11).
     function crossRefund(uint256 b, uint256 c) external {
+        b %= 3;
         this.topup(b, c, 0, 999);
         this.topup(b + 1, c, 0, 999);
         this.walletSpend(b + 1, c, 0, 0, 0);
