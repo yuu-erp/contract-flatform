@@ -2,7 +2,7 @@
 pragma solidity 0.8.28;
 
 // Chép nguyên chữ ký từ meta-iqr `contracts/loyalty/PublicfullDB.sol` (IFullDBV1) để khớp precompile MVM 0x…0107.
-// Chỉ `core/history/HistoryIndex` được gọi interface này.
+// Chỉ `kernel/history/HistoryIndex` được gọi interface này.
 
 struct PrefixEntry {
     string key;

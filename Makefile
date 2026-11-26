@@ -13,6 +13,7 @@ fmt:
 
 sizes:
 	forge build --sizes --skip 'test/**' --skip 'script/**'
+	forge build --sizes --json --skip 'test/**' --skip 'script/**' 2>/dev/null | python3 scripts/check_sizes.py
 
 layout:
 	python3 scripts/storage_layout.py check

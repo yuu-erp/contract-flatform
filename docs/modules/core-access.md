@@ -1,7 +1,7 @@
 # Đặc tả: vai trò cấp agent (AgentAccess)
 
 Trạng thái: **Đã triển khai** (Claude Code, 2026-11-18) theo yêu cầu người dùng. Chưa có co-owner, chưa có biểu quyết.
-Mã: `src/interfaces/IAgentAccess.sol`, `src/core/access/AgentAccess.sol` (13,4 KB)
+Mã: `src/interfaces/IAgentAccess.sol`, `src/tenant/access/AgentAccess.sol` (13,4 KB)
 Phụ thuộc: `AgentRegistry` (chủ agent), `BranchRegistry` (chi nhánh), `HistoryIndex` (audit), `PlatformAccess` (pause, nâng cấp)
 
 ## 1. Yêu cầu (người dùng, 2026-11-18)

@@ -7,8 +7,10 @@ Mô tả từng thư mục của repo `meta-platform`: chứa gì, để làm g�
 ```text
 meta-platform/
 ├── src/                     mã contract (mục 2)
-│   ├── core/                nền tảng: luôn có ở mọi chi nhánh, không bật/tắt
-│   ├── modules/             dịch vụ bật/tắt theo chi nhánh: net, iqr, loyalty
+│   ├── kernel/              T0 rễ: quản trị nền tảng, Registry, cổng FullDB
+│   ├── tenant/              T1 thân: agent, chi nhánh, vai trò, tài khoản, uỷ quyền
+│   ├── shared/              T2 dùng chung: Ledger, thanh toán, quyền, ca trực, tài nguyên
+│   ├── modules/             T3 dịch vụ bật/tắt theo chi nhánh: net, iqr, loyalty
 │   ├── libraries/           logic thuần, không state
 │   └── interfaces/          interface dùng chéo giữa các khối
 ├── test/                    test, cùng cấu trúc với src/ (mục 3)
@@ -32,7 +34,7 @@ Hai thư mục sinh ra khi build, không commit (`.gitignore`): `out/`, `cache/`
 
 ### 2.1 Tiêu chí đặt chỗ (ADR 0029) và thư mục theo tầng (ADR 0034)
 
-> **Thay đổi 2026-11-26:** kiến trúc chốt thành cây bốn tầng (`docs/02-kien-truc.md`). Tiêu chí cũ "chi nhánh nào cũng cần thì vào `core/`" **bỏ**. Thư mục `src/core/` sẽ dời thành `src/kernel/` (T0), `src/tenant/` (T1), `src/shared/` (T2) ở Architecture Baseline tuần 2; các mục 2.2 và 4 dưới đây mô tả cấu trúc **hiện tại** cho tới khi dời xong.
+> **Thay đổi 2026-11-26:** kiến trúc chốt thành cây bốn tầng (`docs/02-kien-truc.md`). Tiêu chí cũ "chi nhánh nào cũng cần thì vào `core/`" **bỏ**. `src/core/` đã dời thành `src/kernel/` (T0), `src/tenant/` (T1), `src/shared/` (T2) (Architecture Baseline tuần 2). Chuỗi namespace ERC-7201 giữ nguyên (`metaplatform.core.*`), nên storage và proxy đã deploy không đổi.
 
 | Câu hỏi | Nếu "có" |
 |---|---|
@@ -43,21 +45,26 @@ Hai thư mục sinh ra khi build, không commit (`.gitignore`): `out/`, `cache/`
 | ≥ 2 module cần **ngay bây giờ**, diễn đạt được không cần từ nghiệp vụ riêng, **và** có ADR? | T2 `shared/` |
 | Còn lại (mặc định) | T3 `modules/<module>` |
 
-### 2.2 `src/core/`
+### 2.2 `src/kernel/`, `src/tenant/`, `src/shared/`
 
-| Thư mục | Contract dự kiến | Làm gì | Mục đích | Ai được ghi | Đặc tả / task |
-|---|---|---|---|---|---|
-| `operator/` | `PlatformOperator` (**hoãn**) | Gom thao tác vận hành nhiều bước (ví dụ tạo agent + chi nhánh chính) vào một giao dịch, nếu cần | Hiện mỗi registry tự kiểm `PLATFORM_ADMIN` nên chưa cần | `PLATFORM_ADMIN` | `docs/modules/core-operator.md` mục 2.1 |
-| `access/` | ✅ `PlatformAccess`, ✅ `PlatformAccessed` (abstract), ✅ `AgentAccess` | `PlatformAccess`: **chỉ tầng quản trị** (`PLATFORM_OWNER`, `PLATFORM_ADMIN`) + pause toàn hệ. `PlatformAccessed`: modifier kiểm quyền và quyền nâng cấp cho mọi contract. Vai trò bên trong agent để ở `AgentAccess` (chủ agent → `Manager` → `Staff` theo chi nhánh; co-owner để sau), **tách khỏi** tầng quản trị | Một nơi trả lời "ai quản trị hệ thống", thay cho 3 vai trò admin rời rạc của hệ cũ; vai trò agent không lẫn vào | `PLATFORM_OWNER`; vai trò agent do chủ agent / quản lý | `docs/modules/core-operator.md` mục 2.2, `docs/modules/core-access.md` |
-| `tenant/` | ✅ `AgentRegistry`, ✅ `BranchRegistry` | `AgentRegistry`: agent, chủ agent, trạng thái (`Active`/`Suspended`/`Deleted`), `requireAgentWritable`. `BranchRegistry`: chi nhánh, dịch vụ bật, domain, thuế, `requireWritable(branchId, service)` | Nguồn sự thật về "agent/chi nhánh nào tồn tại, đang chạy, bật dịch vụ gì". Mọi module hỏi ở đây trước khi ghi (dừng thì chỉ đọc) | `PLATFORM_ADMIN`; thuế do chủ agent | `docs/modules/core-operator.md` |
-| `registry/` | `Registry` | Sổ địa chỉ các contract core và module, có version | Client và contract tra địa chỉ ở một chỗ; nâng cấp hay thêm module không phải sửa cấu hình rải rác | `PLATFORM_OWNER` | chưa lập |
-| `migration/` | `Migration` | Nhập dữ liệu từ meta-iqr theo lô, idempotent, có Merkle proof; `finalize` khoá vĩnh viễn | Chuyển agent từ hệ cũ sang mà không nhập trùng, không sửa được sau khi chốt | vai trò `MIGRATOR` (thu hồi sau finalize) | `docs/03-chuyen-du-lieu.md` |
-| `ledger/` | `Ledger` | Số dư xu chính (tiền nạp) và điểm; bút toán kép; `refId` chống trùng; tiền nạp gắn chi nhánh gốc để tính doanh thu | Tiền chỉ đi qua một chỗ và kiểm được bằng invariant. Tách xu chính khỏi Loyalty (hệ cũ đặt sai chỗ) | module dịch vụ được uỷ quyền | ADR 0022, chưa lập |
-| `history/` | `HistoryIndex` | Cổng duy nhất ghi/đọc FullDB (precompile `0x…0107`): lịch sử, báo cáo, hồ sơ, audit, tìm kiếm có phân trang | Lịch sử nằm on-chain mà không phình storage; sửa lỗ hổng ai cũng ghi/xoá được FullDB của hệ cũ | contract được đăng ký writer | `docs/05`, `docs/legacy/50-fulldb.md`, `tasks/11` |
-| `delegate/` | `DelegateRegistry` | Session wallet / ví máy trạm thay mặt khách trong thời hạn | Khách chơi net không phải ký bằng ví chính. Chỉ một chỗ giải quyết "ví này đại diện cho ai" | module NET, khách | chưa lập |
-| `staff/` | `StaffRegistry`, `Attendance` | Nhân viên của chi nhánh, vai trò nghiệp vụ, ca làm, chấm công | Chi nhánh nào cũng có nhân viên. NET và IQR cùng dùng một danh sách | chủ agent, quản lý chi nhánh | luồng agent, chưa lập |
-| `resource/` | `ResourceRegistry` | Khu vực, bàn, máy trạm, nhóm máy | Tài nguyên vật lý của chi nhánh; NET (máy) và IQR (bàn) dùng chung khu vực | chủ agent, quản lý chi nhánh | luồng agent, chưa lập |
-| `payment/` | `PaymentAccounts` | Tài khoản nhận tiền của chi nhánh (một tài khoản có thể dùng cho nhiều chi nhánh) | Nơi tiền thật về, dùng khi nạp tiền và thanh toán | chủ agent | luồng agent, chưa lập |
+Bảng đầy đủ "contract – câu hỏi nó trả lời – trạng thái": `docs/02-kien-truc.md` mục 3. Ở đây chỉ ghi thư mục.
+
+| Thư mục | Tầng | Contract | Ai được ghi |
+|---|---|---|---|
+| `kernel/access/` | T0 | ✅ `PlatformAccess`, ✅ `PlatformAccessed` (abstract: modifier quyền + quyền nâng cấp cho mọi contract) | `PLATFORM_OWNER` / `PLATFORM_ADMIN` |
+| `kernel/registry/` | T0 | `Registry`: sổ địa chỉ + danh sách module (ADR 0030) | `PLATFORM_OWNER` |
+| `kernel/history/` | T0 | ✅ `HistoryIndex`, ✅ `PlatformAuditing` (abstract ghi audit) | writer được đăng ký |
+| `tenant/agent/` | T1 | ✅ `AgentRegistry` | `PLATFORM_ADMIN` |
+| `tenant/branch/` | T1 | ✅ `BranchRegistry` | `PLATFORM_ADMIN`; thuế do chủ agent |
+| `tenant/access/` | T1 | ✅ `AgentAccess` (Manager / Staff theo chi nhánh) | chủ agent, Manager |
+| `tenant/user/` | T1 | ✅ `AgentUserRegistry` (tài khoản khách và nhân viên) | chữ ký người dùng, nhân viên có quyền |
+| `tenant/delegate/` | T1 | `DelegateRegistry` | người dùng, module |
+| `shared/ledger/` | T2 | ✅ `Ledger` | poster có giấy phép (ADR 0031) |
+| `shared/payment/` | T2 | ✅ `SalesSettings`, `PaymentAccounts` (tài khoản nhận tiền, ca két) | chủ agent, nhân viên có quyền |
+| `shared/permission/` | T2 | `Permission` (ADR 0033) | Manager+ |
+| `shared/duty/` | T2 | `Duty` (ADR 0033) | Manager+, nhân viên (vào/ra ca) |
+| `shared/resource/` | T2 | `Resource` (thiết bị/tài nguyên: danh tính + trạng thái) | Manager+ |
+| `migration/` | ngoài cây | `Migration` | `MIGRATOR`, thu hồi sau `finalize` |
 
 ### 2.3 `src/modules/`
 
@@ -89,7 +96,7 @@ Interface công khai của mọi contract (`I<Tên>.sol`): hàm, event, lỗi, s
 
 | Thư mục | Chứa gì | Mục đích |
 |---|---|---|
-| `core/<khối>/` | unit + fuzz test của từng khối core | Mỗi hàm, mỗi luật, mỗi lỗi custom có test |
+| `kernel/`, `tenant/`, `shared/` | unit + fuzz test của từng khối nền tảng, cùng cấu trúc với `src/` | Mỗi hàm, mỗi luật, mỗi lỗi custom có test |
 | `modules/<module>/` | unit + fuzz test của từng dịch vụ | như trên |
 | `libraries/` | test library thuần (thường là fuzz) | |
 | `invariant/` | invariant test: Ledger (tổng cộng − tổng trừ = tổng số dư), RewardLedger, Tenant… | Bắt lỗi chỉ lộ ra sau chuỗi thao tác ngẫu nhiên |
@@ -98,22 +105,26 @@ Interface công khai của mọi contract (`I<Tên>.sol`): hàm, event, lỗi, s
 | `utils/` | `BaseTest.sol` (vai trò mẫu, `deployProxy`, `installMockFullDB`), `MockFullDB.sol`, `MockServiceModule.sol` | Hạ tầng test dùng chung |
 | `script/` | test script deploy và nâng cấp (`DeployPlatform`, `DeployAgentAccess`, `SetPlatformAdmin`, `UpgradeProxy`) | Script chạy được trong test, không cần chain |
 
-Khung `Scaffold` đã xoá (2026-11-18) khi có khối thật đầu tiên. Harness layout của core ở `test/layout/CoreLayouts.sol`; `test/utils/PlatformFixture.sol` dựng sẵn PlatformAccess → HistoryIndex → AgentRegistry → BranchRegistry → AgentAccess cho test.
+Khung `Scaffold` đã xoá (2026-11-18) khi có khối thật đầu tiên. Harness layout của core ở `test/layout/PlatformLayouts.sol`; `test/utils/PlatformFixture.sol` dựng sẵn PlatformAccess → HistoryIndex → AgentRegistry → BranchRegistry → AgentAccess cho test.
 
 ## 4. Luật phụ thuộc trong `src/`
 
-Kiểm tự động bằng `scripts/check_deps.sh` (chạy trong `make ci`).
+Kiểm tự động bằng `scripts/check_deps.sh` (chạy trong `make ci`). ADR 0029, 0034.
 
-| Thư mục | Được import | Không được import |
-|---|---|---|
-| `libraries/` | — | mọi thứ khác trong `src/` |
-| `interfaces/` | `libraries/` | `core/`, `modules/` |
-| `core/` | `core/`, `libraries/`, `interfaces/` | `modules/` |
-| `modules/net/` | `core/`, `libraries/`, `interfaces/` | `modules/iqr/`, `modules/loyalty/` |
-| `modules/iqr/` | `core/`, `libraries/`, `interfaces/` | `modules/net/`, `modules/loyalty/` |
-| `modules/loyalty/` | `core/`, `libraries/`, `interfaces/` | `modules/net/`, `modules/iqr/` |
+| Thư mục | Không được import |
+|---|---|
+| `libraries/` | mọi thứ khác trong `src/` |
+| `interfaces/` | `kernel/`, `tenant/`, `shared/`, `modules/`, `migration/` |
+| `kernel/` (T0) | `tenant/`, `shared/`, `modules/`, `migration/` |
+| `tenant/` (T1) | `shared/`, `modules/`, `migration/` |
+| `shared/` (T2) | `modules/`, `migration/` |
+| `modules/<a>/` (T3) | `modules/<b>/`, `migration/` |
 
-Giữa các module, khi NET hay IQR cần báo cho Loyalty, nó gọi qua `interfaces/ILoyaltyHook`. Địa chỉ hook lấy từ `Registry`, và khi Loyalty tắt thì không gọi.
+**L2:** `kernel/`, `tenant/`, `shared/`, `libraries/` không được chứa hằng/tên dịch vụ (`SERVICE_NET`, `ServiceMask.IQR`…). Ngoại lệ tạm thời liệt kê trong `check_deps.sh` (nợ N1, N2), xoá khi có `Registry`.
+
+**L5:** `scripts/check_sizes.py` (trong `make sizes`) báo contract > 20 KB; contract chưa có kế hoạch tách thì lỗi.
+
+Giữa các module, khi NET hay IQR cần báo cho Loyalty, nó gọi qua `interfaces/ILoyaltyHook`, địa chỉ lấy từ `Registry`, gọi an toàn (ADR 0031).
 
 ## 5. Thư mục khác
 

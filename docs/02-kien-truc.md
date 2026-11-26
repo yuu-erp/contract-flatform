@@ -157,7 +157,8 @@ Chi tiết: ADR 0031.
 | N6 | Ghi FullDB nằm trong giao dịch chính, chưa rõ hành vi khi FullDB lỗi | Y1 | ADR 0032 | Chờ đội chain |
 | N7 | `BranchRegistry` bắt buộc domain duy nhất cho mọi chi nhánh | Y2 (Enterprise nhiều văn phòng) | Cho phép chi nhánh không domain | Khi làm Enterprise |
 | N8 | `Ledger.setPoster` chưa có trần mỗi giao dịch, chưa gắn module | C3 | ADR 0031 | Baseline tuần 3 |
-| N9 | `docs/05`, `docs/06` còn đường dẫn `core/staff`, `core/resource` cũ | — | Sửa khi dời thư mục (ADR 0034) | Baseline tuần 2 |
+| N9 | ~~`docs/05`, `docs/06` còn đường dẫn `core/` cũ~~ | — | Đã sửa khi dời thư mục (ADR 0034) | **Xong** tuần 2 |
+| N10 | `BranchRegistry` 20.292 B, sát ngưỡng cảnh báo 20 KB | L5 | Theo dõi; chuyển kiểm module sang `Registry` (N1) có thể làm tăng | Baseline tuần 3 |
 
 ## 11. Checklist kiến trúc cho mọi task
 

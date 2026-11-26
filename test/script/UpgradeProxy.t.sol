@@ -4,7 +4,7 @@ pragma solidity 0.8.28;
 import {BaseTest} from "../utils/BaseTest.sol";
 import {DeployPlatform} from "../../script/DeployPlatform.s.sol";
 import {UpgradeProxy} from "../../script/UpgradeProxy.s.sol";
-import {AgentRegistry} from "../../src/core/tenant/AgentRegistry.sol";
+import {AgentRegistry} from "../../src/tenant/agent/AgentRegistry.sol";
 import {IAgentRegistry} from "../../src/interfaces/IAgentRegistry.sol";
 import {IPlatformAccess} from "../../src/interfaces/IPlatformAccess.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";

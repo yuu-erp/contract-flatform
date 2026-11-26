@@ -3,7 +3,7 @@ pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 import {PlatformFixture} from "../utils/PlatformFixture.sol";
-import {AgentRegistry} from "../../src/core/tenant/AgentRegistry.sol";
+import {AgentRegistry} from "../../src/tenant/agent/AgentRegistry.sol";
 import {IAgentRegistry} from "../../src/interfaces/IAgentRegistry.sol";
 
 /// @notice Gọi ngẫu nhiên mọi hàm ghi của AgentRegistry bằng ví admin, với một tập ví chủ nhỏ để hay va nhau.

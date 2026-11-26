@@ -2,7 +2,7 @@
 pragma solidity 0.8.28;
 
 import {Script, console2} from "forge-std/Script.sol";
-import {PlatformAccess} from "../src/core/access/PlatformAccess.sol";
+import {PlatformAccess} from "../src/kernel/access/PlatformAccess.sol";
 
 /// @notice PLATFORM_OWNER cấp hoặc thu quyền PLATFORM_ADMIN.
 ///         Env: `PRIVATE_KEY` (owner), `ACCESS_PROXY`, `ADMIN`, `ALLOW` (`true` thêm, `false` gỡ).

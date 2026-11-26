@@ -3,10 +3,10 @@ pragma solidity 0.8.28;
 
 import {Script, console2} from "forge-std/Script.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
-import {HistoryIndex} from "../src/core/history/HistoryIndex.sol";
-import {AgentAccess} from "../src/core/access/AgentAccess.sol";
-import {AgentRegistry} from "../src/core/tenant/AgentRegistry.sol";
-import {PlatformAccess} from "../src/core/access/PlatformAccess.sol";
+import {HistoryIndex} from "../src/kernel/history/HistoryIndex.sol";
+import {AgentAccess} from "../src/tenant/access/AgentAccess.sol";
+import {AgentRegistry} from "../src/tenant/agent/AgentRegistry.sol";
+import {PlatformAccess} from "../src/kernel/access/PlatformAccess.sol";
 
 /// @notice Thêm AgentAccess vào tầng quản trị đã deploy (trước khi có AgentAccess): deploy proxy,
 ///         PLATFORM_OWNER đăng ký nó làm writer của HistoryIndex (kind `platform_audit`), nối nó vào AgentRegistry,

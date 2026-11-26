@@ -1,7 +1,7 @@
 # Đặc tả: tầng vận hành nền tảng (owner, admin, agent, chi nhánh)
 
 Trạng thái: **Đã duyệt** (người dùng, 2026-11-18): 8 câu trả lời, gộp admin (6.1), thuế do agent đặt (6.2). Triển khai: `tasks/10`–`13`
-Thư mục mã: `src/core/operator`, `src/core/tenant`, `src/core/access` (phần vai trò nền tảng)
+Thư mục mã: `src/tenant/agent`, `src/tenant/branch`, `src/kernel/access` (phần vai trò nền tảng); `operator` đã bỏ (ADR 0029)
 Phụ thuộc: `docs/05-luu-tru-du-lieu.md` (storage hay FullDB), ADR 0020 (singleton đa tenant), 0021 (UUPS + ERC-7201), 0023 (AccessManager)
 
 Tầng này là lớp đầu tiên của hệ mới. Mọi khối khác (NET, IQR, Loyalty, `core/staff`, `core/resource`, `core/payment`) hỏi tầng này ba câu: "agent/chi nhánh có tồn tại và đang hoạt động không", "dịch vụ X có bật ở chi nhánh này không", "người gọi có vai trò gì".
@@ -120,7 +120,7 @@ Kiểm domain → `branchIdCount++` → lưu `BranchInfo` (tên, địa chỉ, S
 | `PLATFORM_OWNER` | ví của người dùng (`PRIVATE_KEY`); sau này nên chuyển multisig | **Vai cao nhất, làm được mọi việc của admin** (tạo/sửa/xoá agent, chi nhánh, pause...). Thêm phần chỉ owner: nâng cấp contract (UUPS), đổi owner (hai bước), thêm/bớt `PLATFORM_ADMIN`, nguồn vai trò agent, writer `HistoryIndex`, poster `Ledger`, nối `AgentAccess`. Owner vẫn **không** được làm chủ agent hay thành viên chi nhánh (tách vai) |
 | `PLATFORM_ADMIN` | nhân viên vận hành | tạo/sửa hồ sơ/dừng/mở lại/xoá agent; đổi ví chủ agent; tạo/sửa/tạm dừng/xoá chi nhánh; bật/tắt dịch vụ; **pause/unpause toàn hệ**; xem thống kê. **Không** nâng cấp contract, **không** cấu hình hệ (các việc chỉ owner ở dòng trên). **Không** đặt thuế (thuế là việc của agent) |
 
-Quyết định người dùng 2026-11-25: owner làm được mọi thứ; admin không nâng cấp proxy/contract nhưng làm được việc vận hành nặng (pause, CRUD agent). Thực thi: modifier `onlyPlatformAdmin` trong `PlatformAccessed` nhận **owner hoặc admin**; `PlatformAccess.pause/unpause` nhận owner hoặc admin (lỗi `NotPlatformAdmin`); việc chỉ owner dùng `onlyPlatformOwner` / OZ `onlyOwner`. Test ma trận: `test/core/access/PlatformRoleMatrix.t.sol`.
+Quyết định người dùng 2026-11-25: owner làm được mọi thứ; admin không nâng cấp proxy/contract nhưng làm được việc vận hành nặng (pause, CRUD agent). Thực thi: modifier `onlyPlatformAdmin` trong `PlatformAccessed` nhận **owner hoặc admin**; `PlatformAccess.pause/unpause` nhận owner hoặc admin (lỗi `NotPlatformAdmin`); việc chỉ owner dùng `onlyPlatformOwner` / OZ `onlyOwner`. Test ma trận: `test/kernel/access/PlatformRoleMatrix.t.sol`.
 
 `PLATFORM_OWNER` và `PLATFORM_ADMIN` **không** có quyền nghiệp vụ bên trong agent (không trừ/cộng tiền khách, không sửa đơn).
 

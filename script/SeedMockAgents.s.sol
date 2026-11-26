@@ -4,9 +4,9 @@ pragma solidity 0.8.28;
 import {Script, console2} from "forge-std/Script.sol";
 import {stdJson} from "forge-std/StdJson.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-import {AgentRegistry} from "../src/core/tenant/AgentRegistry.sol";
+import {AgentRegistry} from "../src/tenant/agent/AgentRegistry.sol";
 import {IAgentRegistry} from "../src/interfaces/IAgentRegistry.sol";
-import {PlatformAccess} from "../src/core/access/PlatformAccess.sol";
+import {PlatformAccess} from "../src/kernel/access/PlatformAccess.sol";
 
 /// @notice Tạo hàng loạt agent giả để thử dashboard / phân trang.
 ///         Env: `ADMIN_PRIVATE_KEY` (ưu tiên) hoặc `PRIVATE_KEY` nếu đó là **PLATFORM_ADMIN**.

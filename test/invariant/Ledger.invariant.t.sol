@@ -4,7 +4,7 @@ pragma solidity 0.8.28;
 import {Test} from "forge-std/Test.sol";
 import {PlatformFixture} from "../utils/PlatformFixture.sol";
 import {MockLedgerPoster} from "../utils/MockLedgerPoster.sol";
-import {Ledger} from "../../src/core/ledger/Ledger.sol";
+import {Ledger} from "../../src/shared/ledger/Ledger.sol";
 import {ILedger} from "../../src/interfaces/ILedger.sol";
 import {LedgerMetrics as M} from "../../src/libraries/LedgerMetrics.sol";
 

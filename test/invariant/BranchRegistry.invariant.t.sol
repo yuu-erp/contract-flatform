@@ -3,8 +3,8 @@ pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 import {PlatformFixture} from "../utils/PlatformFixture.sol";
-import {BranchRegistry} from "../../src/core/tenant/BranchRegistry.sol";
-import {AgentRegistry} from "../../src/core/tenant/AgentRegistry.sol";
+import {BranchRegistry} from "../../src/tenant/branch/BranchRegistry.sol";
+import {AgentRegistry} from "../../src/tenant/agent/AgentRegistry.sol";
 import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
 
 /// @notice Gọi ngẫu nhiên các hàm admin của BranchRegistry trên 2 agent, 4 domain để hay va nhau.

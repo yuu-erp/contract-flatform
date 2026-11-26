@@ -19,8 +19,8 @@ Dừng code tính năng 4 tuần để chốt nền (`docs/02-kien-truc.md`, `do
 
 | Tuần | Việc | Đầu ra nghiệm thu | Trạng thái |
 |---|---|---|---|
-| 1 | Chốt tài liệu: `docs/02` bản chốt, ADR 0029–0034, kịch bản chuẩn `docs/09`, đóng ADR 0020–0028 | Bộ tài liệu đọc 30 phút hiểu hệ | **Xong, chờ người dùng duyệt ADR 0031** |
-| 2 | Dời thư mục theo tầng (ADR 0034); `check_deps.sh` theo tầng + cấm tên module dưới T3 (L2); cảnh báo size > 20 KB (L5); checklist kiến trúc trong mẫu task | CI tự bắt lỗi kiến trúc | Chưa |
+| 1 | Chốt tài liệu: `docs/02` bản chốt, ADR 0029–0034, kịch bản chuẩn `docs/09`, đóng ADR 0020–0028 | Bộ tài liệu đọc 30 phút hiểu hệ | **Xong** (ADR 0031 chờ người dùng duyệt) |
+| 2 | Dời thư mục theo tầng (ADR 0034); `check_deps.sh` theo tầng + cấm tên module dưới T3 (L2); cảnh báo size > 20 KB (L5); checklist kiến trúc trong mẫu task | CI tự bắt lỗi kiến trúc | **Xong** — `src/kernel`, `src/tenant`, `src/shared`; `check_deps.sh` L1 + L2 (17 chỗ miễn tạm N1/N2); `check_sizes.py` L5; mẫu `tasks/TEMPLATE.md` |
 | 3 | Sửa nền: `Registry` + danh sách module, bỏ `ServiceMask` (N1); Ledger: giấy phép poster gắn module + trần, phương án giảm tải (N2, N3, N8); `AgentUserRegistry` giảm tải (N4) | Lõi không biết tên module; hai contract sát trần có chỗ thở | Chưa |
 | 4 | `Permission` + `Duty` + `DelegateRegistry` (ADR 0033), có invariant + test "module chết" khung | NET/IQR có đủ nền | Chưa |
 

@@ -3,7 +3,7 @@ pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 import {PlatformFixture} from "../utils/PlatformFixture.sol";
-import {AgentUserRegistry} from "../../src/core/user/AgentUserRegistry.sol";
+import {AgentUserRegistry} from "../../src/tenant/user/AgentUserRegistry.sol";
 import {IAgentUserRegistry} from "../../src/interfaces/IAgentUserRegistry.sol";
 import {IAgentAccess} from "../../src/interfaces/IAgentAccess.sol";
 

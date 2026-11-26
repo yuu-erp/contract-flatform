@@ -1,19 +1,19 @@
 # Mỗi dòng: <impl|harness> <path:Contract>. Xem scripts/storage_layout.py.
 # Mỗi contract UUPS mới thêm một dòng impl; mỗi struct namespaced thêm một harness.
-impl    src/core/access/PlatformAccess.sol:PlatformAccess
-impl    src/core/history/HistoryIndex.sol:HistoryIndex
-impl    src/core/tenant/AgentRegistry.sol:AgentRegistry
-impl    src/core/tenant/BranchRegistry.sol:BranchRegistry
-impl    src/core/access/AgentAccess.sol:AgentAccess
-impl    src/core/payment/SalesSettings.sol:SalesSettings
-impl    src/core/ledger/Ledger.sol:Ledger
-impl    src/core/user/AgentUserRegistry.sol:AgentUserRegistry
-harness test/layout/CoreLayouts.sol:PlatformAccessLayout
-harness test/layout/CoreLayouts.sol:PlatformAccessedLayout
-harness test/layout/CoreLayouts.sol:HistoryIndexLayout
-harness test/layout/CoreLayouts.sol:AgentRegistryLayout
-harness test/layout/CoreLayouts.sol:BranchRegistryLayout
-harness test/layout/CoreLayouts.sol:AgentAccessLayout
-harness test/layout/CoreLayouts.sol:SalesSettingsLayout
-harness test/layout/CoreLayouts.sol:LedgerLayout
-harness test/layout/CoreLayouts.sol:AgentUserRegistryLayout
+impl    src/kernel/access/PlatformAccess.sol:PlatformAccess
+impl    src/kernel/history/HistoryIndex.sol:HistoryIndex
+impl    src/tenant/agent/AgentRegistry.sol:AgentRegistry
+impl    src/tenant/branch/BranchRegistry.sol:BranchRegistry
+impl    src/tenant/access/AgentAccess.sol:AgentAccess
+impl    src/shared/payment/SalesSettings.sol:SalesSettings
+impl    src/shared/ledger/Ledger.sol:Ledger
+impl    src/tenant/user/AgentUserRegistry.sol:AgentUserRegistry
+harness test/layout/PlatformLayouts.sol:PlatformAccessLayout
+harness test/layout/PlatformLayouts.sol:PlatformAccessedLayout
+harness test/layout/PlatformLayouts.sol:HistoryIndexLayout
+harness test/layout/PlatformLayouts.sol:AgentRegistryLayout
+harness test/layout/PlatformLayouts.sol:BranchRegistryLayout
+harness test/layout/PlatformLayouts.sol:AgentAccessLayout
+harness test/layout/PlatformLayouts.sol:SalesSettingsLayout
+harness test/layout/PlatformLayouts.sol:LedgerLayout
+harness test/layout/PlatformLayouts.sol:AgentUserRegistryLayout

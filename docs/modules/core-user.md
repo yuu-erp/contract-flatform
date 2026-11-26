@@ -1,6 +1,6 @@
 # Người dùng theo agent (`core/user`)
 
-Trạng thái: **U1 đã triển khai** (Claude Code, 2026-11-26): `src/core/user/AgentUserRegistry.sol`, interface `src/interfaces/IAgentUserRegistry.sol`. U2–U4 chưa làm.
+Trạng thái: **U1 đã triển khai** (Claude Code, 2026-11-26): `src/tenant/user/AgentUserRegistry.sol`, interface `src/interfaces/IAgentUserRegistry.sol`. U2–U4 chưa làm.
 
 ## 1. Bài toán
 

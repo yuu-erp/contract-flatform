@@ -2,7 +2,7 @@
 
 Sổ cái tiền của hệ mới: ví xu của khách theo agent (chia **túi theo chi nhánh nạp**), bộ đếm ngày ba cấp (nền tảng, agent, chi nhánh) và bản ghi từng bút toán vào FullDB qua `HistoryIndex` (kind `ledger`). Đặc tả nghiệp vụ gốc: `docs/08-dong-tien-va-doanh-thu.md`. Cài đặt thuế và phương thức thanh toán: `docs/modules/core-sales-settings.md`.
 
-Code: `src/core/ledger/Ledger.sol`, `src/interfaces/ILedger.sol`, `src/libraries/LedgerMetrics.sol`. UUPS, namespace ERC-7201 `metaplatform.core.ledger`.
+Code: `src/shared/ledger/Ledger.sol`, `src/interfaces/ILedger.sol`, `src/libraries/LedgerMetrics.sol`. UUPS, namespace ERC-7201 `metaplatform.core.ledger`.
 
 ## 1. Mô hình poster
 
@@ -115,7 +115,7 @@ Ngân sách: mọi hàm ghi < 1.5M gas (hiện ≤ 1.42M). Ảnh chụp gas test
 
 ## 9. Kiểm thử
 
-- Unit: `test/core/ledger/*.t.sol`, `test/libraries/LedgerMetrics.t.sol`.
+- Unit: `test/shared/ledger/*.t.sol`, `test/libraries/LedgerMetrics.t.sol`.
 - Bất biến `test/invariant/Ledger.invariant.t.sol` (handler gọi ngẫu nhiên sáu hàm ghi, 3 chi nhánh khác múi giờ, 3 khách, warp ≤ 3 ngày; lời gọi sai bị nuốt): nợ ví = Σ túi; dòng xu theo ngày = nợ ví; Σ chi nhánh = agent = nền tảng (trừ `SERVED_HERE`, `SERVED_HERE_REFUND`); mỗi dịch vụ ở cấp agent `Σ TAX_REFUND ≤ Σ TAX` và `Σ REFUND ≤ Σ GROSS`; `refunded ≤ amount`; ≤ 16 túi và không túi 0. Profile mặc định 64 lượt × 64 sâu; `ci` 256 × 128 xanh.
 
 ## 10. Để sau

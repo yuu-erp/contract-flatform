@@ -1,6 +1,6 @@
 # core/payment — SalesSettings
 
-Nguồn: `docs/08-dong-tien-va-doanh-thu.md` mục 4.4. Contract: `src/core/payment/SalesSettings.sol`, interface `src/interfaces/ISalesSettings.sol`.
+Nguồn: `docs/08-dong-tien-va-doanh-thu.md` mục 4.4. Contract: `src/shared/payment/SalesSettings.sol`, interface `src/interfaces/ISalesSettings.sol`.
 
 ## Vai trò
 

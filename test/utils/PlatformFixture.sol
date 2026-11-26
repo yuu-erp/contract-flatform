@@ -3,15 +3,15 @@ pragma solidity 0.8.28;
 
 import {BaseTest} from "./BaseTest.sol";
 import {MockFullDB} from "./MockFullDB.sol";
-import {PlatformAccess} from "../../src/core/access/PlatformAccess.sol";
-import {HistoryIndex} from "../../src/core/history/HistoryIndex.sol";
-import {AgentRegistry} from "../../src/core/tenant/AgentRegistry.sol";
-import {BranchRegistry} from "../../src/core/tenant/BranchRegistry.sol";
-import {AgentAccess} from "../../src/core/access/AgentAccess.sol";
-import {Ledger} from "../../src/core/ledger/Ledger.sol";
+import {PlatformAccess} from "../../src/kernel/access/PlatformAccess.sol";
+import {HistoryIndex} from "../../src/kernel/history/HistoryIndex.sol";
+import {AgentRegistry} from "../../src/tenant/agent/AgentRegistry.sol";
+import {BranchRegistry} from "../../src/tenant/branch/BranchRegistry.sol";
+import {AgentAccess} from "../../src/tenant/access/AgentAccess.sol";
+import {Ledger} from "../../src/shared/ledger/Ledger.sol";
 import {MockLedgerPoster} from "./MockLedgerPoster.sol";
-import {SalesSettings} from "../../src/core/payment/SalesSettings.sol";
-import {AgentUserRegistry} from "../../src/core/user/AgentUserRegistry.sol";
+import {SalesSettings} from "../../src/shared/payment/SalesSettings.sol";
+import {AgentUserRegistry} from "../../src/tenant/user/AgentUserRegistry.sol";
 import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
 import {IAgentRegistry} from "../../src/interfaces/IAgentRegistry.sol";
 

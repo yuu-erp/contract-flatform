@@ -3,7 +3,7 @@ pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 import {PlatformFixture} from "../utils/PlatformFixture.sol";
-import {AgentAccess} from "../../src/core/access/AgentAccess.sol";
+import {AgentAccess} from "../../src/tenant/access/AgentAccess.sol";
 import {IAgentAccess} from "../../src/interfaces/IAgentAccess.sol";
 
 /// @notice Gọi ngẫu nhiên grant/revoke/renounce trên 2 chi nhánh, 5 ví, người gọi là chủ agent hoặc một ví bất kỳ.
