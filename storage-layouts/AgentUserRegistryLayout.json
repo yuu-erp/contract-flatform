@@ -1,0 +1,164 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct AgentUserRegistry.UsersStorage"
+ ],
+ [
+  "s.agents",
+  0,
+  0,
+  "contract IAgentRegistry"
+ ],
+ [
+  "s.branches",
+  1,
+  0,
+  "contract IBranchRegistry"
+ ],
+ [
+  "s.agentAccess",
+  2,
+  0,
+  "contract IAgentAccess"
+ ],
+ [
+  "s.history",
+  3,
+  0,
+  "contract IHistoryIndex"
+ ],
+ [
+  "s.delegateRegistry",
+  4,
+  0,
+  "address"
+ ],
+ [
+  "s.users",
+  5,
+  0,
+  "mapping(uint64 => mapping(address => struct IAgentUserRegistry.User))"
+ ],
+ [
+  "s.accountByUsername",
+  6,
+  0,
+  "mapping(uint64 => mapping(bytes32 => address))"
+ ],
+ [
+  "s.accountByLogin",
+  7,
+  0,
+  "mapping(uint64 => mapping(address => address))"
+ ],
+ [
+  "s.userList",
+  8,
+  0,
+  "mapping(uint64 => address[])"
+ ],
+ [
+  "s.otps",
+  9,
+  0,
+  "mapping(uint64 => mapping(address => struct IAgentUserRegistry.Otp))"
+ ],
+ [
+  "s.branchUserCount",
+  10,
+  0,
+  "mapping(uint64 => uint256)"
+ ],
+ [
+  "s.newByAgentDay",
+  11,
+  0,
+  "mapping(uint64 => mapping(uint32 => uint32))"
+ ],
+ [
+  "s.newByBranchDay",
+  12,
+  0,
+  "mapping(uint64 => mapping(uint32 => uint32))"
+ ],
+ [
+  "userRow",
+  13,
+  0,
+  "struct IAgentUserRegistry.User"
+ ],
+ [
+  "userRow.loginAddress",
+  13,
+  0,
+  "address"
+ ],
+ [
+  "userRow.createdAt",
+  13,
+  20,
+  "uint64"
+ ],
+ [
+  "userRow.loginEpoch",
+  13,
+  28,
+  "uint32"
+ ],
+ [
+  "userRow.registeredBy",
+  14,
+  0,
+  "address"
+ ],
+ [
+  "userRow.registeredBranch",
+  14,
+  20,
+  "uint64"
+ ],
+ [
+  "userRow.status",
+  14,
+  28,
+  "enum IAgentUserRegistry.UserStatus"
+ ],
+ [
+  "userRow.nonce",
+  15,
+  0,
+  "uint64"
+ ],
+ [
+  "userRow.profileDocId",
+  16,
+  0,
+  "uint256"
+ ],
+ [
+  "userRow.username",
+  17,
+  0,
+  "string"
+ ],
+ [
+  "otpRow",
+  18,
+  0,
+  "struct IAgentUserRegistry.Otp"
+ ],
+ [
+  "otpRow.account",
+  18,
+  0,
+  "address"
+ ],
+ [
+  "otpRow.expiresAt",
+  18,
+  20,
+  "uint64"
+ ]
+]

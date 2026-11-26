@@ -5,6 +5,9 @@ import {BaseTest} from "../utils/BaseTest.sol";
 import {DeployPlatform} from "../../script/DeployPlatform.s.sol";
 import {SetPlatformAdmin} from "../../script/SetPlatformAdmin.s.sol";
 import {DeployAgentAccess} from "../../script/DeployAgentAccess.s.sol";
+import {DeployAgentUsers} from "../../script/DeployAgentUsers.s.sol";
+import {AgentUserRegistry} from "../../src/core/user/AgentUserRegistry.sol";
+import {IAgentUserRegistry} from "../../src/interfaces/IAgentUserRegistry.sol";
 import {AgentAccess} from "../../src/core/access/AgentAccess.sol";
 import {SalesSettings} from "../../src/core/payment/SalesSettings.sol";
 import {Ledger} from "../../src/core/ledger/Ledger.sol";
@@ -53,6 +56,9 @@ contract DeployPlatformTest is BaseTest {
         assertTrue(history.canWrite(d.ledgerProxy, "ledger"));
         assertFalse(history.canWrite(d.ledgerProxy, "platform_audit"));
         assertEq(Ledger(d.ledgerProxy).KIND_LEDGER(), "ledger");
+        assertTrue(history.canWrite(d.usersProxy, "users"));
+        assertTrue(history.canWrite(d.usersProxy, "platform_audit"));
+        assertFalse(history.canWrite(d.usersProxy, "ledger"));
         // Nối AgentAccess và nguồn vai trò agent
         assertEq(agents.agentAccess(), d.agentAccessProxy);
         address[] memory sources = access.agentRoleSources();
@@ -164,5 +170,49 @@ contract DeployPlatformTest is BaseTest {
         DeployAgentAccess s = new DeployAgentAccess();
         vm.expectRevert();
         s.deploy(stranger, d.accessProxy, d.agentsProxy, d.branchesProxy, d.historyProxy);
+    }
+
+    function test_deployAgentUsers_onExistingPlatform() public {
+        DeployPlatform.Deployed memory d = new DeployPlatform().deploy(platformOwner, platformAdmin, address(0));
+        (address proxy,) = new DeployAgentUsers()
+            .deploy(platformOwner, d.accessProxy, d.agentsProxy, d.branchesProxy, d.agentAccessProxy, d.historyProxy);
+        assertTrue(HistoryIndex(d.historyProxy).canWrite(proxy, "users"));
+        assertTrue(HistoryIndex(d.historyProxy).canWrite(proxy, "platform_audit"));
+
+        vm.startPrank(platformAdmin);
+        uint64 agentId = AgentRegistry(d.agentsProxy)
+            .createAgent(
+                agentOwner,
+                1,
+                IAgentRegistry.AgentProfile({storeName: "Cyber Q1", storeAddress: "", note: "", storePhone: ""})
+            );
+        uint64 b = BranchRegistry(d.branchesProxy)
+            .createBranch(
+                agentId,
+                IBranchRegistry.BranchInit({
+                    domain: "q1.vn",
+                    services: 1,
+                    tzOffsetMinutes: 420,
+                    profile: IBranchRegistry.BranchProfile("Q1", "", "", "", "")
+                })
+            );
+        vm.stopPrank();
+        vm.prank(agentOwner);
+        AgentUserRegistry(proxy)
+            .registerByStaff(
+                agentId,
+                b,
+                customer,
+                "teo",
+                IAgentUserRegistry.UserProfile({displayName: "Teo", fullName: "", phone: "", birthday: "", note: ""})
+            );
+        assertEq(AgentUserRegistry(proxy).accountOf(agentId, "teo"), customer);
+    }
+
+    function test_deployAgentUsers_strangerCannotSetWriter() public {
+        DeployPlatform.Deployed memory d = new DeployPlatform().deploy(platformOwner, address(0), address(0));
+        DeployAgentUsers s = new DeployAgentUsers();
+        vm.expectRevert();
+        s.deploy(stranger, d.accessProxy, d.agentsProxy, d.branchesProxy, d.agentAccessProxy, d.historyProxy);
     }
 }

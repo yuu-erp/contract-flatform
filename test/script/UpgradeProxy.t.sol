@@ -34,6 +34,7 @@ contract UpgradeProxyTest is BaseTest {
         assertEq(up.keyOf("AgentAccess"), "agentAccess");
         assertEq(up.keyOf("SalesSettings"), "salesSettings");
         assertEq(up.keyOf("Ledger"), "ledger");
+        assertEq(up.keyOf("AgentUserRegistry"), "users");
     }
 
     function test_keyOf_rejectsUnknown() public {
@@ -51,25 +52,27 @@ contract UpgradeProxyTest is BaseTest {
                 IAgentRegistry.AgentProfile({storeName: "Cyber Q1", storeAddress: "", note: "", storePhone: ""})
             );
 
-        string[7] memory names = [
+        string[8] memory names = [
             "PlatformAccess",
             "HistoryIndex",
             "AgentRegistry",
             "BranchRegistry",
             "AgentAccess",
             "SalesSettings",
-            "Ledger"
+            "Ledger",
+            "AgentUserRegistry"
         ];
-        address[7] memory proxies = [
+        address[8] memory proxies = [
             d.accessProxy,
             d.historyProxy,
             d.agentsProxy,
             d.branchesProxy,
             d.agentAccessProxy,
             d.salesSettingsProxy,
-            d.ledgerProxy
+            d.ledgerProxy,
+            d.usersProxy
         ];
-        for (uint256 i; i < 7; ++i) {
+        for (uint256 i; i < 8; ++i) {
             address before = _impl(proxies[i]);
             address impl = up.upgrade(platformOwner, names[i], proxies[i], "");
             assertEq(_impl(proxies[i]), impl, names[i]);

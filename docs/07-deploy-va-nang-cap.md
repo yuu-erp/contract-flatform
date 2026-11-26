@@ -16,6 +16,7 @@ Mỗi contract là một proxy `ERC1967Proxy` trỏ tới một implementation U
 | `AgentAccess` | `agentAccessProxy`, `agentAccessImpl` | `PLATFORM_OWNER` |
 | `SalesSettings` | `salesSettingsProxy`, `salesSettingsImpl` | `PLATFORM_OWNER` |
 | `Ledger` | `ledgerProxy`, `ledgerImpl` | `PLATFORM_OWNER` |
+| `AgentUserRegistry` | `usersProxy`, `usersImpl` | `PLATFORM_OWNER` |
 
 File `deployments/platform-<chainid>.json` là nguồn địa chỉ cho script và cho web (`web/src/config.ts`). Commit file này sau mỗi lần deploy/nâng cấp trên chain thật.
 
@@ -135,6 +136,12 @@ Kỳ vọng: owner đúng ví của bạn; nguồn vai trò là `[AGENTS, AA]`; 
 
   ```bash
   make set-admin
+  ```
+
+- **Hệ đã deploy trước khi có người dùng theo agent** (chain 991 hiện tại): thêm `AgentUserRegistry` bằng ví owner. Script đọc địa chỉ proxy từ `deployments/platform-<chainid>.json`, đăng ký writer kind `users` + `platform_audit`, rồi ghi thêm `usersProxy`, `usersImpl`; từ chối nếu khoá đã có:
+
+  ```bash
+  make deploy-users
   ```
 
 - Đăng ký FreeGas cho các proxy (nếu chain dùng FreeGas): đăng ký **địa chỉ proxy**, không phải implementation.

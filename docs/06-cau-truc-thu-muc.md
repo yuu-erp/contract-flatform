@@ -30,19 +30,18 @@ Hai thư mục sinh ra khi build, không commit (`.gitignore`): `out/`, `cache/`
 
 ## 2. `src/` — mã contract
 
-### 2.1 Tiêu chí chia `core/` và `modules/`
+### 2.1 Tiêu chí đặt chỗ (ADR 0029) và thư mục theo tầng (ADR 0034)
+
+> **Thay đổi 2026-11-26:** kiến trúc chốt thành cây bốn tầng (`docs/02-kien-truc.md`). Tiêu chí cũ "chi nhánh nào cũng cần thì vào `core/`" **bỏ**. Thư mục `src/core/` sẽ dời thành `src/kernel/` (T0), `src/tenant/` (T1), `src/shared/` (T2) ở Architecture Baseline tuần 2; các mục 2.2 và 4 dưới đây mô tả cấu trúc **hiện tại** cho tới khi dời xong.
 
 | Câu hỏi | Nếu "có" |
 |---|---|
-| Dịch vụ này **bật/tắt được theo từng chi nhánh** (`Branch.services`)? | `modules/<dịch vụ>` |
-| Chi nhánh nào cũng cần, kể cả chi nhánh chỉ có NET hoặc chỉ có IQR? | `core/<khối>` |
 | Logic tính toán thuần, không đọc/ghi storage? | `libraries/` |
-| Chỉ là khai báo hàm/event/struct mà khối khác cần gọi? | `interfaces/` |
-
-Trong `core/` có hai nhóm khác nhau về **người quản lý**. Ranh giới giữa hai nhóm nằm ở phân quyền (`PlatformAccess` cho tầng quản trị, `AgentAccess` cho tầng agent), không phải ở thư mục:
-- **Tầng nền tảng**: `operator`, `access`, `tenant`, `registry`, `migration`. Do `PLATFORM_OWNER`/`PLATFORM_ADMIN` quản lý.
-- **Tầng agent**: `staff`, `resource`, `payment`, cấu hình trong `tenant` (thuế). Do chủ agent và người được uỷ quyền quản lý.
-- `ledger`, `history`, `delegate` là hạ tầng chung mà cả hai tầng và mọi module cùng dùng.
+| Chỉ là khai báo hàm/event/struct khối khác cần gọi? | `interfaces/` |
+| Quản trị nền tảng, sổ địa chỉ/danh sách module, cổng lịch sử? | T0 `kernel/` |
+| Agent, chi nhánh, vai trò, tài khoản, uỷ quyền ("ai, thuộc đâu, thay mặt ai")? | T1 `tenant/` |
+| ≥ 2 module cần **ngay bây giờ**, diễn đạt được không cần từ nghiệp vụ riêng, **và** có ADR? | T2 `shared/` |
+| Còn lại (mặc định) | T3 `modules/<module>` |
 
 ### 2.2 `src/core/`
 

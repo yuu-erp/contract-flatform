@@ -6,12 +6,23 @@ Cập nhật bảng này mỗi khi một task đổi trạng thái. Chỉ task c
 |---|---|---|---|
 | 0 | **Kiểm kê hệ cũ:** danh mục contract và ABI client dùng, từ điển dữ liệu từng module, luồng nghiệp vụ, bất biến, quyền | Có `docs/legacy/*` được review Đạt | **Triển khai** — khung + script xong; task con `tasks/00-1` … `00-6` chờ Cursor (xem `tasks/00-kiem-ke-he-cu.md`) |
 | 1 | **Kiến trúc:** ADR 0020–0028, mô hình dữ liệu mới, ánh xạ cũ → mới, đặc tả module `docs/modules/*` | ADR được duyệt | **Bắt đầu sớm** — `docs/05-luu-tru-du-lieu.md` (storage/FullDB), `docs/modules/core-operator.md` (tầng vận hành, **đã duyệt**); tiếp theo: luồng agent |
-| 2 | **Nền tảng:** khung Foundry + CI (**xong sớm 2026-11-18**, còn slither). Tầng quản trị **Claude tự triển khai 2026-11-18**: `PlatformAccess`, `HistoryIndex`, `AgentRegistry`, `BranchRegistry` (T10, T11, T12 — Xong). `AgentAccess` (chủ agent → quản lý → nhân viên, chưa co-owner) **Claude triển khai 2026-11-18**, đặc tả `docs/modules/core-access.md`. `SalesSettings` và `Ledger` **xong 2026-11-19** (T14, `docs/modules/core-ledger.md`; chưa có poster, deploy không đăng ký). Tiếp: DelegateRegistry, Registry, Migration | Invariant Ledger xanh, deploy được trên devnet | **Đang làm** |
-| 3 | **Dịch vụ:** core chi nhánh (`core/staff`, `resource`, `payment`) → NET → IQR → Loyalty; mỗi module có đặc tả, test, extractor + importer | Mỗi module diễn tập nhập dữ liệu thật trên devnet, diff = 0 | Chưa |
+| 2 | **Nền tảng:** khung Foundry + CI (**xong sớm 2026-11-18**, còn slither). Tầng quản trị **Claude tự triển khai 2026-11-18**: `PlatformAccess`, `HistoryIndex`, `AgentRegistry`, `BranchRegistry` (T10, T11, T12 — Xong). `AgentAccess` (chủ agent → quản lý → nhân viên, chưa co-owner) **Claude triển khai 2026-11-18**, đặc tả `docs/modules/core-access.md`. `SalesSettings` và `Ledger` **xong 2026-11-19** (T14, `docs/modules/core-ledger.md`; chưa có poster, deploy không đăng ký). Tiếp: **người dùng theo agent** (`docs/modules/core-user.md`): `AgentUserRegistry` **xong 2026-11-26**; **tạm dừng tính năng 4 tuần cho Architecture Baseline** (xem bảng dưới), sau đó `Permission` + `Duty`, `DelegateRegistry`, `Resource`, `PaymentAccounts` | Invariant Ledger xanh, deploy được trên devnet | **Đang làm** |
+| 3 | **Dịch vụ:** NET (module mẫu kiểm Module Contract) → IQR → Loyalty, theo kịch bản chuẩn `docs/09`; mỗi module có đặc tả, test, extractor + importer | Mỗi module diễn tập nhập dữ liệu thật trên devnet, diff = 0 | Chưa |
 | 4 | **Indexer + client:** indexer, API báo cáo; package FE v2 + adapter; adapter qt-core | FE/qt-core chạy với agent thử trên devnet | Chưa |
 | 5 | **Test toàn hệ + diễn tập migration** với snapshot thật 1–2 agent; nghiệm thu với người vận hành | Runbook cắt chuyển được duyệt | Chưa |
 | 6 | **Migrate:** thí điểm 1 agent → theo đợt → tất cả | Mọi agent ở hệ mới | Chưa |
 | 7 | **Đóng hệ cũ:** meta-iqr chỉ còn lưu trữ chỉ đọc | Không còn client gọi hệ cũ | Chưa |
+
+## Architecture Baseline (2026-11-26, người dùng duyệt)
+
+Dừng code tính năng 4 tuần để chốt nền (`docs/02-kien-truc.md`, `docs/adr/`).
+
+| Tuần | Việc | Đầu ra nghiệm thu | Trạng thái |
+|---|---|---|---|
+| 1 | Chốt tài liệu: `docs/02` bản chốt, ADR 0029–0034, kịch bản chuẩn `docs/09`, đóng ADR 0020–0028 | Bộ tài liệu đọc 30 phút hiểu hệ | **Xong, chờ người dùng duyệt ADR 0031** |
+| 2 | Dời thư mục theo tầng (ADR 0034); `check_deps.sh` theo tầng + cấm tên module dưới T3 (L2); cảnh báo size > 20 KB (L5); checklist kiến trúc trong mẫu task | CI tự bắt lỗi kiến trúc | Chưa |
+| 3 | Sửa nền: `Registry` + danh sách module, bỏ `ServiceMask` (N1); Ledger: giấy phép poster gắn module + trần, phương án giảm tải (N2, N3, N8); `AgentUserRegistry` giảm tải (N4) | Lõi không biết tên module; hai contract sát trần có chỗ thở | Chưa |
+| 4 | `Permission` + `Duty` + `DelegateRegistry` (ADR 0033), có invariant + test "module chết" khung | NET/IQR có đủ nền | Chưa |
 
 ## Câu hỏi mở cho người dùng
 

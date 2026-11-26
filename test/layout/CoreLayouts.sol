@@ -9,6 +9,8 @@ import {BranchRegistry} from "../../src/core/tenant/BranchRegistry.sol";
 import {AgentAccess} from "../../src/core/access/AgentAccess.sol";
 import {SalesSettings} from "../../src/core/payment/SalesSettings.sol";
 import {Ledger} from "../../src/core/ledger/Ledger.sol";
+import {AgentUserRegistry} from "../../src/core/user/AgentUserRegistry.sol";
+import {IAgentUserRegistry} from "../../src/interfaces/IAgentUserRegistry.sol";
 import {ILedger} from "../../src/interfaces/ILedger.sol";
 import {IAgentAccess} from "../../src/interfaces/IAgentAccess.sol";
 import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
@@ -55,4 +57,11 @@ contract LedgerLayout {
     // Entry và Portion nằm trong mapping nên phải khai báo riêng để kiểm thứ tự trường
     ILedger.Entry internal entryRow;
     ILedger.Portion internal portionRow;
+}
+
+contract AgentUserRegistryLayout {
+    AgentUserRegistry.UsersStorage internal s;
+    // User và Otp nằm trong mapping nên phải khai báo riêng để kiểm thứ tự trường
+    IAgentUserRegistry.User internal userRow;
+    IAgentUserRegistry.Otp internal otpRow;
 }

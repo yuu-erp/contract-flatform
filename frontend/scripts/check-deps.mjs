@@ -10,7 +10,10 @@ const BAD_PREFIX = /^(?:\/|file:|link:|~\/|\.\.\/)/
 const ALLOWED_LOCAL_DEPS = new Map([
   [
     '@metanodejs/fiai-sdk',
-  '/Users/lekhaihoan/Documents/CONG_TY/metanode-finsdk/packages/fiai-sdk',
+    new Set([
+      '/Users/yuu/Downloads/metanode-finsdk/packages/fiai-sdk',
+      '/Users/lekhaihoan/Documents/CONG_TY/metanode-finsdk/packages/fiai-sdk',
+    ]),
   ],
 ])
 
@@ -35,7 +38,7 @@ function checkDepsRecord(record, file, section) {
     const v = version.trim()
     if (BAD_PREFIX.test(v)) {
       const allowed = ALLOWED_LOCAL_DEPS.get(name)
-      if (allowed && v === allowed) continue
+      if (allowed && (allowed instanceof Set ? allowed.has(v) : allowed === v)) continue
       errors.push(`${file}: ${section}.${name} = "${version}" (dùng npm semver; SDK local chỉ @metanodejs/fiai-sdk đúng đường dẫn cho phép)`)
     }
   }

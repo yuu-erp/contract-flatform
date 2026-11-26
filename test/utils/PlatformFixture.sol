@@ -11,6 +11,7 @@ import {AgentAccess} from "../../src/core/access/AgentAccess.sol";
 import {Ledger} from "../../src/core/ledger/Ledger.sol";
 import {MockLedgerPoster} from "./MockLedgerPoster.sol";
 import {SalesSettings} from "../../src/core/payment/SalesSettings.sol";
+import {AgentUserRegistry} from "../../src/core/user/AgentUserRegistry.sol";
 import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
 import {IAgentRegistry} from "../../src/interfaces/IAgentRegistry.sol";
 
@@ -27,6 +28,7 @@ abstract contract PlatformFixture is BaseTest {
     SalesSettings internal sales;
     Ledger internal ledger;
     MockLedgerPoster internal poster;
+    AgentUserRegistry internal users;
 
     uint16 internal constant NET = 1;
     uint16 internal constant IQR = 2;
@@ -88,6 +90,15 @@ abstract contract PlatformFixture is BaseTest {
             )
         );
         poster = new MockLedgerPoster(address(ledger));
+        users = AgentUserRegistry(
+            deployProxy(
+                address(new AgentUserRegistry()),
+                abi.encodeCall(
+                    AgentUserRegistry.initialize,
+                    (address(access), address(registry), address(branches), address(agentAccess), address(historyIndex))
+                )
+            )
+        );
 
         vm.startPrank(platformOwner);
         historyIndex.setWriter(address(registry), true);
@@ -103,6 +114,9 @@ abstract contract PlatformFixture is BaseTest {
         historyIndex.setWriterKind(address(branches), "platform_branches", true);
         historyIndex.setWriterKind(address(branches), "platform_audit", true);
         historyIndex.setWriterKind(address(agentAccess), "platform_audit", true);
+        historyIndex.setWriter(address(users), true);
+        historyIndex.setWriterKind(address(users), "users", true);
+        historyIndex.setWriterKind(address(users), "platform_audit", true);
         registry.setAgentAccess(address(agentAccess));
         address[] memory sources = new address[](2);
         sources[0] = address(registry);

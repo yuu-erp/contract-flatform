@@ -10,8 +10,9 @@ import {BranchRegistry} from "../src/core/tenant/BranchRegistry.sol";
 import {AgentAccess} from "../src/core/access/AgentAccess.sol";
 import {SalesSettings} from "../src/core/payment/SalesSettings.sol";
 import {Ledger} from "../src/core/ledger/Ledger.sol";
+import {AgentUserRegistry} from "../src/core/user/AgentUserRegistry.sol";
 
-/// @notice Deploy tầng quản trị: PlatformAccess → HistoryIndex → AgentRegistry → BranchRegistry → AgentAccess → SalesSettings → Ledger,
+/// @notice Deploy tầng quản trị: PlatformAccess → HistoryIndex → AgentRegistry → BranchRegistry → AgentAccess → SalesSettings → Ledger → AgentUserRegistry,
 ///         rồi đăng ký các contract ghi (registry, branches, agentAccess, salesSettings, ledger) làm writer của HistoryIndex (mỗi contract chỉ các kind của nó), nối AgentAccess vào
 ///         AgentRegistry và đặt AgentRegistry + AgentAccess làm nguồn vai trò agent của PlatformAccess.
 ///         Không đăng ký poster nào cho Ledger (poster thật là module dịch vụ, ở kế hoạch sau).
@@ -34,6 +35,8 @@ contract DeployPlatform is Script {
         address salesSettingsImpl;
         address ledgerProxy;
         address ledgerImpl;
+        address usersProxy;
+        address usersImpl;
         address owner;
         address admin;
     }
@@ -118,6 +121,23 @@ contract DeployPlatform is Script {
             )
         );
 
+        deployed.usersImpl = address(new AgentUserRegistry());
+        deployed.usersProxy = address(
+            new ERC1967Proxy(
+                deployed.usersImpl,
+                abi.encodeCall(
+                    AgentUserRegistry.initialize,
+                    (
+                        deployed.accessProxy,
+                        deployed.agentsProxy,
+                        deployed.branchesProxy,
+                        deployed.agentAccessProxy,
+                        deployed.historyProxy
+                    )
+                )
+            )
+        );
+
         HistoryIndex history = HistoryIndex(deployed.historyProxy);
         PlatformAccess access = PlatformAccess(deployed.accessProxy);
 
@@ -138,6 +158,9 @@ contract DeployPlatform is Script {
         history.setWriterKind(deployed.agentAccessProxy, "platform_audit", true);
         history.setWriterKind(deployed.salesSettingsProxy, "platform_audit", true);
         history.setWriterKind(deployed.ledgerProxy, "ledger", true);
+        history.setWriter(deployed.usersProxy, true);
+        history.setWriterKind(deployed.usersProxy, "users", true);
+        history.setWriterKind(deployed.usersProxy, "platform_audit", true);
         AgentRegistry(deployed.agentsProxy).setAgentAccess(deployed.agentAccessProxy);
         access.setAgentRoleSources(sources);
         if (admin != address(0)) access.addPlatformAdmin(admin);
@@ -166,6 +189,7 @@ contract DeployPlatform is Script {
         console2.log("agentAccessProxy", deployed.agentAccessProxy);
         console2.log("salesSettingsProxy", deployed.salesSettingsProxy);
         console2.log("ledgerProxy", deployed.ledgerProxy);
+        console2.log("usersProxy", deployed.usersProxy);
         console2.log("wrote", path);
     }
 
@@ -198,6 +222,8 @@ contract DeployPlatform is Script {
         vm.serializeAddress(obj, "salesSettingsImpl", deployed.salesSettingsImpl);
         vm.serializeAddress(obj, "ledgerProxy", deployed.ledgerProxy);
         vm.serializeAddress(obj, "ledgerImpl", deployed.ledgerImpl);
+        vm.serializeAddress(obj, "usersProxy", deployed.usersProxy);
+        vm.serializeAddress(obj, "usersImpl", deployed.usersImpl);
         vm.serializeAddress(obj, "owner", deployed.owner);
         string memory json = vm.serializeAddress(obj, "admin", deployed.admin);
         vm.writeJson(json, path);
