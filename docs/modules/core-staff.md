@@ -1,6 +1,6 @@
 # Nhân sự chi nhánh: ca làm, vị trí, quyền (`core/staff`)
 
-Trạng thái: **Kế hoạch, chờ duyệt** (Claude Code, 2026-11-26). Chưa có code.
+Trạng thái: **Thay bởi ADR 0033** (2026-11-26). Khối này tách thành `Permission` + `Duty` (T2) và ca két ở `PaymentAccounts`; quyền tách theo module; phiên trực có tăng ca, giao ca. File giữ lại làm lịch sử thảo luận. Đặc tả mới: `docs/modules/shared-permission-duty.md` (Baseline tuần 4).
 
 ## 1. Yêu cầu (người dùng, 2026-11-26)
 

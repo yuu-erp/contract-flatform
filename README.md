@@ -64,7 +64,7 @@ cd web && pnpm install && pnpm dev
 
 | Thư mục | Nội dung |
 |---|---|
-| `src/` | contract: `core/` (luôn có: vận hành, quyền, tenant, ledger, FullDB, nhân viên, tài nguyên, thanh toán), `modules/{net,iqr,loyalty}` (dịch vụ bật/tắt), `libraries/`, `interfaces/` — chi tiết `docs/06-cau-truc-thu-muc.md` |
+| `src/` | contract theo cây bốn tầng (`docs/02-kien-truc.md`): hiện `core/` (sắp dời thành `kernel/`, `tenant/`, `shared/` — ADR 0034), `modules/{net,iqr,loyalty}`, `libraries/`, `interfaces/` — chi tiết `docs/06-cau-truc-thu-muc.md` |
 | `test/` | soi gương `src/` (`core/`, `modules/<m>/`, `libraries/`) + `utils/BaseTest.sol`, `layout/`, `invariant/` |
 | `storage-layouts/` | snapshot layout + `scripts/storage_layout.py` kiểm append-only |
 | `scripts/` | `check_deps.sh` (hướng phụ thuộc), `legacy/` (kiểm kê hệ cũ) |
@@ -77,7 +77,9 @@ Phụ thuộc: `forge-std` v1.16.2, `openzeppelin-contracts-upgradeable` v5.6.1 
 |---|---|
 | `AGENTS.md` | Quy tắc cho agent làm việc trong repo này |
 | `docs/01-nghiep-vu.md` | Nghiệp vụ từng dịch vụ, thực thể dữ liệu, luồng tiền |
-| `docs/02-kien-truc.md` | Nguyên tắc thiết kế, kiến trúc đích, quyết định còn mở |
+| `docs/02-kien-truc.md` | **Kiến trúc chốt**: cây bốn tầng, bản đồ contract, 7 luật, cô lập lỗi, checklist task |
+| `docs/adr/` | Hồ sơ quyết định kiến trúc (ADR 0029+) |
+| `docs/09-kich-ban-chuan.md` | Kịch bản chuẩn NET + IQR + Loyalty và các biến thể "module chết" |
 | `docs/07-deploy-va-nang-cap.md` | Deploy tầng quản trị, nâng cấp proxy, quay lại bản cũ |
 | `docs/03-chuyen-du-lieu.md` | Cách chuyển dữ liệu từ meta-iqr sang |
 | `docs/04-lo-trinh.md` | Giai đoạn, task, trạng thái |

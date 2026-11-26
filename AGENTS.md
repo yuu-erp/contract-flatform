@@ -17,6 +17,14 @@
 
 Hai track dùng chung `documents/tech-debt.md` và `documents/work-log.md`: chỉ **nối thêm dòng**, không sửa dòng của track kia.
 
+## Kiến trúc chốt (bắt buộc đọc trước mọi task)
+
+`docs/02-kien-truc.md` (Architecture Baseline v1) + `docs/adr/`. Tóm tắt:
+- Cây bốn tầng, phụ thuộc chỉ đi xuống: T0 rễ (`kernel`) → T1 thân (`tenant`) → T2 dùng chung (`shared`) → T3 module (`modules`).
+- T0–T2 **không biết tên module**; mặc định đặt ở module, vào T2 phải có ADR.
+- Mỗi contract trả lời một câu hỏi (bảng `docs/02` mục 3). Module chết thì nền tảng vẫn sống (ADR 0031).
+- Mọi task trả lời checklist `docs/02` mục 11 trước khi code. Không khớp kiến trúc → viết ADR, không lách trong code.
+
 ## Nguyên tắc thiết kế (chi tiết ở `docs/02-kien-truc.md`)
 
 1. On-chain chỉ giữ tiền, quyền, trạng thái nghiệp vụ đang sống, cấu hình. Lịch sử, báo cáo, thống kê → event + indexer.
