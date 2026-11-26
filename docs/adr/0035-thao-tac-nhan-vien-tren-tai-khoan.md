@@ -1,6 +1,6 @@
 # 0035. Thao tác nhân viên trên tài khoản khách (T1 không gọi lên T2)
 
-- Trạng thái: **Đề xuất** — chờ người dùng chọn
+- Trạng thái: **Chốt phương án B** — người dùng duyệt 2026-11-26
 - Ngày: 2026-11-26
 - Người duyệt: người dùng (đổi cấu trúc T1)
 

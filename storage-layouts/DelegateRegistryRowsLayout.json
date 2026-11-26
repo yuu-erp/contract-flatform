@@ -1,0 +1,44 @@
+[
+ [
+  "sessionRow",
+  0,
+  0,
+  "struct IDelegateRegistry.Session"
+ ],
+ [
+  "sessionRow.account",
+  0,
+  0,
+  "address"
+ ],
+ [
+  "sessionRow.expiresAt",
+  0,
+  20,
+  "uint64"
+ ],
+ [
+  "sessionRow.loginEpoch",
+  0,
+  28,
+  "uint32"
+ ],
+ [
+  "otpRow",
+  1,
+  0,
+  "struct IDelegateRegistry.Otp"
+ ],
+ [
+  "otpRow.account",
+  1,
+  0,
+  "address"
+ ],
+ [
+  "otpRow.expiresAt",
+  1,
+  20,
+  "uint64"
+ ]
+]

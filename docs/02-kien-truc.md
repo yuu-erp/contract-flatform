@@ -53,13 +53,14 @@ Mỗi contract trả lời **đúng một câu hỏi** (luật L4). Tính năng 
 | T1 | `AgentRegistry` | Agent nào tồn tại, chủ là ai, đang chạy hay dừng? | ✅ | `src/tenant/agent/` |
 | T1 | `BranchRegistry` | Chi nhánh nào thuộc agent nào, bật module nào, đang chạy hay dừng? | ✅ | `src/tenant/branch/` |
 | T1 | `AgentAccess` | Ví này là Manager/Staff của chi nhánh nào? | ✅ | `src/tenant/access/` |
-| T1 | `AgentUserRegistry` | Tài khoản (khách **và** nhân viên) của agent: danh tính cố định, đăng nhập, hồ sơ | ✅ (cần giảm tải, mục 9) | `src/tenant/user/` |
-| T1 | `DelegateRegistry` | Ví phiên / ví máy này đang thay mặt tài khoản nào, tới khi nào? | Chưa | `src/tenant/delegate/` |
+| T1 | `AgentUserRegistry` | Tài khoản (khách **và** nhân viên) của agent: danh tính cố định, đăng nhập, hồ sơ. Thao tác nhân viên chỉ qua operator | ✅ | `src/tenant/user/` |
+| T1 | `DelegateRegistry` | Ví phiên / ví máy này đang thay mặt tài khoản nào, tới khi nào? (+ OTP, QR) | ✅ (`docs/modules/tenant-delegate.md`) | `src/tenant/delegate/` |
 | T2 | `Ledger` | Số dư của khách bao nhiêu, bút toán nào đã ghi? | ✅ | `src/shared/ledger/` |
 | T2 | `SalesSettings` | Chi nhánh thu thuế bao nhiêu, nhận phương thức thanh toán nào? | ✅ | `src/shared/payment/` |
 | T2 | `PaymentAccounts` | Tiền thật về tài khoản nào; ca thu ngân và két đang mở/đóng, chênh lệch bao nhiêu? (`docs/08` mục 5) | Chưa | `src/shared/payment/` |
 | T2 | `Permission` | Ví này có quyền P của module M ở chi nhánh B **lúc này** không? (vị trí, `can()`) | ✅ (`docs/modules/shared-permission-duty.md`) | `src/shared/permission/` |
 | T2 | `Duty` | Ai đang trực ca nào, vị trí nào, đến khi nào? (ca, phân công, phiên trực, tăng ca) | ✅ (`docs/modules/shared-permission-duty.md`) | `src/shared/duty/` |
+| T2 | `CustomerDesk` | Nhân viên này có được thao tác trên tài khoản khách không? (ADR 0035) | ✅ (`docs/modules/tenant-delegate.md`) | `src/shared/desk/` |
 | T2 | `Resource` | Thiết bị/tài nguyên nào thuộc chi nhánh nào, của module nào, đang hoạt động không? (chỉ danh tính + trạng thái) | Chưa | `src/shared/resource/` |
 | T3 | `modules/net/*` | Tài khoản NET, máy trạm & giá, phiên chơi, nạp tại máy | Chưa | `src/modules/net/` |
 | T3 | `modules/iqr/*` | Thực đơn, khuyến mãi quán, đơn/bàn (máy trạng thái), đặt bàn | Chưa | `src/modules/iqr/` |
@@ -144,7 +145,7 @@ Chi tiết: ADR 0031.
 | 0032 | Ghi lịch sử không làm rễ phụ thuộc FullDB | **Đề xuất**, chờ đội chain trả lời (`docs/adr/0032-fulldb-trong-giao-dich.md`) |
 | 0033 | Mô hình quyền: Permission + Duty | **Chốt hướng** (`docs/adr/0033-mo-hinh-quyen.md`) |
 | 0034 | Thư mục theo tầng | **Chốt** (`docs/adr/0034-thu-muc-theo-tang.md`) |
-| 0035 | Thao tác nhân viên trên tài khoản khách | **Đề xuất** (`docs/adr/0035-thao-tac-nhan-vien-tren-tai-khoan.md`) |
+| 0035 | Thao tác nhân viên trên tài khoản khách | **Chốt, đã cài** — phương án B, `CustomerDesk` (`docs/adr/0035-thao-tac-nhan-vien-tren-tai-khoan.md`) |
 
 ## 10. Nợ kiến trúc hiện có (đo 2026-11-26)
 
@@ -153,8 +154,9 @@ Chi tiết: ADR 0031.
 | N1 | ~~`ServiceMask` + hằng `SERVICE_*` trong nền tảng~~ | L2, Y2 | `Registry` (ADR 0030); `ServiceMask` xoá; `check_deps` L2 không còn ngoại lệ | **Xong** tuần 3 |
 | N2 | ~~Bộ đếm Ledger cố định NET/IQR; `service` do poster tự khai~~ | L2, C3 | `moduleRollup` theo `moduleId`; dịch vụ lấy từ giấy phép poster | **Xong** tuần 3 |
 | N3 | `Ledger` 23.158 B (trước 24.403 B) | L5 | Đã tách `LedgerRecorder`, `LedgerWallet` (library ngoài). Còn > 20 KB: tách bộ đếm sang library nếu thêm tính năng | Theo dõi |
-| N4 | `AgentUserRegistry` 23.044 B; còn gánh OTP | L4, L5 | Đã bỏ thống kê theo ngày (tuần 3). OTP chuyển `DelegateRegistry` ở tuần 4 | Tuần 4 |
-| N5 | `AgentUserRegistry` kiểm "Staff trở lên" thay vì quyền cụ thể. Gọi thẳng `Permission` (T2) từ T1 thì trái L1 | ADR 0033, L1 | **Chờ quyết định** (ADR 0035): tách thao tác nhân viên trên tài khoản khách ra contract T2 | Sau tuần 4 |
+| N4 | `AgentUserRegistry` 21.388 B (trước 24.180 B) | L5 | Đã bỏ thống kê (tuần 3), OTP sang `DelegateRegistry`, thao tác nhân viên sang `CustomerDesk` (tuần 4). Còn > 20 KB: theo dõi | Theo dõi |
+| N5 | ~~`AgentUserRegistry` kiểm "Staff trở lên"~~ | ADR 0033, L1 | `CustomerDesk` kiểm `Permission.can()` (ADR 0035) | **Xong** tuần 4 |
+| N11 | Test bất biến Ledger: kiểm độ phủ "hoàn ví chéo chi nhánh" mỗi lượt fuzz chập chờn theo seed (≈ 1/3 seed hỏng) | CI | Cho handler ưu tiên tạo tình huống hoàn chéo, như đã làm với Duty | Trước khi viết NET |
 | N6 | Ghi FullDB nằm trong giao dịch chính, chưa rõ hành vi khi FullDB lỗi | Y1 | ADR 0032 | Chờ đội chain |
 | N7 | `BranchRegistry` bắt buộc domain duy nhất cho mọi chi nhánh | Y2 (Enterprise nhiều văn phòng) | Cho phép chi nhánh không domain | Khi làm Enterprise |
 | N8 | ~~`Ledger.setPoster` chưa có trần, chưa gắn module~~ | C3 | Giấy phép `(moduleId, kindsMask, maxAmount)` (ADR 0031) | **Xong** tuần 3 |

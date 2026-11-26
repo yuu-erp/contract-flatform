@@ -25,10 +25,24 @@ abstract contract PlatformAuditing {
         bytes memory after_,
         string memory reason
     ) internal {
+        _writeAuditAs(history, msg.sender, action, agentId, branchId, before, after_, reason);
+    }
+
+    /// @dev Như `_writeAudit` nhưng ghi người làm là `actor` (contract operator gọi hộ người thật, ví dụ CustomerDesk).
+    function _writeAuditAs(
+        IHistoryIndex history,
+        address actor,
+        string memory action,
+        uint64 agentId,
+        uint64 branchId,
+        bytes memory before,
+        bytes memory after_,
+        string memory reason
+    ) internal {
         IHistoryIndex.Term[] memory terms = new IHistoryIndex.Term[](branchId == 0 ? 3 : 4);
         terms[0] = IHistoryIndex.Term(P_AGENT, FullDBCodec.toDecimal(agentId));
         terms[1] = IHistoryIndex.Term(P_ACTION, action);
-        terms[2] = IHistoryIndex.Term(P_ACTOR, FullDBCodec.toHex(msg.sender));
+        terms[2] = IHistoryIndex.Term(P_ACTOR, FullDBCodec.toHex(actor));
         if (branchId != 0) terms[3] = IHistoryIndex.Term(P_BRANCH, FullDBCodec.toDecimal(branchId));
         IHistoryIndex.Value[] memory values = new IHistoryIndex.Value[](1);
         values[0] = IHistoryIndex.Value(SLOT_TIME, block.timestamp);
@@ -38,7 +52,7 @@ abstract contract PlatformAuditing {
             abi.encode(
                 PlatformAuditRecord({
                     version: AUDIT_VERSION,
-                    actor: msg.sender,
+                    actor: actor,
                     action: action,
                     agentId: agentId,
                     branchId: branchId,

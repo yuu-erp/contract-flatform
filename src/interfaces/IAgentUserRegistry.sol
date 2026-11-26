@@ -56,6 +56,7 @@ interface IAgentUserRegistry {
         uint64 updatedAt;
     }
 
+    /// @dev Không dùng từ ADR 0035 (OTP ở DelegateRegistry); giữ kiểu cho storage cũ.
     struct Otp {
         address account;
         uint64 expiresAt;
@@ -63,10 +64,9 @@ interface IAgentUserRegistry {
 
     // ─── Lỗi ────────────────────────────────────────────────────────────
     error ZeroAddress();
-    error NotDelegateRegistry(address caller);
+    error NotOperator(address caller);
     error BranchNotInAgent(uint64 branchId, uint64 agentId);
     error BranchNotActive(uint64 branchId);
-    error MissingRole(uint64 branchId, address account, uint8 minRole);
     error InvalidUsername();
     error UsernameTaken(uint64 agentId, string username);
     error AccountExists(uint64 agentId, address account);
@@ -79,13 +79,9 @@ interface IAgentUserRegistry {
     error EmptyReason();
     error FieldTooLong();
     error StatusUnchanged();
-    error InvalidOtpTtl(uint256 max);
-    error OtpNotFound(uint64 agentId, address otp);
-    error OtpExpired(uint64 agentId, address otp);
-    error InvalidRange();
 
     // ─── Event ──────────────────────────────────────────────────────────
-    event DelegateRegistrySet(uint8 version, address indexed delegateRegistry);
+    event OperatorSet(uint8 version, address indexed operator, bool allowed);
     event UserRegistered(
         uint8 version,
         uint64 indexed agentId,
@@ -121,19 +117,11 @@ interface IAgentUserRegistry {
         uint64 branchId,
         string reason
     );
-    event OtpIssued(
-        uint8 version,
-        uint64 indexed agentId,
-        address indexed account,
-        address otpAddress,
-        uint64 expiresAt,
-        address indexed by,
-        uint64 branchId
-    );
-    event OtpConsumed(uint8 version, uint64 indexed agentId, address indexed account, address otpAddress);
 
     // ─── Cấu hình (PLATFORM_OWNER) ──────────────────────────────────────
-    function setDelegateRegistry(address delegateRegistry) external;
+    /// @notice Cấp / thu quyền operator (contract T2 đã kiểm quyền nhân viên, ADR 0035).
+    function setOperator(address operator, bool allowed) external;
+    function isOperator(address operator) external view returns (bool);
 
     // ─── Khách tự làm (chữ ký EIP-712, ai gửi hộ cũng được) ─────────────
     /// @notice Khách tự đăng ký. Ký bởi chính `account` (= địa chỉ sinh từ mật khẩu lần đầu).
@@ -172,43 +160,45 @@ interface IAgentUserRegistry {
         bytes calldata signature
     ) external;
 
-    // ─── Staff trở lên của chi nhánh `branchId` thuộc agent ─────────────
-    function registerByStaff(
+    // ─── Operator (CustomerDesk): thao tác của nhân viên `actor`, quyền đã kiểm ở T2 ─────
+    function registerFor(
         uint64 agentId,
         uint64 branchId,
+        address actor,
         address account,
         string calldata username,
         UserProfile calldata profile
     ) external;
 
-    /// @notice Khách quên mật khẩu: staff đặt địa chỉ đăng nhập mới, không cần mật khẩu cũ. Ghi log staff.
-    function resetPassword(uint64 agentId, uint64 branchId, address account, address newLogin) external;
+    /// @notice Khách quên mật khẩu: đặt địa chỉ đăng nhập mới, không cần mật khẩu cũ. Ghi log người đặt lại.
+    function resetLoginFor(uint64 agentId, uint64 branchId, address actor, address account, address newLogin) external;
 
-    function updateProfileByStaff(uint64 agentId, uint64 branchId, address account, UserProfile calldata profile)
-        external;
+    function updateProfileFor(
+        uint64 agentId,
+        uint64 branchId,
+        address actor,
+        address account,
+        UserProfile calldata profile
+    ) external;
 
-    /// @notice Cấp OTP đăng nhập một lần: `otpAddress` sinh từ OTP ở client; OTP đọc cho khách, không lên chain.
-    function issueOtp(uint64 agentId, uint64 branchId, address account, address otpAddress, uint64 ttl) external;
-
-    // ─── Manager trở lên ────────────────────────────────────────────────
-    function setBlocked(uint64 agentId, uint64 branchId, address account, bool blocked, string calldata reason) external;
-
-    // ─── DelegateRegistry ───────────────────────────────────────────────
-    /// @notice Dùng OTP một lần, trả account. Chỉ DelegateRegistry (khi mở ví phiên bằng OTP).
-    function consumeOtp(uint64 agentId, address otpAddress) external returns (address account);
+    function setBlockedFor(
+        uint64 agentId,
+        uint64 branchId,
+        address actor,
+        address account,
+        bool blocked,
+        string calldata reason
+    ) external;
 
     // ─── Đọc ────────────────────────────────────────────────────────────
-    function delegateRegistry() external view returns (address);
     function getUser(uint64 agentId, address account) external view returns (UserView memory);
     function getProfile(uint64 agentId, address account) external view returns (UserProfileRecord memory);
     function accountOf(uint64 agentId, string calldata username) external view returns (address);
     /// @notice Địa chỉ đăng nhập → account (0 nếu không có).
     function accountOfLogin(uint64 agentId, address login) external view returns (address);
     function isActive(uint64 agentId, address account) external view returns (bool);
-    function otpOf(uint64 agentId, address otpAddress) external view returns (Otp memory);
     function userCount(uint64 agentId) external view returns (uint256);
     function usersOf(uint64 agentId, uint256 offset, uint256 limit) external view returns (UserView[] memory);
     function userCountOfBranch(uint64 branchId) external view returns (uint256);
-    /// @notice Số đăng ký mới theo ngày kinh doanh, [fromDay, toDay] tối đa 93 ngày.
     function domainSeparator() external view returns (bytes32);
 }

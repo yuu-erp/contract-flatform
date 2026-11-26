@@ -21,7 +21,6 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
     uint8 public constant EVENT_VERSION = 1;
     uint8 internal constant RECORD_VERSION = 1;
     uint256 internal constant MAX_PAGE = 100;
-    uint64 public constant MAX_OTP_TTL = 10 minutes;
     uint256 internal constant MAX_DISPLAY_NAME = 50;
     uint256 internal constant MAX_FULL_NAME = 100;
     uint256 internal constant MAX_NOTE = 200;
@@ -45,15 +44,16 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
         IBranchRegistry branches;
         IAgentAccess agentAccess;
         IHistoryIndex history;
-        address delegateRegistry;
+        address delegateRegistry; // không dùng từ ADR 0035 (OTP chuyển sang DelegateRegistry)
         mapping(uint64 => mapping(address => User)) users; // agentId → account
         mapping(uint64 => mapping(bytes32 => address)) accountByUsername; // agentId → keccak(username)
         mapping(uint64 => mapping(address => address)) accountByLogin; // agentId → loginAddress → account
         mapping(uint64 => address[]) userList; // agentId → account (chỉ thêm, không xoá)
-        mapping(uint64 => mapping(address => Otp)) otps; // agentId → otpAddress
+        mapping(uint64 => mapping(address => Otp)) otps; // không dùng từ ADR 0035
         mapping(uint64 => uint256) branchUserCount; // branchId → số người đăng ký tại đó
         mapping(uint64 => mapping(uint32 => uint32)) newByAgentDay; // không dùng từ Baseline (L6: thống kê qua FullDB/event)
         mapping(uint64 => mapping(uint32 => uint32)) newByBranchDay; // không dùng từ Baseline (L6)
+        mapping(address => bool) operators; // contract T2 được thao tác thay nhân viên (CustomerDesk, ADR 0035)
     }
 
     // keccak256(abi.encode(uint256(keccak256("metaplatform.core.user.agentusers")) - 1)) & ~bytes32(uint256(0xff))
@@ -88,10 +88,15 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
 
     // ─── Cấu hình ───────────────────────────────────────────────────────
 
-    function setDelegateRegistry(address delegateRegistry_) external onlyPlatformOwner {
-        if (delegateRegistry_ == address(0)) revert ZeroAddress();
-        _s().delegateRegistry = delegateRegistry_;
-        emit DelegateRegistrySet(EVENT_VERSION, delegateRegistry_);
+    /// @notice Cấp / thu quyền operator (contract T2 kiểm quyền nhân viên rồi gọi hộ, ADR 0035). Chỉ PLATFORM_OWNER.
+    function setOperator(address operator, bool allowed) external onlyPlatformOwner {
+        if (operator == address(0)) revert ZeroAddress();
+        _s().operators[operator] = allowed;
+        emit OperatorSet(EVENT_VERSION, operator, allowed);
+    }
+
+    function isOperator(address operator) external view returns (bool) {
+        return _s().operators[operator];
     }
 
     // ─── Khách tự làm (EIP-712) ─────────────────────────────────────────
@@ -137,7 +142,7 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
             signature
         );
         ++u.nonce;
-        _setLogin(agentId, account, u, newLogin, false, 0);
+        _setLogin(agentId, account, u, newLogin, account, 0);
     }
 
     function changeUsernameBySig(
@@ -183,71 +188,83 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
             signature
         );
         ++u.nonce;
-        _writeProfile(agentId, account, u, profile, false, 0);
+        _writeProfile(agentId, account, u, profile, account, 0);
     }
 
-    // ─── Staff ──────────────────────────────────────────────────────────
+    // ─── Operator (CustomerDesk đã kiểm quyền của `actor`, ADR 0035) ─────
 
-    function registerByStaff(
+    function registerFor(
         uint64 agentId,
         uint64 branchId,
+        address actor,
         address account,
         string calldata username,
         UserProfile calldata profile
     ) external {
-        _requireBranchRole(agentId, branchId, IAgentAccess.Role.Staff);
-        _register(agentId, branchId, account, username, profile, msg.sender);
-        _audit("user_register", agentId, branchId, "", abi.encode(account, username), "");
+        _requireOperator(agentId, branchId);
+        _register(agentId, branchId, account, username, profile, actor);
+        _audit(actor, "user_register", agentId, branchId, "", abi.encode(account, username), "");
     }
 
-    function resetPassword(uint64 agentId, uint64 branchId, address account, address newLogin) external {
-        _requireBranchRole(agentId, branchId, IAgentAccess.Role.Staff);
+    function resetLoginFor(uint64 agentId, uint64 branchId, address actor, address account, address newLogin) external {
+        _requireOperator(agentId, branchId);
         User storage u = _active(agentId, account);
         address old = u.loginAddress;
-        _setLogin(agentId, account, u, newLogin, true, branchId);
-        _audit("user_password_reset", agentId, branchId, abi.encode(account, old), abi.encode(account, newLogin), "");
+        _setLogin(agentId, account, u, newLogin, actor, branchId);
+        _audit(
+            actor, "user_password_reset", agentId, branchId, abi.encode(account, old), abi.encode(account, newLogin), ""
+        );
     }
 
-    function updateProfileByStaff(uint64 agentId, uint64 branchId, address account, UserProfile calldata profile)
-        external
-    {
-        _requireBranchRole(agentId, branchId, IAgentAccess.Role.Staff);
-        _writeProfile(agentId, account, _active(agentId, account), profile, true, branchId);
+    function updateProfileFor(
+        uint64 agentId,
+        uint64 branchId,
+        address actor,
+        address account,
+        UserProfile calldata profile
+    ) external {
+        _requireOperator(agentId, branchId);
+        _writeProfile(agentId, account, _active(agentId, account), profile, actor, branchId);
     }
 
-    function issueOtp(uint64 agentId, uint64 branchId, address account, address otpAddress, uint64 ttl) external {
-        _requireBranchRole(agentId, branchId, IAgentAccess.Role.Staff);
-        _active(agentId, account);
-        if (otpAddress == address(0)) revert ZeroAddress();
-        if (ttl == 0 || ttl > MAX_OTP_TTL) revert InvalidOtpTtl(MAX_OTP_TTL);
-        UsersStorage storage $ = _s();
-        // OTP và địa chỉ đăng nhập không được trùng nhau (cùng là khoá sinh ở client).
-        if ($.accountByLogin[agentId][otpAddress] != address(0) || $.users[agentId][otpAddress].createdAt != 0) {
-            revert LoginInUse(agentId, otpAddress);
-        }
-        uint64 expiresAt = uint64(block.timestamp) + ttl;
-        $.otps[agentId][otpAddress] = Otp({account: account, expiresAt: expiresAt});
-        emit OtpIssued(EVENT_VERSION, agentId, account, otpAddress, expiresAt, msg.sender, branchId);
-        _audit("user_otp", agentId, branchId, "", abi.encode(account, otpAddress, expiresAt), "");
-    }
-
-    // ─── Manager ────────────────────────────────────────────────────────
-
-    function setBlocked(uint64 agentId, uint64 branchId, address account, bool blocked, string calldata reason)
-        external
-    {
-        _requireBranchRole(agentId, branchId, IAgentAccess.Role.Manager);
+    function setBlockedFor(
+        uint64 agentId,
+        uint64 branchId,
+        address actor,
+        address account,
+        bool blocked,
+        string calldata reason
+    ) external {
+        _requireOperator(agentId, branchId);
         uint256 n = bytes(reason).length;
         if (n == 0) revert EmptyReason();
         if (n > MAX_REASON) revert FieldTooLong();
+        UserStatus from = _flipStatus(agentId, account, blocked);
+        _logBlocked(agentId, branchId, actor, account, from, reason);
+    }
+
+    /// @dev Đổi Active ⇄ Blocked, trả trạng thái cũ.
+    function _flipStatus(uint64 agentId, address account, bool blocked) private returns (UserStatus from) {
         User storage u = _existing(agentId, account);
-        UserStatus from = u.status;
+        from = u.status;
         UserStatus to = blocked ? UserStatus.Blocked : UserStatus.Active;
         if (from == to) revert StatusUnchanged();
         u.status = to;
-        emit UserStatusChanged(EVENT_VERSION, agentId, account, from, to, msg.sender, branchId, reason);
+    }
+
+    function _logBlocked(
+        uint64 agentId,
+        uint64 branchId,
+        address actor,
+        address account,
+        UserStatus from,
+        string calldata reason
+    ) private {
+        UserStatus to = from == UserStatus.Active ? UserStatus.Blocked : UserStatus.Active;
+        emit UserStatusChanged(EVENT_VERSION, agentId, account, from, to, actor, branchId, reason);
         _audit(
-            blocked ? "user_block" : "user_unblock",
+            actor,
+            to == UserStatus.Blocked ? "user_block" : "user_unblock",
             agentId,
             branchId,
             abi.encode(account, from),
@@ -256,25 +273,7 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
         );
     }
 
-    // ─── DelegateRegistry ───────────────────────────────────────────────
-
-    function consumeOtp(uint64 agentId, address otpAddress) external whenNotPaused returns (address account) {
-        UsersStorage storage $ = _s();
-        if (msg.sender != $.delegateRegistry) revert NotDelegateRegistry(msg.sender);
-        Otp memory otp = $.otps[agentId][otpAddress];
-        if (otp.account == address(0)) revert OtpNotFound(agentId, otpAddress);
-        delete $.otps[agentId][otpAddress];
-        if (block.timestamp > otp.expiresAt) revert OtpExpired(agentId, otpAddress);
-        account = otp.account;
-        _active(agentId, account);
-        emit OtpConsumed(EVENT_VERSION, agentId, account, otpAddress);
-    }
-
     // ─── Đọc ────────────────────────────────────────────────────────────
-
-    function delegateRegistry() external view returns (address) {
-        return _s().delegateRegistry;
-    }
 
     function getUser(uint64 agentId, address account) external view returns (UserView memory) {
         return _view(account, _existing(agentId, account));
@@ -295,10 +294,6 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
 
     function isActive(uint64 agentId, address account) external view returns (bool) {
         return _s().users[agentId][account].status == UserStatus.Active;
-    }
-
-    function otpOf(uint64 agentId, address otpAddress) external view returns (Otp memory) {
-        return _s().otps[agentId][otpAddress];
     }
 
     function userCount(uint64 agentId) external view returns (uint256) {
@@ -340,9 +335,7 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
         if (account == address(0)) revert ZeroAddress();
         UsersStorage storage $ = _s();
         if ($.users[agentId][account].createdAt != 0) revert AccountExists(agentId, account);
-        if ($.accountByLogin[agentId][account] != address(0) || $.otps[agentId][account].account != address(0)) {
-            revert LoginInUse(agentId, account);
-        }
+        if ($.accountByLogin[agentId][account] != address(0)) revert LoginInUse(agentId, account);
         _checkProfile(profile);
         bytes32 key = _claimUsername(agentId, username);
 
@@ -381,23 +374,23 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
         ++$.branchUserCount[branchId];
     }
 
-    function _setLogin(uint64 agentId, address account, User storage u, address newLogin, bool byStaff, uint64 branchId)
+    /// @dev `by` = người đổi (chính khách, hoặc nhân viên khi đặt lại qua operator). Tăng `loginEpoch` → ví phiên cũ hết hiệu lực.
+    function _setLogin(uint64 agentId, address account, User storage u, address newLogin, address by, uint64 branchId)
         private
     {
         if (newLogin == address(0)) revert ZeroAddress();
         UsersStorage storage $ = _s();
-        // Địa chỉ mới không được đang là đăng nhập, định danh của người khác hay một OTP còn chờ.
+        // Địa chỉ mới không được đang là đăng nhập hay định danh của người khác.
         if (
             $.accountByLogin[agentId][newLogin] != address(0)
                 || (newLogin != account && $.users[agentId][newLogin].createdAt != 0)
-                || $.otps[agentId][newLogin].account != address(0)
         ) revert LoginInUse(agentId, newLogin);
         address old = u.loginAddress;
         delete $.accountByLogin[agentId][old];
         $.accountByLogin[agentId][newLogin] = account;
         u.loginAddress = newLogin;
         uint32 epoch = ++u.loginEpoch;
-        emit UserLoginChanged(EVENT_VERSION, agentId, account, old, newLogin, epoch, byStaff, msg.sender, branchId);
+        emit UserLoginChanged(EVENT_VERSION, agentId, account, old, newLogin, epoch, by != account, by, branchId);
     }
 
     function _writeProfile(
@@ -405,7 +398,7 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
         address account,
         User storage u,
         UserProfile calldata profile,
-        bool byStaff,
+        address by,
         uint64 branchId
     ) private {
         _checkProfile(profile);
@@ -413,8 +406,8 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
         bytes memory before = history.get(agentId, KIND_USERS, u.profileDocId);
         bytes memory after_ = _record(agentId, account, profile);
         history.replace(agentId, KIND_USERS, u.profileDocId, after_);
-        emit UserProfileUpdated(EVENT_VERSION, agentId, account, msg.sender);
-        if (byStaff) _audit("user_profile", agentId, branchId, before, after_, "");
+        emit UserProfileUpdated(EVENT_VERSION, agentId, account, by);
+        if (by != account) _audit(by, "user_profile", agentId, branchId, before, after_, "");
     }
 
     function _claimUsername(uint64 agentId, string calldata username) private view returns (bytes32 key) {
@@ -431,11 +424,9 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
         if (br.status != IBranchRegistry.BranchStatus.Active) revert BranchNotActive(branchId);
     }
 
-    function _requireBranchRole(uint64 agentId, uint64 branchId, IAgentAccess.Role minRole) private view {
+    function _requireOperator(uint64 agentId, uint64 branchId) private view {
+        if (!_s().operators[msg.sender]) revert NotOperator(msg.sender);
         _checkBranch(agentId, branchId);
-        if (!_s().agentAccess.hasRole(branchId, msg.sender, minRole)) {
-            revert MissingRole(branchId, msg.sender, uint8(minRole));
-        }
     }
 
     function _existing(uint64 agentId, address account) private view returns (User storage u) {
@@ -499,6 +490,7 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
     }
 
     function _audit(
+        address actor,
         string memory action,
         uint64 agentId,
         uint64 branchId,
@@ -506,6 +498,6 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
         bytes memory after_,
         string memory reason
     ) private {
-        _writeAudit(_s().history, action, agentId, branchId, before, after_, reason);
+        _writeAuditAs(_s().history, actor, action, agentId, branchId, before, after_, reason);
     }
 }

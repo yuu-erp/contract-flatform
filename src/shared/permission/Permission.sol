@@ -6,6 +6,7 @@ import {IPermission} from "../../interfaces/IPermission.sol";
 import {IDuty} from "../../interfaces/IDuty.sol";
 import {IRegistry} from "../../interfaces/IRegistry.sol";
 import {IBranchRegistry} from "../../interfaces/IBranchRegistry.sol";
+import {IDelegateRegistry} from "../../interfaces/IDelegateRegistry.sol";
 import {IAgentAccess} from "../../interfaces/IAgentAccess.sol";
 
 /// @title Permission
@@ -26,6 +27,7 @@ contract Permission is PlatformAccessed, IPermission {
         mapping(uint64 => Position) positions;
         mapping(uint64 => mapping(uint8 => uint64)) masks; // positionId → moduleId → mặt nạ quyền
         mapping(uint64 => uint64[]) positionsOf; // branchId → positionIds (kể cả đã ngừng)
+        IDelegateRegistry delegate; // quy ví phiên / địa chỉ đăng nhập về tài khoản (nguyên tắc 7)
     }
 
     // keccak256(abi.encode(uint256(keccak256("metaplatform.shared.permission")) - 1)) & ~bytes32(uint256(0xff))
@@ -57,6 +59,12 @@ contract Permission is PlatformAccessed, IPermission {
         emit DutySet(EVENT_VERSION, duty_);
     }
 
+    /// @notice Nối DelegateRegistry (quy ví phiên / địa chỉ đăng nhập của Manager về tài khoản). Chỉ owner.
+    function setDelegate(address delegate_) external onlyPlatformOwner {
+        if (delegate_ == address(0)) revert ZeroAddress();
+        _s().delegate = IDelegateRegistry(delegate_);
+    }
+
     function duty() external view returns (address) {
         return address(_s().duty);
     }
@@ -77,7 +85,7 @@ contract Permission is PlatformAccessed, IPermission {
         positionId = ++$.positionCount;
         $.positions[positionId] = Position({branchId: branchId, active: true, name: name});
         list.push(positionId);
-        emit PositionCreated(EVENT_VERSION, branchId, positionId, name, msg.sender);
+        _emitCreated(branchId, positionId, name);
         for (uint256 i; i < moduleIds.length; ++i) {
             _setMask(positionId, branchId, moduleIds[i], masks[i]);
         }
@@ -92,7 +100,7 @@ contract Permission is PlatformAccessed, IPermission {
         Position storage p = _editable(positionId);
         _checkName(name);
         p.name = name;
-        emit PositionRenamed(EVENT_VERSION, p.branchId, positionId, name, msg.sender);
+        emit PositionRenamed(EVENT_VERSION, p.branchId, positionId, name, _me(p.branchId));
     }
 
     /// @notice Ngừng / dùng lại vị trí. Ngừng thì mọi phiên trực đang dùng vị trí này mất quyền ngay.
@@ -100,7 +108,7 @@ contract Permission is PlatformAccessed, IPermission {
         Position storage p = _existing(positionId);
         _requireManager(p.branchId);
         p.active = active;
-        emit PositionActiveSet(EVENT_VERSION, p.branchId, positionId, active, msg.sender);
+        emit PositionActiveSet(EVENT_VERSION, p.branchId, positionId, active, _me(p.branchId));
     }
 
     // ─── Đọc ────────────────────────────────────────────────────────────
@@ -152,12 +160,21 @@ contract Permission is PlatformAccessed, IPermission {
     /// @dev Manager hoặc chủ agent của chi nhánh, chi nhánh đang Active.
     function _requireManager(uint64 branchId) private view {
         PermissionStorage storage $ = _s();
-        if ($.agentAccess.effectiveRoleOf(branchId, msg.sender) < IAgentAccess.Role.Manager) {
-            revert NotManager(branchId, msg.sender);
-        }
+        address me = _me(branchId);
+        if ($.agentAccess.effectiveRoleOf(branchId, me) < IAgentAccess.Role.Manager) revert NotManager(branchId, me);
         if ($.branches.getBranch(branchId).status != IBranchRegistry.BranchStatus.Active) {
             revert BranchNotActive(branchId);
         }
+    }
+
+    function _emitCreated(uint64 branchId, uint64 positionId, string calldata name) private {
+        emit PositionCreated(EVENT_VERSION, branchId, positionId, name, _me(branchId));
+    }
+
+    function _me(uint64 branchId) private view returns (address) {
+        IDelegateRegistry d = _s().delegate;
+        if (address(d) == address(0)) return msg.sender;
+        return d.resolve(_s().branches.getBranch(branchId).agentId, msg.sender);
     }
 
     function _existing(uint64 positionId) private view returns (Position storage p) {
@@ -179,7 +196,7 @@ contract Permission is PlatformAccessed, IPermission {
                 || mask & ~m.permValid != 0 || mask & m.permManagerOnly != 0
         ) revert InvalidMask(moduleId, mask);
         _s().masks[positionId][moduleId] = mask;
-        emit PositionPermsSet(EVENT_VERSION, branchId, positionId, moduleId, mask, msg.sender);
+        emit PositionPermsSet(EVENT_VERSION, branchId, positionId, moduleId, mask, _me(branchId));
     }
 
     function _checkName(string calldata name) private pure {

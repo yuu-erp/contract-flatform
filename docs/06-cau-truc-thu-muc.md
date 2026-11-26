@@ -58,9 +58,10 @@ Bảng đầy đủ "contract – câu hỏi nó trả lời – trạng thái":
 | `tenant/branch/` | T1 | ✅ `BranchRegistry` | `PLATFORM_ADMIN`; thuế do chủ agent |
 | `tenant/access/` | T1 | ✅ `AgentAccess` (Manager / Staff theo chi nhánh) | chủ agent, Manager |
 | `tenant/user/` | T1 | ✅ `AgentUserRegistry` (tài khoản khách và nhân viên) | chữ ký người dùng, nhân viên có quyền |
-| `tenant/delegate/` | T1 | `DelegateRegistry` | người dùng, module |
+| `tenant/delegate/` | T1 | ✅ `DelegateRegistry` (ví phiên, OTP, QR) | tài khoản (chữ ký), operator (OTP) |
 | `shared/ledger/` | T2 | ✅ `Ledger` + library ngoài `LedgerRecorder`, `LedgerWallet` | poster có giấy phép (ADR 0031) |
 | `shared/payment/` | T2 | ✅ `SalesSettings`, `PaymentAccounts` (tài khoản nhận tiền, ca két) | chủ agent, nhân viên có quyền |
+| `shared/desk/` | T2 | ✅ `CustomerDesk` (quầy khách, ADR 0035) | nhân viên có quyền |
 | `shared/permission/` | T2 | ✅ `Permission` (ADR 0033) | Manager+ |
 | `shared/duty/` | T2 | ✅ `Duty` (ADR 0033) | Manager+, nhân viên (vào/ra ca); trần tăng ca: chủ agent |
 | `shared/resource/` | T2 | `Resource` (thiết bị/tài nguyên: danh tính + trạng thái) | Manager+ |

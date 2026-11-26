@@ -15,6 +15,8 @@ import {Ledger} from "../src/shared/ledger/Ledger.sol";
 import {AgentUserRegistry} from "../src/tenant/user/AgentUserRegistry.sol";
 import {Permission} from "../src/shared/permission/Permission.sol";
 import {Duty} from "../src/shared/duty/Duty.sol";
+import {DelegateRegistry} from "../src/tenant/delegate/DelegateRegistry.sol";
+import {CustomerDesk} from "../src/shared/desk/CustomerDesk.sol";
 
 /// @notice Deploy tầng quản trị: PlatformAccess → Registry (khai báo module mặc định) → HistoryIndex → AgentRegistry → BranchRegistry → AgentAccess → SalesSettings → Ledger → AgentUserRegistry,
 ///         rồi đăng ký các contract ghi (registry, branches, agentAccess, salesSettings, ledger) làm writer của HistoryIndex (mỗi contract chỉ các kind của nó), nối AgentAccess vào
@@ -47,6 +49,10 @@ contract DeployPlatform is Script {
         address permissionImpl;
         address dutyProxy;
         address dutyImpl;
+        address delegateProxy;
+        address delegateImpl;
+        address deskProxy;
+        address deskImpl;
         address owner;
         address admin;
     }
@@ -173,6 +179,8 @@ contract DeployPlatform is Script {
             )
         );
 
+        _deployAccounts(deployed);
+
         HistoryIndex history = HistoryIndex(deployed.historyProxy);
         PlatformAccess access = PlatformAccess(deployed.accessProxy);
 
@@ -201,9 +209,42 @@ contract DeployPlatform is Script {
         AgentRegistry(deployed.agentsProxy).setRegistry(deployed.registryProxy);
         BranchRegistry(deployed.branchesProxy).setRegistry(deployed.registryProxy);
         Permission(deployed.permissionProxy).setDuty(deployed.dutyProxy);
+        AgentUserRegistry(deployed.usersProxy).setOperator(deployed.deskProxy, true);
+        DelegateRegistry(deployed.delegateProxy).setOperator(deployed.deskProxy, true);
+        Permission(deployed.permissionProxy).setDelegate(deployed.delegateProxy);
+        Duty(deployed.dutyProxy).setDelegate(deployed.delegateProxy);
         access.setAgentRoleSources(sources);
         if (admin != address(0)) access.addPlatformAdmin(admin);
         if (!_broadcasting) vm.stopPrank();
+    }
+
+    /// @dev DelegateRegistry (T1) + CustomerDesk (T2), ADR 0035.
+    function _deployAccounts(Deployed memory deployed) internal {
+        deployed.delegateImpl = address(new DelegateRegistry());
+        deployed.delegateProxy = address(
+            new ERC1967Proxy(
+                deployed.delegateImpl,
+                abi.encodeCall(
+                    DelegateRegistry.initialize, (deployed.accessProxy, deployed.agentsProxy, deployed.usersProxy)
+                )
+            )
+        );
+        deployed.deskImpl = address(new CustomerDesk());
+        deployed.deskProxy = address(
+            new ERC1967Proxy(
+                deployed.deskImpl,
+                abi.encodeCall(
+                    CustomerDesk.initialize,
+                    (
+                        deployed.accessProxy,
+                        deployed.branchesProxy,
+                        deployed.permissionProxy,
+                        deployed.usersProxy,
+                        deployed.delegateProxy
+                    )
+                )
+            )
+        );
     }
 
     function run() external {
@@ -232,6 +273,8 @@ contract DeployPlatform is Script {
         console2.log("registryProxy", deployed.registryProxy);
         console2.log("permissionProxy", deployed.permissionProxy);
         console2.log("dutyProxy", deployed.dutyProxy);
+        console2.log("delegateProxy", deployed.delegateProxy);
+        console2.log("deskProxy", deployed.deskProxy);
         console2.log("wrote", path);
     }
 
@@ -272,6 +315,10 @@ contract DeployPlatform is Script {
         vm.serializeAddress(obj, "permissionImpl", deployed.permissionImpl);
         vm.serializeAddress(obj, "dutyProxy", deployed.dutyProxy);
         vm.serializeAddress(obj, "dutyImpl", deployed.dutyImpl);
+        vm.serializeAddress(obj, "delegateProxy", deployed.delegateProxy);
+        vm.serializeAddress(obj, "delegateImpl", deployed.delegateImpl);
+        vm.serializeAddress(obj, "deskProxy", deployed.deskProxy);
+        vm.serializeAddress(obj, "deskImpl", deployed.deskImpl);
         vm.serializeAddress(obj, "owner", deployed.owner);
         string memory json = vm.serializeAddress(obj, "admin", deployed.admin);
         vm.writeJson(json, path);

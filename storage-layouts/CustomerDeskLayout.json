@@ -1,0 +1,32 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct CustomerDesk.DeskStorage"
+ ],
+ [
+  "s.branches",
+  0,
+  0,
+  "contract IBranchRegistry"
+ ],
+ [
+  "s.permission",
+  1,
+  0,
+  "contract IPermission"
+ ],
+ [
+  "s.users",
+  2,
+  0,
+  "contract IAgentUserRegistry"
+ ],
+ [
+  "s.delegate",
+  3,
+  0,
+  "contract IDelegateRegistry"
+ ]
+]

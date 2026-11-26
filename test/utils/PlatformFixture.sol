@@ -16,6 +16,8 @@ import {SalesSettings} from "../../src/shared/payment/SalesSettings.sol";
 import {AgentUserRegistry} from "../../src/tenant/user/AgentUserRegistry.sol";
 import {Permission} from "../../src/shared/permission/Permission.sol";
 import {Duty} from "../../src/shared/duty/Duty.sol";
+import {DelegateRegistry} from "../../src/tenant/delegate/DelegateRegistry.sol";
+import {CustomerDesk} from "../../src/shared/desk/CustomerDesk.sol";
 import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
 import {IAgentRegistry} from "../../src/interfaces/IAgentRegistry.sol";
 
@@ -37,6 +39,8 @@ abstract contract PlatformFixture is BaseTest {
     Registry internal modules;
     Permission internal permission;
     Duty internal duty;
+    DelegateRegistry internal delegate;
+    CustomerDesk internal desk;
 
     uint16 internal constant NET = 1;
     uint16 internal constant IQR = 2;
@@ -123,6 +127,22 @@ abstract contract PlatformFixture is BaseTest {
             )
         );
 
+        delegate = DelegateRegistry(
+            deployProxy(
+                address(new DelegateRegistry()),
+                abi.encodeCall(DelegateRegistry.initialize, (address(access), address(registry), address(users)))
+            )
+        );
+        desk = CustomerDesk(
+            deployProxy(
+                address(new CustomerDesk()),
+                abi.encodeCall(
+                    CustomerDesk.initialize,
+                    (address(access), address(branches), address(permission), address(users), address(delegate))
+                )
+            )
+        );
+
         vm.startPrank(platformOwner);
         historyIndex.setWriter(address(registry), true);
         historyIndex.setWriter(address(branches), true);
@@ -151,6 +171,10 @@ abstract contract PlatformFixture is BaseTest {
         branches.setRegistry(address(modules));
         _licensePosters();
         permission.setDuty(address(duty));
+        users.setOperator(address(desk), true);
+        delegate.setOperator(address(desk), true);
+        permission.setDelegate(address(delegate));
+        duty.setDelegate(address(delegate));
         vm.stopPrank();
     }
 

@@ -7,7 +7,7 @@ import {AgentUserRegistry} from "../../src/tenant/user/AgentUserRegistry.sol";
 import {IAgentUserRegistry} from "../../src/interfaces/IAgentUserRegistry.sol";
 import {IAgentAccess} from "../../src/interfaces/IAgentAccess.sol";
 
-/// @notice Staff đăng ký / đặt lại mật khẩu / chặn ngẫu nhiên trên tập 6 địa chỉ và 4 username.
+/// @notice Operator (vai CustomerDesk) đăng ký / đặt lại mật khẩu / chặn ngẫu nhiên trên tập 6 địa chỉ và 4 username.
 contract AgentUserHandler is Test {
     AgentUserRegistry internal users;
     address internal staff;
@@ -29,10 +29,10 @@ contract AgentUserHandler is Test {
     }
 
     function register(uint256 a, uint256 n) external {
-        vm.prank(staff);
-        try users.registerByStaff(
+        try users.registerFor(
             agentId,
             branchId,
+            staff,
             addrs[a % 6],
             names[n % 4],
             IAgentUserRegistry.UserProfile({displayName: "x", fullName: "", phone: "", birthday: "", note: ""})
@@ -41,13 +41,11 @@ contract AgentUserHandler is Test {
     }
 
     function reset(uint256 a, uint256 l) external {
-        vm.prank(staff);
-        try users.resetPassword(agentId, branchId, addrs[a % 6], addrs[l % 6]) {} catch {}
+        try users.resetLoginFor(agentId, branchId, staff, addrs[a % 6], addrs[l % 6]) {} catch {}
     }
 
     function block_(uint256 a, bool b) external {
-        vm.prank(manager);
-        try users.setBlocked(agentId, branchId, addrs[a % 6], b, "r") {} catch {}
+        try users.setBlockedFor(agentId, branchId, manager, addrs[a % 6], b, "r") {} catch {}
     }
 
     function addr(uint256 i) external view returns (address) {
@@ -72,6 +70,8 @@ contract AgentUserRegistryInvariantTest is PlatformFixture {
         agentAccess.grantRole(b1, branchManager, IAgentAccess.Role.Manager);
         vm.stopPrank();
         handler = new AgentUserHandler(users, staff, branchManager, agentId, b1);
+        vm.prank(platformOwner);
+        users.setOperator(address(handler), true);
         targetContract(address(handler));
     }
 

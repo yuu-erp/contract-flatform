@@ -64,5 +64,11 @@
   8,
   0,
   "mapping(uint64 => mapping(address => address))"
+ ],
+ [
+  "s.delegate",
+  9,
+  0,
+  "contract IDelegateRegistry"
  ]
 ]

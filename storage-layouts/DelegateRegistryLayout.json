@@ -1,0 +1,44 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct DelegateRegistry.DelegateStorage"
+ ],
+ [
+  "s.users",
+  0,
+  0,
+  "contract IAgentUserRegistry"
+ ],
+ [
+  "s.agents",
+  1,
+  0,
+  "contract IAgentRegistry"
+ ],
+ [
+  "s.operators",
+  2,
+  0,
+  "mapping(address => bool)"
+ ],
+ [
+  "s.sessions",
+  3,
+  0,
+  "mapping(uint64 => mapping(address => struct IDelegateRegistry.Session))"
+ ],
+ [
+  "s.otps",
+  4,
+  0,
+  "mapping(uint64 => mapping(address => struct IDelegateRegistry.Otp))"
+ ],
+ [
+  "s.nonces",
+  5,
+  0,
+  "mapping(uint64 => mapping(address => uint64))"
+ ]
+]

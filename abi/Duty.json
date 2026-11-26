@@ -668,6 +668,19 @@
   },
   {
     "type": "function",
+    "name": "setDelegate",
+    "inputs": [
+      {
+        "name": "delegate_",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "setOvertimeCap",
     "inputs": [
       {

@@ -82,5 +82,11 @@
   12,
   0,
   "mapping(uint64 => mapping(uint32 => uint32))"
+ ],
+ [
+  "s.operators",
+  13,
+  0,
+  "mapping(address => bool)"
  ]
 ]

@@ -51,7 +51,7 @@ contract AgentUserRegistryTest is PlatformFixture {
         teoNew = vm.addr(teoNewKey);
         otpAddr = vm.addr(otpKey);
         vm.prank(platformOwner);
-        users.setDelegateRegistry(address(this)); // test đóng vai DelegateRegistry
+        users.setOperator(address(this), true); // test đóng vai CustomerDesk (quyền đã kiểm ở T2)
     }
 
     // ─── Tiện ích ───────────────────────────────────────────────────────
@@ -77,8 +77,7 @@ contract AgentUserRegistryTest is PlatformFixture {
     }
 
     function _registerByStaff(address account, string memory username) internal {
-        vm.prank(staff);
-        users.registerByStaff(agentId, b1, account, username, _p());
+        users.registerFor(agentId, b1, staff, account, username, _p());
     }
 
     function _registerSig(
@@ -138,7 +137,7 @@ contract AgentUserRegistryTest is PlatformFixture {
         assertEq(rec.account, teo);
     }
 
-    function test_registerByStaff_writesAuditWithStaffAsActor() public {
+    function test_registerFor_writesAuditWithStaffAsActor() public {
         _registerByStaff(teo, "teo");
         IHistoryIndex.Term[] memory filters = new IHistoryIndex.Term[](1);
         filters[0] = IHistoryIndex.Term("X", "user_register");
@@ -161,66 +160,50 @@ contract AgentUserRegistryTest is PlatformFixture {
         assertEq(a.branchId, b1);
     }
 
-    function test_registerByStaff_needsStaffOfBranchInAgent() public {
-        vm.prank(stranger);
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                IAgentUserRegistry.MissingRole.selector, b1, stranger, uint8(IAgentAccess.Role.Staff)
-            )
-        );
-        users.registerByStaff(agentId, b1, teo, "teo", _p());
-
-        // Staff của b1 không được đăng ký ở b2 (không có vai trò ở b2).
+    /// @dev Chỉ operator (CustomerDesk) gọi được cổng nhân viên; quyền nhân viên kiểm ở CustomerDesk (ADR 0035).
+    function test_operatorOnly_andBranchMustBelongToAgent() public {
         vm.prank(staff);
-        vm.expectRevert(
-            abi.encodeWithSelector(IAgentUserRegistry.MissingRole.selector, b2, staff, uint8(IAgentAccess.Role.Staff))
-        );
-        users.registerByStaff(agentId, b2, teo, "teo", _p());
+        vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.NotOperator.selector, staff));
+        users.registerFor(agentId, b1, staff, teo, "teo", _p());
 
-        // Chi nhánh của agent khác.
-        vm.prank(staff);
         vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.BranchNotInAgent.selector, otherBranch, agentId));
-        users.registerByStaff(agentId, otherBranch, teo, "teo", _p());
+        users.registerFor(agentId, otherBranch, staff, teo, "teo", _p());
 
-        // Chủ agent làm được (vai trò Owner ≥ Staff).
-        vm.prank(agentOwner);
-        users.registerByStaff(agentId, b2, teo, "teo", _p());
+        vm.prank(platformOwner);
+        users.setOperator(address(this), false);
+        vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.NotOperator.selector, address(this)));
+        users.registerFor(agentId, b2, agentOwner, teo, "teo", _p());
+        assertFalse(users.isOperator(address(this)));
     }
 
     function test_register_agentSuspendedOrPaused_reverts() public {
         vm.prank(platformAdmin);
         registry.suspendAgent(agentId, "kiem tra");
-        vm.prank(staff);
         vm.expectRevert(abi.encodeWithSelector(IAgentRegistry.AgentNotActive.selector, agentId));
-        users.registerByStaff(agentId, b1, teo, "teo", _p());
+        users.registerFor(agentId, b1, staff, teo, "teo", _p());
 
         vm.prank(platformAdmin);
         registry.resumeAgent(agentId, "xong");
         vm.prank(platformAdmin);
         access.pause();
-        vm.prank(staff);
         vm.expectRevert(PausableUpgradeable.EnforcedPause.selector);
-        users.registerByStaff(agentId, b1, teo, "teo", _p());
+        users.registerFor(agentId, b1, staff, teo, "teo", _p());
     }
 
     function test_username_rules() public {
         string[6] memory bad = ["ab", "Teo", "teo!", "_teo", ".teo", "abcdefghijklmnopqrstuvwxy"];
         for (uint256 i; i < bad.length; ++i) {
-            vm.prank(staff);
             vm.expectRevert(IAgentUserRegistry.InvalidUsername.selector);
-            users.registerByStaff(agentId, b1, teo, bad[i], _p());
+            users.registerFor(agentId, b1, staff, teo, bad[i], _p());
         }
         _registerByStaff(teo, "teo.99_x");
-        vm.prank(staff);
         vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.UsernameTaken.selector, agentId, "teo.99_x"));
-        users.registerByStaff(agentId, b1, teoNew, "teo.99_x", _p());
+        users.registerFor(agentId, b1, staff, teoNew, "teo.99_x", _p());
     }
 
     function test_sameUsernameAndAddress_inOtherAgent_isSeparateAccount() public {
         _registerByStaff(teo, "teo");
-        vm.startPrank(coOwner);
-        users.registerByStaff(otherAgent, otherBranch, teo, "teo", _profile("Teo B", ""));
-        vm.stopPrank();
+        users.registerFor(otherAgent, otherBranch, coOwner, teo, "teo", _profile("Teo B", ""));
         assertEq(users.userCount(agentId), 1);
         assertEq(users.userCount(otherAgent), 1);
         assertEq(users.getProfile(otherAgent, teo).profile.displayName, "Teo B");
@@ -228,36 +211,30 @@ contract AgentUserRegistryTest is PlatformFixture {
 
     function test_register_rejectsExistingAccountOrLogin() public {
         _registerByStaff(teo, "teo");
-        vm.prank(staff);
         vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.AccountExists.selector, agentId, teo));
-        users.registerByStaff(agentId, b1, teo, "teo2", _p());
+        users.registerFor(agentId, b1, staff, teo, "teo2", _p());
 
         // teoNew đang là địa chỉ đăng nhập của teo → không được đăng ký làm tài khoản khác.
-        vm.prank(staff);
-        users.resetPassword(agentId, b1, teo, teoNew);
-        vm.prank(staff);
+        users.resetLoginFor(agentId, b1, staff, teo, teoNew);
         vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.LoginInUse.selector, agentId, teoNew));
-        users.registerByStaff(agentId, b1, teoNew, "khac", _p());
+        users.registerFor(agentId, b1, staff, teoNew, "khac", _p());
     }
 
     function test_profile_rules() public {
         IAgentUserRegistry.UserProfile memory p = _p();
         p.displayName = "";
-        vm.prank(staff);
         vm.expectRevert(IAgentUserRegistry.InvalidProfile.selector);
-        users.registerByStaff(agentId, b1, teo, "teo", p);
+        users.registerFor(agentId, b1, staff, teo, "teo", p);
 
         p = _p();
         p.phone = "abc";
-        vm.prank(staff);
         vm.expectRevert(IAgentUserRegistry.InvalidProfile.selector);
-        users.registerByStaff(agentId, b1, teo, "teo", p);
+        users.registerFor(agentId, b1, staff, teo, "teo", p);
 
         p = _p();
         p.birthday = "2004-13-01";
-        vm.prank(staff);
         vm.expectRevert(IAgentUserRegistry.InvalidProfile.selector);
-        users.registerByStaff(agentId, b1, teo, "teo", p);
+        users.registerFor(agentId, b1, staff, teo, "teo", p);
     }
 
     function test_registerBySig_relayedByAnyone() public {
@@ -298,7 +275,8 @@ contract AgentUserRegistryTest is PlatformFixture {
         bytes memory sig = _changePasswordSig(teoKey, teo, teoNew, deadline);
 
         vm.expectEmit(address(users));
-        emit IAgentUserRegistry.UserLoginChanged(1, agentId, teo, teo, teoNew, 1, false, relayer, 0);
+        // `by` = chính khách (người gửi hộ chỉ trả gas)
+        emit IAgentUserRegistry.UserLoginChanged(1, agentId, teo, teo, teoNew, 1, false, teo, 0);
         vm.prank(relayer);
         users.changePasswordBySig(agentId, teo, teoNew, deadline, sig);
 
@@ -322,12 +300,11 @@ contract AgentUserRegistryTest is PlatformFixture {
         assertEq(users.getUser(agentId, teo).loginAddress, third);
     }
 
-    function test_resetPassword_byStaff_noOldPassword_logged() public {
+    function test_resetLogin_byStaff_noOldPassword_logged() public {
         _registerByStaff(teo, "teo");
         vm.expectEmit(address(users));
         emit IAgentUserRegistry.UserLoginChanged(1, agentId, teo, teo, teoNew, 1, true, staff, b1);
-        vm.prank(staff);
-        users.resetPassword(agentId, b1, teo, teoNew);
+        users.resetLoginFor(agentId, b1, staff, teo, teoNew);
         assertEq(users.getUser(agentId, teo).loginAddress, teoNew);
 
         IHistoryIndex.Term[] memory filters = new IHistoryIndex.Term[](1);
@@ -352,21 +329,12 @@ contract AgentUserRegistryTest is PlatformFixture {
         assertEq(newLogin, teoNew);
     }
 
-    function test_resetPassword_rejectsLoginOfOtherUserOrStranger() public {
+    function test_resetLogin_rejectsLoginOfOtherUser() public {
         _registerByStaff(teo, "teo");
         address bo = makeAddr("bo");
         _registerByStaff(bo, "bo.sua");
-        vm.prank(staff);
         vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.LoginInUse.selector, agentId, bo));
-        users.resetPassword(agentId, b1, teo, bo);
-
-        vm.prank(stranger);
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                IAgentUserRegistry.MissingRole.selector, b1, stranger, uint8(IAgentAccess.Role.Staff)
-            )
-        );
-        users.resetPassword(agentId, b1, teo, teoNew);
+        users.resetLoginFor(agentId, b1, staff, teo, bo);
     }
 
     // ─── Username, hồ sơ ────────────────────────────────────────────────
@@ -400,80 +368,29 @@ contract AgentUserRegistryTest is PlatformFixture {
         users.updateProfileBySig(agentId, teo, p, deadline, sig);
         assertEq(users.getProfile(agentId, teo).profile.displayName, "Teo Pro");
 
-        vm.prank(staff);
-        users.updateProfileByStaff(agentId, b1, teo, _profile("Teo Staff", ""));
+        users.updateProfileFor(agentId, b1, staff, teo, _profile("Teo Staff", ""));
         assertEq(users.getProfile(agentId, teo).profile.displayName, "Teo Staff");
         assertEq(users.getUser(agentId, teo).profileDocId, 1, "cung document");
     }
 
     // ─── Chặn ───────────────────────────────────────────────────────────
 
-    function test_setBlocked_managerOnly_andBlocksActions() public {
+    function test_setBlocked_reasonAndBlocksActions() public {
         _registerByStaff(teo, "teo");
-        vm.prank(staff);
-        vm.expectRevert(
-            abi.encodeWithSelector(IAgentUserRegistry.MissingRole.selector, b1, staff, uint8(IAgentAccess.Role.Manager))
-        );
-        users.setBlocked(agentId, b1, teo, true, "gian lan");
-
-        vm.prank(branchManager);
         vm.expectRevert(IAgentUserRegistry.EmptyReason.selector);
-        users.setBlocked(agentId, b1, teo, true, "");
+        users.setBlockedFor(agentId, b1, branchManager, teo, true, "");
 
-        vm.prank(branchManager);
-        users.setBlocked(agentId, b1, teo, true, "gian lan");
+        users.setBlockedFor(agentId, b1, branchManager, teo, true, "gian lan");
         assertFalse(users.isActive(agentId, teo));
 
-        vm.prank(staff);
         vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.UserNotActive.selector, agentId, teo));
-        users.resetPassword(agentId, b1, teo, teoNew);
-        vm.prank(staff);
-        vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.UserNotActive.selector, agentId, teo));
-        users.issueOtp(agentId, b1, teo, otpAddr, 5 minutes);
+        users.resetLoginFor(agentId, b1, staff, teo, teoNew);
 
-        vm.prank(branchManager);
         vm.expectRevert(IAgentUserRegistry.StatusUnchanged.selector);
-        users.setBlocked(agentId, b1, teo, true, "lan nua");
+        users.setBlockedFor(agentId, b1, branchManager, teo, true, "lan nua");
 
-        vm.prank(agentOwner);
-        users.setBlocked(agentId, b1, teo, false, "da xac minh");
+        users.setBlockedFor(agentId, b1, agentOwner, teo, false, "da xac minh");
         assertTrue(users.isActive(agentId, teo));
-    }
-
-    // ─── OTP ────────────────────────────────────────────────────────────
-
-    function test_otp_issueConsumeOnce() public {
-        _registerByStaff(teo, "teo");
-        vm.prank(staff);
-        users.issueOtp(agentId, b1, teo, otpAddr, 5 minutes);
-        assertEq(users.otpOf(agentId, otpAddr).account, teo);
-
-        vm.prank(stranger);
-        vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.NotDelegateRegistry.selector, stranger));
-        users.consumeOtp(agentId, otpAddr);
-
-        assertEq(users.consumeOtp(agentId, otpAddr), teo);
-        vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.OtpNotFound.selector, agentId, otpAddr));
-        users.consumeOtp(agentId, otpAddr);
-    }
-
-    function test_otp_ttlAndExpiry() public {
-        _registerByStaff(teo, "teo");
-        vm.startPrank(staff);
-        vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.InvalidOtpTtl.selector, uint256(10 minutes)));
-        users.issueOtp(agentId, b1, teo, otpAddr, 11 minutes);
-        vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.LoginInUse.selector, agentId, teo));
-        users.issueOtp(agentId, b1, teo, teo, 5 minutes);
-        users.issueOtp(agentId, b1, teo, otpAddr, 5 minutes);
-        vm.stopPrank();
-
-        vm.warp(block.timestamp + 5 minutes + 1);
-        vm.expectRevert(abi.encodeWithSelector(IAgentUserRegistry.OtpExpired.selector, agentId, otpAddr));
-        this.consumeExternal(otpAddr);
-    }
-
-    function consumeExternal(address otp) external returns (address) {
-        return users.consumeOtp(agentId, otp);
     }
 
     // ─── Đọc ────────────────────────────────────────────────────────────
@@ -495,9 +412,9 @@ contract AgentUserRegistryTest is PlatformFixture {
         assertTrue(users.isActive(agentId, staff));
     }
 
-    function test_setDelegateRegistry_ownerOnly() public {
+    function test_setOperator_ownerOnly() public {
         vm.prank(platformAdmin);
         vm.expectRevert();
-        users.setDelegateRegistry(stranger);
+        users.setOperator(stranger, true);
     }
 }

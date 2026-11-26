@@ -57,8 +57,11 @@ contract StaffDutyHandler is Test {
 
     function assign(uint256 b, uint256 who, uint256 si, uint256 pi) external {
         if (shifts.length == 0 || positions.length == 0) return;
-        IDuty.Assignment[] memory list = new IDuty.Assignment[](1);
+        // Ở b1 luôn giữ cặp gốc (ca gần trọn ngày) để đường vào ca không bị fuzz chặn hết.
+        bool keepSeed = b % 2 == 0;
+        IDuty.Assignment[] memory list = new IDuty.Assignment[](keepSeed ? 2 : 1);
         list[0] = IDuty.Assignment(shifts[si % shifts.length], positions[pi % positions.length]);
+        if (keepSeed) list[1] = IDuty.Assignment(shifts[0], positions[0]);
         vm.prank(owner);
         try duty.setAssignments(branches[b % 2], staffs[who % 2], list) {
             ++okAssign;

@@ -7,6 +7,7 @@ import {SetPlatformAdmin} from "../../script/SetPlatformAdmin.s.sol";
 import {DeployAgentAccess} from "../../script/DeployAgentAccess.s.sol";
 import {DeployAgentUsers} from "../../script/DeployAgentUsers.s.sol";
 import {AgentUserRegistry} from "../../src/tenant/user/AgentUserRegistry.sol";
+import {CustomerDesk} from "../../src/shared/desk/CustomerDesk.sol";
 import {IAgentUserRegistry} from "../../src/interfaces/IAgentUserRegistry.sol";
 import {AgentAccess} from "../../src/tenant/access/AgentAccess.sol";
 import {SalesSettings} from "../../src/shared/payment/SalesSettings.sol";
@@ -172,12 +173,30 @@ contract DeployPlatformTest is BaseTest {
         s.deploy(stranger, d.accessProxy, d.agentsProxy, d.branchesProxy, d.historyProxy);
     }
 
+    function _usersInputs(DeployPlatform.Deployed memory d, address owner)
+        internal
+        pure
+        returns (DeployAgentUsers.Inputs memory)
+    {
+        return DeployAgentUsers.Inputs({
+            owner: owner,
+            access: d.accessProxy,
+            agents: d.agentsProxy,
+            branches: d.branchesProxy,
+            agentAccess: d.agentAccessProxy,
+            history: d.historyProxy,
+            permission: d.permissionProxy,
+            duty: d.dutyProxy
+        });
+    }
+
+    /// @dev Deploy lại bộ tài khoản (AgentUserRegistry + DelegateRegistry + CustomerDesk) trên hệ đã có;
+    ///      chủ agent đăng ký khách qua quầy (ADR 0035), không cần ca.
     function test_deployAgentUsers_onExistingPlatform() public {
         DeployPlatform.Deployed memory d = new DeployPlatform().deploy(platformOwner, platformAdmin, address(0));
-        (address proxy,) = new DeployAgentUsers()
-            .deploy(platformOwner, d.accessProxy, d.agentsProxy, d.branchesProxy, d.agentAccessProxy, d.historyProxy);
-        assertTrue(HistoryIndex(d.historyProxy).canWrite(proxy, "users"));
-        assertTrue(HistoryIndex(d.historyProxy).canWrite(proxy, "platform_audit"));
+        DeployAgentUsers.Deployed memory u = new DeployAgentUsers().deploy(_usersInputs(d, platformOwner));
+        assertTrue(HistoryIndex(d.historyProxy).canWrite(u.usersProxy, "users"));
+        assertTrue(AgentUserRegistry(u.usersProxy).isOperator(u.deskProxy));
 
         vm.startPrank(platformAdmin);
         uint64 agentId = AgentRegistry(d.agentsProxy)
@@ -198,21 +217,21 @@ contract DeployPlatformTest is BaseTest {
             );
         vm.stopPrank();
         vm.prank(agentOwner);
-        AgentUserRegistry(proxy)
-            .registerByStaff(
-                agentId,
+        CustomerDesk(u.deskProxy)
+            .registerCustomer(
                 b,
                 customer,
                 "teo",
                 IAgentUserRegistry.UserProfile({displayName: "Teo", fullName: "", phone: "", birthday: "", note: ""})
             );
-        assertEq(AgentUserRegistry(proxy).accountOf(agentId, "teo"), customer);
+        assertEq(AgentUserRegistry(u.usersProxy).accountOf(agentId, "teo"), customer);
     }
 
     function test_deployAgentUsers_strangerCannotSetWriter() public {
         DeployPlatform.Deployed memory d = new DeployPlatform().deploy(platformOwner, address(0), address(0));
         DeployAgentUsers s = new DeployAgentUsers();
+        DeployAgentUsers.Inputs memory i = _usersInputs(d, stranger);
         vm.expectRevert();
-        s.deploy(stranger, d.accessProxy, d.agentsProxy, d.branchesProxy, d.agentAccessProxy, d.historyProxy);
+        s.deploy(i);
     }
 }

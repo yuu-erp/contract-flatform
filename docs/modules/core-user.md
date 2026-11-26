@@ -2,6 +2,8 @@
 
 Trạng thái: **U1 đã triển khai** (Claude Code, 2026-11-26): `src/tenant/user/AgentUserRegistry.sol`, interface `src/interfaces/IAgentUserRegistry.sol`. U2–U4 chưa làm.
 
+> **Đổi theo ADR 0035 (2026-11-26):** thao tác của nhân viên (`registerByStaff`, `resetPassword`, `updateProfileByStaff`, `setBlocked`) đổi thành cổng operator `registerFor` / `resetLoginFor` / `updateProfileFor` / `setBlockedFor`, chỉ `CustomerDesk` (T2) gọi sau khi kiểm `Permission.can()`. OTP (`issueOtp`, `consumeOtp`) chuyển sang `DelegateRegistry`. Thống kê theo ngày đã bỏ. Chi tiết: `docs/modules/tenant-delegate.md`. Các mục bên dưới mô tả bản trước, giữ để tra cứu.
+
 ## 1. Bài toán
 
 Mọi dịch vụ của agent đều cần người dùng (khách):

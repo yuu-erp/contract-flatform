@@ -5,6 +5,7 @@ import {PlatformAccessed} from "../../kernel/access/PlatformAccessed.sol";
 import {IDuty} from "../../interfaces/IDuty.sol";
 import {IPermission} from "../../interfaces/IPermission.sol";
 import {IBranchRegistry} from "../../interfaces/IBranchRegistry.sol";
+import {IDelegateRegistry} from "../../interfaces/IDelegateRegistry.sol";
 import {IAgentAccess} from "../../interfaces/IAgentAccess.sol";
 
 /// @title Duty
@@ -38,6 +39,7 @@ contract Duty is PlatformAccessed, IDuty {
         mapping(uint64 => mapping(address => Session)) sessions;
         mapping(uint64 => uint16) overtimeCapPlusOne; // 0 = chưa đặt (mặc định)
         mapping(uint64 => mapping(address => address)) handoverTo; // branchId → người giao → người nhận
+        IDelegateRegistry delegate; // quy ví phiên / địa chỉ đăng nhập về tài khoản (nguyên tắc 7)
     }
 
     // keccak256(abi.encode(uint256(keccak256("metaplatform.shared.duty")) - 1)) & ~bytes32(uint256(0xff))
@@ -66,6 +68,12 @@ contract Duty is PlatformAccessed, IDuty {
         $.permission = IPermission(permission_);
     }
 
+    /// @notice Nối DelegateRegistry: nhân viên đăng nhập bằng mật khẩu / ví phiên máy quầy được quy về tài khoản. Chỉ owner.
+    function setDelegate(address delegate_) external onlyPlatformOwner {
+        if (delegate_ == address(0)) revert ZeroAddress();
+        _s().delegate = IDelegateRegistry(delegate_);
+    }
+
     // ─── Ca (Manager+) ──────────────────────────────────────────────────
 
     function createShift(uint64 branchId, string calldata name, uint16 startMin, uint16 endMin, uint8 weekdays)
@@ -73,7 +81,7 @@ contract Duty is PlatformAccessed, IDuty {
         whenNotPaused
         returns (uint64 shiftId)
     {
-        _requireRole(branchId, msg.sender, IAgentAccess.Role.Manager);
+        _requireRole(branchId, _me(branchId), IAgentAccess.Role.Manager);
         _checkShift(name, startMin, endMin, weekdays);
         DutyStorage storage $ = _s();
         uint64[] storage list = $.shiftsOf[branchId];
@@ -92,7 +100,7 @@ contract Duty is PlatformAccessed, IDuty {
         whenNotPaused
     {
         Shift storage sh = _shift(shiftId);
-        _requireRole(sh.branchId, msg.sender, IAgentAccess.Role.Manager);
+        _requireRole(sh.branchId, _me(sh.branchId), IAgentAccess.Role.Manager);
         _checkShift(name, startMin, endMin, weekdays);
         sh.name = name;
         sh.startMin = startMin;
@@ -103,14 +111,14 @@ contract Duty is PlatformAccessed, IDuty {
 
     function setShiftActive(uint64 shiftId, bool active) external whenNotPaused {
         Shift storage sh = _shift(shiftId);
-        _requireRole(sh.branchId, msg.sender, IAgentAccess.Role.Manager);
+        _requireRole(sh.branchId, _me(sh.branchId), IAgentAccess.Role.Manager);
         sh.active = active;
         _emitShift(shiftId);
     }
 
     /// @notice Thay toàn bộ phân công của một nhân viên ở chi nhánh. Ca và vị trí phải cùng chi nhánh, đang dùng.
     function setAssignments(uint64 branchId, address account, Assignment[] calldata list) external whenNotPaused {
-        _requireRole(branchId, msg.sender, IAgentAccess.Role.Manager);
+        _requireRole(branchId, _me(branchId), IAgentAccess.Role.Manager);
         if (list.length > MAX_ASSIGNMENTS) revert TooManyAssignments();
         if (list.length != 0 && _s().agentAccess.effectiveRoleOf(branchId, account) != IAgentAccess.Role.Staff) {
             revert NotStaff(branchId, account);
@@ -121,23 +129,25 @@ contract Duty is PlatformAccessed, IDuty {
             _checkPair(branchId, list[i].shiftId, list[i].positionId);
             dst.push(list[i]);
         }
-        emit AssignmentsSet(EVENT_VERSION, branchId, account, list, msg.sender);
+        emit AssignmentsSet(EVENT_VERSION, branchId, account, list, _me(branchId));
     }
 
     /// @notice Trần tăng ca của chi nhánh (phút, 0..720). Chỉ chủ agent.
     function setOvertimeCap(uint64 branchId, uint16 minutes_) external whenNotPaused {
-        if (_s().agentAccess.effectiveRoleOf(branchId, msg.sender) != IAgentAccess.Role.Owner) {
-            revert NotAgentOwner(branchId, msg.sender);
+        address me = _me(branchId);
+        if (_s().agentAccess.effectiveRoleOf(branchId, me) != IAgentAccess.Role.Owner) {
+            revert NotAgentOwner(branchId, me);
         }
         if (minutes_ > MAX_MINUTES) revert InvalidMinutes(minutes_);
         _s().overtimeCapPlusOne[branchId] = minutes_ + 1;
-        emit OvertimeCapSet(EVENT_VERSION, branchId, minutes_, msg.sender);
+        emit OvertimeCapSet(EVENT_VERSION, branchId, minutes_, me);
     }
 
     // ─── Phiên trực ─────────────────────────────────────────────────────
 
     function checkIn(uint64 branchId, uint64 shiftId, uint64 positionId, uint64 deviceId) external whenNotPaused {
-        _open(branchId, msg.sender, shiftId, positionId, deviceId, SOURCE_SELF);
+        address me = _me(branchId);
+        _open(branchId, me, shiftId, positionId, deviceId, SOURCE_SELF, me);
     }
 
     /// @notice Manager vào ca hộ nhân viên (máy chấm công hỏng, quên điện thoại…). Ghi `source = SOURCE_MANAGER`.
@@ -145,45 +155,48 @@ contract Duty is PlatformAccessed, IDuty {
         external
         whenNotPaused
     {
-        _requireRole(branchId, msg.sender, IAgentAccess.Role.Manager);
-        _open(branchId, account, shiftId, positionId, deviceId, SOURCE_MANAGER);
+        address me = _me(branchId);
+        _requireRole(branchId, me, IAgentAccess.Role.Manager);
+        _open(branchId, account, shiftId, positionId, deviceId, SOURCE_MANAGER, me);
     }
 
     function checkOut(uint64 branchId) external whenNotPaused {
-        _close(branchId, msg.sender, OUT_SELF);
+        _close(branchId, _me(branchId), OUT_SELF);
     }
 
     /// @notice Người đang trực đề nghị giao ca cho `to` (đang trực ở cùng chi nhánh). `to` xác nhận bằng `acceptHandover`.
     function requestHandover(uint64 branchId, address to) external whenNotPaused {
-        _requireOnDuty(branchId, msg.sender);
-        if (to == msg.sender) revert NoHandover(msg.sender, to);
+        address me = _me(branchId);
+        _requireOnDuty(branchId, me);
+        if (to == me) revert NoHandover(me, to);
         _requireOnDuty(branchId, to);
-        _s().handoverTo[branchId][msg.sender] = to;
-        emit HandoverRequested(EVENT_VERSION, branchId, msg.sender, to);
+        _s().handoverTo[branchId][me] = to;
+        emit HandoverRequested(EVENT_VERSION, branchId, me, to);
     }
 
     /// @notice Người nhận xác nhận (két xác nhận ở PaymentAccounts khi có) → phiên của `from` đóng.
     function acceptHandover(uint64 branchId, address from) external whenNotPaused {
         DutyStorage storage $ = _s();
-        if ($.handoverTo[branchId][from] != msg.sender) revert NoHandover(from, msg.sender);
-        _requireOnDuty(branchId, msg.sender);
+        address me = _me(branchId);
+        if ($.handoverTo[branchId][from] != me) revert NoHandover(from, me);
+        _requireOnDuty(branchId, me);
         _close(branchId, from, OUT_HANDOVER);
-        emit HandedOver(EVENT_VERSION, branchId, from, msg.sender);
+        emit HandedOver(EVENT_VERSION, branchId, from, me);
     }
 
     function closeSession(uint64 branchId, address account, string calldata reason) external whenNotPaused {
-        _requireRole(branchId, msg.sender, IAgentAccess.Role.Manager);
+        _requireRole(branchId, _me(branchId), IAgentAccess.Role.Manager);
         uint256 n = bytes(reason).length;
         if (n == 0 || n > MAX_REASON) revert InvalidReason();
         _close(branchId, account, OUT_MANAGER);
     }
 
     function extendSession(uint64 branchId, address account, uint16 minutes_) external whenNotPaused {
-        _requireRole(branchId, msg.sender, IAgentAccess.Role.Manager);
+        _requireRole(branchId, _me(branchId), IAgentAccess.Role.Manager);
         if (minutes_ == 0 || minutes_ > MAX_MINUTES) revert InvalidMinutes(minutes_);
         Session storage s = _requireOnDuty(branchId, account);
         s.hardEnd += uint64(minutes_) * 60;
-        emit SessionExtended(EVENT_VERSION, branchId, account, s.hardEnd, msg.sender);
+        emit SessionExtended(EVENT_VERSION, branchId, account, s.hardEnd, _me(branchId));
     }
 
     // ─── Đọc ────────────────────────────────────────────────────────────
@@ -217,9 +230,15 @@ contract Duty is PlatformAccessed, IDuty {
 
     // ─── Nội bộ ─────────────────────────────────────────────────────────
 
-    function _open(uint64 branchId, address account, uint64 shiftId, uint64 positionId, uint64 deviceId, uint8 source)
-        private
-    {
+    function _open(
+        uint64 branchId,
+        address account,
+        uint64 shiftId,
+        uint64 positionId,
+        uint64 deviceId,
+        uint8 source,
+        address by
+    ) private {
         DutyStorage storage $ = _s();
         IBranchRegistry.Branch memory br = $.branches.getBranch(branchId);
         if (br.status != IBranchRegistry.BranchStatus.Active) revert BranchNotActive(branchId);
@@ -244,8 +263,22 @@ contract Duty is PlatformAccessed, IDuty {
             deviceId: deviceId
         });
         delete $.handoverTo[branchId][account];
+        _emitCheckedIn(branchId, account, by);
+    }
+
+    function _emitCheckedIn(uint64 branchId, address account, address by) private {
+        Session storage x = _s().sessions[branchId][account];
         emit CheckedIn(
-            EVENT_VERSION, branchId, account, shiftId, positionId, source, deviceId, end, hardEnd, msg.sender
+            EVENT_VERSION,
+            branchId,
+            account,
+            x.shiftId,
+            x.positionId,
+            x.source,
+            x.deviceId,
+            x.scheduledEnd,
+            x.hardEnd,
+            by
         );
     }
 
@@ -254,7 +287,14 @@ contract Duty is PlatformAccessed, IDuty {
         uint64 over = block.timestamp > s.scheduledEnd ? uint64(block.timestamp) - s.scheduledEnd : 0;
         delete _s().sessions[branchId][account];
         delete _s().handoverTo[branchId][account];
-        emit CheckedOut(EVENT_VERSION, branchId, account, reason, over, msg.sender);
+        emit CheckedOut(EVENT_VERSION, branchId, account, reason, over, _me(branchId));
+    }
+
+    /// @dev Người gọi quy về tài khoản (ví phiên, địa chỉ đăng nhập); chưa nối DelegateRegistry thì là `msg.sender`.
+    function _me(uint64 branchId) private view returns (address) {
+        IDelegateRegistry d = _s().delegate;
+        if (address(d) == address(0)) return msg.sender;
+        return d.resolve(_s().branches.getBranch(branchId).agentId, msg.sender);
     }
 
     function _requireOnDuty(uint64 branchId, address account) private view returns (Session storage s) {
@@ -326,7 +366,15 @@ contract Duty is PlatformAccessed, IDuty {
     function _emitShift(uint64 shiftId) private {
         Shift storage sh = _s().shifts[shiftId];
         emit ShiftSet(
-            EVENT_VERSION, sh.branchId, shiftId, sh.startMin, sh.endMin, sh.weekdays, sh.active, sh.name, msg.sender
+            EVENT_VERSION,
+            sh.branchId,
+            shiftId,
+            sh.startMin,
+            sh.endMin,
+            sh.weekdays,
+            sh.active,
+            sh.name,
+            _me(sh.branchId)
         );
     }
 }

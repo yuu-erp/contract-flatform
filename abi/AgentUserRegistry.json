@@ -32,19 +32,6 @@
   },
   {
     "type": "function",
-    "name": "MAX_OTP_TTL",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint64",
-        "internalType": "uint64"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
     "name": "UPGRADE_INTERFACE_VERSION",
     "inputs": [],
     "outputs": [
@@ -169,43 +156,6 @@
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "consumeOtp",
-    "inputs": [
-      {
-        "name": "agentId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "otpAddress",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "account",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "delegateRegistry",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -476,48 +426,10 @@
   },
   {
     "type": "function",
-    "name": "issueOtp",
+    "name": "isOperator",
     "inputs": [
       {
-        "name": "agentId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "branchId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "account",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "otpAddress",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "ttl",
-        "type": "uint64",
-        "internalType": "uint64"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "otpOf",
-    "inputs": [
-      {
-        "name": "agentId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "otpAddress",
+        "name": "operator",
         "type": "address",
         "internalType": "address"
       }
@@ -525,20 +437,8 @@
     "outputs": [
       {
         "name": "",
-        "type": "tuple",
-        "internalType": "struct IAgentUserRegistry.Otp",
-        "components": [
-          {
-            "name": "account",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "expiresAt",
-            "type": "uint64",
-            "internalType": "uint64"
-          }
-        ]
+        "type": "bool",
+        "internalType": "bool"
       }
     ],
     "stateMutability": "view"
@@ -641,7 +541,7 @@
   },
   {
     "type": "function",
-    "name": "registerByStaff",
+    "name": "registerFor",
     "inputs": [
       {
         "name": "agentId",
@@ -652,6 +552,11 @@
         "name": "branchId",
         "type": "uint64",
         "internalType": "uint64"
+      },
+      {
+        "name": "actor",
+        "type": "address",
+        "internalType": "address"
       },
       {
         "name": "account",
@@ -701,7 +606,7 @@
   },
   {
     "type": "function",
-    "name": "resetPassword",
+    "name": "resetLoginFor",
     "inputs": [
       {
         "name": "agentId",
@@ -712,6 +617,11 @@
         "name": "branchId",
         "type": "uint64",
         "internalType": "uint64"
+      },
+      {
+        "name": "actor",
+        "type": "address",
+        "internalType": "address"
       },
       {
         "name": "account",
@@ -729,7 +639,7 @@
   },
   {
     "type": "function",
-    "name": "setBlocked",
+    "name": "setBlockedFor",
     "inputs": [
       {
         "name": "agentId",
@@ -740,6 +650,11 @@
         "name": "branchId",
         "type": "uint64",
         "internalType": "uint64"
+      },
+      {
+        "name": "actor",
+        "type": "address",
+        "internalType": "address"
       },
       {
         "name": "account",
@@ -762,12 +677,17 @@
   },
   {
     "type": "function",
-    "name": "setDelegateRegistry",
+    "name": "setOperator",
     "inputs": [
       {
-        "name": "delegateRegistry_",
+        "name": "operator",
         "type": "address",
         "internalType": "address"
+      },
+      {
+        "name": "allowed",
+        "type": "bool",
+        "internalType": "bool"
       }
     ],
     "outputs": [],
@@ -835,7 +755,7 @@
   },
   {
     "type": "function",
-    "name": "updateProfileByStaff",
+    "name": "updateProfileFor",
     "inputs": [
       {
         "name": "agentId",
@@ -846,6 +766,11 @@
         "name": "branchId",
         "type": "uint64",
         "internalType": "uint64"
+      },
+      {
+        "name": "actor",
+        "type": "address",
+        "internalType": "address"
       },
       {
         "name": "account",
@@ -1027,25 +952,6 @@
   },
   {
     "type": "event",
-    "name": "DelegateRegistrySet",
-    "inputs": [
-      {
-        "name": "version",
-        "type": "uint8",
-        "indexed": false,
-        "internalType": "uint8"
-      },
-      {
-        "name": "delegateRegistry",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
     "name": "EIP712DomainChanged",
     "inputs": [],
     "anonymous": false
@@ -1065,7 +971,7 @@
   },
   {
     "type": "event",
-    "name": "OtpConsumed",
+    "name": "OperatorSet",
     "inputs": [
       {
         "name": "version",
@@ -1074,71 +980,16 @@
         "internalType": "uint8"
       },
       {
-        "name": "agentId",
-        "type": "uint64",
-        "indexed": true,
-        "internalType": "uint64"
-      },
-      {
-        "name": "account",
+        "name": "operator",
         "type": "address",
         "indexed": true,
         "internalType": "address"
       },
       {
-        "name": "otpAddress",
-        "type": "address",
+        "name": "allowed",
+        "type": "bool",
         "indexed": false,
-        "internalType": "address"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "OtpIssued",
-    "inputs": [
-      {
-        "name": "version",
-        "type": "uint8",
-        "indexed": false,
-        "internalType": "uint8"
-      },
-      {
-        "name": "agentId",
-        "type": "uint64",
-        "indexed": true,
-        "internalType": "uint64"
-      },
-      {
-        "name": "account",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "otpAddress",
-        "type": "address",
-        "indexed": false,
-        "internalType": "address"
-      },
-      {
-        "name": "expiresAt",
-        "type": "uint64",
-        "indexed": false,
-        "internalType": "uint64"
-      },
-      {
-        "name": "by",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "branchId",
-        "type": "uint64",
-        "indexed": false,
-        "internalType": "uint64"
+        "internalType": "bool"
       }
     ],
     "anonymous": false
@@ -1481,23 +1332,7 @@
   },
   {
     "type": "error",
-    "name": "InvalidOtpTtl",
-    "inputs": [
-      {
-        "name": "max",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ]
-  },
-  {
-    "type": "error",
     "name": "InvalidProfile",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "InvalidRange",
     "inputs": []
   },
   {
@@ -1528,28 +1363,12 @@
   },
   {
     "type": "error",
-    "name": "MissingRole",
-    "inputs": [
-      {
-        "name": "branchId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "account",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "minRole",
-        "type": "uint8",
-        "internalType": "uint8"
-      }
-    ]
+    "name": "NotInitializing",
+    "inputs": []
   },
   {
     "type": "error",
-    "name": "NotDelegateRegistry",
+    "name": "NotOperator",
     "inputs": [
       {
         "name": "caller",
@@ -1557,11 +1376,6 @@
         "internalType": "address"
       }
     ]
-  },
-  {
-    "type": "error",
-    "name": "NotInitializing",
-    "inputs": []
   },
   {
     "type": "error",
@@ -1569,38 +1383,6 @@
     "inputs": [
       {
         "name": "caller",
-        "type": "address",
-        "internalType": "address"
-      }
-    ]
-  },
-  {
-    "type": "error",
-    "name": "OtpExpired",
-    "inputs": [
-      {
-        "name": "agentId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "otp",
-        "type": "address",
-        "internalType": "address"
-      }
-    ]
-  },
-  {
-    "type": "error",
-    "name": "OtpNotFound",
-    "inputs": [
-      {
-        "name": "agentId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "otp",
         "type": "address",
         "internalType": "address"
       }
