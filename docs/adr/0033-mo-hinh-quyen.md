@@ -52,7 +52,7 @@ Quyền = `(moduleId, bit)`; danh mục do module khai báo trong `Registry` (AD
 - Quá giờ mà chưa ra ca → phiên chuyển **tăng ca**, quyền giữ nguyên, phát sự kiện cho Manager.
 - Phiên đóng khi: tự ra ca; giao ca xong; Manager đóng; hoặc chạm **trần tăng ca** của chi nhánh (đánh giá lười trong `can()`, không cần giao dịch).
 - Hai người cùng giữ một vị trí trong lúc bàn giao là hợp lệ.
-- **Còn chờ người dùng chốt:** trần tăng ca mặc định (đề xuất 4 giờ); giao ca có bắt buộc người ca sau xác nhận nhận két không (đề xuất có).
+- **Chốt (người dùng 2026-11-26):** trần tăng ca mặc định **4 giờ** (chủ agent đổi được theo chi nhánh); giao ca **bắt buộc** người ca sau xác nhận nhận két (két chưa được xác nhận thì phiên của người trước chưa đóng bằng giao ca; Manager vẫn đóng thay được, có ghi lý do).
 
 ### Dùng được cho mọi module
 
