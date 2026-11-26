@@ -10,6 +10,10 @@ import {AgentAccess} from "../../src/tenant/access/AgentAccess.sol";
 import {SalesSettings} from "../../src/shared/payment/SalesSettings.sol";
 import {Registry} from "../../src/kernel/registry/Registry.sol";
 import {IRegistry} from "../../src/interfaces/IRegistry.sol";
+import {Permission} from "../../src/shared/permission/Permission.sol";
+import {IPermission} from "../../src/interfaces/IPermission.sol";
+import {Duty} from "../../src/shared/duty/Duty.sol";
+import {IDuty} from "../../src/interfaces/IDuty.sol";
 import {Ledger} from "../../src/shared/ledger/Ledger.sol";
 import {AgentUserRegistry} from "../../src/tenant/user/AgentUserRegistry.sol";
 import {IAgentUserRegistry} from "../../src/interfaces/IAgentUserRegistry.sol";
@@ -89,4 +93,22 @@ contract RegistryLayout {
 
 contract RegistryRowsLayout {
     IRegistry.Module internal moduleRow;
+}
+
+contract PermissionLayout {
+    Permission.PermissionStorage internal s;
+}
+
+contract PermissionRowsLayout {
+    IPermission.Position internal positionRow;
+}
+
+contract DutyLayout {
+    Duty.DutyStorage internal s;
+}
+
+contract DutyRowsLayout {
+    IDuty.Shift internal shiftRow;
+    IDuty.Assignment internal assignmentRow;
+    IDuty.Session internal sessionRow;
 }

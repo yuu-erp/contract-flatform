@@ -13,6 +13,8 @@ import {AgentAccess} from "../src/tenant/access/AgentAccess.sol";
 import {SalesSettings} from "../src/shared/payment/SalesSettings.sol";
 import {Ledger} from "../src/shared/ledger/Ledger.sol";
 import {AgentUserRegistry} from "../src/tenant/user/AgentUserRegistry.sol";
+import {Permission} from "../src/shared/permission/Permission.sol";
+import {Duty} from "../src/shared/duty/Duty.sol";
 
 /// @notice Deploy tầng quản trị: PlatformAccess → Registry (khai báo module mặc định) → HistoryIndex → AgentRegistry → BranchRegistry → AgentAccess → SalesSettings → Ledger → AgentUserRegistry,
 ///         rồi đăng ký các contract ghi (registry, branches, agentAccess, salesSettings, ledger) làm writer của HistoryIndex (mỗi contract chỉ các kind của nó), nối AgentAccess vào
@@ -41,6 +43,10 @@ contract DeployPlatform is Script {
         address usersImpl;
         address registryProxy;
         address registryImpl;
+        address permissionProxy;
+        address permissionImpl;
+        address dutyProxy;
+        address dutyImpl;
         address owner;
         address admin;
     }
@@ -147,6 +153,26 @@ contract DeployPlatform is Script {
             )
         );
 
+        deployed.permissionImpl = address(new Permission());
+        deployed.permissionProxy = address(
+            new ERC1967Proxy(
+                deployed.permissionImpl,
+                abi.encodeCall(
+                    Permission.initialize, (deployed.accessProxy, deployed.branchesProxy, deployed.agentAccessProxy)
+                )
+            )
+        );
+        deployed.dutyImpl = address(new Duty());
+        deployed.dutyProxy = address(
+            new ERC1967Proxy(
+                deployed.dutyImpl,
+                abi.encodeCall(
+                    Duty.initialize,
+                    (deployed.accessProxy, deployed.branchesProxy, deployed.agentAccessProxy, deployed.permissionProxy)
+                )
+            )
+        );
+
         HistoryIndex history = HistoryIndex(deployed.historyProxy);
         PlatformAccess access = PlatformAccess(deployed.accessProxy);
 
@@ -174,6 +200,7 @@ contract DeployPlatform is Script {
         ModuleCatalog.registerDefaults(Registry(deployed.registryProxy));
         AgentRegistry(deployed.agentsProxy).setRegistry(deployed.registryProxy);
         BranchRegistry(deployed.branchesProxy).setRegistry(deployed.registryProxy);
+        Permission(deployed.permissionProxy).setDuty(deployed.dutyProxy);
         access.setAgentRoleSources(sources);
         if (admin != address(0)) access.addPlatformAdmin(admin);
         if (!_broadcasting) vm.stopPrank();
@@ -203,6 +230,8 @@ contract DeployPlatform is Script {
         console2.log("ledgerProxy", deployed.ledgerProxy);
         console2.log("usersProxy", deployed.usersProxy);
         console2.log("registryProxy", deployed.registryProxy);
+        console2.log("permissionProxy", deployed.permissionProxy);
+        console2.log("dutyProxy", deployed.dutyProxy);
         console2.log("wrote", path);
     }
 
@@ -239,6 +268,10 @@ contract DeployPlatform is Script {
         vm.serializeAddress(obj, "usersImpl", deployed.usersImpl);
         vm.serializeAddress(obj, "registryProxy", deployed.registryProxy);
         vm.serializeAddress(obj, "registryImpl", deployed.registryImpl);
+        vm.serializeAddress(obj, "permissionProxy", deployed.permissionProxy);
+        vm.serializeAddress(obj, "permissionImpl", deployed.permissionImpl);
+        vm.serializeAddress(obj, "dutyProxy", deployed.dutyProxy);
+        vm.serializeAddress(obj, "dutyImpl", deployed.dutyImpl);
         vm.serializeAddress(obj, "owner", deployed.owner);
         string memory json = vm.serializeAddress(obj, "admin", deployed.admin);
         vm.writeJson(json, path);

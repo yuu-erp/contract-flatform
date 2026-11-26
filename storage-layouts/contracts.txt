@@ -9,6 +9,8 @@ impl    src/tenant/access/AgentAccess.sol:AgentAccess
 impl    src/shared/payment/SalesSettings.sol:SalesSettings
 impl    src/shared/ledger/Ledger.sol:Ledger
 impl    src/tenant/user/AgentUserRegistry.sol:AgentUserRegistry
+impl    src/shared/permission/Permission.sol:Permission
+impl    src/shared/duty/Duty.sol:Duty
 harness test/layout/PlatformLayouts.sol:PlatformAccessLayout
 harness test/layout/PlatformLayouts.sol:PlatformAccessedLayout
 harness test/layout/PlatformLayouts.sol:HistoryIndexLayout
@@ -25,3 +27,7 @@ harness test/layout/PlatformLayouts.sol:AgentAccessRowsLayout
 harness test/layout/PlatformLayouts.sol:LedgerRowsLayout
 harness test/layout/PlatformLayouts.sol:AgentUserRegistryRowsLayout
 harness test/layout/PlatformLayouts.sol:RegistryRowsLayout
+harness test/layout/PlatformLayouts.sol:PermissionLayout
+harness test/layout/PlatformLayouts.sol:PermissionRowsLayout
+harness test/layout/PlatformLayouts.sol:DutyLayout
+harness test/layout/PlatformLayouts.sol:DutyRowsLayout

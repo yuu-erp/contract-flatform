@@ -227,6 +227,7 @@ make upgrade CONTRACT=BranchRegistry   # thêm setRegistry; cầu dao module tro
 make upgrade CONTRACT=SalesSettings    # bỏ hằng NET/IQR; đọc cờ module ở Registry
 make upgrade CONTRACT=Ledger           # giấy phép poster (module + trần), bộ đếm theo module; tự deploy 2 library LedgerRecorder, LedgerWallet
 make deploy-registry                   # deploy Registry, khai báo 0 platform / 1 net / 2 iqr / 3 loyalty, gắn vào AgentRegistry + BranchRegistry
+make deploy-staff                      # (tuần 4) deploy Permission + Duty, nối Permission → Duty
 ```
 
 - Ledger trên 991 **chưa có poster nào** nên đổi ABI ghi không ảnh hưởng dữ liệu. Bộ đếm cũ ô 10..27 bỏ trống (chưa có bút toán).

@@ -1,6 +1,6 @@
 # 0033. Mô hình quyền: Permission + Duty
 
-- Trạng thái: **Chốt hướng** — chi tiết hàm trong `docs/modules/shared-permission-duty.md` (lập ở Baseline tuần 4)
+- Trạng thái: **Chốt, đã cài** (Baseline tuần 4) — đặc tả `docs/modules/shared-permission-duty.md`
 - Ngày: 2026-11-26
 - Người duyệt: người dùng (họp 2026-11-26: đồng ý 6 đề xuất về nhân sự)
 

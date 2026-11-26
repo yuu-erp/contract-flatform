@@ -1,0 +1,50 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct Permission.PermissionStorage"
+ ],
+ [
+  "s.branches",
+  0,
+  0,
+  "contract IBranchRegistry"
+ ],
+ [
+  "s.agentAccess",
+  1,
+  0,
+  "contract IAgentAccess"
+ ],
+ [
+  "s.duty",
+  2,
+  0,
+  "contract IDuty"
+ ],
+ [
+  "s.positionCount",
+  2,
+  20,
+  "uint64"
+ ],
+ [
+  "s.positions",
+  3,
+  0,
+  "mapping(uint64 => struct IPermission.Position)"
+ ],
+ [
+  "s.masks",
+  4,
+  0,
+  "mapping(uint64 => mapping(uint8 => uint64))"
+ ],
+ [
+  "s.positionsOf",
+  5,
+  0,
+  "mapping(uint64 => uint64[])"
+ ]
+]

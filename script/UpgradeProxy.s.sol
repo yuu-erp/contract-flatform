@@ -12,10 +12,12 @@ import {SalesSettings} from "../src/shared/payment/SalesSettings.sol";
 import {Ledger} from "../src/shared/ledger/Ledger.sol";
 import {AgentUserRegistry} from "../src/tenant/user/AgentUserRegistry.sol";
 import {Registry} from "../src/kernel/registry/Registry.sol";
+import {Permission} from "../src/shared/permission/Permission.sol";
+import {Duty} from "../src/shared/duty/Duty.sol";
 
 /// @notice Nâng cấp một proxy UUPS của tầng quản trị lên implementation mới (build từ mã hiện tại).
 ///         Env: `PRIVATE_KEY` (PLATFORM_OWNER), `CONTRACT` (PlatformAccess | HistoryIndex | AgentRegistry |
-///         BranchRegistry | AgentAccess | SalesSettings | Ledger | AgentUserRegistry | Registry), tuỳ chọn `UPGRADE_CALL` (calldata hex gọi kèm, ví dụ một `reinitializer`),
+///         BranchRegistry | AgentAccess | SalesSettings | Ledger | AgentUserRegistry | Registry | Permission | Duty), tuỳ chọn `UPGRADE_CALL` (calldata hex gọi kèm, ví dụ một `reinitializer`),
 ///         tuỳ chọn `DRY_RUN=true` (mô phỏng, không ghi file deployments; dùng với lệnh không `--broadcast`).
 ///         Địa chỉ proxy đọc từ `deployments/platform-<chainid>.json`; sau khi nâng, ghi đè khoá `<key>Impl`.
 ///         Người dùng tự chạy `make upgrade CONTRACT=...` sau `make layout`. Không hard-code khoá.
@@ -36,6 +38,8 @@ contract UpgradeProxy is Script {
         if (h == keccak256("Ledger")) return "ledger";
         if (h == keccak256("AgentUserRegistry")) return "users";
         if (h == keccak256("Registry")) return "registry";
+        if (h == keccak256("Permission")) return "permission";
+        if (h == keccak256("Duty")) return "duty";
         revert(string.concat("CONTRACT khong hop le: ", name));
     }
 
@@ -50,6 +54,8 @@ contract UpgradeProxy is Script {
         if (h == keccak256("Ledger")) return address(new Ledger());
         if (h == keccak256("AgentUserRegistry")) return address(new AgentUserRegistry());
         if (h == keccak256("Registry")) return address(new Registry());
+        if (h == keccak256("Permission")) return address(new Permission());
+        if (h == keccak256("Duty")) return address(new Duty());
         revert(string.concat("CONTRACT khong hop le: ", name));
     }
 

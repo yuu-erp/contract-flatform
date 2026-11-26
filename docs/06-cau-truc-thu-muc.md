@@ -61,8 +61,8 @@ Bảng đầy đủ "contract – câu hỏi nó trả lời – trạng thái":
 | `tenant/delegate/` | T1 | `DelegateRegistry` | người dùng, module |
 | `shared/ledger/` | T2 | ✅ `Ledger` + library ngoài `LedgerRecorder`, `LedgerWallet` | poster có giấy phép (ADR 0031) |
 | `shared/payment/` | T2 | ✅ `SalesSettings`, `PaymentAccounts` (tài khoản nhận tiền, ca két) | chủ agent, nhân viên có quyền |
-| `shared/permission/` | T2 | `Permission` (ADR 0033) | Manager+ |
-| `shared/duty/` | T2 | `Duty` (ADR 0033) | Manager+, nhân viên (vào/ra ca) |
+| `shared/permission/` | T2 | ✅ `Permission` (ADR 0033) | Manager+ |
+| `shared/duty/` | T2 | ✅ `Duty` (ADR 0033) | Manager+, nhân viên (vào/ra ca); trần tăng ca: chủ agent |
 | `shared/resource/` | T2 | `Resource` (thiết bị/tài nguyên: danh tính + trạng thái) | Manager+ |
 | `migration/` | ngoài cây | `Migration` | `MIGRATOR`, thu hồi sau `finalize` |
 

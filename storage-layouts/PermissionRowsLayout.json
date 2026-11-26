@@ -1,0 +1,26 @@
+[
+ [
+  "positionRow",
+  0,
+  0,
+  "struct IPermission.Position"
+ ],
+ [
+  "positionRow.branchId",
+  0,
+  0,
+  "uint64"
+ ],
+ [
+  "positionRow.active",
+  0,
+  8,
+  "bool"
+ ],
+ [
+  "positionRow.name",
+  1,
+  0,
+  "string"
+ ]
+]

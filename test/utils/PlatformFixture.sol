@@ -14,6 +14,8 @@ import {MockLedgerPoster} from "./MockLedgerPoster.sol";
 import {LedgerMetrics as LM} from "../../src/libraries/LedgerMetrics.sol";
 import {SalesSettings} from "../../src/shared/payment/SalesSettings.sol";
 import {AgentUserRegistry} from "../../src/tenant/user/AgentUserRegistry.sol";
+import {Permission} from "../../src/shared/permission/Permission.sol";
+import {Duty} from "../../src/shared/duty/Duty.sol";
 import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
 import {IAgentRegistry} from "../../src/interfaces/IAgentRegistry.sol";
 
@@ -33,6 +35,8 @@ abstract contract PlatformFixture is BaseTest {
     AgentUserRegistry internal users;
     /// @dev Registry T0 (danh sách module). Lưu ý: `registry` ở fixture là AgentRegistry (tên cũ).
     Registry internal modules;
+    Permission internal permission;
+    Duty internal duty;
 
     uint16 internal constant NET = 1;
     uint16 internal constant IQR = 2;
@@ -95,6 +99,20 @@ abstract contract PlatformFixture is BaseTest {
             )
         );
         poster = new MockLedgerPoster(address(ledger));
+        permission = Permission(
+            deployProxy(
+                address(new Permission()),
+                abi.encodeCall(Permission.initialize, (address(access), address(branches), address(agentAccess)))
+            )
+        );
+        duty = Duty(
+            deployProxy(
+                address(new Duty()),
+                abi.encodeCall(
+                    Duty.initialize, (address(access), address(branches), address(agentAccess), address(permission))
+                )
+            )
+        );
         users = AgentUserRegistry(
             deployProxy(
                 address(new AgentUserRegistry()),
@@ -132,8 +150,13 @@ abstract contract PlatformFixture is BaseTest {
         registry.setRegistry(address(modules));
         branches.setRegistry(address(modules));
         _licensePosters();
+        permission.setDuty(address(duty));
         vm.stopPrank();
     }
+
+    /// @dev Danh mục quyền nền tảng (docs/modules/shared-permission-duty.md mục 1): bit 0..7 Staff, 8..10 chỉ Manager.
+    uint64 internal constant CORE_PERMS = 0x7FF;
+    uint64 internal constant CORE_MANAGER_ONLY = 0x700;
 
     uint8 internal constant TOPUP_KINDS = 0x12; // Topup | TopupRefund
     uint8 internal constant SALE_KINDS = 0x6C; // WalletSpend | DirectSale | SaleRefund | Adjust
@@ -168,7 +191,7 @@ abstract contract PlatformFixture is BaseTest {
     /// @dev Khai báo module như lúc deploy thật (ADR 0030): 0 nền tảng, 1 NET (bán hàng, giá gồm thuế), 2 IQR (bán hàng), 3 Loyalty (cần NET|IQR, không bán hàng).
     ///      Gọi trong prank của platformOwner.
     function _registerModules() internal {
-        modules.registerModule(0, "platform", 0, 0, 0, 0);
+        modules.registerModule(0, "platform", 0, 0, CORE_PERMS, CORE_MANAGER_ONLY);
         uint16 sales_ = modules.FLAG_SALES();
         modules.registerModule(1, "net", 0, sales_ | modules.FLAG_TAX_INCLUSIVE_ONLY(), 0, 0);
         modules.registerModule(2, "iqr", 0, sales_, 0, 0);

@@ -1,0 +1,68 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct Duty.DutyStorage"
+ ],
+ [
+  "s.branches",
+  0,
+  0,
+  "contract IBranchRegistry"
+ ],
+ [
+  "s.agentAccess",
+  1,
+  0,
+  "contract IAgentAccess"
+ ],
+ [
+  "s.permission",
+  2,
+  0,
+  "contract IPermission"
+ ],
+ [
+  "s.shiftCount",
+  2,
+  20,
+  "uint64"
+ ],
+ [
+  "s.shifts",
+  3,
+  0,
+  "mapping(uint64 => struct IDuty.Shift)"
+ ],
+ [
+  "s.shiftsOf",
+  4,
+  0,
+  "mapping(uint64 => uint64[])"
+ ],
+ [
+  "s.assignments",
+  5,
+  0,
+  "mapping(uint64 => mapping(address => struct IDuty.Assignment[]))"
+ ],
+ [
+  "s.sessions",
+  6,
+  0,
+  "mapping(uint64 => mapping(address => struct IDuty.Session))"
+ ],
+ [
+  "s.overtimeCapPlusOne",
+  7,
+  0,
+  "mapping(uint64 => uint16)"
+ ],
+ [
+  "s.handoverTo",
+  8,
+  0,
+  "mapping(uint64 => mapping(address => address))"
+ ]
+]
