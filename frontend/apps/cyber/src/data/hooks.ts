@@ -16,6 +16,22 @@ import {
   WALLET_TX,
   ZONES,
 } from './mock'
+import {
+  AUDIT,
+  BRANCH_DETAILS,
+  BRANCH_REVENUE,
+  CAMPAIGNS,
+  CLOSEOUTS,
+  MEMBERS,
+  MODULE_REVENUE,
+  PERMISSION_CATALOG,
+  POSITIONS,
+  PRICE_PLANS,
+  SHIFTS,
+  STAFF,
+  TIME_PACKAGES,
+  WALLET_LIABILITY,
+} from './mock-owner'
 
 /*
  * Nguồn dữ liệu của mọi màn hình. Hiện trả dữ liệu giả; khi module NET có contract/indexer,
@@ -62,4 +78,44 @@ export function useCountdown(initialSec: number): number {
     return () => clearInterval(id)
   }, [initialSec])
   return left
+}
+
+// ─── Owner ────────────────────────────────────────────────────────────
+// Nguồn thật sau này: BranchRegistry + SalesSettings (chi nhánh), Permission + Duty (nhân sự, ca),
+// Ledger.rollup / moduleRollup (doanh thu), AgentUserRegistry + Ledger.bucketsOf (hội viên), event + indexer (nhật ký).
+
+export function useOwnerBranches() {
+  return BRANCH_DETAILS
+}
+
+export function branchName(id: string) {
+  return BRANCH_DETAILS.find((b) => b.id === id)?.name ?? id
+}
+
+export function useOwnerStaff() {
+  return { staff: STAFF, positions: POSITIONS, shifts: SHIFTS, catalog: PERMISSION_CATALOG }
+}
+
+export function useOwnerShifts() {
+  return { shifts: SHIFTS, staff: STAFF, positions: POSITIONS, closeouts: CLOSEOUTS, branches: BRANCH_DETAILS }
+}
+
+export function useOwnerRevenue() {
+  return { modules: MODULE_REVENUE, branches: BRANCH_REVENUE, liability: WALLET_LIABILITY, hourly: HOURLY }
+}
+
+export function useOwnerMembers() {
+  return MEMBERS
+}
+
+export function useOwnerPricing() {
+  return { plans: PRICE_PLANS, packages: TIME_PACKAGES, zones: ZONES }
+}
+
+export function useOwnerCampaigns() {
+  return CAMPAIGNS
+}
+
+export function useOwnerAudit() {
+  return AUDIT
 }

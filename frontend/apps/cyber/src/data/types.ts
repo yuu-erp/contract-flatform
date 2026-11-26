@@ -96,3 +96,113 @@ export type Voucher = { id: string; title: string; expires: string; cost?: numbe
 export type Alert = { id: string; tone: 'danger' | 'topup' | 'help'; title: string; detail: string }
 
 export type GameShare = { name: string; genre: string; share: number; icon: GameIcon; color: string }
+
+// ─── Owner: chi nhánh, nhân sự, ca, tiền, hội viên, cấu hình ───────────
+
+/** Module dịch vụ (khớp Registry: 1 NET, 2 IQR, 3 Loyalty). 0 = quyền nền tảng. */
+export type ModuleKey = 'core' | 'net' | 'iqr' | 'loyalty'
+
+export type BranchDetail = Branch & {
+  address: string
+  status: 'active' | 'suspended'
+  modules: ModuleKey[]
+  managers: string[]
+  staffCount: number
+  overtimeCapMin: number
+  taxBps: { net: number; iqr: number }
+  methods: { cash: boolean; transfer: boolean; card: boolean; wallet: boolean }
+}
+
+export type PermissionDef = { bit: number; label: string; managerOnly?: boolean }
+
+export type Position = {
+  id: string
+  branchId: string
+  name: string
+  active: boolean
+  /** Quyền theo module: danh sách bit. */
+  perms: Partial<Record<ModuleKey, number[]>>
+}
+
+export type StaffRole = 'manager' | 'staff'
+
+export type StaffMember = {
+  id: string
+  name: string
+  username: string
+  role: StaffRole
+  branchId: string
+  /** Phân công (ca, vị trí). Manager không cần. */
+  assignments: { shiftId: string; positionId: string }[]
+  onDuty?: { shiftId: string; positionId: string; since: string; overtimeMin: number; handoverTo?: string }
+}
+
+export type WorkShift = {
+  id: string
+  branchId: string
+  name: string
+  start: string
+  end: string
+  /** 0 = Thứ 2 … 6 = Chủ nhật */
+  weekdays: number[]
+  active: boolean
+}
+
+export type CashCloseout = {
+  id: string
+  branchId: string
+  staff: string
+  shift: string
+  date: string
+  expected: number
+  counted: number
+  receivedBy?: string
+  status: 'pending' | 'approved'
+}
+
+export type MemberRow = Member & {
+  points: number
+  lastVisit: string
+  homeBranch: string
+  blocked?: boolean
+  buckets: { branchId: string; amount: number }[]
+}
+
+export type ModuleRevenue = { module: 'net' | 'iqr'; gross: number; discount: number; refund: number; tax: number }
+
+export type BranchRevenue = {
+  branchId: string
+  net: number
+  iqr: number
+  topup: number
+  servedHere: number
+  cash: number
+  transfer: number
+  card: number
+}
+
+export type PricePlan = { zoneId: string; branchId: string; pricePerHour: number; nightPrice: number }
+
+export type TimePackage = { id: string; name: string; hours: number; price: number; zone: string; window: string; active: boolean }
+
+export type Campaign = {
+  id: string
+  name: string
+  kind: 'cashback' | 'voucher' | 'happy_hour' | 'bonus_topup'
+  detail: string
+  period: string
+  branches: string
+  status: 'running' | 'scheduled' | 'ended'
+  used: number
+}
+
+export type AuditEntry = {
+  id: string
+  at: string
+  actor: string
+  role: 'owner' | 'manager' | 'staff' | 'system'
+  branch: string
+  kind: 'money' | 'staff' | 'config' | 'member'
+  action: string
+  detail: string
+}

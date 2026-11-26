@@ -9,6 +9,16 @@ export function formatVnd(n: number): string {
   return `${formatNumber(n)} ₫`
 }
 
+const compact = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 })
+
+/** Số tiền gọn cho ô số liệu: 42760000 → "42,76 tr ₫", 1250000000 → "1,25 tỷ ₫". */
+export function formatVndShort(n: number): string {
+  const a = Math.abs(n)
+  if (a >= 1e9) return `${compact.format(n / 1e9)} tỷ ₫`
+  if (a >= 1e6) return `${compact.format(n / 1e6)} tr ₫`
+  return formatVnd(n)
+}
+
 export function formatXu(n: number): string {
   return `${formatNumber(n)} xu`
 }
