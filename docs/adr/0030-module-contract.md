@@ -1,6 +1,6 @@
 # 0030. Module Contract và Registry
 
-- Trạng thái: **Chốt hướng** — chi tiết hàm chốt trong đặc tả `docs/modules/kernel-registry.md` (lập ở Baseline tuần 3)
+- Trạng thái: **Chốt, đã cài** (Baseline tuần 3) — chi tiết hàm: `docs/modules/kernel-registry.md`. Bổ sung khi cài: cờ `FLAG_SALES` (module bán hàng) và `FLAG_TAX_INCLUSIVE_ONLY`
 - Ngày: 2026-11-26
 - Người duyệt: Claude (kỹ thuật) — phần cầu dao chạm tiền nằm ở ADR 0031
 

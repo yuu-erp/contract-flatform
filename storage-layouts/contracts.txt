@@ -1,6 +1,7 @@
 # Mỗi dòng: <impl|harness> <path:Contract>. Xem scripts/storage_layout.py.
 # Mỗi contract UUPS mới thêm một dòng impl; mỗi struct namespaced thêm một harness.
 impl    src/kernel/access/PlatformAccess.sol:PlatformAccess
+impl    src/kernel/registry/Registry.sol:Registry
 impl    src/kernel/history/HistoryIndex.sol:HistoryIndex
 impl    src/tenant/agent/AgentRegistry.sol:AgentRegistry
 impl    src/tenant/branch/BranchRegistry.sol:BranchRegistry
@@ -17,3 +18,10 @@ harness test/layout/PlatformLayouts.sol:AgentAccessLayout
 harness test/layout/PlatformLayouts.sol:SalesSettingsLayout
 harness test/layout/PlatformLayouts.sol:LedgerLayout
 harness test/layout/PlatformLayouts.sol:AgentUserRegistryLayout
+harness test/layout/PlatformLayouts.sol:RegistryLayout
+harness test/layout/PlatformLayouts.sol:AgentRegistryRowsLayout
+harness test/layout/PlatformLayouts.sol:BranchRegistryRowsLayout
+harness test/layout/PlatformLayouts.sol:AgentAccessRowsLayout
+harness test/layout/PlatformLayouts.sol:LedgerRowsLayout
+harness test/layout/PlatformLayouts.sol:AgentUserRegistryRowsLayout
+harness test/layout/PlatformLayouts.sol:RegistryRowsLayout

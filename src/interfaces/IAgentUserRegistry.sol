@@ -210,7 +210,5 @@ interface IAgentUserRegistry {
     function usersOf(uint64 agentId, uint256 offset, uint256 limit) external view returns (UserView[] memory);
     function userCountOfBranch(uint64 branchId) external view returns (uint256);
     /// @notice Số đăng ký mới theo ngày kinh doanh, [fromDay, toDay] tối đa 93 ngày.
-    function newUsersByDay(uint64 agentId, uint32 fromDay, uint32 toDay) external view returns (uint32[] memory);
-    function newUsersByBranchDay(uint64 branchId, uint32 fromDay, uint32 toDay) external view returns (uint32[] memory);
     function domainSeparator() external view returns (bytes32);
 }

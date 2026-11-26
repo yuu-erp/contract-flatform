@@ -52,35 +52,5 @@
   7,
   0,
   "mapping(address => mapping(uint64 => uint16))"
- ],
- [
-  "memberRow",
-  8,
-  0,
-  "struct IAgentAccess.Member"
- ],
- [
-  "memberRow.grantedBy",
-  8,
-  0,
-  "address"
- ],
- [
-  "memberRow.grantedAt",
-  8,
-  20,
-  "uint64"
- ],
- [
-  "memberRow.indexPlusOne",
-  8,
-  28,
-  "uint16"
- ],
- [
-  "memberRow.role",
-  8,
-  30,
-  "enum IAgentAccess.Role"
  ]
 ]

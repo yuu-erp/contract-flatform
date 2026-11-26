@@ -11,7 +11,6 @@ import {IAgentRegistry} from "../../interfaces/IAgentRegistry.sol";
 import {IBranchRegistry} from "../../interfaces/IBranchRegistry.sol";
 import {IHistoryIndex} from "../../interfaces/IHistoryIndex.sol";
 import {FullDBCodec} from "../../libraries/FullDBCodec.sol";
-import {LedgerMetrics} from "../../libraries/LedgerMetrics.sol";
 import {TextRules} from "../../libraries/TextRules.sol";
 
 /// @title AgentUserRegistry
@@ -22,7 +21,6 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
     uint8 public constant EVENT_VERSION = 1;
     uint8 internal constant RECORD_VERSION = 1;
     uint256 internal constant MAX_PAGE = 100;
-    uint256 internal constant MAX_RANGE_DAYS = 93;
     uint64 public constant MAX_OTP_TTL = 10 minutes;
     uint256 internal constant MAX_DISPLAY_NAME = 50;
     uint256 internal constant MAX_FULL_NAME = 100;
@@ -54,8 +52,8 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
         mapping(uint64 => address[]) userList; // agentId → account (chỉ thêm, không xoá)
         mapping(uint64 => mapping(address => Otp)) otps; // agentId → otpAddress
         mapping(uint64 => uint256) branchUserCount; // branchId → số người đăng ký tại đó
-        mapping(uint64 => mapping(uint32 => uint32)) newByAgentDay; // agentId → ngày → số đăng ký
-        mapping(uint64 => mapping(uint32 => uint32)) newByBranchDay; // branchId → ngày → số đăng ký
+        mapping(uint64 => mapping(uint32 => uint32)) newByAgentDay; // không dùng từ Baseline (L6: thống kê qua FullDB/event)
+        mapping(uint64 => mapping(uint32 => uint32)) newByBranchDay; // không dùng từ Baseline (L6)
     }
 
     // keccak256(abi.encode(uint256(keccak256("metaplatform.core.user.agentusers")) - 1)) & ~bytes32(uint256(0xff))
@@ -325,18 +323,6 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
         return _s().branchUserCount[branchId];
     }
 
-    function newUsersByDay(uint64 agentId, uint32 fromDay, uint32 toDay) external view returns (uint32[] memory) {
-        return _days(_s().newByAgentDay[agentId], fromDay, toDay);
-    }
-
-    function newUsersByBranchDay(uint64 branchId, uint32 fromDay, uint32 toDay)
-        external
-        view
-        returns (uint32[] memory)
-    {
-        return _days(_s().newByBranchDay[branchId], fromDay, toDay);
-    }
-
     function domainSeparator() external view returns (bytes32) {
         return _domainSeparatorV4();
     }
@@ -373,7 +359,7 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
         $.accountByUsername[agentId][key] = account;
         $.accountByLogin[agentId][account] = account;
         $.userList[agentId].push(account);
-        _countNew(agentId, branchId);
+        _countNew(branchId);
 
         emit UserRegistered(EVENT_VERSION, agentId, account, username, branchId, registeredBy, docId);
     }
@@ -390,12 +376,9 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
         docId = _s().history.append(agentId, KIND_USERS, _record(agentId, account, profile), terms, values);
     }
 
-    function _countNew(uint64 agentId, uint64 branchId) private {
+    function _countNew(uint64 branchId) private {
         UsersStorage storage $ = _s();
         ++$.branchUserCount[branchId];
-        uint32 d = LedgerMetrics.day(block.timestamp, $.branches.getBranch(branchId).tzOffsetMinutes);
-        ++$.newByAgentDay[agentId][d];
-        ++$.newByBranchDay[branchId][d];
     }
 
     function _setLogin(uint64 agentId, address account, User storage u, address newLogin, bool byStaff, uint64 branchId)
@@ -513,18 +496,6 @@ contract AgentUserRegistry is PlatformAccessed, PlatformAuditing, EIP712Upgradea
             profileDocId: u.profileDocId,
             username: u.username
         });
-    }
-
-    function _days(mapping(uint32 => uint32) storage m, uint32 fromDay, uint32 toDay)
-        private
-        view
-        returns (uint32[] memory out)
-    {
-        if (fromDay > toDay || toDay - fromDay >= MAX_RANGE_DAYS) revert InvalidRange();
-        out = new uint32[](toDay - fromDay + 1);
-        for (uint32 d = fromDay; d <= toDay; ++d) {
-            out[d - fromDay] = m[d];
-        }
     }
 
     function _audit(

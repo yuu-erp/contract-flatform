@@ -1,4 +1,4 @@
-import { unwrapValue } from '@meta-platform/chain'
+import { unwrapValue, type LedgerLicense } from '@meta-platform/chain'
 import { formatWalletAddress, useActiveWallet, useContracts } from '@meta-platform/chain'
 import {
   Address,
@@ -15,6 +15,7 @@ import { useState } from 'react'
 import { isValidEthAddress, useAppTx } from '@meta-platform/ui'
 import {
   LEDGER_KIND_CHECKBOXES,
+  LEDGER_MODULE_LABELS,
   ledgerKindsMaskFromBits,
   ledgerKindsMaskLabels,
 } from '../lib/ledger-poster'
@@ -44,7 +45,7 @@ type ConfirmKind =
   | { type: 'unpause' }
   | { type: 'removeAdmin'; account: string }
   | { type: 'transferOwner'; account: string }
-  | { type: 'setPoster'; account: string; mask: number; kindLabels: string[] }
+  | { type: 'setPoster'; account: string; moduleId: number; mask: number; maxAmount: bigint; kindLabels: string[] }
 
 export function SystemPage() {
   const contracts = useContracts()
@@ -82,7 +83,9 @@ export function SystemPage() {
   const [canWriteResult, setCanWriteResult] = useState<boolean | null>(null)
   const [posterAddr, setPosterAddr] = useState('')
   const [posterKindsSelected, setPosterKindsSelected] = useState<number[]>([])
-  const [posterMaskRead, setPosterMaskRead] = useState<number | null>(null)
+  const [posterRead, setPosterRead] = useState<LedgerLicense | null>(null)
+  const [posterModule, setPosterModule] = useState<number>(1)
+  const [posterMax, setPosterMax] = useState('')
   const [confirm, setConfirm] = useState<ConfirmKind | null>(null)
 
   const data = systemQuery.data
@@ -118,7 +121,7 @@ export function SystemPage() {
         })
         break
       case 'setPoster':
-        await tx.run(async () => contracts.ledger.setPoster(kind.account, kind.mask))
+        await tx.run(async () => contracts.ledger.setPoster(kind.account, kind.moduleId, kind.mask, kind.maxAmount))
         break
     }
   }
@@ -268,21 +271,48 @@ export function SystemPage() {
             disabled={!isValidEthAddress(posterAddr.trim())}
             onClick={() =>
               void (async () => {
-                const mask = await contracts!.ledger.posterKinds(posterAddr.trim())
-                setPosterMaskRead(mask)
+                const lic = await contracts!.ledger.licenseOf(posterAddr.trim())
+                setPosterRead(lic)
                 const kinds: number[] = []
                 for (const { kind } of LEDGER_KIND_CHECKBOXES) {
-                  if ((mask & (1 << kind)) !== 0) kinds.push(kind)
+                  if ((lic.kindsMask & (1 << kind)) !== 0) kinds.push(kind)
                 }
                 setPosterKindsSelected(kinds)
+                setPosterModule(lic.moduleId)
+                setPosterMax(lic.maxAmount > 0n ? lic.maxAmount.toString() : '')
               })()
             }
           >
-            Đọc posterKinds
+            Đọc giấy phép
           </Button>
-          {posterMaskRead != null ? <p>Hiện tại: {ledgerKindsMaskLabels(posterMaskRead).join(', ') || '—'}</p> : null}
+          {posterRead != null ? (
+            <p>
+              Hiện tại: {LEDGER_MODULE_LABELS[posterRead.moduleId] ?? `module ${posterRead.moduleId}`} ·{' '}
+              {ledgerKindsMaskLabels(posterRead.kindsMask).join(', ') || '—'} · trần {posterRead.maxAmount.toString()}
+            </p>
+          ) : null}
+          <label className="flex flex-wrap items-center gap-2">
+            Module
+            <select
+              className="rounded-md border border-border bg-transparent px-2 py-1"
+              value={posterModule}
+              onChange={(e) => setPosterModule(Number(e.target.value))}
+            >
+              {Object.entries(LEDGER_MODULE_LABELS).map(([id, label]) => (
+                <option key={id} value={id}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <Input
+            placeholder="Trần mỗi bút toán (đơn vị xu)"
+            inputMode="numeric"
+            value={posterMax}
+            onChange={(e) => setPosterMax(e.target.value.replace(/[^0-9]/g, ''))}
+          />
           <fieldset className="space-y-2">
-            <legend>Loại bút toán (dùng khi đặt poster ở Vùng nguy hiểm)</legend>
+            <legend>Loại bút toán (module 0 chỉ Topup / Hoàn nạp; module bán hàng chỉ 4 loại còn lại)</legend>
             {LEDGER_KIND_CHECKBOXES.map(({ kind, label }) => (
               <label key={kind} className="mr-3 inline-flex items-center gap-1">
                 <input
@@ -338,7 +368,9 @@ export function SystemPage() {
                 setConfirm({
                   type: 'setPoster',
                   account: posterAddr.trim(),
+                  moduleId: posterModule,
                   mask,
+                  maxAmount: posterMax ? BigInt(posterMax) : 0n,
                   kindLabels: ledgerKindsMaskLabels(mask),
                 })
               }}
@@ -400,9 +432,10 @@ function describeConfirm(kind: ConfirmKind): { title: string; description: strin
         }
       }
       const list = kind.kindLabels.length > 0 ? kind.kindLabels.join(', ') : '(không chọn loại — mask 0)'
+      const module = LEDGER_MODULE_LABELS[kind.moduleId] ?? `module ${kind.moduleId}`
       return {
-        title: 'Đặt poster Ledger?',
-        description: `Cấp cho ${kind.account} quyền ghi các loại bút toán: ${list}.`,
+        title: 'Cấp giấy phép poster Ledger?',
+        description: `Cấp cho ${kind.account} (thuộc ${module}) quyền ghi: ${list}; trần mỗi bút toán ${kind.maxAmount.toString()}.`,
       }
     }
   }

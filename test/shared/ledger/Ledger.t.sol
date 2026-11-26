@@ -8,6 +8,8 @@ import {ISalesSettings} from "../../../src/interfaces/ISalesSettings.sol";
 import {IPlatformAccess} from "../../../src/interfaces/IPlatformAccess.sol";
 import {IHistoryIndex} from "../../../src/interfaces/IHistoryIndex.sol";
 import {LedgerMetrics as M} from "../../../src/libraries/LedgerMetrics.sol";
+import {IRegistry} from "../../../src/interfaces/IRegistry.sol";
+import {MockModulePoster} from "../../utils/MockLedgerPoster.sol";
 
 contract LedgerTest is PlatformFixture {
     uint8 internal constant CASH = 1;
@@ -36,7 +38,7 @@ contract LedgerTest is PlatformFixture {
     }
 
     function _cell(uint8 scope, uint64 id, uint32 d, uint256 metric) internal view returns (uint256) {
-        return ledger.rollup(scope, id, d, d)[0][metric];
+        return _rollCell(scope, id, d, metric);
     }
 
     function test_topup_creditsBucketAndRollups() public {
@@ -154,10 +156,14 @@ contract LedgerTest is PlatformFixture {
     }
 
     function test_setPoster_onlyOwner() public {
+        address pnet = address(poster.net());
         vm.prank(platformAdmin);
         vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformOwner.selector, platformAdmin));
-        ledger.setPoster(address(poster), 0x7E);
-        assertEq(ledger.posterKinds(address(poster)), 0x7E);
+        ledger.setPoster(pnet, 1, SALE_KINDS, 1);
+        ILedger.License memory l = ledger.licenseOf(pnet);
+        assertEq(l.moduleId, 1);
+        assertEq(l.kindsMask, SALE_KINDS);
+        assertEq(l.maxAmount, type(uint128).max);
     }
 
     function test_whenPaused() public {
@@ -177,24 +183,89 @@ contract LedgerTest is PlatformFixture {
     function test_setPoster_ownerSetsAndEmits() public {
         address p2 = makeAddr("p2");
         vm.expectEmit(true, false, false, true);
-        emit ILedger.PosterSet(1, p2, 0x06);
+        emit ILedger.PosterSet(1, p2, 2, 0x04, 500);
         vm.prank(platformOwner);
-        ledger.setPoster(p2, 0x06);
-        assertEq(ledger.posterKinds(p2), 0x06);
+        ledger.setPoster(p2, 2, 0x04, 500);
+        assertEq(ledger.licenseOf(p2).kindsMask, 0x04);
+        assertEq(ledger.licenseOf(p2).maxAmount, 500);
     }
 
     function test_setPoster_zeroAddressReverts() public {
         vm.prank(platformOwner);
         vm.expectRevert(ILedger.ZeroAddress.selector);
-        ledger.setPoster(address(0), 0x7E);
+        ledger.setPoster(address(0), 0, TOPUP_KINDS, 1);
     }
 
     function test_setPoster_maskZeroRevokes() public {
+        address pay = address(poster.pay());
         vm.prank(platformOwner);
-        ledger.setPoster(address(poster), 0);
-        assertEq(ledger.posterKinds(address(poster)), 0);
+        ledger.setPoster(pay, 0, 0, 0);
+        assertEq(ledger.licenseOf(pay).kindsMask, 0);
         ILedger.Ctx memory c = _ctx(bytes32(uint256(1)), b1);
-        vm.expectRevert(abi.encodeWithSelector(ILedger.NotPoster.selector, address(poster), ILedger.EntryKind.Topup));
+        vm.expectRevert(abi.encodeWithSelector(ILedger.NotPoster.selector, pay, ILedger.EntryKind.Topup));
         poster.topup(c, alice, CASH, 1);
+    }
+
+    /// @dev ADR 0031 C3: nạp chỉ của thanh toán nền tảng (module 0); bán hàng chỉ của module có FLAG_SALES.
+    function test_setPoster_rejectsInvalidLicenses() public {
+        address p = makeAddr("p");
+        vm.startPrank(platformOwner);
+        vm.expectRevert(ILedger.InvalidLicense.selector);
+        ledger.setPoster(p, 0, SALE_KINDS, 1); // module 0 không được bán hàng
+        vm.expectRevert(ILedger.InvalidLicense.selector);
+        ledger.setPoster(p, 1, TOPUP_KINDS, 1); // module bán hàng không được nạp ví
+        vm.expectRevert(ILedger.InvalidLicense.selector);
+        ledger.setPoster(p, 3, SALE_KINDS, 1); // Loyalty không bán hàng
+        vm.expectRevert(ILedger.InvalidLicense.selector);
+        ledger.setPoster(p, 9, SALE_KINDS, 1); // module chưa đăng ký
+        vm.expectRevert(ILedger.InvalidLicense.selector);
+        ledger.setPoster(p, 1, SALE_KINDS, 0); // trần 0
+        vm.expectRevert(ILedger.InvalidLicense.selector);
+        ledger.setPoster(p, 0, 0x81, 1); // bit loại không tồn tại
+        vm.stopPrank();
+    }
+
+    function test_license_capPerEntry() public {
+        address pay = address(poster.pay());
+        vm.prank(platformOwner);
+        ledger.setPoster(pay, 0, TOPUP_KINDS, 50_000);
+        poster.topup(_ctx(bytes32(uint256(1)), b1), alice, CASH, 50_000);
+        vm.expectRevert(abi.encodeWithSelector(ILedger.AmountExceedsLimit.selector, uint128(50_000), uint128(50_001)));
+        poster.topup(_ctx(bytes32(uint256(2)), b1), alice, CASH, 50_001);
+    }
+
+    /// @dev ADR 0031 C2 — "module chết": tạm dừng NET thì Ledger từ chối mọi bút toán của NET,
+    ///      nạp ví và IQR vẫn chạy; mở lại thì NET chạy tiếp.
+    function test_modulePaused_onlyThatModuleStops() public {
+        vm.prank(agentOwner);
+        sales.setAgentPaymentMethods(a, 15);
+        poster.topup(_ctx(bytes32(uint256(1)), b1), alice, CASH, 100_000);
+        vm.prank(platformAdmin);
+        modules.setModuleStatus(1, IRegistry.ModuleStatus.Paused, "net loi tinh tien");
+
+        vm.expectRevert(
+            abi.encodeWithSelector(IRegistry.ModuleNotActive.selector, uint8(1), IRegistry.ModuleStatus.Paused)
+        );
+        poster.walletSpend(_ctx(bytes32(uint256(2)), b1), alice, NET, 10_000, 0);
+
+        poster.walletSpend(_ctx(bytes32(uint256(3)), b1), alice, IQR, 10_000, 0);
+        poster.topup(_ctx(bytes32(uint256(4)), b1), alice, CASH, 5000);
+        assertEq(ledger.balanceOf(a, alice), 95_000);
+
+        vm.prank(platformAdmin);
+        modules.setModuleStatus(1, IRegistry.ModuleStatus.Active, "da sua");
+        poster.walletSpend(_ctx(bytes32(uint256(5)), b1), alice, NET, 10_000, 0);
+        assertEq(ledger.balanceOf(a, alice), 85_000);
+    }
+
+    /// @dev C3: poster của IQR không hoàn được bút toán của NET.
+    function test_refundSale_wrongModuleReverts() public {
+        vm.prank(agentOwner);
+        sales.setAgentPaymentMethods(a, 15);
+        poster.topup(_ctx(bytes32(uint256(1)), b1), alice, CASH, 100_000);
+        poster.walletSpend(_ctx(bytes32(uint256(2)), b1), alice, NET, 10_000, 0);
+        MockModulePoster iqrPoster = poster.iqr();
+        vm.expectRevert(abi.encodeWithSelector(ILedger.WrongModule.selector, NET, IQR));
+        iqrPoster.refundSale(_ctx(bytes32(uint256(3)), b1), bytes32(uint256(2)), 1000, "x");
     }
 }

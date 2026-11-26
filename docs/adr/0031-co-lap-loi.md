@@ -1,6 +1,6 @@
 # 0031. Cô lập lỗi: cầu dao module, tường lửa tiền, hook an toàn
 
-- Trạng thái: **Chờ người dùng duyệt** (chạm tiền)
+- Trạng thái: **Chốt** — người dùng duyệt 2026-11-26
 - Ngày: 2026-11-26
 - Người duyệt: người dùng
 

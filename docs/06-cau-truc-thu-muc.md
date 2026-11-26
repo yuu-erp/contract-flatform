@@ -52,14 +52,14 @@ Bảng đầy đủ "contract – câu hỏi nó trả lời – trạng thái":
 | Thư mục | Tầng | Contract | Ai được ghi |
 |---|---|---|---|
 | `kernel/access/` | T0 | ✅ `PlatformAccess`, ✅ `PlatformAccessed` (abstract: modifier quyền + quyền nâng cấp cho mọi contract) | `PLATFORM_OWNER` / `PLATFORM_ADMIN` |
-| `kernel/registry/` | T0 | `Registry`: sổ địa chỉ + danh sách module (ADR 0030) | `PLATFORM_OWNER` |
+| `kernel/registry/` | T0 | ✅ `Registry`: danh sách module, cầu dao, sổ địa chỉ (ADR 0030) | `PLATFORM_OWNER`; tạm dừng module: `PLATFORM_ADMIN` |
 | `kernel/history/` | T0 | ✅ `HistoryIndex`, ✅ `PlatformAuditing` (abstract ghi audit) | writer được đăng ký |
 | `tenant/agent/` | T1 | ✅ `AgentRegistry` | `PLATFORM_ADMIN` |
 | `tenant/branch/` | T1 | ✅ `BranchRegistry` | `PLATFORM_ADMIN`; thuế do chủ agent |
 | `tenant/access/` | T1 | ✅ `AgentAccess` (Manager / Staff theo chi nhánh) | chủ agent, Manager |
 | `tenant/user/` | T1 | ✅ `AgentUserRegistry` (tài khoản khách và nhân viên) | chữ ký người dùng, nhân viên có quyền |
 | `tenant/delegate/` | T1 | `DelegateRegistry` | người dùng, module |
-| `shared/ledger/` | T2 | ✅ `Ledger` | poster có giấy phép (ADR 0031) |
+| `shared/ledger/` | T2 | ✅ `Ledger` + library ngoài `LedgerRecorder`, `LedgerWallet` | poster có giấy phép (ADR 0031) |
 | `shared/payment/` | T2 | ✅ `SalesSettings`, `PaymentAccounts` (tài khoản nhận tiền, ca két) | chủ agent, nhân viên có quyền |
 | `shared/permission/` | T2 | `Permission` (ADR 0033) | Manager+ |
 | `shared/duty/` | T2 | `Duty` (ADR 0033) | Manager+, nhân viên (vào/ra ca) |

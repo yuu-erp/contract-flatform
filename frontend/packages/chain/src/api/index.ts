@@ -20,7 +20,12 @@ import {
   mapEntry,
   mapMembers,
   mapPortions,
+  mapLicense,
+  mapModuleRollup,
   mapRollup,
+  mergeModuleRollups,
+  MODULE_IQR,
+  MODULE_NET,
   mapTaxQuote,
 } from './mappers'
 import type { AgentProfile, BranchProfile, BranchProfileRecord } from '../decode'
@@ -30,6 +35,7 @@ import type {
   BranchTax,
   BranchView,
   LedgerEntry,
+  LedgerLicense,
   LedgerPortionView,
   MemberView,
   TaxQuote,
@@ -191,9 +197,24 @@ export class AgentAccessApi {
 export class LedgerApi {
   constructor(private readonly inner: LedgerContract) {}
 
+  /**
+   * Bộ đếm ngày ở dạng 32 ô quen thuộc của frontend (`METRIC` trong metrics.ts).
+   * Từ ADR 0031, chain tách: ô 0..9 ở `rollup`, bộ đếm từng module ở `moduleRollup` (9 ô / module).
+   * Ở đây ghép lại: NET (module 1) vào ô 10..17 + 26, IQR (module 2) vào ô 18..25 + 27.
+   * Frontend (T4) được biết tên module; contract nền tảng thì không.
+   */
   async rollup(scope: number, id: number, fromDay: number, toDay: number): Promise<bigint[][]> {
-    return mapRollup(
-      await this.inner.rollup(String(scope), String(id), String(fromDay), String(toDay)),
+    const [base, net, iqr] = await Promise.all([
+      this.inner.rollup(String(scope), String(id), String(fromDay), String(toDay)),
+      this.inner.moduleRollup(String(scope), String(id), String(MODULE_NET), String(fromDay), String(toDay)),
+      this.inner.moduleRollup(String(scope), String(id), String(MODULE_IQR), String(fromDay), String(toDay)),
+    ])
+    return mergeModuleRollups(mapRollup(base), mapModuleRollup(net), mapModuleRollup(iqr))
+  }
+
+  async moduleRollup(scope: number, id: number, moduleId: number, fromDay: number, toDay: number): Promise<bigint[][]> {
+    return mapModuleRollup(
+      await this.inner.moduleRollup(String(scope), String(id), String(moduleId), String(fromDay), String(toDay)),
     )
   }
 
@@ -217,12 +238,13 @@ export class LedgerApi {
     return asBigInt(await this.inner.walletLiability(String(agentId)))
   }
 
-  async posterKinds(poster: string): Promise<number> {
-    return asNumber(unwrapValue(await this.inner.posterKinds(poster)))
+  async licenseOf(poster: string): Promise<LedgerLicense> {
+    return mapLicense(await this.inner.licenseOf(poster))
   }
 
-  async setPoster(poster: string, kindsMask: number): Promise<void> {
-    await this.inner.setPoster(poster, String(kindsMask))
+  /** ADR 0031: `moduleId` 0 = thanh toán nền tảng (Topup/TopupRefund), 1 NET, 2 IQR; `kindsMask` 0 = thu hồi. */
+  async setPoster(poster: string, moduleId: number, kindsMask: number, maxAmount: bigint): Promise<void> {
+    await this.inner.setPoster(poster, String(moduleId), String(kindsMask), maxAmount.toString())
   }
 }
 

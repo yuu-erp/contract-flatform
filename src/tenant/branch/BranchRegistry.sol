@@ -7,7 +7,7 @@ import {IBranchRegistry} from "../../interfaces/IBranchRegistry.sol";
 import {IAgentRegistry} from "../../interfaces/IAgentRegistry.sol";
 import {IHistoryIndex} from "../../interfaces/IHistoryIndex.sol";
 import {FullDBCodec} from "../../libraries/FullDBCodec.sol";
-import {ServiceMask} from "../../libraries/ServiceMask.sol";
+import {IRegistry} from "../../interfaces/IRegistry.sol";
 import {TextRules} from "../../libraries/TextRules.sol";
 
 /// @title BranchRegistry
@@ -18,9 +18,6 @@ import {TextRules} from "../../libraries/TextRules.sol";
 contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
     uint8 public constant EVENT_VERSION = 1;
     uint8 public constant RECORD_VERSION = 1;
-    uint16 public constant SERVICE_NET = 1;
-    uint16 public constant SERVICE_IQR = 2;
-    uint16 public constant SERVICE_LOYALTY = 4;
     int16 public constant MIN_TZ = -720;
     int16 public constant MAX_TZ = 840;
     uint256 public constant MAX_NAME = 100;
@@ -39,6 +36,7 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
         mapping(uint64 => uint32) branchCountOf; // agentId → số chi nhánh (kể cả đã xoá)
         mapping(uint64 => mapping(uint16 => uint16)) agentTax; // không dùng, thuế ở SalesSettings
         mapping(uint64 => mapping(uint16 => uint16)) branchTaxPlusOne; // không dùng, thuế ở SalesSettings
+        IRegistry registry; // danh sách module + cầu dao (ADR 0030, 0031)
     }
 
     // keccak256(abi.encode(uint256(keccak256("metaplatform.core.tenant.branches")) - 1)) & ~bytes32(uint256(0xff))
@@ -66,6 +64,17 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
         return "platform_branches";
     }
 
+    /// @notice Gắn Registry (danh sách module, cầu dao). Chỉ PLATFORM_OWNER.
+    function setRegistry(address registry_) external onlyPlatformOwner {
+        if (registry_ == address(0)) revert ZeroAddress();
+        _b().registry = IRegistry(registry_);
+        emit RegistrySet(EVENT_VERSION, registry_);
+    }
+
+    function registry() external view returns (address) {
+        return address(_b().registry);
+    }
+
     // ─── Ghi (PLATFORM_ADMIN) ───────────────────────────────────────────
 
     function createBranch(uint64 agentId, BranchInit calldata init)
@@ -76,7 +85,7 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
     {
         BranchesStorage storage $ = _b();
         if (!$.agents.isAgentActive(agentId)) revert AgentNotActive(agentId);
-        _checkServices(init.services);
+        _registry().checkServices(init.services);
         _checkGranted(agentId, init.services);
         _checkTimezone(init.tzOffsetMinutes);
         _checkProfile(init.profile);
@@ -148,10 +157,10 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
 
     function setBranchServices(uint64 branchId, uint16 services) external onlyPlatformAdmin whenNotPaused {
         Branch storage br = _editable(branchId);
-        _checkServices(services);
-        _checkGranted(br.agentId, services);
         uint16 old = br.services;
         if (old == services) return; // không đổi
+        _registry().checkServicesChange(services, old);
+        _checkGranted(br.agentId, services);
         br.services = services;
         br.updatedAt = uint64(block.timestamp);
         emit BranchServicesChanged(EVENT_VERSION, branchId, old, services);
@@ -269,6 +278,7 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
         if (!_isSingleService(service) || (br.services & service) == 0) revert ServiceNotEnabled(branchId, service);
         uint16 allowed = _b().agents.requireAgentWritable(br.agentId); // gồm cả kiểm pause toàn hệ
         if ((allowed & service) == 0) revert ServiceNotAllowed(br.agentId, service);
+        _registry().requireActive(_moduleIdOf(service)); // cầu dao module (ADR 0031)
     }
 
     // ─── Nội bộ ─────────────────────────────────────────────────────────
@@ -304,19 +314,28 @@ contract BranchRegistry is PlatformAccessed, PlatformAuditing, IBranchRegistry {
         _audit(action, br.agentId, branchId, abi.encode(from), abi.encode(to), reason);
     }
 
-    /// @dev R1: khác 0, chỉ các bit đã biết; có LOYALTY thì phải có NET hoặc IQR.
-    function _checkServices(uint16 s) private pure {
-        if (!ServiceMask.isValid(s)) revert InvalidServices(s);
+    function _registry() private view returns (IRegistry r) {
+        r = _b().registry;
+        if (address(r) == address(0)) revert RegistryNotSet();
+    }
+
+    /// @dev Bit dịch vụ (đúng một bit) → moduleId = vị trí bit + 1.
+    function _moduleIdOf(uint16 bit) private pure returns (uint8 id) {
+        while (bit > 1) {
+            bit >>= 1;
+            ++id;
+        }
+        return id + 1;
     }
 
     /// @dev Trần module của agent: chi nhánh không được bật bit nào ngoài tập đã cấp.
     function _checkGranted(uint64 agentId, uint16 services) private view {
         uint16 allowed = _b().agents.getAgent(agentId).allowedServices;
-        if (!ServiceMask.within(services, allowed)) revert ServiceNotAllowed(agentId, services);
+        if (services & ~allowed != 0) revert ServiceNotAllowed(agentId, services);
     }
 
     function _isSingleService(uint16 s) private pure returns (bool) {
-        return s == SERVICE_NET || s == SERVICE_IQR || s == SERVICE_LOYALTY;
+        return s != 0 && (s & (s - 1)) == 0;
     }
 
     function _checkTimezone(int16 tz) private pure {

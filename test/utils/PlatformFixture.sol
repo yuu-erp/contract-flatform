@@ -4,12 +4,14 @@ pragma solidity 0.8.28;
 import {BaseTest} from "./BaseTest.sol";
 import {MockFullDB} from "./MockFullDB.sol";
 import {PlatformAccess} from "../../src/kernel/access/PlatformAccess.sol";
+import {Registry} from "../../src/kernel/registry/Registry.sol";
 import {HistoryIndex} from "../../src/kernel/history/HistoryIndex.sol";
 import {AgentRegistry} from "../../src/tenant/agent/AgentRegistry.sol";
 import {BranchRegistry} from "../../src/tenant/branch/BranchRegistry.sol";
 import {AgentAccess} from "../../src/tenant/access/AgentAccess.sol";
 import {Ledger} from "../../src/shared/ledger/Ledger.sol";
 import {MockLedgerPoster} from "./MockLedgerPoster.sol";
+import {LedgerMetrics as LM} from "../../src/libraries/LedgerMetrics.sol";
 import {SalesSettings} from "../../src/shared/payment/SalesSettings.sol";
 import {AgentUserRegistry} from "../../src/tenant/user/AgentUserRegistry.sol";
 import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
@@ -29,6 +31,8 @@ abstract contract PlatformFixture is BaseTest {
     Ledger internal ledger;
     MockLedgerPoster internal poster;
     AgentUserRegistry internal users;
+    /// @dev Registry T0 (danh sách module). Lưu ý: `registry` ở fixture là AgentRegistry (tên cũ).
+    Registry internal modules;
 
     uint16 internal constant NET = 1;
     uint16 internal constant IQR = 2;
@@ -41,6 +45,7 @@ abstract contract PlatformFixture is BaseTest {
         access = PlatformAccess(
             deployProxy(address(new PlatformAccess()), abi.encodeCall(PlatformAccess.initialize, (platformOwner)))
         );
+        modules = Registry(deployProxy(address(new Registry()), abi.encodeCall(Registry.initialize, (address(access)))));
         historyIndex = HistoryIndex(
             deployProxy(
                 address(new HistoryIndex()), abi.encodeCall(HistoryIndex.initialize, (address(access), address(0)))
@@ -108,7 +113,6 @@ abstract contract PlatformFixture is BaseTest {
         historyIndex.setWriterKind(address(sales), "platform_audit", true);
         historyIndex.setWriter(address(ledger), true);
         historyIndex.setWriterKind(address(ledger), "ledger", true);
-        ledger.setPoster(address(poster), 0x7E);
         historyIndex.setWriterKind(address(registry), "platform_agents", true);
         historyIndex.setWriterKind(address(registry), "platform_audit", true);
         historyIndex.setWriterKind(address(branches), "platform_branches", true);
@@ -124,7 +128,51 @@ abstract contract PlatformFixture is BaseTest {
         access.setAgentRoleSources(sources);
         access.addPlatformAdmin(platformAdmin);
         access.addPlatformAdmin(platformAdmin2);
+        _registerModules();
+        registry.setRegistry(address(modules));
+        branches.setRegistry(address(modules));
+        _licensePosters();
         vm.stopPrank();
+    }
+
+    uint8 internal constant TOPUP_KINDS = 0x12; // Topup | TopupRefund
+    uint8 internal constant SALE_KINDS = 0x6C; // WalletSpend | DirectSale | SaleRefund | Adjust
+
+    /// @dev Giấy phép poster (ADR 0031): thanh toán nền tảng nạp/hoàn nạp; NET, IQR bán hàng. Trong prank owner.
+    function _licensePosters() internal {
+        ledger.setPoster(address(poster.pay()), 0, TOPUP_KINDS, type(uint128).max);
+        ledger.setPoster(address(poster.net()), 1, SALE_KINDS, type(uint128).max);
+        ledger.setPoster(address(poster.iqr()), 2, SALE_KINDS, type(uint128).max);
+    }
+
+    /// @dev Chỉ số "ảo" cho test đọc bộ đếm Ledger: < 1000 là chỉ số chung trong `rollup`;
+    ///      1000·moduleId + offset là bộ đếm module trong `moduleRollup`.
+    function _svc(uint16 service, uint256 offset) internal pure returns (uint256) {
+        uint256 id = 1;
+        while (service > 1) {
+            service >>= 1;
+            ++id;
+        }
+        return 1000 * id + offset;
+    }
+
+    function _svcRefund(uint16 service) internal pure returns (uint256) {
+        return _svc(service, LM.SERVED_HERE_REFUND);
+    }
+
+    function _rollCell(uint8 scope, uint64 id, uint32 d, uint256 metric) internal view returns (uint256) {
+        if (metric < 1000) return ledger.rollup(scope, id, d, d)[0][metric];
+        return ledger.moduleRollup(scope, id, uint8(metric / 1000), d, d)[0][metric % 1000];
+    }
+
+    /// @dev Khai báo module như lúc deploy thật (ADR 0030): 0 nền tảng, 1 NET (bán hàng, giá gồm thuế), 2 IQR (bán hàng), 3 Loyalty (cần NET|IQR, không bán hàng).
+    ///      Gọi trong prank của platformOwner.
+    function _registerModules() internal {
+        modules.registerModule(0, "platform", 0, 0, 0, 0);
+        uint16 sales_ = modules.FLAG_SALES();
+        modules.registerModule(1, "net", 0, sales_ | modules.FLAG_TAX_INCLUSIVE_ONLY(), 0, 0);
+        modules.registerModule(2, "iqr", 0, sales_, 0, 0);
+        modules.registerModule(3, "loyalty", NET | IQR, 0, 0, 0);
     }
 
     function _profile(string memory name) internal pure returns (IAgentRegistry.AgentProfile memory) {

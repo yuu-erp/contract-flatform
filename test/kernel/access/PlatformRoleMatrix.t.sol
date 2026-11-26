@@ -101,7 +101,7 @@ contract PlatformRoleMatrixTest is PlatformFixture {
         historyIndex.setWriterKind(stranger, "ledger", true);
 
         vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformOwner.selector, platformAdmin));
-        ledger.setPoster(stranger, 0x02);
+        ledger.setPoster(stranger, 0, 0x02, 1);
 
         vm.expectRevert(abi.encodeWithSelector(IPlatformAccess.NotPlatformOwner.selector, platformAdmin));
         registry.setAgentAccess(stranger);

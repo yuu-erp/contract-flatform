@@ -264,22 +264,33 @@ contract LedgerInvariantTest is PlatformFixture {
         }
         for (uint256 m; m < 32; ++m) {
             assertEq(ag[m], pl[m], "agent != platform");
-            if (m == M.SERVICE_BASE + M.SERVED_HERE || m == M.SERVICE_BASE + M.SERVICE_STRIDE + M.SERVED_HERE) {
-                continue;
-            }
-            if (m == M.servedRefundMetric(M.SERVICE_NET) || m == M.servedRefundMetric(M.SERVICE_IQR)) continue;
             assertEq(br[m], ag[m], "branches != agent");
+        }
+        for (uint8 mid = 1; mid <= 2; ++mid) {
+            uint256[9] memory mag = _sumModDays(ledger.SCOPE_AGENT(), agentId, mid);
+            uint256[9] memory mpl = _sumModDays(ledger.SCOPE_PLATFORM(), 0, mid);
+            uint256[9] memory mbr;
+            for (uint256 i; i < 3; ++i) {
+                uint256[9] memory t = _sumModDays(ledger.SCOPE_BRANCH(), handler.branch(i), mid);
+                for (uint256 m; m < 9; ++m) {
+                    mbr[m] += t[m];
+                }
+            }
+            for (uint256 m; m < 9; ++m) {
+                if (m == M.SERVED_HERE || m == M.SERVED_HERE_REFUND) continue; // chỉ ở phạm vi chi nhánh
+                assertEq(mag[m], mpl[m], "module: agent != platform");
+                assertEq(mbr[m], mag[m], "module: branches != agent");
+            }
         }
     }
 
-    /// @dev Mỗi dịch vụ ở cấp agent, cộng mọi ngày: thuế hoàn <= thuế, hoàn <= doanh thu gộp
+    /// @dev Mỗi module ở cấp agent, cộng mọi ngày: thuế hoàn <= thuế, hoàn <= doanh thu gộp
     ///      (hoàn chỉ áp lên bán/trừ ví, vốn đã ghi GROSS).
     function invariant_refundsBoundedByBooked() public view {
-        uint256[32] memory t = _sumDays(ledger.SCOPE_AGENT(), agentId);
-        uint16[2] memory svc = [M.SERVICE_NET, M.SERVICE_IQR];
-        for (uint256 i; i < 2; ++i) {
-            assertLe(t[M.serviceMetric(svc[i], M.TAX_REFUND)], t[M.serviceMetric(svc[i], M.TAX)], "tax refund > tax");
-            assertLe(t[M.serviceMetric(svc[i], M.REFUND)], t[M.serviceMetric(svc[i], M.GROSS)], "refund > gross");
+        for (uint8 mid = 1; mid <= 2; ++mid) {
+            uint256[9] memory t = _sumModDays(ledger.SCOPE_AGENT(), agentId, mid);
+            assertLe(t[M.TAX_REFUND], t[M.TAX], "tax refund > tax");
+            assertLe(t[M.REFUND], t[M.GROSS], "refund > gross");
         }
     }
 
@@ -313,6 +324,22 @@ contract LedgerInvariantTest is PlatformFixture {
             uint256[32][] memory r = ledger.rollup(scope, id, s, e);
             for (uint256 d; d < r.length; ++d) {
                 for (uint256 m; m < 32; ++m) {
+                    t[m] += r[d][m];
+                }
+            }
+        }
+    }
+
+    function _sumModDays(uint8 scope, uint64 id, uint8 mid) internal view returns (uint256[9] memory t) {
+        uint32 from = ledger.dayOf(handler.branch(0), handler.startTs()) - 1;
+        uint32 to = ledger.dayOf(handler.branch(0), block.timestamp) + 1;
+        uint256 step = ledger.MAX_RANGE_DAYS();
+        for (uint32 s = from; s <= to; s += uint32(step)) {
+            uint32 e = s + uint32(step) - 1;
+            if (e > to) e = to;
+            uint256[9][] memory r = ledger.moduleRollup(scope, id, mid, s, e);
+            for (uint256 d; d < r.length; ++d) {
+                for (uint256 m; m < 9; ++m) {
                     t[m] += r[d][m];
                 }
             }

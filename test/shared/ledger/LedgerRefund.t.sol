@@ -52,7 +52,7 @@ contract LedgerRefundTest is PlatformFixture {
 
     function _cell(uint8 scope, uint64 id, uint256 metric) internal view returns (uint256) {
         uint32 d = ledger.dayOf(b1, block.timestamp);
-        return ledger.rollup(scope, id, d, d)[0][metric];
+        return _rollCell(scope, id, d, metric);
     }
 
     function _bal(uint64 b) internal view returns (uint128) {
@@ -111,7 +111,7 @@ contract LedgerRefundTest is PlatformFixture {
         assertEq(_bal(b1), 40_000 + 10_000);
         assertEq(_bal(b2), 5000);
         assertEq(ledger.walletLiability(a), 80_000 - 40_000 + 15_000);
-        uint256 rf = M.serviceMetric(NET, M.REFUND);
+        uint256 rf = _svc(NET, M.REFUND);
         assertEq(_cell(2, b1, rf), 10_000);
         assertEq(_cell(2, b2, rf), 5000);
         assertEq(_cell(1, a, rf), 15_000);
@@ -142,7 +142,7 @@ contract LedgerRefundTest is PlatformFixture {
         _topup(b1, 50_000);
         _topup(b2, 30_000);
         bytes32 s = _spend(b2, 40_000); // [(b2,30k),(b1,10k)]; b2 bucket gone, b1 = 40k
-        uint256 rf = M.serviceMetric(NET, M.REFUND);
+        uint256 rf = _svc(NET, M.REFUND);
 
         poster.refundSale(_ctx(_ref(), b2), s, 5000, "refund");
         assertEq(_bal(b1), 45_000);
@@ -196,7 +196,7 @@ contract LedgerRefundTest is PlatformFixture {
         poster.refundSale(_ctx(_ref(), b1), s, 40_000, "refund");
         assertEq(ledger.entryOf(s).refunded, 100_000);
         assertEq(_cell(2, b1, M.CASH_OUT), 100_000);
-        assertEq(_cell(0, 0, M.serviceMetric(IQR, M.REFUND)), 100_000);
+        assertEq(_cell(0, 0, _svc(IQR, M.REFUND)), 100_000);
         assertEq(_cell(1, a, M.CASH_OUT), 100_000);
     }
 
@@ -232,7 +232,7 @@ contract LedgerRefundTest is PlatformFixture {
         vm.expectEmit(true, true, true, true);
         emit ILedger.Posted(1, a, b1, r, ILedger.EntryKind.SaleRefund, address(0), IQR, CASH, 54_000, 4000, actor, 0);
         poster.refundSale(_ctx(r, b1), s, 54_000, "refund");
-        uint256 tr = M.serviceMetric(IQR, M.TAX_REFUND);
+        uint256 tr = _svc(IQR, M.TAX_REFUND);
         assertEq(_cell(2, b1, tr), 4000);
         assertEq(_cell(1, a, tr), 4000);
         assertEq(_cell(0, 0, tr), 4000);
@@ -246,7 +246,7 @@ contract LedgerRefundTest is PlatformFixture {
         bytes32 s = _spend(b2, 40_000); // 30k b2, 10k b1, tax bps 1000
         bytes32 r = _ref();
         poster.refundSale(_ctx(r, b2), s, 15_000, "refund"); // b1 10k tax 909, b2 5k tax 454
-        uint256 tr = M.serviceMetric(NET, M.TAX_REFUND);
+        uint256 tr = _svc(NET, M.TAX_REFUND);
         assertEq(_cell(2, b1, tr), 909);
         assertEq(_cell(2, b2, tr), 454);
         assertEq(_cell(0, 0, tr), 1363);
@@ -256,8 +256,8 @@ contract LedgerRefundTest is PlatformFixture {
     function test_refundSale_crossBranchServedHereRefund() public {
         _topup(b1, 50_000);
         bytes32 s = _spend(b2, 20_000); // funded by b1, served at b2
-        uint256 sh = M.serviceMetric(NET, M.SERVED_HERE);
-        uint256 shr = M.servedRefundMetric(NET);
+        uint256 sh = _svc(NET, M.SERVED_HERE);
+        uint256 shr = _svcRefund(NET);
         assertEq(_cell(2, b2, sh), 20_000);
         poster.refundSale(_ctx(_ref(), b2), s, 8000, "refund");
         assertEq(_cell(2, b2, shr), 8000);
@@ -265,14 +265,14 @@ contract LedgerRefundTest is PlatformFixture {
         assertEq(_cell(2, b1, shr), 0);
         assertEq(_cell(1, a, shr), 0);
         assertEq(_cell(0, 0, shr), 0);
-        assertEq(M.servedRefundMetric(IQR), 27);
+        assertEq(_svcRefund(IQR), 2008);
     }
 
     function test_refundSale_sameBranchNoServedHereRefund() public {
         _topup(b2, 10_000);
         bytes32 s = _spend(b2, 5000);
         poster.refundSale(_ctx(_ref(), b2), s, 5000, "refund");
-        assertEq(_cell(2, b2, M.servedRefundMetric(NET)), 0);
+        assertEq(_cell(2, b2, _svcRefund(NET)), 0);
     }
 
     function test_refund_countsOnRefundDay() public {
@@ -280,9 +280,8 @@ contract LedgerRefundTest is PlatformFixture {
         uint32 d0 = ledger.dayOf(b1, block.timestamp);
         vm.warp(block.timestamp + 1 days);
         poster.refundSale(_ctx(_ref(), b1), s, 10_000, "refund");
-        uint256 rf = M.serviceMetric(IQR, M.REFUND);
-        assertEq(ledger.rollup(2, b1, d0, d0 + 1)[0][rf], 0);
-        assertEq(ledger.rollup(2, b1, d0, d0 + 1)[1][rf], 10_000);
+        assertEq(ledger.moduleRollup(2, b1, 2, d0, d0 + 1)[0][M.REFUND], 0);
+        assertEq(ledger.moduleRollup(2, b1, 2, d0, d0 + 1)[1][M.REFUND], 10_000);
         assertEq(ledger.rollup(2, b1, d0, d0)[0][M.CASH_OUT], 0);
     }
 

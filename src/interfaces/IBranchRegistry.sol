@@ -20,7 +20,7 @@ interface IBranchRegistry {
         uint64 id;
         uint64 agentId;
         BranchStatus status;
-        uint16 services; // bitmask SERVICE_*
+        uint16 services; // bit `1 << (moduleId-1)` theo Registry (ADR 0030)
         bool isMain;
         int16 tzOffsetMinutes; // múi giờ so với UTC, -720..840
         bytes32 domainHash; // keccak256(bytes(domain)); 0 khi đã xoá
@@ -61,6 +61,7 @@ interface IBranchRegistry {
     error BranchNotActive(uint64 branchId);
     error ServiceNotEnabled(uint64 branchId, uint16 service);
     error InvalidServices(uint16 services);
+    error RegistryNotSet();
     /// @notice Chi nhánh bật module không nằm trong trần `allowedServices` của agent.
     error ServiceNotAllowed(uint64 agentId, uint16 services);
     error InvalidDomain();
@@ -77,6 +78,7 @@ interface IBranchRegistry {
     error CannotDeleteMainBranch(uint64 branchId);
     error AlreadyMainBranch(uint64 branchId);
 
+    event RegistrySet(uint8 version, address indexed registry);
     event BranchCreated(
         uint8 version, uint64 indexed agentId, uint64 indexed branchId, uint16 services, bytes32 domainHash, bool isMain
     );
@@ -90,9 +92,8 @@ interface IBranchRegistry {
     event MainBranchChanged(uint8 version, uint64 indexed agentId, uint64 oldBranchId, uint64 newBranchId);
 
     // ─── Hằng ──────────────────────────────────────────────────────────
-    function SERVICE_NET() external view returns (uint16);
-    function SERVICE_IQR() external view returns (uint16);
-    function SERVICE_LOYALTY() external view returns (uint16);
+    function setRegistry(address registry_) external;
+    function registry() external view returns (address);
     function KIND_BRANCHES() external pure returns (string memory);
 
     // ─── Ghi (PLATFORM_ADMIN) ───────────────────────────────────────────

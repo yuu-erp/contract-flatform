@@ -7,7 +7,7 @@ import {IAgentRegistry} from "../../interfaces/IAgentRegistry.sol";
 import {IAgentAccess} from "../../interfaces/IAgentAccess.sol";
 import {IHistoryIndex} from "../../interfaces/IHistoryIndex.sol";
 import {FullDBCodec} from "../../libraries/FullDBCodec.sol";
-import {ServiceMask} from "../../libraries/ServiceMask.sol";
+import {IRegistry} from "../../interfaces/IRegistry.sol";
 import {TextRules} from "../../libraries/TextRules.sol";
 
 /// @title AgentRegistry
@@ -29,6 +29,7 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
         mapping(uint64 => Agent) agents;
         mapping(address => uint64) agentByOwner; // chỉ agent chưa xoá
         IAgentAccess agentAccess; // để từ chối đổi chủ sang thành viên chi nhánh của chính agent
+        IRegistry registry; // danh sách module (ADR 0030): kiểm tập dịch vụ được cấp
     }
 
     // keccak256(abi.encode(uint256(keccak256("metaplatform.core.tenant.agents")) - 1)) & ~bytes32(uint256(0xff))
@@ -76,6 +77,17 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
         emit AgentAccessSet(EVENT_VERSION, agentAccess_);
     }
 
+    /// @notice Gắn Registry (danh sách module). Chỉ PLATFORM_OWNER.
+    function setRegistry(address registry_) external onlyPlatformOwner {
+        if (registry_ == address(0)) revert ZeroAddress();
+        _a().registry = IRegistry(registry_);
+        emit RegistrySet(EVENT_VERSION, registry_);
+    }
+
+    function registry() external view returns (address) {
+        return address(_a().registry);
+    }
+
     // ─── Ghi (PLATFORM_ADMIN) ───────────────────────────────────────────
 
     function createAgent(address owner, uint16 allowedServices, AgentProfile calldata profile)
@@ -86,7 +98,7 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
     {
         _checkNewOwner(owner, 0);
         _checkProfile(profile);
-        if (!ServiceMask.isValid(allowedServices)) revert InvalidServices(allowedServices);
+        _registry().checkServices(allowedServices);
         AgentsStorage storage $ = _a();
 
         agentId = ++$.agentCount;
@@ -118,9 +130,9 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
     function setAgentServices(uint64 agentId, uint16 allowedServices) external onlyPlatformAdmin whenNotPaused {
         Agent storage ag = _existing(agentId);
         if (ag.status == AgentStatus.Deleted) revert AgentDeleted(agentId);
-        if (!ServiceMask.isValid(allowedServices)) revert InvalidServices(allowedServices);
         uint16 old = ag.allowedServices;
         if (old == allowedServices) return;
+        _registry().checkServicesChange(allowedServices, old);
         ag.allowedServices = allowedServices;
         ag.updatedAt = uint64(block.timestamp);
         emit AgentServicesChanged(EVENT_VERSION, agentId, old, allowedServices);
@@ -245,6 +257,11 @@ contract AgentRegistry is PlatformAccessed, PlatformAuditing, IAgentRegistry {
     }
 
     // ─── Nội bộ ─────────────────────────────────────────────────────────
+
+    function _registry() private view returns (IRegistry r) {
+        r = _a().registry;
+        if (address(r) == address(0)) revert RegistryNotSet();
+    }
 
     function _existing(uint64 agentId) private view returns (Agent storage ag) {
         ag = _a().agents[agentId];

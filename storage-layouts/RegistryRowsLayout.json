@@ -1,0 +1,50 @@
+[
+ [
+  "moduleRow",
+  0,
+  0,
+  "struct IRegistry.Module"
+ ],
+ [
+  "moduleRow.status",
+  0,
+  0,
+  "enum IRegistry.ModuleStatus"
+ ],
+ [
+  "moduleRow.requiresAny",
+  0,
+  1,
+  "uint16"
+ ],
+ [
+  "moduleRow.flags",
+  0,
+  3,
+  "uint16"
+ ],
+ [
+  "moduleRow.version",
+  0,
+  5,
+  "uint32"
+ ],
+ [
+  "moduleRow.permValid",
+  0,
+  9,
+  "uint64"
+ ],
+ [
+  "moduleRow.permManagerOnly",
+  0,
+  17,
+  "uint64"
+ ],
+ [
+  "moduleRow.name",
+  1,
+  0,
+  "string"
+ ]
+]

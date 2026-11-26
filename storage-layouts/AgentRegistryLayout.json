@@ -36,57 +36,9 @@
   "contract IAgentAccess"
  ],
  [
-  "agentRow",
+  "s.registry",
   4,
   0,
-  "struct IAgentRegistry.Agent"
- ],
- [
-  "agentRow.id",
-  4,
-  0,
-  "uint64"
- ],
- [
-  "agentRow.owner",
-  4,
-  8,
-  "address"
- ],
- [
-  "agentRow.pendingOwner",
-  5,
-  0,
-  "address"
- ],
- [
-  "agentRow.status",
-  5,
-  20,
-  "enum IAgentRegistry.AgentStatus"
- ],
- [
-  "agentRow.createdAt",
-  5,
-  21,
-  "uint64"
- ],
- [
-  "agentRow.updatedAt",
-  6,
-  0,
-  "uint64"
- ],
- [
-  "agentRow.profileDocId",
-  7,
-  0,
-  "uint256"
- ],
- [
-  "agentRow.allowedServices",
-  8,
-  0,
-  "uint16"
+  "contract IRegistry"
  ]
 ]

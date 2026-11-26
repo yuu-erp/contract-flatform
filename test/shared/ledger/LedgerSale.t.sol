@@ -2,6 +2,7 @@
 pragma solidity 0.8.28;
 
 import {PlatformFixture} from "../../utils/PlatformFixture.sol";
+import {MockLedgerPoster} from "../../utils/MockLedgerPoster.sol";
 import {ILedger} from "../../../src/interfaces/ILedger.sol";
 import {IHistoryIndex} from "../../../src/interfaces/IHistoryIndex.sol";
 import {ISalesSettings} from "../../../src/interfaces/ISalesSettings.sol";
@@ -38,7 +39,7 @@ contract LedgerSaleTest is PlatformFixture {
 
     function _cell(uint8 scope, uint64 id, uint256 metric) internal view returns (uint256) {
         uint32 d = ledger.dayOf(b1, block.timestamp);
-        return ledger.rollup(scope, id, d, d)[0][metric];
+        return _rollCell(scope, id, d, metric);
     }
 
     function _allScopes(uint256 metric, uint256 expected) internal view {
@@ -55,10 +56,10 @@ contract LedgerSaleTest is PlatformFixture {
         emit ILedger.Posted(1, a, b1, r, ILedger.EntryKind.DirectSale, address(0), IQR, CASH, 216_000, 16_000, actor, 0);
         poster.directSale(_ctx(r), address(0), IQR, CASH, 216_000, 5000);
         _allScopes(M.CASH_IN, 216_000);
-        _allScopes(M.serviceMetric(IQR, M.GROSS), 216_000);
-        _allScopes(M.serviceMetric(IQR, M.TAX), 16_000);
-        _allScopes(M.serviceMetric(IQR, M.DISCOUNT), 5000);
-        _allScopes(M.serviceMetric(NET, M.GROSS), 0);
+        _allScopes(_svc(IQR, M.GROSS), 216_000);
+        _allScopes(_svc(IQR, M.TAX), 16_000);
+        _allScopes(_svc(IQR, M.DISCOUNT), 5000);
+        _allScopes(_svc(NET, M.GROSS), 0);
         _allScopes(M.WALLET_TOPUP, 0);
         _allScopes(M.WALLET_SPEND, 0);
         ILedger.Entry memory e = ledger.entryOf(r);
@@ -82,7 +83,7 @@ contract LedgerSaleTest is PlatformFixture {
         _allScopes(M.CASH_IN + 1, 10_000);
         _allScopes(M.CASH_IN + 2, 7000);
         _allScopes(M.CASH_IN, 0);
-        _allScopes(M.serviceMetric(NET, M.GROSS), 17_000);
+        _allScopes(_svc(NET, M.GROSS), 17_000);
         assertEq(ledger.balanceOf(a, alice), 0);
     }
 
@@ -94,11 +95,11 @@ contract LedgerSaleTest is PlatformFixture {
         poster.directSale(c, address(0), IQR, TRANSFER, 1000, 0);
         vm.expectRevert(ILedger.ZeroAmount.selector);
         poster.directSale(c, address(0), IQR, CASH, 0, 0);
-        vm.expectRevert(abi.encodeWithSelector(M.InvalidService.selector, uint16(4)));
-        poster.directSale(c, address(0), 4, CASH, 1000, 0);
+        vm.expectRevert(abi.encodeWithSelector(MockLedgerPoster.NoPosterFor.selector, uint16(4)));
+        poster.directSale(c, address(0), 4, CASH, 1000, 0); // Loyalty không có poster bán hàng
         vm.prank(stranger);
         vm.expectRevert(abi.encodeWithSelector(ILedger.NotPoster.selector, stranger, ILedger.EntryKind.DirectSale));
-        ledger.directSale(c, address(0), IQR, CASH, 1000, 0);
+        ledger.directSale(c, address(0), CASH, 1000, 0);
     }
 
     function test_directSale_serviceNotEnabled() public {
@@ -124,14 +125,14 @@ contract LedgerSaleTest is PlatformFixture {
         vm.expectEmit(true, true, true, true);
         emit ILedger.Posted(1, a, b1, r, ILedger.EntryKind.Adjust, address(0), NET, 1, 5000, 0, actor, 0);
         poster.adjust(_ctx(r), NET, true, 5000, "bu gio may loi");
-        _allScopes(M.serviceMetric(NET, M.ADJ_UP), 5000);
-        _allScopes(M.serviceMetric(NET, M.ADJ_DOWN), 0);
-        _allScopes(M.serviceMetric(IQR, M.ADJ_UP), 0);
-        _allScopes(M.serviceMetric(NET, M.GROSS), 0);
-        _allScopes(M.serviceMetric(NET, M.TAX), 0);
+        _allScopes(_svc(NET, M.ADJ_UP), 5000);
+        _allScopes(_svc(NET, M.ADJ_DOWN), 0);
+        _allScopes(_svc(IQR, M.ADJ_UP), 0);
+        _allScopes(_svc(NET, M.GROSS), 0);
+        _allScopes(_svc(NET, M.TAX), 0);
         poster.adjust(_ctx(_ref()), NET, false, 1200, "tru nham");
-        _allScopes(M.serviceMetric(NET, M.ADJ_DOWN), 1200);
-        _allScopes(M.serviceMetric(NET, M.ADJ_UP), 5000);
+        _allScopes(_svc(NET, M.ADJ_DOWN), 1200);
+        _allScopes(_svc(NET, M.ADJ_UP), 5000);
         ILedger.Entry memory e = ledger.entryOf(r);
         assertEq(uint8(e.kind), uint8(ILedger.EntryKind.Adjust));
         assertEq(e.service, NET);
@@ -167,14 +168,12 @@ contract LedgerSaleTest is PlatformFixture {
     function test_adjust_rejects() public {
         vm.expectRevert(ILedger.ZeroAmount.selector);
         poster.adjust(_ctx(_ref()), NET, true, 0, "x");
-        vm.expectRevert(abi.encodeWithSelector(M.InvalidService.selector, uint16(4)));
-        poster.adjust(_ctx(_ref()), 4, true, 1, "x");
         uint64 b2 = _createBranch(a, "b.vn", NET);
         ILedger.Ctx memory c = ILedger.Ctx({refId: _ref(), branchId: b2, actor: actor, shiftId: 0});
         vm.expectRevert(abi.encodeWithSelector(IBranchRegistry.ServiceNotEnabled.selector, b2, IQR));
         poster.adjust(c, IQR, true, 1, "x");
         vm.expectRevert(abi.encodeWithSelector(ILedger.NotPoster.selector, address(this), ILedger.EntryKind.Adjust));
-        ledger.adjust(_ctx(_ref()), NET, true, 1, "x");
+        ledger.adjust(_ctx(_ref()), true, 1, "x");
     }
 
     function _records(ILedger.EntryKind kind) internal view returns (bytes[] memory) {

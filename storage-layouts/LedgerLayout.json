@@ -66,75 +66,15 @@
   "mapping(uint256 => uint256[32])"
  ],
  [
-  "entryRow",
+  "s.licenses",
   10,
   0,
-  "struct ILedger.Entry"
+  "mapping(address => struct ILedger.License)"
  ],
  [
-  "entryRow.kind",
-  10,
-  0,
-  "enum ILedger.EntryKind"
- ],
- [
-  "entryRow.method",
-  10,
-  1,
-  "uint8"
- ],
- [
-  "entryRow.service",
-  10,
-  2,
-  "uint16"
- ],
- [
-  "entryRow.taxBps",
-  10,
-  4,
-  "uint16"
- ],
- [
-  "entryRow.branchId",
-  10,
-  6,
-  "uint64"
- ],
- [
-  "entryRow.customer",
+  "s.moduleRollups",
   11,
   0,
-  "address"
- ],
- [
-  "entryRow.amount",
-  12,
-  0,
-  "uint128"
- ],
- [
-  "entryRow.refunded",
-  12,
-  16,
-  "uint128"
- ],
- [
-  "portionRow",
-  13,
-  0,
-  "struct ILedger.Portion"
- ],
- [
-  "portionRow.branchId",
-  13,
-  0,
-  "uint64"
- ],
- [
-  "portionRow.amount",
-  13,
-  8,
-  "uint128"
+  "mapping(uint256 => mapping(uint8 => uint256[9]))"
  ]
 ]

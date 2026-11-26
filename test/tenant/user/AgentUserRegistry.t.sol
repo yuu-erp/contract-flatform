@@ -478,7 +478,7 @@ contract AgentUserRegistryTest is PlatformFixture {
 
     // ─── Đọc ────────────────────────────────────────────────────────────
 
-    function test_usersOf_paginationAndDailyCounts() public {
+    function test_usersOf_paginationAndBranchCount() public {
         for (uint256 i; i < 5; ++i) {
             _registerByStaff(makeAddr(string.concat("u", vm.toString(i))), string.concat("user", vm.toString(i)));
         }
@@ -486,14 +486,7 @@ contract AgentUserRegistryTest is PlatformFixture {
         assertEq(page.length, 2);
         assertEq(page[0].username, "user3");
         assertEq(users.usersOf(agentId, 9, 10).length, 0);
-
-        uint32 today = uint32((block.timestamp + 420 minutes) / 1 days);
-        uint32[] memory counts = users.newUsersByDay(agentId, today - 1, today);
-        assertEq(counts[0], 0);
-        assertEq(counts[1], 5);
-        assertEq(users.newUsersByBranchDay(b1, today, today)[0], 5);
-        vm.expectRevert(IAgentUserRegistry.InvalidRange.selector);
-        users.newUsersByDay(agentId, today, today + 93);
+        assertEq(users.userCountOfBranch(b1), 5);
     }
 
     /// @dev Nhân viên vẫn làm khách được tại agent mình (docs/modules/core-user.md §9.6).

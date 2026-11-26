@@ -1,0 +1,32 @@
+[
+ [
+  "memberRow",
+  0,
+  0,
+  "struct IAgentAccess.Member"
+ ],
+ [
+  "memberRow.grantedBy",
+  0,
+  0,
+  "address"
+ ],
+ [
+  "memberRow.grantedAt",
+  0,
+  20,
+  "uint64"
+ ],
+ [
+  "memberRow.indexPlusOne",
+  0,
+  28,
+  "uint16"
+ ],
+ [
+  "memberRow.role",
+  0,
+  30,
+  "enum IAgentAccess.Role"
+ ]
+]

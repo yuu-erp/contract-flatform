@@ -8,6 +8,8 @@ import {AgentRegistry} from "../../src/tenant/agent/AgentRegistry.sol";
 import {BranchRegistry} from "../../src/tenant/branch/BranchRegistry.sol";
 import {AgentAccess} from "../../src/tenant/access/AgentAccess.sol";
 import {SalesSettings} from "../../src/shared/payment/SalesSettings.sol";
+import {Registry} from "../../src/kernel/registry/Registry.sol";
+import {IRegistry} from "../../src/interfaces/IRegistry.sol";
 import {Ledger} from "../../src/shared/ledger/Ledger.sol";
 import {AgentUserRegistry} from "../../src/tenant/user/AgentUserRegistry.sol";
 import {IAgentUserRegistry} from "../../src/interfaces/IAgentUserRegistry.sol";
@@ -32,19 +34,28 @@ contract HistoryIndexLayout {
 
 contract AgentRegistryLayout {
     AgentRegistry.AgentsStorage internal s;
-    // Agent nằm trong mapping nên phải khai báo riêng để kiểm thứ tự trường
+}
+
+/// @dev Struct nằm trong mapping: harness riêng để thêm trường vào storage chính không làm lệch vị trí.
+contract AgentRegistryRowsLayout {
     IAgentRegistry.Agent internal agentRow;
 }
 
 contract BranchRegistryLayout {
     BranchRegistry.BranchesStorage internal s;
-    // Branch nằm trong mapping nên phải khai báo riêng để kiểm thứ tự trường
+}
+
+/// @dev Struct nằm trong mapping: harness riêng để thêm trường vào storage chính không làm lệch vị trí.
+contract BranchRegistryRowsLayout {
     IBranchRegistry.Branch internal branchRow;
 }
 
 contract AgentAccessLayout {
     AgentAccess.AgentAccessStorage internal s;
-    // Member nằm trong mapping nên phải khai báo riêng để kiểm thứ tự trường
+}
+
+/// @dev Struct nằm trong mapping: harness riêng để thêm trường vào storage chính không làm lệch vị trí.
+contract AgentAccessRowsLayout {
     IAgentAccess.Member internal memberRow;
 }
 
@@ -54,14 +65,28 @@ contract SalesSettingsLayout {
 
 contract LedgerLayout {
     Ledger.LedgerStorage internal s;
-    // Entry và Portion nằm trong mapping nên phải khai báo riêng để kiểm thứ tự trường
+}
+
+/// @dev Struct nằm trong mapping: harness riêng để thêm trường vào storage chính không làm lệch vị trí.
+contract LedgerRowsLayout {
     ILedger.Entry internal entryRow;
     ILedger.Portion internal portionRow;
 }
 
 contract AgentUserRegistryLayout {
     AgentUserRegistry.UsersStorage internal s;
-    // User và Otp nằm trong mapping nên phải khai báo riêng để kiểm thứ tự trường
+}
+
+/// @dev Struct nằm trong mapping: harness riêng để thêm trường vào storage chính không làm lệch vị trí.
+contract AgentUserRegistryRowsLayout {
     IAgentUserRegistry.User internal userRow;
     IAgentUserRegistry.Otp internal otpRow;
+}
+
+contract RegistryLayout {
+    Registry.RegistryStorage internal s;
+}
+
+contract RegistryRowsLayout {
+    IRegistry.Module internal moduleRow;
 }

@@ -33,21 +33,18 @@ fi
 # L2 — tên module dưới T3. Ngoại lệ tạm thời là nợ kiến trúc có hạn (docs/02 mục 10), xoá khi xử lý xong.
 L2_PATTERN='\b(SERVICE_(NET|IQR|LOYALTY)|ServiceMask\.(NET|IQR|LOYALTY)|uint16 internal constant (NET|IQR|LOYALTY)\b)'
 L2_ALLOW=(
-  "src/libraries/ServiceMask.sol"          # N1 — thay bằng Registry (Baseline tuần 3)
-  "src/tenant/branch/BranchRegistry.sol"   # N1
-  "src/shared/payment/SalesSettings.sol"   # N1
-  "src/libraries/LedgerMetrics.sol"        # N2 — slot bộ đếm theo moduleId
+  # trống: nợ N1, N2 đã xử lý (Registry, ADR 0030/0031). Thêm ngoại lệ phải ghi mã nợ ở docs/02 mục 10.
 )
 l2_hits=$(grep -rnE "$L2_PATTERN" src/kernel src/tenant src/shared src/libraries --include='*.sol' || true)
 if [[ -n "$l2_hits" ]]; then
   while IFS= read -r line; do
     file=${line%%:*}
     allowed=0
-    for a in "${L2_ALLOW[@]}"; do [[ "$file" == "$a" ]] && allowed=1; done
+    for a in ${L2_ALLOW[@]+"${L2_ALLOW[@]}"}; do [[ "$file" == "$a" ]] && allowed=1; done
     if [[ $allowed -eq 0 ]]; then echo "LỖI L2 nền tảng biết tên module: $line"; fail=1; fi
   done <<< "$l2_hits"
   n=$(printf '%s\n' "$l2_hits" | wc -l | tr -d ' ')
-  echo "cảnh báo L2: $n chỗ nền tảng còn biết tên module, đang được miễn tạm (nợ N1, N2 — docs/02 mục 10)"
+  echo "cảnh báo L2: $n chỗ nền tảng còn biết tên module"
 fi
 
 [[ $fail -eq 0 ]] && echo "phụ thuộc: ok"

@@ -179,11 +179,6 @@
         ]
       },
       {
-        "name": "service",
-        "type": "uint16",
-        "internalType": "uint16"
-      },
-      {
         "name": "increase",
         "type": "bool",
         "internalType": "bool"
@@ -323,11 +318,6 @@
         "internalType": "address"
       },
       {
-        "name": "service",
-        "type": "uint16",
-        "internalType": "uint16"
-      },
-      {
         "name": "method",
         "type": "uint8",
         "internalType": "uint8"
@@ -442,6 +432,81 @@
   },
   {
     "type": "function",
+    "name": "licenseOf",
+    "inputs": [
+      {
+        "name": "poster",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct ILedger.License",
+        "components": [
+          {
+            "name": "moduleId",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "kindsMask",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "maxAmount",
+            "type": "uint128",
+            "internalType": "uint128"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "moduleRollup",
+    "inputs": [
+      {
+        "name": "scope",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
+        "name": "id",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "moduleId",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
+        "name": "fromDay",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "toDay",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "out",
+        "type": "uint256[9][]",
+        "internalType": "uint256[9][]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "platformAccess",
     "inputs": [],
     "outputs": [
@@ -480,25 +545,6 @@
             "internalType": "uint128"
           }
         ]
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "posterKinds",
-    "inputs": [
-      {
-        "name": "poster",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint8",
-        "internalType": "uint8"
       }
     ],
     "stateMutability": "view"
@@ -665,9 +711,19 @@
         "internalType": "address"
       },
       {
+        "name": "moduleId",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
         "name": "kindsMask",
         "type": "uint8",
         "internalType": "uint8"
+      },
+      {
+        "name": "maxAmount",
+        "type": "uint128",
+        "internalType": "uint128"
       }
     ],
     "outputs": [],
@@ -797,11 +853,6 @@
         "internalType": "address"
       },
       {
-        "name": "service",
-        "type": "uint16",
-        "internalType": "uint16"
-      },
-      {
         "name": "amount",
         "type": "uint128",
         "internalType": "uint128"
@@ -924,10 +975,22 @@
         "internalType": "address"
       },
       {
+        "name": "moduleId",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "uint8"
+      },
+      {
         "name": "kindsMask",
         "type": "uint8",
         "indexed": false,
         "internalType": "uint8"
+      },
+      {
+        "name": "maxAmount",
+        "type": "uint128",
+        "indexed": false,
+        "internalType": "uint128"
       }
     ],
     "anonymous": false
@@ -953,6 +1016,22 @@
         "name": "target",
         "type": "address",
         "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "AmountExceedsLimit",
+    "inputs": [
+      {
+        "name": "limit",
+        "type": "uint128",
+        "internalType": "uint128"
+      },
+      {
+        "name": "amount",
+        "type": "uint128",
+        "internalType": "uint128"
       }
     ]
   },
@@ -1011,6 +1090,11 @@
   },
   {
     "type": "error",
+    "name": "InvalidLicense",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "InvalidMethod",
     "inputs": [
       {
@@ -1040,28 +1124,6 @@
     "type": "error",
     "name": "InvalidReason",
     "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "InvalidService",
-    "inputs": [
-      {
-        "name": "service",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ]
-  },
-  {
-    "type": "error",
-    "name": "InvalidService",
-    "inputs": [
-      {
-        "name": "service",
-        "type": "uint16",
-        "internalType": "uint16"
-      }
-    ]
   },
   {
     "type": "error",
@@ -1178,6 +1240,22 @@
         "name": "actual",
         "type": "uint64",
         "internalType": "uint64"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "WrongModule",
+    "inputs": [
+      {
+        "name": "expected",
+        "type": "uint16",
+        "internalType": "uint16"
+      },
+      {
+        "name": "actual",
+        "type": "uint16",
+        "internalType": "uint16"
       }
     ]
   },

@@ -7,8 +7,10 @@ import {ISalesSettings} from "../../interfaces/ISalesSettings.sol";
 import {IAgentRegistry} from "../../interfaces/IAgentRegistry.sol";
 import {IBranchRegistry} from "../../interfaces/IBranchRegistry.sol";
 import {IHistoryIndex} from "../../interfaces/IHistoryIndex.sol";
+import {IRegistry} from "../../interfaces/IRegistry.sol";
 import {LedgerMetrics as M} from "../../libraries/LedgerMetrics.sol";
-import {FullDBCodec} from "../../libraries/FullDBCodec.sol";
+import {LedgerRecorder} from "./LedgerRecorder.sol";
+import {LedgerWallet} from "./LedgerWallet.sol";
 
 /// @title Ledger
 /// @notice Sổ cái tiền của nền tảng. Xem `ILedger` và docs/08-dong-tien-va-doanh-thu.md.
@@ -34,12 +36,14 @@ contract Ledger is PlatformAccessed, ILedger {
         IBranchRegistry branches;
         ISalesSettings settings;
         IHistoryIndex history;
-        mapping(address => uint8) posters; // poster → mặt nạ bit (1 << kind)
+        mapping(address => uint8) posters; // không dùng từ ADR 0031 (thay bằng `licenses`), giữ chỗ storage
         mapping(bytes32 => Entry) entries; // refId → bút toán
         mapping(bytes32 => Portion[]) portions; // refId → phần theo chi nhánh của bút toán
         mapping(uint64 => mapping(address => Portion[])) wallets; // agentId → khách → túi (thứ tự nạp lần đầu)
         mapping(uint64 => uint256) liability; // agentId → tổng xu đang nợ khách
-        mapping(uint256 => uint256[32]) rollups; // scope<<128 | id<<64 | day → chỉ số
+        mapping(uint256 => uint256[32]) rollups; // scope<<128 | id<<64 | day → chỉ số chung (0..9)
+        mapping(address => License) licenses; // poster → giấy phép (ADR 0031)
+        mapping(uint256 => mapping(uint8 => uint256[9])) moduleRollups; // key ngày → moduleId → bộ đếm module
     }
 
     // keccak256(abi.encode(uint256(keccak256("metaplatform.core.ledger")) - 1)) & ~bytes32(uint256(0xff))
@@ -73,15 +77,38 @@ contract Ledger is PlatformAccessed, ILedger {
 
     // ─── Quản trị poster ────────────────────────────────────────────────
 
-    /// @notice Set which entry kinds a poster may write (bit `1 << uint8(kind)`). Platform owner only.
-    function setPoster(address poster, uint8 kindsMask) external onlyPlatformOwner {
+    /// @dev Bit loại bút toán nạp/hoàn nạp (chỉ của thanh toán nền tảng, moduleId 0).
+    uint8 private constant TOPUP_KINDS =
+        (uint8(1) << uint8(EntryKind.Topup)) | (uint8(1) << uint8(EntryKind.TopupRefund));
+    uint8 private constant ALL_KINDS = 0x7E;
+    /// @dev = Registry.FLAG_SALES.
+    uint16 private constant FLAG_SALES = 2;
+
+    /// @notice Grant/revoke a poster license (ADR 0031): module, entry kinds, per-entry cap. Platform owner only.
+    ///         moduleId 0 = platform payments (Topup/TopupRefund only); otherwise a sales module (no Topup kinds).
+    function setPoster(address poster, uint8 moduleId, uint8 kindsMask, uint128 maxAmount) external onlyPlatformOwner {
         if (poster == address(0)) revert ZeroAddress();
-        _s().posters[poster] = kindsMask;
-        emit PosterSet(EVENT_VERSION, poster, kindsMask);
+        if (kindsMask == 0) {
+            delete _s().licenses[poster];
+        } else {
+            if (maxAmount == 0 || kindsMask & ~ALL_KINDS != 0) revert InvalidLicense();
+            if (moduleId == 0) {
+                if (kindsMask & ~TOPUP_KINDS != 0) revert InvalidLicense();
+            } else {
+                if (kindsMask & TOPUP_KINDS != 0) revert InvalidLicense();
+                IRegistry.Module memory m = _registry().getModule(moduleId);
+                if (
+                    m.status == IRegistry.ModuleStatus.None || m.status == IRegistry.ModuleStatus.Retired
+                        || m.flags & FLAG_SALES == 0
+                ) revert InvalidLicense();
+            }
+            _s().licenses[poster] = License(moduleId, kindsMask, maxAmount);
+        }
+        emit PosterSet(EVENT_VERSION, poster, moduleId, kindsMask, maxAmount);
     }
 
-    function posterKinds(address poster) external view returns (uint8) {
-        return _s().posters[poster];
+    function licenseOf(address poster) external view returns (License memory) {
+        return _s().licenses[poster];
     }
 
     // ─── Ghi ────────────────────────────────────────────────────────────
@@ -90,12 +117,11 @@ contract Ledger is PlatformAccessed, ILedger {
     ///         The amount lands in that branch's bucket; poster must hold the Topup kind.
     function topup(Ctx calldata ctx, address customer, uint8 method, uint128 amount) external whenNotPaused {
         LedgerStorage storage $ = _s();
-        (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.Topup);
-        if (amount == 0) revert ZeroAmount();
+        (uint64 agentId, int16 tz,) = _newEntry($, ctx, EntryKind.Topup, amount);
         if (customer == address(0)) revert ZeroAddress();
         uint256 mi = _requireCashMethod($, ctx.branchId, method);
 
-        _addBucket($, agentId, customer, ctx.branchId, amount);
+        LedgerWallet.add($.wallets[agentId][customer], agentId, customer, ctx.branchId, amount);
         $.liability[agentId] += amount;
 
         uint32 d = M.day(block.timestamp, tz);
@@ -141,15 +167,10 @@ contract Ledger is PlatformAccessed, ILedger {
     /// @notice Spend wallet coins for a service at `ctx.branchId` (the serving branch B). Buckets are drained
     ///         B first, then in array order; revenue and tax are booked to each funding branch, tax uses B's rate.
     ///         `discount` is informational (already off the price, not part of GROSS). Poster needs WalletSpend.
-    function walletSpend(Ctx calldata ctx, address customer, uint16 service, uint128 amount, uint128 discount)
-        external
-        whenNotPaused
-    {
+    function walletSpend(Ctx calldata ctx, address customer, uint128 amount, uint128 discount) external whenNotPaused {
         LedgerStorage storage $ = _s();
-        (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.WalletSpend);
-        if (amount == 0) revert ZeroAmount();
+        (uint64 agentId, int16 tz, uint16 service) = _newEntry($, ctx, EntryKind.WalletSpend, amount);
         if (customer == address(0)) revert ZeroAddress();
-        M.serviceMetric(service, M.GROSS); // chỉ NET/IQR, khác → InvalidService
         $.branches.requireWritable(ctx.branchId, service);
         $.settings.requireMethod(ctx.branchId, M.WALLET);
 
@@ -194,18 +215,12 @@ contract Ledger is PlatformAccessed, ILedger {
     /// @notice Direct sale with real money (CASH/TRANSFER/CARD) at `ctx.branchId`; no wallet involved.
     ///         Tax is carved out of `amount` at the branch/service rate; `discount` is informational.
     ///         `customer` may be zero. Poster needs the DirectSale kind.
-    function directSale(
-        Ctx calldata ctx,
-        address customer,
-        uint16 service,
-        uint8 method,
-        uint128 amount,
-        uint128 discount
-    ) external whenNotPaused {
+    function directSale(Ctx calldata ctx, address customer, uint8 method, uint128 amount, uint128 discount)
+        external
+        whenNotPaused
+    {
         LedgerStorage storage $ = _s();
-        (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.DirectSale);
-        if (amount == 0) revert ZeroAmount();
-        M.serviceMetric(service, M.GROSS); // chỉ NET/IQR, khác → InvalidService
+        (uint64 agentId, int16 tz, uint16 service) = _newEntry($, ctx, EntryKind.DirectSale, amount);
         $.branches.requireWritable(ctx.branchId, service);
         uint256 mi = _requireCashMethod($, ctx.branchId, method);
 
@@ -248,16 +263,10 @@ contract Ledger is PlatformAccessed, ILedger {
 
     /// @notice Adjust a service's revenue counters up or down (never wallet, never cash), with a 1–200 byte reason.
     ///         Tax is not computed for adjustments. Poster needs the Adjust kind.
-    function adjust(Ctx calldata ctx, uint16 service, bool increase, uint128 amount, string calldata reason)
-        external
-        whenNotPaused
-    {
+    function adjust(Ctx calldata ctx, bool increase, uint128 amount, string calldata reason) external whenNotPaused {
         LedgerStorage storage $ = _s();
-        (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.Adjust);
-        if (amount == 0) revert ZeroAmount();
+        (uint64 agentId, int16 tz, uint16 service) = _newEntry($, ctx, EntryKind.Adjust, amount);
         _requireReason(reason);
-        uint8 dir = increase ? ADJUST_UP : ADJUST_DOWN;
-        uint256 metric = M.serviceMetric(service, increase ? M.ADJ_UP : M.ADJ_DOWN);
         $.branches.requireWritable(ctx.branchId, service);
 
         LedgerRecord memory r = LedgerRecord({
@@ -269,7 +278,7 @@ contract Ledger is PlatformAccessed, ILedger {
             branchId: ctx.branchId,
             customer: address(0),
             service: service,
-            method: dir,
+            method: increase ? ADJUST_UP : ADJUST_DOWN,
             amount: amount,
             discount: 0,
             tax: 0,
@@ -279,19 +288,23 @@ contract Ledger is PlatformAccessed, ILedger {
             reason: reason,
             timestamp: uint64(block.timestamp)
         });
-        uint32 d = M.day(block.timestamp, tz);
-        _bump($, agentId, ctx.branchId, d, metric, amount);
-        $.entries[ctx.refId] = Entry({
+        _bookAdjust($, r, M.day(block.timestamp, tz));
+    }
+
+    /// @dev Bộ đếm ADJ_UP/ADJ_DOWN của module, Entry và bản ghi FullDB của một bút toán điều chỉnh.
+    function _bookAdjust(LedgerStorage storage $, LedgerRecord memory r, uint32 d) private {
+        _bumpMod($, r.agentId, r.branchId, d, r.service, r.method == ADJUST_UP ? M.ADJ_UP : M.ADJ_DOWN, r.amount);
+        $.entries[r.refId] = Entry({
             kind: EntryKind.Adjust,
-            method: dir,
-            service: service,
+            method: r.method,
+            service: r.service,
             taxBps: 0,
-            branchId: ctx.branchId,
+            branchId: r.branchId,
             customer: address(0),
-            amount: amount,
+            amount: r.amount,
             refunded: 0
         });
-        _record($, agentId, d, r);
+        _record($, r.agentId, d, r);
     }
 
     /// @notice Return real money (CASH/TRANSFER/CARD) to a customer out of their bucket at `ctx.branchId`.
@@ -301,8 +314,7 @@ contract Ledger is PlatformAccessed, ILedger {
         whenNotPaused
     {
         LedgerStorage storage $ = _s();
-        (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.TopupRefund);
-        if (amount == 0) revert ZeroAmount();
+        (uint64 agentId, int16 tz,) = _newEntry($, ctx, EntryKind.TopupRefund, amount);
         _requireReason(reason);
         uint256 mi = _requireCashMethod($, ctx.branchId, method);
 
@@ -325,7 +337,7 @@ contract Ledger is PlatformAccessed, ILedger {
             reason: reason,
             timestamp: uint64(block.timestamp)
         });
-        _takeBucket($, agentId, customer, ctx.branchId, amount);
+        LedgerWallet.take($.wallets[agentId][customer], ctx.branchId, amount);
         $.liability[agentId] -= amount;
 
         uint32 d = M.day(block.timestamp, tz);
@@ -354,13 +366,13 @@ contract Ledger is PlatformAccessed, ILedger {
         whenNotPaused
     {
         LedgerStorage storage $ = _s();
-        (uint64 agentId, int16 tz) = _newEntry($, ctx, EntryKind.SaleRefund);
-        if (amount == 0) revert ZeroAmount();
+        (uint64 agentId, int16 tz, uint16 service) = _newEntry($, ctx, EntryKind.SaleRefund, amount);
         _requireReason(reason);
         Entry storage orig = $.entries[originalRefId];
         if (orig.kind != EntryKind.WalletSpend && orig.kind != EntryKind.DirectSale) {
             revert UnknownEntry(originalRefId);
         }
+        if (orig.service != service) revert WrongModule(orig.service, service);
         if (orig.branchId != ctx.branchId) revert WrongBranch(orig.branchId, ctx.branchId);
         $.branches.requireWritable(ctx.branchId, orig.service);
         if (amount > orig.amount - orig.refunded) revert RefundExceedsOriginal(orig.amount - orig.refunded, amount);
@@ -432,22 +444,46 @@ contract Ledger is PlatformAccessed, ILedger {
         }
     }
 
+    function moduleRollup(uint8 scope, uint64 id, uint8 moduleId, uint32 fromDay, uint32 toDay)
+        external
+        view
+        returns (uint256[9][] memory out)
+    {
+        if (scope > SCOPE_BRANCH || fromDay > toDay || toDay - fromDay >= MAX_RANGE_DAYS) revert InvalidRange();
+        if (scope == SCOPE_PLATFORM) id = 0;
+        LedgerStorage storage $ = _s();
+        out = new uint256[9][](uint256(toDay) - fromDay + 1);
+        for (uint256 i; i < out.length; ++i) {
+            out[i] = $.moduleRollups[_key(scope, id, fromDay + uint32(i))][moduleId];
+        }
+    }
+
     // ─── Nội bộ dùng chung cho mọi hàm ghi ──────────────────────────────
 
-    /// @dev Kiểm poster + refId + chi nhánh/agent ghi được; đánh dấu refId đã dùng; trả agentId và múi giờ của chi nhánh (đọc registry một lần).
+    /// @dev Kiểm giấy phép (loại bút toán, trần số tiền) + refId + chi nhánh/agent ghi được; đánh dấu refId đã dùng.
+    ///      Trả agentId, múi giờ chi nhánh và bit dịch vụ của module poster (0 với thanh toán nền tảng).
+    ///      Cầu dao module (ADR 0031) được kiểm ở `BranchRegistry.requireWritable(branch, service)` của từng hàm ghi.
     ///      `entries[refId].kind` được đặt tạm để chiếm refId; hàm ghi gán Entry đầy đủ sau.
-    function _newEntry(LedgerStorage storage $, Ctx calldata ctx, EntryKind kind)
+    function _newEntry(LedgerStorage storage $, Ctx calldata ctx, EntryKind kind, uint128 amount)
         private
-        returns (uint64 agentId, int16 tz)
+        returns (uint64 agentId, int16 tz, uint16 service)
     {
-        if ($.posters[msg.sender] & (uint8(1) << uint8(kind)) == 0) revert NotPoster(msg.sender, kind);
+        License storage lic = $.licenses[msg.sender];
+        if (lic.kindsMask & (uint8(1) << uint8(kind)) == 0) revert NotPoster(msg.sender, kind);
+        if (amount == 0) revert ZeroAmount();
+        if (amount > lic.maxAmount) revert AmountExceedsLimit(lic.maxAmount, amount);
+        if (lic.moduleId != 0) service = uint16(1) << (lic.moduleId - 1);
         if (ctx.refId == bytes32(0)) revert ZeroRefId();
         if ($.entries[ctx.refId].kind != EntryKind.None) revert RefIdUsed(ctx.refId);
         IBranchRegistry.Branch memory br = $.branches.getBranch(ctx.branchId);
         if (br.status != IBranchRegistry.BranchStatus.Active) revert BranchNotActive(ctx.branchId);
         $.agents.requireAgentWritable(br.agentId);
         $.entries[ctx.refId].kind = kind;
-        return (br.agentId, br.tzOffsetMinutes);
+        return (br.agentId, br.tzOffsetMinutes, service);
+    }
+
+    function _registry() private view returns (IRegistry) {
+        return IRegistry(_s().branches.registry());
     }
 
     /// @dev Lý do bắt buộc 1–200 byte (adjust, refundTopup, refundSale).
@@ -468,9 +504,9 @@ contract Ledger is PlatformAccessed, ILedger {
     /// @dev Bộ đếm bán trực tiếp ở ba phạm vi: tiền thu theo phương thức, GROSS, TAX, DISCOUNT (nếu có).
     function _bookSale(LedgerStorage storage $, LedgerRecord memory r, uint256 mi, uint32 d) private {
         _bump($, r.agentId, r.branchId, d, M.CASH_IN + mi, r.amount);
-        _bump($, r.agentId, r.branchId, d, M.serviceMetric(r.service, M.GROSS), r.amount);
-        _bump($, r.agentId, r.branchId, d, M.serviceMetric(r.service, M.TAX), r.tax);
-        if (r.discount != 0) _bump($, r.agentId, r.branchId, d, M.serviceMetric(r.service, M.DISCOUNT), r.discount);
+        _bumpMod($, r.agentId, r.branchId, d, r.service, M.GROSS, r.amount);
+        _bumpMod($, r.agentId, r.branchId, d, r.service, M.TAX, r.tax);
+        if (r.discount != 0) _bumpMod($, r.agentId, r.branchId, d, r.service, M.DISCOUNT, r.discount);
     }
 
     function _key(uint8 scope, uint64 id, uint32 d) private pure returns (uint256) {
@@ -484,6 +520,43 @@ contract Ledger is PlatformAccessed, ILedger {
         $.rollups[_key(SCOPE_PLATFORM, 0, d)][metric] += amount;
         $.rollups[_key(SCOPE_AGENT, agentId, d)][metric] += amount;
         $.rollups[_key(SCOPE_BRANCH, branchId, d)][metric] += amount;
+    }
+
+    /// @dev Bộ đếm của module (theo bit dịch vụ `service`) ở cả ba phạm vi của ngày `d`.
+    function _bumpMod(
+        LedgerStorage storage $,
+        uint64 agentId,
+        uint64 branchId,
+        uint32 d,
+        uint16 service,
+        uint256 offset,
+        uint256 amount
+    ) private {
+        uint8 mid = _moduleId(service);
+        $.moduleRollups[_key(SCOPE_PLATFORM, 0, d)][mid][offset] += amount;
+        $.moduleRollups[_key(SCOPE_AGENT, agentId, d)][mid][offset] += amount;
+        $.moduleRollups[_key(SCOPE_BRANCH, branchId, d)][mid][offset] += amount;
+    }
+
+    /// @dev Chỉ phạm vi chi nhánh (SERVED_HERE, SERVED_HERE_REFUND: chi nhánh phục vụ khác chi nhánh thu tiền).
+    function _bumpModBranch(
+        LedgerStorage storage $,
+        uint64 branchId,
+        uint32 d,
+        uint16 service,
+        uint256 offset,
+        uint256 amount
+    ) private {
+        $.moduleRollups[_key(SCOPE_BRANCH, branchId, d)][_moduleId(service)][offset] += amount;
+    }
+
+    /// @dev Bit dịch vụ (đúng một bit) → moduleId = vị trí bit + 1.
+    function _moduleId(uint16 bit) private pure returns (uint8 id) {
+        id = 1;
+        while (bit > 1) {
+            bit >>= 1;
+            ++id;
+        }
     }
 
     /// @dev Bản ghi nền của một bút toán hoàn bán, sao từ gốc; `tax`/`portions` do người gọi điền.
@@ -526,8 +599,8 @@ contract Ledger is PlatformAccessed, ILedger {
         uint128 amount,
         uint128 tax
     ) private {
-        _bump($, agentId, branchId, d, M.serviceMetric(service, M.REFUND), amount);
-        _bump($, agentId, branchId, d, M.serviceMetric(service, M.TAX_REFUND), tax);
+        _bumpMod($, agentId, branchId, d, service, M.REFUND, amount);
+        _bumpMod($, agentId, branchId, d, service, M.TAX_REFUND, tax);
     }
 
     /// @dev Hoàn WalletSpend: duyệt phần của bút toán gốc từ cuối lên, bỏ qua phần đã hoàn (`orig.refunded`),
@@ -572,109 +645,25 @@ contract Ledger is PlatformAccessed, ILedger {
         uint16 bps,
         uint32 refundDay
     ) private returns (uint128 t) {
-        _addBucket($, r.agentId, r.customer, from, x);
+        LedgerWallet.add($.wallets[r.agentId][r.customer], r.agentId, r.customer, from, x);
         uint32 d = M.day(block.timestamp, $.branches.getBranch(from).tzOffsetMinutes);
         t = uint128(uint256(x) * bps / (10_000 + uint256(bps)));
         _bump($, r.agentId, from, d, M.WALLET_CREDIT, x);
         _bumpRefund($, r.agentId, from, d, r.service, x, t);
-        if (from != r.branchId) _bumpBranch($, r.branchId, refundDay, M.servedRefundMetric(r.service), x);
-    }
-
-    /// @dev Chỉ phạm vi chi nhánh (ví dụ SERVED_HERE: chi nhánh phục vụ khác chi nhánh thu tiền).
-    function _bumpBranch(LedgerStorage storage $, uint64 branchId, uint32 d, uint256 metric, uint256 amount) private {
-        $.rollups[_key(SCOPE_BRANCH, branchId, d)][metric] += amount;
-    }
-
-    /// @dev Cộng vào túi của chi nhánh; túi mới ở cuối, quá `MAX_BUCKETS` → revert.
-    function _addBucket(LedgerStorage storage $, uint64 agentId, address customer, uint64 branchId, uint128 amount)
-        private
-    {
-        Portion[] storage list = $.wallets[agentId][customer];
-        uint256 n = list.length;
-        for (uint256 i; i < n; ++i) {
-            if (list[i].branchId == branchId) {
-                list[i].amount += amount;
-                return;
-            }
-        }
-        if (n >= MAX_BUCKETS) revert TooManyBuckets(agentId, customer);
-        list.push(Portion(branchId, amount));
-    }
-
-    /// @dev Trừ `amount` khỏi túi của `customer` ở `branchId`; vượt số dư túi (hoặc không có túi) → InsufficientBalance.
-    function _takeBucket(LedgerStorage storage $, uint64 agentId, address customer, uint64 branchId, uint128 amount)
-        private
-    {
-        Portion[] storage list = $.wallets[agentId][customer];
-        uint256 n = list.length;
-        uint256 i;
-        while (i < n && list[i].branchId != branchId) ++i;
-        uint128 have = i < n ? list[i].amount : 0;
-        if (amount > have) revert InsufficientBalance(have, amount);
-        _subBucket(list, i, amount);
-    }
-
-    /// @dev Trừ `amount` khỏi túi ở vị trí `i`; túi về 0 thì gỡ bằng dịch trái (giữ thứ tự nạp).
-    ///      Người gọi phải kiểm `amount <= list[i].amount` trước (ở đây chỉ gọi sau khi đã kiểm tổng số dư).
-    function _subBucket(Portion[] storage list, uint256 i, uint128 amount) private {
-        uint128 left = list[i].amount - amount;
-        if (left != 0) {
-            list[i].amount = left;
-            return;
-        }
-        uint256 n = list.length;
-        for (uint256 j = i; j + 1 < n; ++j) {
-            list[j] = list[j + 1];
-        }
-        list.pop();
+        if (from != r.branchId) _bumpModBranch($, r.branchId, refundDay, r.service, M.SERVED_HERE_REFUND, x);
     }
 
     /// @dev Kiểm số dư (không đổi gì nếu thiếu), trừ túi, ghi bộ đếm, giảm nợ ví; điền `r.portions` và `r.tax`.
     ///      Trả bps thuế của chi nhánh phục vụ và ngày của nó.
     function _settle(LedgerStorage storage $, LedgerRecord memory r, int16 tz) private returns (uint16 bps, uint32 d) {
         Portion[] storage list = $.wallets[r.agentId][r.customer];
-        uint128 bal = _sum(list);
+        uint128 bal = LedgerWallet.sum(list);
         if (bal < r.amount) revert InsufficientBalance(bal, r.amount);
         bps = $.settings.taxOf(r.branchId, r.service);
-        r.portions = _drain(list, r.branchId, r.amount);
+        r.portions = LedgerWallet.drain(list, r.branchId, r.amount);
         d = M.day(block.timestamp, tz);
         r.tax = _bookSpend($, r, d, bps);
         $.liability[r.agentId] -= r.amount;
-    }
-
-    function _sum(Portion[] storage list) private view returns (uint128 sum) {
-        for (uint256 i; i < list.length; ++i) {
-            sum += list[i].amount;
-        }
-    }
-
-    /// @dev Trừ `amount` (đã kiểm <= tổng số dư): túi của `servedBranch` trước, rồi theo thứ tự mảng.
-    ///      Trả các phần theo đúng thứ tự trừ. Túi về 0 bị gỡ.
-    function _drain(Portion[] storage list, uint64 servedBranch, uint128 amount)
-        private
-        returns (Portion[] memory parts)
-    {
-        parts = new Portion[](list.length);
-        uint256 n;
-        uint128 left = amount;
-        for (uint256 i; i < list.length; ++i) {
-            if (list[i].branchId != servedBranch) continue;
-            uint128 take = list[i].amount < left ? list[i].amount : left;
-            parts[n++] = Portion(servedBranch, take);
-            left -= take;
-            _subBucket(list, i, take);
-            break;
-        }
-        while (left != 0) {
-            uint128 have = list[0].amount;
-            uint128 take = have < left ? have : left;
-            parts[n++] = Portion(list[0].branchId, take);
-            left -= take;
-            _subBucket(list, 0, take);
-        }
-        assembly {
-            mstore(parts, n)
-        }
     }
 
     /// @dev Ghi bộ đếm cho từng phần của `r`: ngày của chi nhánh nạp A; SERVED_HERE chỉ ở phạm vi chi nhánh
@@ -691,49 +680,15 @@ contract Ledger is PlatformAccessed, ILedger {
             uint128 t = uint128(uint256(x) * bps / (10_000 + uint256(bps)));
             tax += t;
             _bump($, r.agentId, from, d, M.WALLET_SPEND, x);
-            _bump($, r.agentId, from, d, M.serviceMetric(r.service, M.GROSS), x);
-            _bump($, r.agentId, from, d, M.serviceMetric(r.service, M.TAX), t);
-            if (i == 0 && r.discount != 0) {
-                _bump($, r.agentId, from, d, M.serviceMetric(r.service, M.DISCOUNT), r.discount);
-            }
-            if (from != r.branchId) {
-                _bumpBranch($, r.branchId, servedDay, M.serviceMetric(r.service, M.SERVED_HERE), x);
-            }
+            _bumpMod($, r.agentId, from, d, r.service, M.GROSS, x);
+            _bumpMod($, r.agentId, from, d, r.service, M.TAX, t);
+            if (i == 0 && r.discount != 0) _bumpMod($, r.agentId, from, d, r.service, M.DISCOUNT, r.discount);
+            if (from != r.branchId) _bumpModBranch($, r.branchId, servedDay, r.service, M.SERVED_HERE, x);
         }
     }
 
-    /// @dev Ghi FullDB: terms B<branch>, K<kind>, S<actor>, W<customer>?, C<shift>?; values 0 = ts, 1 = amount, 2 = day.
+    /// @dev Ghi FullDB + phát `Posted` qua library liên kết ngoài (DELEGATECALL, giữ msg.sender = Ledger) để giảm kích thước.
     function _record(LedgerStorage storage $, uint64 agentId, uint32 d, LedgerRecord memory r) private {
-        uint256 n = 3 + (r.customer != address(0) ? 1 : 0) + (r.shiftId != 0 ? 1 : 0);
-        IHistoryIndex.Term[] memory terms = new IHistoryIndex.Term[](n);
-        uint256 k;
-        terms[k++] = IHistoryIndex.Term("B", FullDBCodec.toDecimal(r.branchId));
-        terms[k++] = IHistoryIndex.Term("K", FullDBCodec.toDecimal(uint8(r.kind)));
-        terms[k++] = IHistoryIndex.Term("S", FullDBCodec.toHex(r.actor));
-        if (r.customer != address(0)) terms[k++] = IHistoryIndex.Term("W", FullDBCodec.toHex(r.customer));
-        if (r.shiftId != 0) terms[k++] = IHistoryIndex.Term("C", FullDBCodec.toDecimal(r.shiftId));
-        IHistoryIndex.Value[] memory values = new IHistoryIndex.Value[](3);
-        values[0] = IHistoryIndex.Value(0, r.timestamp);
-        values[1] = IHistoryIndex.Value(1, r.amount);
-        values[2] = IHistoryIndex.Value(2, d);
-        $.history.append(agentId, KIND_LEDGER, abi.encode(r), terms, values);
-        _emitPosted(agentId, r);
-    }
-
-    function _emitPosted(uint64 agentId, LedgerRecord memory r) private {
-        emit Posted(
-            EVENT_VERSION,
-            agentId,
-            r.branchId,
-            r.refId,
-            r.kind,
-            r.customer,
-            r.service,
-            r.method,
-            r.amount,
-            r.tax,
-            r.actor,
-            r.shiftId
-        );
+        LedgerRecorder.record($.history, agentId, d, r);
     }
 }

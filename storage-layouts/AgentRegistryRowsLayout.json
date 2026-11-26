@@ -1,0 +1,56 @@
+[
+ [
+  "agentRow",
+  0,
+  0,
+  "struct IAgentRegistry.Agent"
+ ],
+ [
+  "agentRow.id",
+  0,
+  0,
+  "uint64"
+ ],
+ [
+  "agentRow.owner",
+  0,
+  8,
+  "address"
+ ],
+ [
+  "agentRow.pendingOwner",
+  1,
+  0,
+  "address"
+ ],
+ [
+  "agentRow.status",
+  1,
+  20,
+  "enum IAgentRegistry.AgentStatus"
+ ],
+ [
+  "agentRow.createdAt",
+  1,
+  21,
+  "uint64"
+ ],
+ [
+  "agentRow.updatedAt",
+  2,
+  0,
+  "uint64"
+ ],
+ [
+  "agentRow.profileDocId",
+  3,
+  0,
+  "uint256"
+ ],
+ [
+  "agentRow.allowedServices",
+  4,
+  0,
+  "uint16"
+ ]
+]

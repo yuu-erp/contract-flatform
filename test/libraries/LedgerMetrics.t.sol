@@ -9,10 +9,6 @@ contract LedgerMetricsTest is Test {
         return M.day(ts, tz);
     }
 
-    function serviceMetric(uint16 s, uint256 o) external pure returns (uint256) {
-        return M.serviceMetric(s, o);
-    }
-
     function methodIndex(uint8 m) external pure returns (uint256) {
         return M.methodIndex(m);
     }
@@ -27,11 +23,9 @@ contract LedgerMetricsTest is Test {
         assertEq(this.day(86_400 + 3600, -60), 1);
     }
 
-    function test_serviceMetric() public {
-        assertEq(this.serviceMetric(1, M.TAX), 15);
-        assertEq(this.serviceMetric(2, M.SERVED_HERE), 25);
-        vm.expectRevert(abi.encodeWithSelector(M.InvalidService.selector, uint16(4)));
-        this.serviceMetric(4, 0);
+    function test_moduleOffsets() public pure {
+        assertEq(M.SERVED_HERE_REFUND, 8);
+        assertEq(M.MODULE_METRICS, 9);
     }
 
     function test_methodIndex() public {

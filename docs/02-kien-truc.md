@@ -48,7 +48,7 @@ Mỗi contract trả lời **đúng một câu hỏi** (luật L4). Tính năng 
 | Tầng | Contract | Câu hỏi nó trả lời | Trạng thái | Thư mục đích (ADR 0034) |
 |---|---|---|---|---|
 | T0 | `PlatformAccess` (+ abstract `PlatformAccessed`) | Ai là owner/admin nền tảng? Hệ có đang dừng toàn bộ? | ✅ | `src/kernel/access/` |
-| T0 | `Registry` | Contract/module nào ở địa chỉ nào, phiên bản nào; module nào đang chạy/tạm dừng/ngừng; module khai báo gì (ADR 0030) | Chưa | `src/kernel/registry/` |
+| T0 | `Registry` | Contract/module nào ở địa chỉ nào, phiên bản nào; module nào đang chạy/tạm dừng/ngừng; module khai báo gì (ADR 0030) | ✅ (`docs/modules/kernel-registry.md`) | `src/kernel/registry/` |
 | T0 | `HistoryIndex` | Ghi/đọc lịch sử vào FullDB ở đâu, ai được ghi loại nào | ✅ | `src/kernel/history/` |
 | T1 | `AgentRegistry` | Agent nào tồn tại, chủ là ai, đang chạy hay dừng? | ✅ | `src/tenant/agent/` |
 | T1 | `BranchRegistry` | Chi nhánh nào thuộc agent nào, bật module nào, đang chạy hay dừng? | ✅ | `src/tenant/branch/` |
@@ -139,8 +139,8 @@ Chi tiết: ADR 0031.
 | 0027 | Ví trả trước tách Loyalty | **Chốt:** xu chính ở Ledger (T2) |
 | 0028 | Robot, MTDToken, RevenueManager, licence | Robot bỏ; licence sau; MTDToken, RevenueManager chưa trả lời |
 | 0029 | Cây bốn tầng và tiêu chí đặt chỗ | **Chốt** (`docs/adr/0029-cay-bon-tang.md`) |
-| 0030 | Module Contract và Registry | **Chốt hướng**, chờ đặc tả `Registry` (`docs/adr/0030-module-contract.md`) |
-| 0031 | Cô lập lỗi: cầu dao, tường lửa tiền, hook an toàn | **Chờ người dùng duyệt** (chạm tiền) (`docs/adr/0031-co-lap-loi.md`) |
+| 0030 | Module Contract và Registry | **Chốt**, đã cài (`docs/adr/0030-module-contract.md`, `docs/modules/kernel-registry.md`) |
+| 0031 | Cô lập lỗi: cầu dao, tường lửa tiền, hook an toàn | **Chốt** (người dùng duyệt 2026-11-26) (`docs/adr/0031-co-lap-loi.md`) |
 | 0032 | Ghi lịch sử không làm rễ phụ thuộc FullDB | **Đề xuất**, chờ đội chain trả lời (`docs/adr/0032-fulldb-trong-giao-dich.md`) |
 | 0033 | Mô hình quyền: Permission + Duty | **Chốt hướng** (`docs/adr/0033-mo-hinh-quyen.md`) |
 | 0034 | Thư mục theo tầng | **Chốt** (`docs/adr/0034-thu-muc-theo-tang.md`) |
@@ -149,16 +149,16 @@ Chi tiết: ADR 0031.
 
 | # | Nợ | Vi phạm | Xử lý | Khi nào |
 |---|---|---|---|---|
-| N1 | `ServiceMask` cố định `NET=1, IQR=2, LOYALTY=4, ALL=7`; hằng `SERVICE_*` lặp ở `BranchRegistry`, `SalesSettings`, `LedgerMetrics` | L2, Y2 | `Registry` giữ danh sách module; `AgentRegistry`/`BranchRegistry` kiểm qua `Registry` | Baseline tuần 3 |
-| N2 | `LedgerMetrics` đánh slot bộ đếm theo `SERVICE_NET`/`SERVICE_IQR` cố định; `walletSpend` nhận `service` do poster tự khai | L2, C3 | Slot theo `moduleId` từ `Registry`; Ledger gắn poster ↔ module | Baseline tuần 3 (cùng phương án giảm tải Ledger) |
-| N3 | `Ledger` còn ~173 B tới trần 24 KB | L5 | Phương án tách (bộ đếm ra contract riêng hoặc library ngoài) trong ADR riêng | Baseline tuần 3 |
-| N4 | `AgentUserRegistry` 24.180 B (còn 396 B); gánh tài khoản + đăng nhập + OTP + thống kê `newUsersByDay` | L4, L5, L6 | OTP chuyển `DelegateRegistry`; thống kê bỏ khỏi storage (đếm qua FullDB/event) | Baseline tuần 3 |
+| N1 | ~~`ServiceMask` + hằng `SERVICE_*` trong nền tảng~~ | L2, Y2 | `Registry` (ADR 0030); `ServiceMask` xoá; `check_deps` L2 không còn ngoại lệ | **Xong** tuần 3 |
+| N2 | ~~Bộ đếm Ledger cố định NET/IQR; `service` do poster tự khai~~ | L2, C3 | `moduleRollup` theo `moduleId`; dịch vụ lấy từ giấy phép poster | **Xong** tuần 3 |
+| N3 | `Ledger` 23.158 B (trước 24.403 B) | L5 | Đã tách `LedgerRecorder`, `LedgerWallet` (library ngoài). Còn > 20 KB: tách bộ đếm sang library nếu thêm tính năng | Theo dõi |
+| N4 | `AgentUserRegistry` 23.044 B; còn gánh OTP | L4, L5 | Đã bỏ thống kê theo ngày (tuần 3). OTP chuyển `DelegateRegistry` ở tuần 4 | Tuần 4 |
 | N5 | `AgentUserRegistry` kiểm "Staff trở lên" thay vì quyền cụ thể | ADR 0033 | Đổi sang `Permission.can()` | Sau khi có `Permission` |
 | N6 | Ghi FullDB nằm trong giao dịch chính, chưa rõ hành vi khi FullDB lỗi | Y1 | ADR 0032 | Chờ đội chain |
 | N7 | `BranchRegistry` bắt buộc domain duy nhất cho mọi chi nhánh | Y2 (Enterprise nhiều văn phòng) | Cho phép chi nhánh không domain | Khi làm Enterprise |
-| N8 | `Ledger.setPoster` chưa có trần mỗi giao dịch, chưa gắn module | C3 | ADR 0031 | Baseline tuần 3 |
+| N8 | ~~`Ledger.setPoster` chưa có trần, chưa gắn module~~ | C3 | Giấy phép `(moduleId, kindsMask, maxAmount)` (ADR 0031) | **Xong** tuần 3 |
 | N9 | ~~`docs/05`, `docs/06` còn đường dẫn `core/` cũ~~ | — | Đã sửa khi dời thư mục (ADR 0034) | **Xong** tuần 2 |
-| N10 | `BranchRegistry` 20.292 B, sát ngưỡng cảnh báo 20 KB | L5 | Theo dõi; chuyển kiểm module sang `Registry` (N1) có thể làm tăng | Baseline tuần 3 |
+| N10 | `BranchRegistry` 20.956 B (> 20 KB sau khi thêm cầu dao) | L5 | Nếu thêm tính năng: tách hồ sơ/domain sang library ngoài | Theo dõi |
 
 ## 11. Checklist kiến trúc cho mọi task
 

@@ -139,6 +139,16 @@ export class BranchRegistryContract extends MtnContract {
     return unwrapValue(result)
   }
 
+  public async registry(): Promise<unknown> {
+    const result = await this.sendTransaction({
+      functionName: branchRegistryABI.registry.name,
+      abiData: branchRegistryABI.registry,
+      inputData: {},
+      feeType: 'read',
+    })
+    return unwrapValue(result)
+  }
+
   public async requireWritable(branchId: unknown, service: unknown): Promise<unknown> {
     const result = await this.sendTransaction({
       functionName: branchRegistryABI.requireWritable.name,
@@ -194,6 +204,16 @@ export class BranchRegistryContract extends MtnContract {
       functionName: branchRegistryABI.setMainBranch.name,
       abiData: branchRegistryABI.setMainBranch,
       inputData: { branchId },
+      feeType: 'sc',
+    })
+    return unwrapValue(result)
+  }
+
+  public async setRegistry(registry_: unknown): Promise<unknown> {
+    const result = await this.sendTransaction({
+      functionName: branchRegistryABI.setRegistry.name,
+      abiData: branchRegistryABI.setRegistry,
+      inputData: { registry_ },
       feeType: 'sc',
     })
     return unwrapValue(result)

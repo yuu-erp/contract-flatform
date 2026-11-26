@@ -1,4 +1,4 @@
-/** Khớp `ILedger.EntryKind` — bit trong `posterKinds` là `1 << kind`. */
+/** Khớp `ILedger.EntryKind` — bit trong `License.kindsMask` là `1 << kind`. */
 export const LEDGER_POSTER_BITS = {
   Topup: 1,
   WalletSpend: 2,
@@ -36,3 +36,9 @@ export const LEDGER_KIND_CHECKBOXES = Object.entries(LABELS).map(([kind, label])
   kind: Number(kind),
   label,
 }))
+/** Module của giấy phép poster (ADR 0031). Frontend được biết tên module; contract nền tảng thì không. */
+export const LEDGER_MODULE_LABELS: Record<number, string> = {
+  0: 'Thanh toán nền tảng (nạp ví)',
+  1: 'NET',
+  2: 'IQR',
+}

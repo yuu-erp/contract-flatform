@@ -1,6 +1,6 @@
 # Lệnh chuẩn của meta-platform. CI chạy `make ci`.
 # `deploy`, `deploy-agent-access` và `set-admin` chỉ người dùng chạy (đọc .env, có --broadcast). Agent không chạy các target đó.
-.PHONY: build test fmt sizes layout deps snapshot snapshot-update ci legacy-inventory abi deploy deploy-agent-access deploy-local set-admin mock-agents seed-mock-agents deploy-mock-fulldb upgrade upgrade-dry upgrade-local
+.PHONY: deploy-registry build test fmt sizes layout deps snapshot snapshot-update ci legacy-inventory abi deploy deploy-agent-access deploy-local set-admin mock-agents seed-mock-agents deploy-mock-fulldb upgrade upgrade-dry upgrade-local
 
 build:
 	forge build
@@ -47,6 +47,7 @@ abi:
 	forge inspect SalesSettings abi --json > abi/SalesSettings.json
 	forge inspect Ledger abi --json > abi/Ledger.json
 	forge inspect AgentUserRegistry abi --json > abi/AgentUserRegistry.json
+	forge inspect Registry abi --json > abi/Registry.json
 
 # Chỉ người dùng chạy. Cần PRIVATE_KEY và RPC_URL trong .env (foundry nạp .env; rpc "platform" = ${RPC_URL}).
 # FOUNDry doc: bien trong .env duoc nap; neu FULLDB khong ap dung, chay: FULLDB=0x... make deploy
@@ -62,6 +63,10 @@ deploy-agent-access:
 # đọc/ghi deployments/platform-<chainid>.json. Cần PRIVATE_KEY (owner) trong .env.
 deploy-users:
 	forge script script/DeployAgentUsers.s.sol --rpc-url platform --broadcast
+
+# Chỉ người dùng chạy. Thêm Registry (ADR 0030) vào hệ đã deploy; chạy SAU khi upgrade AgentRegistry + BranchRegistry.
+deploy-registry:
+	forge script script/DeployRegistry.s.sol --rpc-url platform --broadcast
 
 # Chỉ người dùng chạy. Cần PRIVATE_KEY (owner), ACCESS_PROXY, ADMIN, ALLOW=true|false.
 set-admin:
@@ -79,7 +84,7 @@ deploy-mock-fulldb:
 # deployments/platform-<chainid>.json. Cần PRIVATE_KEY (owner). Ví dụ: make upgrade CONTRACT=AgentRegistry
 # Target tự chạy kiểm storage layout trước. Hướng dẫn: docs/07-deploy-va-nang-cap.md.
 upgrade:
-	@test -n "$(CONTRACT)" || (echo "Thiếu CONTRACT=PlatformAccess|HistoryIndex|AgentRegistry|BranchRegistry|AgentAccess|SalesSettings|Ledger|AgentUserRegistry" && exit 1)
+	@test -n "$(CONTRACT)" || (echo "Thiếu CONTRACT=PlatformAccess|Registry|HistoryIndex|AgentRegistry|BranchRegistry|AgentAccess|SalesSettings|Ledger|AgentUserRegistry" && exit 1)
 	python3 scripts/storage_layout.py check
 	CONTRACT=$(CONTRACT) forge script script/UpgradeProxy.s.sol --rpc-url platform --broadcast
 

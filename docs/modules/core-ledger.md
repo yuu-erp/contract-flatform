@@ -4,14 +4,21 @@ Sổ cái tiền của hệ mới: ví xu của khách theo agent (chia **túi t
 
 Code: `src/shared/ledger/Ledger.sol`, `src/interfaces/ILedger.sol`, `src/libraries/LedgerMetrics.sol`. UUPS, namespace ERC-7201 `metaplatform.core.ledger`.
 
-## 1. Mô hình poster
+## 1. Mô hình poster — giấy phép (ADR 0031, 2026-11-26)
 
-- Ledger **không** nhận lệnh từ người dùng hay từ app. Chỉ "poster" (module dịch vụ: `core/payment`, NET, IQR ở các kế hoạch sau) gọi được các hàm ghi.
-- `PLATFORM_OWNER` gọi `setPoster(poster, kindsMask)`; bit `1 << uint8(EntryKind)` cho phép loại bút toán đó (Topup=1, WalletSpend=2, DirectSale=3, TopupRefund=4, SaleRefund=5, Adjust=6). Mask `0` thu hồi quyền. `poster = address(0)` bị từ chối (`ZeroAddress`). Phát `PosterSet(1, poster, mask)` và **không** ghi audit FullDB (quyết định tiết kiệm byte cho Ledger).
-- Gọi sai loại: `NotPoster(caller, kind)`.
-- **Deploy không đăng ký poster nào** (`docs/07-deploy-va-nang-cap.md`). Poster thật được cấp khi module tương ứng triển khai. Test dùng `MockLedgerPoster` (chuyển tiếp nguyên văn sáu hàm ghi, mask `0x7E`).
-- Mọi hàm ghi đi qua cùng một cổng (`_newEntry`): kiểm mask poster, `refId != 0` (`ZeroRefId`), `refId` chưa dùng (`RefIdUsed`, dùng chung cho mọi loại), chi nhánh `Active` (`BranchNotActive`), agent ghi được (`requireAgentWritable`). `Ctx = {refId, branchId, actor, shiftId}`: `branchId` là chi nhánh ghi nhận/phục vụ.
+- Ledger **không** nhận lệnh từ người dùng hay từ app. Chỉ "poster" có giấy phép gọi được các hàm ghi.
+- `PLATFORM_OWNER` gọi `setPoster(poster, moduleId, kindsMask, maxAmount)`; `licenseOf(poster)` đọc lại. `kindsMask` bit `1 << uint8(EntryKind)` (Topup=1, WalletSpend=2, DirectSale=3, TopupRefund=4, SaleRefund=5, Adjust=6); `kindsMask = 0` thu hồi.
+  - `moduleId = 0`: thanh toán của nền tảng (`PaymentAccounts`), chỉ được **Topup / TopupRefund**. Tiền chỉ vào ví qua đây.
+  - `moduleId ≠ 0`: module có cờ `FLAG_SALES` ở Registry, chưa Retired (NET, IQR), chỉ được **WalletSpend / DirectSale / SaleRefund / Adjust**.
+  - `maxAmount > 0`: trần số tiền **mỗi bút toán** (`AmountExceedsLimit`). Sai bất kỳ điều kiện nào → `InvalidLicense`.
+- Bút toán bán hàng luôn ghi cho **module của poster**: hàm ghi không còn tham số `service` (`walletSpend(ctx, customer, amount, discount)`, `directSale(ctx, customer, method, amount, discount)`, `adjust(ctx, increase, amount, reason)`). `SaleRefund` phải cùng module với bút toán gốc (`WrongModule`).
+- **Cầu dao module**: mọi bút toán bán hàng gọi `BranchRegistry.requireWritable(branch, service)`, hàm này kiểm `Registry.requireActive(moduleId)`. Module bị `Paused` → Ledger từ chối mọi bút toán của module đó; nạp ví và module khác vẫn chạy (test `test_modulePaused_onlyThatModuleStops`).
+- Gọi sai loại: `NotPoster(caller, kind)`. Phát `PosterSet(1, poster, moduleId, kindsMask, maxAmount)`.
+- **Deploy không đăng ký poster nào.** Test dùng `MockLedgerPoster` (định tuyến tới 3 poster con: `pay` module 0, `net` module 1, `iqr` module 2).
+- Mọi hàm ghi đi qua cùng một cổng (`_newEntry`): kiểm giấy phép + trần, `amount > 0`, `refId != 0` (`ZeroRefId`), `refId` chưa dùng (`RefIdUsed`), chi nhánh `Active` (`BranchNotActive`), agent ghi được (`requireAgentWritable`). `Ctx = {refId, branchId, actor, shiftId}`.
 - Tiền chỉ đi qua Ledger; số tiền hoàn/huỷ do Ledger tự tính từ bút toán gốc và túi, không tin bên gọi (chỉ bị chặn bởi trần).
+- **Bộ đếm**: `rollup` giữ chỉ số chung 0..9 (tiền thu, ví); ô 10..31 bỏ trống. Bộ đếm theo module ở `moduleRollup(scope, id, moduleId, from, to)` → `uint256[9]`: GROSS, DISCOUNT, REFUND, ADJ_UP, ADJ_DOWN, TAX, TAX_REFUND, SERVED_HERE, SERVED_HERE_REFUND (hai ô cuối chỉ ở phạm vi chi nhánh). Frontend ghép lại về 32 ô cũ (`mergeModuleRollups`).
+- **Kích thước**: phần ghi FullDB (`LedgerRecorder`) và thao tác túi ví (`LedgerWallet`) là library liên kết ngoài (DELEGATECALL, `msg.sender` vẫn là Ledger). Ledger 23.158 B.
 
 ## 2. Sáu loại bút toán
 

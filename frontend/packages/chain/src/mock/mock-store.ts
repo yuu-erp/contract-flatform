@@ -60,7 +60,7 @@ export type MockPlatformState = {
   pendingOwner: string
   admins: string[]
   paused: boolean
-  poster: { address: string; mask: number }
+  poster: { address: string; moduleId: number; mask: number; maxAmount: bigint }
   agents: AgentView[]
   agentProfiles: Map<number, AgentProfileRecord>
   branches: BranchView[]
@@ -502,7 +502,7 @@ export function buildMockState(seed: number): MockPlatformState {
       '0x0000000000000000000000000000000000002003',
     ],
     paused: false,
-    poster: { address: '0x0000000000000000000000000000000000000a01', mask: 0x7e },
+    poster: { address: '0x0000000000000000000000000000000000000a01', moduleId: 1, mask: 0x6c, maxAmount: 10_000_000n },
     agents,
     agentProfiles,
     branches,

@@ -28,7 +28,8 @@ describe('createMockContracts', () => {
     expect(state.docs.filter((d) => d.kind === 'ledger').length).toBe(60)
     expect(state.docs.filter((d) => d.kind === 'platform_audit').length).toBe(40)
     expect(state.admins).toHaveLength(3)
-    expect(state.poster.mask).toBe(0x7e)
+    expect(state.poster.mask).toBe(0x6c)
+    expect(state.poster.moduleId).toBe(1)
   })
 
   it('giao dịch giả chờ ~800ms', async () => {

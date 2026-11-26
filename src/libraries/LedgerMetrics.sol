@@ -6,7 +6,6 @@ pragma solidity 0.8.28;
 ///         Đặc tả: docs/08-dong-tien-va-doanh-thu.md §4.
 library LedgerMetrics {
     error InvalidMethod(uint8 method);
-    error InvalidService(uint16 service);
 
     uint256 internal constant CASH_IN = 0; // + methodIndex: 0 CASH, 1 TRANSFER, 2 CARD
     uint256 internal constant CASH_OUT = 3; // + methodIndex
@@ -14,12 +13,10 @@ library LedgerMetrics {
     uint256 internal constant WALLET_SPEND = 7;
     uint256 internal constant WALLET_TOPUP_REFUND = 8;
     uint256 internal constant WALLET_CREDIT = 9;
-    uint256 internal constant SERVICE_BASE = 10;
-    uint256 internal constant SERVICE_STRIDE = 8;
-    /// @dev Hoàn ví chéo chi nhánh: giảm phục vụ tại chỗ (chỉ phạm vi chi nhánh). NET → 26, IQR → 27.
-    uint256 internal constant SERVED_HERE_REFUND_BASE = 26;
+    /// @dev Chỉ số 10..31 của `uint256[32]` không còn dùng (trước ADR 0031 là bộ đếm NET/IQR cố định).
+    ///      Bộ đếm theo module nằm ở `uint256[9]` riêng cho từng `moduleId` (offset bên dưới).
 
-    // Offset trong mỗi dịch vụ.
+    // Offset trong bộ đếm của mỗi module (`uint256[9]`).
     uint256 internal constant GROSS = 0;
     uint256 internal constant DISCOUNT = 1;
     uint256 internal constant REFUND = 2;
@@ -27,12 +24,11 @@ library LedgerMetrics {
     uint256 internal constant ADJ_DOWN = 4;
     uint256 internal constant TAX = 5;
     uint256 internal constant TAX_REFUND = 6;
-    uint256 internal constant SERVED_HERE = 7;
+    uint256 internal constant SERVED_HERE = 7; // chỉ phạm vi chi nhánh phục vụ
+    uint256 internal constant SERVED_HERE_REFUND = 8; // chỉ phạm vi chi nhánh phục vụ
+    uint256 internal constant MODULE_METRICS = 9;
 
     uint8 internal constant WALLET = 8;
-
-    uint16 internal constant SERVICE_NET = 1;
-    uint16 internal constant SERVICE_IQR = 2;
 
     /// @notice CASH(1) → 0, TRANSFER(2) → 1, CARD(4) → 2; mọi giá trị khác revert.
     function methodIndex(uint8 method) internal pure returns (uint256) {
@@ -40,20 +36,6 @@ library LedgerMetrics {
         if (method == 2) return 1;
         if (method == 4) return 2;
         revert InvalidMethod(method);
-    }
-
-    /// @notice Vị trí chỉ số của một dịch vụ: NET → 10 + offset, IQR → 18 + offset; khác revert.
-    function serviceMetric(uint16 service, uint256 offset) internal pure returns (uint256) {
-        if (service == SERVICE_NET) return SERVICE_BASE + offset;
-        if (service == SERVICE_IQR) return SERVICE_BASE + SERVICE_STRIDE + offset;
-        revert InvalidService(service);
-    }
-
-    /// @notice Vị trí chỉ số SERVED_HERE_REFUND của một dịch vụ: NET → 26, IQR → 27; khác revert.
-    function servedRefundMetric(uint16 service) internal pure returns (uint256) {
-        if (service == SERVICE_NET) return SERVED_HERE_REFUND_BASE;
-        if (service == SERVICE_IQR) return SERVED_HERE_REFUND_BASE + 1;
-        revert InvalidService(service);
     }
 
     /// @notice Ngày kinh doanh = floor((ts + tz·60) / 86400), tính bằng int256 để múi giờ âm an toàn.

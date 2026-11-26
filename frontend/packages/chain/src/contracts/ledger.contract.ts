@@ -9,11 +9,11 @@ export class LedgerContract extends MtnContract {
     super({ from, to })
   }
 
-  public async adjust(ctx: unknown, service: unknown, increase: unknown, amount: unknown, reason: unknown): Promise<unknown> {
+  public async adjust(ctx: unknown, increase: unknown, amount: unknown, reason: unknown): Promise<unknown> {
     const result = await this.sendTransaction({
       functionName: ledgerABI.adjust.name,
       abiData: ledgerABI.adjust,
-      inputData: { ctx, service, increase, amount, reason },
+      inputData: { ctx, increase, amount, reason },
       feeType: 'sc',
     })
     return unwrapValue(result)
@@ -49,11 +49,11 @@ export class LedgerContract extends MtnContract {
     return unwrapValue(result)
   }
 
-  public async directSale(ctx: unknown, customer: unknown, service: unknown, method: unknown, amount: unknown, discount: unknown): Promise<unknown> {
+  public async directSale(ctx: unknown, customer: unknown, method: unknown, amount: unknown, discount: unknown): Promise<unknown> {
     const result = await this.sendTransaction({
       functionName: ledgerABI.directSale.name,
       abiData: ledgerABI.directSale,
-      inputData: { ctx, customer, service, method, amount, discount },
+      inputData: { ctx, customer, method, amount, discount },
       feeType: 'sc',
     })
     return unwrapValue(result)
@@ -67,6 +67,26 @@ export class LedgerContract extends MtnContract {
       feeType: 'read',
     })
     return unwrapValue(result)
+  }
+
+  public async licenseOf(poster: unknown): Promise<unknown> {
+    const result = await this.sendTransaction({
+      functionName: ledgerABI.licenseOf.name,
+      abiData: ledgerABI.licenseOf,
+      inputData: { poster },
+      feeType: 'read',
+    })
+    return unwrapValue(result)
+  }
+
+  public async moduleRollup(scope: unknown, id: unknown, moduleId: unknown, fromDay: unknown, toDay: unknown): Promise<unknown> {
+    const result = await this.sendTransaction({
+      functionName: ledgerABI.moduleRollup.name,
+      abiData: ledgerABI.moduleRollup,
+      inputData: { scope, id, moduleId, fromDay, toDay },
+      feeType: 'read',
+    })
+    return unwrapNamed(result, 'out')
   }
 
   public async platformAccess(): Promise<unknown> {
@@ -84,16 +104,6 @@ export class LedgerContract extends MtnContract {
       functionName: ledgerABI.portionsOf.name,
       abiData: ledgerABI.portionsOf,
       inputData: { refId },
-      feeType: 'read',
-    })
-    return unwrapValue(result)
-  }
-
-  public async posterKinds(poster: unknown): Promise<unknown> {
-    const result = await this.sendTransaction({
-      functionName: ledgerABI.posterKinds.name,
-      abiData: ledgerABI.posterKinds,
-      inputData: { poster },
       feeType: 'read',
     })
     return unwrapValue(result)
@@ -129,11 +139,11 @@ export class LedgerContract extends MtnContract {
     return unwrapNamed(result, 'out')
   }
 
-  public async setPoster(poster: unknown, kindsMask: unknown): Promise<unknown> {
+  public async setPoster(poster: unknown, moduleId: unknown, kindsMask: unknown, maxAmount: unknown): Promise<unknown> {
     const result = await this.sendTransaction({
       functionName: ledgerABI.setPoster.name,
       abiData: ledgerABI.setPoster,
-      inputData: { poster, kindsMask },
+      inputData: { poster, moduleId, kindsMask, maxAmount },
       feeType: 'sc',
     })
     return unwrapValue(result)
@@ -159,11 +169,11 @@ export class LedgerContract extends MtnContract {
     return unwrapValue(result)
   }
 
-  public async walletSpend(ctx: unknown, customer: unknown, service: unknown, amount: unknown, discount: unknown): Promise<unknown> {
+  public async walletSpend(ctx: unknown, customer: unknown, amount: unknown, discount: unknown): Promise<unknown> {
     const result = await this.sendTransaction({
       functionName: ledgerABI.walletSpend.name,
       abiData: ledgerABI.walletSpend,
-      inputData: { ctx, customer, service, amount, discount },
+      inputData: { ctx, customer, amount, discount },
       feeType: 'sc',
     })
     return unwrapValue(result)

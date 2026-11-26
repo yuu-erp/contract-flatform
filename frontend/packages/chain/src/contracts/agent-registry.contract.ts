@@ -139,6 +139,16 @@ export class AgentRegistryContract extends MtnContract {
     return unwrapValue(result)
   }
 
+  public async registry(): Promise<unknown> {
+    const result = await this.sendTransaction({
+      functionName: agentRegistryABI.registry.name,
+      abiData: agentRegistryABI.registry,
+      inputData: {},
+      feeType: 'read',
+    })
+    return unwrapValue(result)
+  }
+
   public async requireAgentWritable(agentId: unknown): Promise<unknown> {
     const result = await this.sendTransaction({
       functionName: agentRegistryABI.requireAgentWritable.name,
@@ -174,6 +184,16 @@ export class AgentRegistryContract extends MtnContract {
       functionName: agentRegistryABI.setAgentServices.name,
       abiData: agentRegistryABI.setAgentServices,
       inputData: { agentId, allowedServices },
+      feeType: 'sc',
+    })
+    return unwrapValue(result)
+  }
+
+  public async setRegistry(registry_: unknown): Promise<unknown> {
+    const result = await this.sendTransaction({
+      functionName: agentRegistryABI.setRegistry.name,
+      abiData: agentRegistryABI.setRegistry,
+      inputData: { registry_ },
       feeType: 'sc',
     })
     return unwrapValue(result)

@@ -5,7 +5,7 @@ import json, sys
 
 WARN = 20 * 1024
 # Contract đã vượt ngưỡng cảnh báo và đã có kế hoạch tách (mã nợ ở docs/02 mục 10).
-PLANNED = {"Ledger": "N3", "AgentUserRegistry": "N4"}
+PLANNED = {"Ledger": "N3", "AgentUserRegistry": "N4", "BranchRegistry": "N10"}
 
 data = json.load(sys.stdin)
 fail = False

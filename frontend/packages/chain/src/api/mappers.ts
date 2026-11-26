@@ -16,6 +16,7 @@ import type {
   BranchTax,
   BranchView,
   LedgerEntry,
+  LedgerLicense,
   LedgerPortionView,
   MemberView,
   TaxQuote,
@@ -152,6 +153,42 @@ export function mapBranchIdList(value: unknown): number[] {
   const raw = unwrapNamed(unwrapValue(value), 'out')
   if (!Array.isArray(raw)) return []
   return raw.map((id) => asNumber(id))
+}
+
+export const MODULE_NET = 1
+export const MODULE_IQR = 2
+/** Vị trí đầu của bộ đếm module trong hàng 32 ô cũ (`METRIC`), và ô SERVED_HERE_REFUND riêng. */
+const LEGACY_MODULE_BASE: Record<number, number> = { [MODULE_NET]: 10, [MODULE_IQR]: 18 }
+const LEGACY_SERVED_REFUND: Record<number, number> = { [MODULE_NET]: 26, [MODULE_IQR]: 27 }
+
+export function mapModuleRollup(value: unknown): bigint[][] {
+  const raw = unwrapNamed(unwrapValue(value), 'out')
+  if (!Array.isArray(raw)) return []
+  return raw.map((row) => asBigIntArray32(row).slice(0, 9))
+}
+
+/** Ghép `rollup` (ô 0..9) với `moduleRollup` NET, IQR thành hàng 32 ô như trước ADR 0031. */
+export function mergeModuleRollups(base: bigint[][], net: bigint[][], iqr: bigint[][]): bigint[][] {
+  return base.map((row, d) => {
+    const out = row.slice(0, 32)
+    while (out.length < 32) out.push(0n)
+    for (const [moduleId, rows] of [
+      [MODULE_NET, net],
+      [MODULE_IQR, iqr],
+    ] as const) {
+      const m = rows[d]
+      if (!m) continue
+      const b = LEGACY_MODULE_BASE[moduleId]!
+      for (let i = 0; i < 8; i++) out[b + i] = m[i] ?? 0n
+      out[LEGACY_SERVED_REFUND[moduleId]!] = m[8] ?? 0n
+    }
+    return out
+  })
+}
+
+export function mapLicense(value: unknown): LedgerLicense {
+  const r = asRecord(value, ['moduleId', 'kindsMask', 'maxAmount'])
+  return { moduleId: asNumber(r.moduleId), kindsMask: asNumber(r.kindsMask), maxAmount: asBigInt(r.maxAmount) }
 }
 
 export function mapRollup(value: unknown): bigint[][] {

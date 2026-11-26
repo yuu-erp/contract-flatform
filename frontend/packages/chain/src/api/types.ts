@@ -35,6 +35,13 @@ export type MemberView = {
 
 export type LedgerPortionView = { branchId: number; amount: bigint }
 
+/** Giấy phép poster Ledger (ADR 0031). */
+export type LedgerLicense = {
+  moduleId: number
+  kindsMask: number
+  maxAmount: bigint
+}
+
 export type LedgerEntry = {
   kind: number
   method: number

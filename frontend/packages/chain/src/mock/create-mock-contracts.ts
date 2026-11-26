@@ -398,6 +398,19 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
         out: store.sliceRollup(mockId(scope), mockId(id), mockId(fromDay), mockId(toDay)),
       }
     },
+    /** Mock giữ hàng 32 ô cũ; cắt ra 9 ô của module 1 (ô 10..17 + 26) hoặc 2 (ô 18..25 + 27). */
+    async moduleRollup(scope: unknown, id: unknown, moduleId: unknown, fromDay: unknown, toDay: unknown) {
+      const rows = store.sliceRollup(mockId(scope), mockId(id), mockId(fromDay), mockId(toDay))
+      const m = mockId(moduleId)
+      const base = m === 1 ? 10 : m === 2 ? 18 : -1
+      return {
+        out: rows.map((row) =>
+          base < 0
+            ? Array.from({ length: 9 }, () => 0n)
+            : [...row.slice(base, base + 8), row[m === 1 ? 26 : 27] ?? 0n],
+        ),
+      }
+    },
     async bucketsOf(agentId: unknown, customer: string) {
       const key = `${mockId(agentId)}:${normalizeHexAddress(customer)}`
       return state.walletBuckets.get(key) ?? []
@@ -424,15 +437,22 @@ export function createMockContracts(seed: number, from: string = PREVIEW_WALLETS
     async walletLiability(agentId: unknown) {
       return state.walletLiability.get(mockId(agentId)) ?? 0n
     },
-    async posterKinds(poster: string) {
+    async licenseOf(poster: string) {
       const a = normalizeHexAddress(poster)
-      if (a === normalizeHexAddress(state.poster.address)) return state.poster.mask
-      return 0
+      if (a === normalizeHexAddress(state.poster.address)) {
+        return { moduleId: state.poster.moduleId, kindsMask: state.poster.mask, maxAmount: state.poster.maxAmount }
+      }
+      return { moduleId: 0, kindsMask: 0, maxAmount: 0n }
     },
-    async setPoster(poster: string, kindsMask: unknown) {
+    async setPoster(poster: string, moduleId: unknown, kindsMask: unknown, maxAmount: unknown) {
       requirePlatformOwner()
       await simulateTx(store, poster)
-      state.poster = { address: normalizeHexAddress(poster), mask: mockId(kindsMask) }
+      state.poster = {
+        address: normalizeHexAddress(poster),
+        moduleId: mockId(moduleId),
+        mask: mockId(kindsMask),
+        maxAmount: mockBig(maxAmount),
+      }
     },
   }
 

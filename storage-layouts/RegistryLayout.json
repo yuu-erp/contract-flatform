@@ -1,0 +1,32 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct Registry.RegistryStorage"
+ ],
+ [
+  "s.modules",
+  0,
+  0,
+  "mapping(uint8 => struct IRegistry.Module)"
+ ],
+ [
+  "s.ids",
+  1,
+  0,
+  "uint8[]"
+ ],
+ [
+  "s.contractModule",
+  2,
+  0,
+  "mapping(address => uint16)"
+ ],
+ [
+  "s.addresses",
+  3,
+  0,
+  "mapping(bytes32 => address)"
+ ]
+]

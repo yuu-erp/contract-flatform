@@ -61,6 +61,7 @@ interface IAgentRegistry is IAgentRoleSource {
     error NoPendingOwner(uint64 agentId);
     error EmptyReason();
     error InvalidServices(uint16 services);
+    error RegistryNotSet();
     /// @notice Ví mới đang là Manager/Staff của một chi nhánh thuộc chính agent này; phải rời chi nhánh trước.
     error OwnerIsAgentMember(address owner, uint64 agentId);
 
@@ -76,6 +77,7 @@ interface IAgentRegistry is IAgentRoleSource {
         uint8 version, uint64 indexed agentId, address indexed currentOwner, address indexed newOwner
     );
     event AgentAccessSet(uint8 version, address indexed agentAccess);
+    event RegistrySet(uint8 version, address indexed registry);
     event AgentOwnerTransferred(
         uint8 version, uint64 indexed agentId, address indexed previousOwner, address indexed newOwner
     );
@@ -88,6 +90,8 @@ interface IAgentRegistry is IAgentRoleSource {
     /// @notice Nối AgentAccess để `proposeAgentOwner`/`acceptAgentOwner` kiểm ví mới không là thành viên của agent.
     function setAgentAccess(address agentAccess_) external;
     function agentAccess() external view returns (address);
+    function setRegistry(address registry_) external;
+    function registry() external view returns (address);
 
     // ─── Ghi (PLATFORM_ADMIN) ───────────────────────────────────────────
     /// @notice `allowedServices` là trần module của agent. Chi nhánh chỉ được bật một tập con hợp lệ.

@@ -27,8 +27,8 @@ Mỗi quyết định lớn một file `NNNN-ten-ngan.md`. Track xây hệ mới
 | ADR | Chủ đề | Trạng thái |
 |---|---|---|
 | [0029](0029-cay-bon-tang.md) | Cây bốn tầng và tiêu chí đặt chỗ | Chốt |
-| [0030](0030-module-contract.md) | Module Contract và Registry | Chốt hướng |
-| [0031](0031-co-lap-loi.md) | Cô lập lỗi: cầu dao module, tường lửa tiền, hook an toàn | Chờ người dùng duyệt |
+| [0030](0030-module-contract.md) | Module Contract và Registry | Chốt, đã cài |
+| [0031](0031-co-lap-loi.md) | Cô lập lỗi: cầu dao module, tường lửa tiền, hook an toàn | Chốt |
 | [0032](0032-fulldb-trong-giao-dich.md) | Ghi lịch sử không làm rễ phụ thuộc FullDB | Đề xuất |
 | [0033](0033-mo-hinh-quyen.md) | Mô hình quyền: Permission + Duty | Chốt hướng |
 | [0034](0034-thu-muc-theo-tang.md) | Thư mục theo tầng | Chốt |

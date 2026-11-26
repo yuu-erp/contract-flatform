@@ -217,6 +217,23 @@ make upgrade CONTRACT=BranchRegistry   # tạo/sửa/xoá chi nhánh: owner ho�
 
 Kiểm sau nâng: mở app `platform` bằng ví owner → nút "Tạo agent" bật và tạo thử được; ví admin bấm được "Tạm dừng hệ thống".
 
+### 5.4b Đợt nâng Architecture Baseline tuần 3 (2026-11-26): Registry + giấy phép poster
+
+ADR 0030, 0031. **Thứ tự bắt buộc** (giữa bước 1 và bước 2, tạo agent/chi nhánh mới hoặc đổi dịch vụ sẽ báo `RegistryNotSet` — làm liền một lượt):
+
+```bash
+make upgrade CONTRACT=AgentRegistry    # thêm setRegistry; kiểm dịch vụ qua Registry
+make upgrade CONTRACT=BranchRegistry   # thêm setRegistry; cầu dao module trong requireWritable
+make upgrade CONTRACT=SalesSettings    # bỏ hằng NET/IQR; đọc cờ module ở Registry
+make upgrade CONTRACT=Ledger           # giấy phép poster (module + trần), bộ đếm theo module; tự deploy 2 library LedgerRecorder, LedgerWallet
+make deploy-registry                   # deploy Registry, khai báo 0 platform / 1 net / 2 iqr / 3 loyalty, gắn vào AgentRegistry + BranchRegistry
+```
+
+- Ledger trên 991 **chưa có poster nào** nên đổi ABI ghi không ảnh hưởng dữ liệu. Bộ đếm cũ ô 10..27 bỏ trống (chưa có bút toán).
+- `make deploy-users` (AgentUserRegistry) chạy **sau** đợt này: bản mới đã bỏ thống kê theo ngày.
+- Kiểm sau nâng: app `platform` → Hệ thống → đọc giấy phép poster bất kỳ trả về rỗng; tạo thử chi nhánh bật NET + Loyalty được, chỉ Loyalty bị từ chối.
+- Commit `deployments/platform-991.json` (có thêm `registryProxy`, `registryImpl`).
+
 ### 5.5 Quay lại bản cũ
 
 Implementation cũ vẫn nằm trên chain (địa chỉ có trong lịch sử git của file deployments). Quay lại bằng:

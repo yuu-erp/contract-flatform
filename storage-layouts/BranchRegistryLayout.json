@@ -60,69 +60,9 @@
   "mapping(uint64 => mapping(uint16 => uint16))"
  ],
  [
-  "branchRow",
+  "s.registry",
   8,
   0,
-  "struct IBranchRegistry.Branch"
- ],
- [
-  "branchRow.id",
-  8,
-  0,
-  "uint64"
- ],
- [
-  "branchRow.agentId",
-  8,
-  8,
-  "uint64"
- ],
- [
-  "branchRow.status",
-  8,
-  16,
-  "enum IBranchRegistry.BranchStatus"
- ],
- [
-  "branchRow.services",
-  8,
-  17,
-  "uint16"
- ],
- [
-  "branchRow.isMain",
-  8,
-  19,
-  "bool"
- ],
- [
-  "branchRow.tzOffsetMinutes",
-  8,
-  20,
-  "int16"
- ],
- [
-  "branchRow.domainHash",
-  9,
-  0,
-  "bytes32"
- ],
- [
-  "branchRow.createdAt",
-  10,
-  0,
-  "uint64"
- ],
- [
-  "branchRow.updatedAt",
-  10,
-  8,
-  "uint64"
- ],
- [
-  "branchRow.profileDocId",
-  11,
-  0,
-  "uint256"
+  "contract IRegistry"
  ]
 ]

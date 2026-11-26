@@ -7,14 +7,17 @@ import {ISalesSettings} from "../../interfaces/ISalesSettings.sol";
 import {IAgentRegistry} from "../../interfaces/IAgentRegistry.sol";
 import {IBranchRegistry} from "../../interfaces/IBranchRegistry.sol";
 import {IHistoryIndex} from "../../interfaces/IHistoryIndex.sol";
+import {IRegistry} from "../../interfaces/IRegistry.sol";
 
 /// @title SalesSettings
 /// @notice Cài đặt bán hàng của agent: thuế (mức, kiểu giá) và phương thức thanh toán. Chỉ chủ agent sửa
 ///         (admin nền tảng không), agent và chi nhánh phải Active. Đặc tả: docs/modules/core-sales-settings.md.
 contract SalesSettings is PlatformAccessed, PlatformAuditing, ISalesSettings {
     uint8 public constant EVENT_VERSION = 1;
-    uint16 public constant SERVICE_NET = 1;
-    uint16 public constant SERVICE_IQR = 2;
+    /// @dev = Registry.FLAG_TAX_INCLUSIVE_ONLY (ADR 0030): module khai báo giá bắt buộc đã gồm thuế.
+    uint16 private constant FLAG_TAX_INCLUSIVE_ONLY = 1;
+    /// @dev = Registry.FLAG_SALES: chỉ module bán hàng mới có thuế.
+    uint16 private constant FLAG_SALES = 2;
     uint8 public constant CASH = 1;
     uint8 public constant TRANSFER = 2;
     uint8 public constant CARD = 4;
@@ -107,8 +110,8 @@ contract SalesSettings is PlatformAccessed, PlatformAuditing, ISalesSettings {
     /// @notice Choose tax-exclusive (true) or tax-inclusive (false) pricing. NET is always inclusive.
     function setTaxExclusive(uint64 agentId, uint16 service, bool exclusive) external whenNotPaused {
         _onlyAgentOwnerWritable(agentId);
-        _checkService(service);
-        if (exclusive && service == SERVICE_NET) revert TaxModeNotAllowed(service);
+        uint16 flags = _checkService(service);
+        if (exclusive && flags & FLAG_TAX_INCLUSIVE_ONLY != 0) revert TaxModeNotAllowed(service);
         SettingsStorage storage $ = _s();
         bool old = $.taxExclusive[agentId][service];
         $.taxExclusive[agentId][service] = exclusive;
@@ -232,11 +235,22 @@ contract SalesSettings is PlatformAccessed, PlatformAuditing, ISalesSettings {
         return plusOne == 0 ? abi.encode(service, false, uint16(0)) : abi.encode(service, true, plusOne - 1);
     }
 
-    function _checkService(uint16 service) private pure {
-        if (service != SERVICE_NET && service != SERVICE_IQR) revert InvalidService(service);
+    /// @dev `service` phải là đúng một bit của module bán hàng (FLAG_SALES) đã đăng ký, chưa Retired. Trả cờ của module.
+    function _checkService(uint16 service) private view returns (uint16 flags) {
+        if (service == 0 || service & (service - 1) != 0) revert InvalidService(service);
+        uint8 id = 1;
+        for (uint16 b = service; b > 1; b >>= 1) {
+            ++id;
+        }
+        IRegistry.Module memory m = IRegistry(_s().branches.registry()).getModule(id);
+        if (
+            m.status == IRegistry.ModuleStatus.None || m.status == IRegistry.ModuleStatus.Retired
+                || m.flags & FLAG_SALES == 0
+        ) revert InvalidService(service);
+        return m.flags;
     }
 
-    function _checkTax(uint16 service, uint16 bps) private pure {
+    function _checkTax(uint16 service, uint16 bps) private view {
         _checkService(service);
         if (bps > MAX_TAX_BPS) revert TaxTooHigh(bps);
     }

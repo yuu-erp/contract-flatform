@@ -509,64 +509,6 @@
   },
   {
     "type": "function",
-    "name": "newUsersByBranchDay",
-    "inputs": [
-      {
-        "name": "branchId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "fromDay",
-        "type": "uint32",
-        "internalType": "uint32"
-      },
-      {
-        "name": "toDay",
-        "type": "uint32",
-        "internalType": "uint32"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint32[]",
-        "internalType": "uint32[]"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "newUsersByDay",
-    "inputs": [
-      {
-        "name": "agentId",
-        "type": "uint64",
-        "internalType": "uint64"
-      },
-      {
-        "name": "fromDay",
-        "type": "uint32",
-        "internalType": "uint32"
-      },
-      {
-        "name": "toDay",
-        "type": "uint32",
-        "internalType": "uint32"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint32[]",
-        "internalType": "uint32[]"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
     "name": "otpOf",
     "inputs": [
       {

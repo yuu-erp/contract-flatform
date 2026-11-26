@@ -2,6 +2,7 @@
 pragma solidity 0.8.28;
 
 import {PlatformFixture} from "../../utils/PlatformFixture.sol";
+import {MockLedgerPoster} from "../../utils/MockLedgerPoster.sol";
 import {ILedger} from "../../../src/interfaces/ILedger.sol";
 import {ISalesSettings} from "../../../src/interfaces/ISalesSettings.sol";
 import {IBranchRegistry} from "../../../src/interfaces/IBranchRegistry.sol";
@@ -48,7 +49,7 @@ contract LedgerSpendTest is PlatformFixture {
 
     function _cell(uint8 scope, uint64 id, uint256 metric) internal view returns (uint256) {
         uint32 d = ledger.dayOf(b1, block.timestamp);
-        return ledger.rollup(scope, id, d, d)[0][metric];
+        return _rollCell(scope, id, d, metric);
     }
 
     function test_spend_servedBranchFirst() public {
@@ -65,8 +66,8 @@ contract LedgerSpendTest is PlatformFixture {
         assertEq(p[0].amount, 30_000);
         assertEq(p[1].branchId, b1);
         assertEq(p[1].amount, 10_000);
-        uint256 g = M.serviceMetric(NET, M.GROSS);
-        uint256 sh = M.serviceMetric(NET, M.SERVED_HERE);
+        uint256 g = _svc(NET, M.GROSS);
+        uint256 sh = _svc(NET, M.SERVED_HERE);
         assertEq(_cell(2, b2, g), 30_000);
         assertEq(_cell(2, b2, sh), 10_000);
         assertEq(_cell(2, b1, g), 10_000);
@@ -111,10 +112,10 @@ contract LedgerSpendTest is PlatformFixture {
         assertEq(ledger.bucketsOf(a, alice).length, 1);
         assertEq(ledger.balanceOf(a, alice), 20_000);
         assertEq(ledger.walletLiability(a), 20_000);
-        assertEq(_cell(1, a, M.serviceMetric(NET, M.GROSS)), 0);
+        assertEq(_cell(1, a, _svc(NET, M.GROSS)), 0);
         assertEq(_cell(1, a, M.WALLET_SPEND), 0);
         assertEq(_cell(2, b1, M.WALLET_SPEND), 0);
-        assertEq(_cell(2, b1, M.serviceMetric(NET, M.GROSS)), 0);
+        assertEq(_cell(2, b1, _svc(NET, M.GROSS)), 0);
         assertEq(uint8(ledger.entryOf(r).kind), uint8(ILedger.EntryKind.None));
     }
 
@@ -141,10 +142,10 @@ contract LedgerSpendTest is PlatformFixture {
         emit ILedger.Posted(1, a, b2, r, ILedger.EntryKind.WalletSpend, alice, IQR, WALLET, 108_000, 8000, actor, 0);
         poster.walletSpend(_ctx(r, b2), alice, IQR, 108_000, 0);
         assertEq(ledger.entryOf(r).taxBps, 800);
-        assertEq(_cell(1, a, M.serviceMetric(IQR, M.TAX)), 8000);
-        assertEq(_cell(2, b2, M.serviceMetric(IQR, M.TAX)), 8000);
-        assertEq(_cell(0, 0, M.serviceMetric(IQR, M.TAX)), 8000);
-        assertEq(_cell(1, a, M.serviceMetric(IQR, M.GROSS)), 108_000);
+        assertEq(_cell(1, a, _svc(IQR, M.TAX)), 8000);
+        assertEq(_cell(2, b2, _svc(IQR, M.TAX)), 8000);
+        assertEq(_cell(0, 0, _svc(IQR, M.TAX)), 8000);
+        assertEq(_cell(1, a, _svc(IQR, M.GROSS)), 108_000);
     }
 
     function test_spend_taxPostedEvent() public {
@@ -163,22 +164,22 @@ contract LedgerSpendTest is PlatformFixture {
         _topup(b1, 20_000);
         _topup(b2, 30_000);
         _spend(b2, NET, 40_000, 5000);
-        assertEq(_cell(1, a, M.serviceMetric(NET, M.DISCOUNT)), 5000);
-        assertEq(_cell(2, b2, M.serviceMetric(NET, M.DISCOUNT)), 5000);
-        assertEq(_cell(2, b1, M.serviceMetric(NET, M.DISCOUNT)), 0);
+        assertEq(_cell(1, a, _svc(NET, M.DISCOUNT)), 5000);
+        assertEq(_cell(2, b2, _svc(NET, M.DISCOUNT)), 5000);
+        assertEq(_cell(2, b1, _svc(NET, M.DISCOUNT)), 0);
     }
 
     function test_spend_rejects() public {
         _topup(b2, 100_000);
         ILedger.Ctx memory c = _ctx(_ref(), b2);
-        vm.expectRevert(abi.encodeWithSelector(ILedger.InvalidService.selector, uint16(4)));
-        poster.walletSpend(c, alice, 4, 1, 0);
+        vm.expectRevert(abi.encodeWithSelector(MockLedgerPoster.NoPosterFor.selector, uint16(4)));
+        poster.walletSpend(c, alice, 4, 1, 0); // Loyalty không có poster bán hàng
         vm.expectRevert(ILedger.ZeroAmount.selector);
         poster.walletSpend(c, alice, NET, 0, 0);
 
         vm.prank(stranger);
         vm.expectRevert(abi.encodeWithSelector(ILedger.NotPoster.selector, stranger, ILedger.EntryKind.WalletSpend));
-        ledger.walletSpend(c, alice, NET, 1, 0);
+        ledger.walletSpend(c, alice, 1, 0);
 
         vm.prank(platformAdmin);
         branches.setBranchServices(b2, IQR);
@@ -204,7 +205,7 @@ contract LedgerSpendTest is PlatformFixture {
     }
 
     function _cellAt(uint8 scope, uint64 id, uint32 d, uint256 metric) internal view returns (uint256) {
-        return ledger.rollup(scope, id, d, d)[0][metric];
+        return _rollCell(scope, id, d, metric);
     }
 
     function test_spend_dayAttributionAcrossTimezones() public {
@@ -221,9 +222,9 @@ contract LedgerSpendTest is PlatformFixture {
         _topup(b1, 50_000);
         _spend(b2, NET, 11_000, 0);
 
-        uint256 g = M.serviceMetric(NET, M.GROSS);
-        uint256 t = M.serviceMetric(NET, M.TAX);
-        uint256 sh = M.serviceMetric(NET, M.SERVED_HERE);
+        uint256 g = _svc(NET, M.GROSS);
+        uint256 t = _svc(NET, M.TAX);
+        uint256 sh = _svc(NET, M.SERVED_HERE);
         uint8[3] memory scopes = [uint8(0), 1, 2];
         uint64[3] memory ids = [uint64(0), a, b1];
         for (uint256 i; i < 3; ++i) {
