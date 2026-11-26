@@ -1,6 +1,6 @@
 # Module NET — phòng máy (`src/modules/net`)
 
-Trạng thái: **Đặc tả — chờ người dùng duyệt** (2026-11-26). Chưa có code.
+Trạng thái: **Đã giao Cursor** (2026-11-26) — `tasks/18-net-module.md`. 6 câu mục 11 dùng giá trị đề xuất làm mặc định (bảng "Quyết định đã chốt" trong file task); người dùng đổi được trước review N2.
 NET là **module mẫu**: module đầu tiên cắm vào nền tảng theo Module Contract (ADR 0030). Mục 3 đối chiếu từng nghĩa vụ; chỗ nào chuẩn chưa đủ ghi ở mục 4 và phải sửa **trước** khi code NET, không lách trong NET.
 
 Kịch bản chuẩn phục vụ: `docs/09-kich-ban-chuan.md` bước 5, 6, 10, 13 và biến thể F1, F3, F4.
