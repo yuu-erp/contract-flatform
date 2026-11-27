@@ -64,7 +64,7 @@ Bảng đầy đủ "contract – câu hỏi nó trả lời – trạng thái":
 | `shared/desk/` | T2 | ✅ `CustomerDesk` (quầy khách, ADR 0035) | nhân viên có quyền |
 | `shared/permission/` | T2 | ✅ `Permission` (ADR 0033) | Manager+ |
 | `shared/duty/` | T2 | ✅ `Duty` (ADR 0033) | Manager+, nhân viên (vào/ra ca); trần tăng ca: chủ agent |
-| `shared/resource/` | T2 | `Resource` (thiết bị/tài nguyên: danh tính + trạng thái) | Manager+ |
+| `shared/resource/` | T2 | ✅ `Resource` (định danh thiết bị, ADR 0036) | Manager+ của chi nhánh |
 | `migration/` | ngoài cây | `Migration` | `MIGRATOR`, thu hồi sau `finalize` |
 
 ### 2.3 `src/modules/`

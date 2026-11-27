@@ -13,6 +13,7 @@ impl    src/shared/permission/Permission.sol:Permission
 impl    src/shared/duty/Duty.sol:Duty
 impl    src/tenant/delegate/DelegateRegistry.sol:DelegateRegistry
 impl    src/shared/desk/CustomerDesk.sol:CustomerDesk
+impl    src/shared/resource/Resource.sol:Resource
 harness test/layout/PlatformLayouts.sol:PlatformAccessLayout
 harness test/layout/PlatformLayouts.sol:PlatformAccessedLayout
 harness test/layout/PlatformLayouts.sol:HistoryIndexLayout
@@ -36,3 +37,5 @@ harness test/layout/PlatformLayouts.sol:DutyRowsLayout
 harness test/layout/PlatformLayouts.sol:DelegateRegistryLayout
 harness test/layout/PlatformLayouts.sol:DelegateRegistryRowsLayout
 harness test/layout/PlatformLayouts.sol:CustomerDeskLayout
+harness test/layout/PlatformLayouts.sol:ResourceLayout
+harness test/layout/PlatformLayouts.sol:ResourceRowsLayout

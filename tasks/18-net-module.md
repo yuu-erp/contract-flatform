@@ -50,12 +50,12 @@ Người dùng giao việc 2026-11-26 khi đặc tả còn 6 câu hỏi (net.md 
 
 **Files:** `docs/adr/0036-resource.md`, `docs/adr/README.md`, `docs/02-kien-truc.md` (bảng mục 3 + mục 9), `src/interfaces/IResource.sol`, `src/shared/resource/Resource.sol`, `test/shared/resource/Resource.t.sol`, fixture, layout, `script/DeployPlatform.s.sol`, `script/UpgradeProxy.s.sol`, `Makefile` (abi).
 
-- [ ] ADR 0036 (trạng thái "Đề xuất — Claude review"): câu hỏi `Resource` trả lời "thiết bị này là gì, thuộc chi nhánh nào, module nào, khoá ký nào, còn dùng không?"; lý do vào T2 (NET máy trạm, IQR màn bếp, Enterprise máy chấm công — đủ L3).
-- [ ] Dữ liệu: `deviceId` (`uint64`, đếm toàn cục), `branchId`, `moduleId` (`uint8`, phải đăng ký ở Registry), `signer` (`address`, duy nhất toàn hệ), `status` (`None/Active/Disabled`), `label` (1–32 byte). Chỉ mục `signer → deviceId`, `branchId → deviceId[]` (≤ 512 / chi nhánh).
-- [ ] Hàm: `registerDevice(branchId, moduleId, signer, label)`, `setSigner(deviceId, signer)` (thay máy / lộ khoá), `setDeviceStatus(deviceId, status)`; quyền: Manager+ của chi nhánh (`IAgentAccess.effectiveRoleOf` sau `resolve`) — **không** dùng bit quyền module để `Resource` không phụ thuộc danh mục từng module. View: `getDevice`, `deviceOfSigner(signer)`, `devicesOf(branchId, offset, limit)`, `requireActiveDevice(signer, moduleId) returns (deviceId, branchId)` (revert nếu không Active, sai module, chi nhánh không Active).
-- [ ] Không biết tên module (L2). Event version 1.
-- [ ] Test: đăng ký / đổi khoá / vô hiệu, khoá trùng bị từ chối, sai module, Staff không đăng ký được, phân trang, `requireActiveDevice` các nhánh lỗi.
-- [ ] Nghiệm thu: `make ci` xanh; Resource ≤ 12 KB.
+- [x] ADR 0036 (trạng thái "Đề xuất — Claude review"): câu hỏi `Resource` trả lời "thiết bị này là gì, thuộc chi nhánh nào, module nào, khoá ký nào, còn dùng không?"; lý do vào T2 (NET máy trạm, IQR màn bếp, Enterprise máy chấm công — đủ L3).
+- [x] Dữ liệu: `deviceId` (`uint64`, đếm toàn cục), `branchId`, `moduleId` (`uint8`, phải đăng ký ở Registry), `signer` (`address`, duy nhất toàn hệ), `status` (`None/Active/Disabled`), `label` (1–32 byte). Chỉ mục `signer → deviceId`, `branchId → deviceId[]` (≤ 512 / chi nhánh).
+- [x] Hàm: `registerDevice(branchId, moduleId, signer, label)`, `setSigner(deviceId, signer)` (thay máy / lộ khoá), `setDeviceStatus(deviceId, status)`; quyền: Manager+ của chi nhánh (`IAgentAccess.effectiveRoleOf` sau `resolve`) — **không** dùng bit quyền module để `Resource` không phụ thuộc danh mục từng module. View: `getDevice`, `deviceOfSigner(signer)`, `devicesOf(branchId, offset, limit)`, `requireActiveDevice(signer, moduleId) returns (deviceId, branchId)` (revert nếu không Active, sai module, chi nhánh không Active).
+- [x] Không biết tên module (L2). Event version 1.
+- [x] Test: đăng ký / đổi khoá / vô hiệu, khoá trùng bị từ chối, sai module, Staff không đăng ký được, phân trang, `requireActiveDevice` các nhánh lỗi.
+- [x] Nghiệm thu: `make ci` xanh; Resource ≤ 12 KB.
 
 ### Task N0b: Hook an toàn cho module bổ trợ — F2
 

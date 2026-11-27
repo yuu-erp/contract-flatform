@@ -52,6 +52,7 @@ abi:
 	forge inspect Duty abi --json > abi/Duty.json
 	forge inspect DelegateRegistry abi --json > abi/DelegateRegistry.json
 	forge inspect CustomerDesk abi --json > abi/CustomerDesk.json
+	forge inspect Resource abi --json > abi/Resource.json
 
 # Chỉ người dùng chạy. Cần PRIVATE_KEY và RPC_URL trong .env (foundry nạp .env; rpc "platform" = ${RPC_URL}).
 # FOUNDry doc: bien trong .env duoc nap; neu FULLDB khong ap dung, chay: FULLDB=0x... make deploy
@@ -92,7 +93,7 @@ deploy-mock-fulldb:
 # deployments/platform-<chainid>.json. Cần PRIVATE_KEY (owner). Ví dụ: make upgrade CONTRACT=AgentRegistry
 # Target tự chạy kiểm storage layout trước. Hướng dẫn: docs/07-deploy-va-nang-cap.md.
 upgrade:
-	@test -n "$(CONTRACT)" || (echo "Thiếu CONTRACT=PlatformAccess|Registry|HistoryIndex|AgentRegistry|BranchRegistry|AgentAccess|SalesSettings|Ledger|AgentUserRegistry|Permission|Duty|DelegateRegistry|CustomerDesk" && exit 1)
+	@test -n "$(CONTRACT)" || (echo "Thiếu CONTRACT=PlatformAccess|Registry|HistoryIndex|AgentRegistry|BranchRegistry|AgentAccess|SalesSettings|Ledger|AgentUserRegistry|Permission|Duty|DelegateRegistry|CustomerDesk|Resource" && exit 1)
 	python3 scripts/storage_layout.py check
 	CONTRACT=$(CONTRACT) forge script script/UpgradeProxy.s.sol --rpc-url platform --broadcast
 

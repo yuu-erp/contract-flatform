@@ -17,6 +17,7 @@ import {Permission} from "../src/shared/permission/Permission.sol";
 import {Duty} from "../src/shared/duty/Duty.sol";
 import {DelegateRegistry} from "../src/tenant/delegate/DelegateRegistry.sol";
 import {CustomerDesk} from "../src/shared/desk/CustomerDesk.sol";
+import {Resource} from "../src/shared/resource/Resource.sol";
 
 /// @notice Deploy tầng quản trị: PlatformAccess → Registry (khai báo module mặc định) → HistoryIndex → AgentRegistry → BranchRegistry → AgentAccess → SalesSettings → Ledger → AgentUserRegistry,
 ///         rồi đăng ký các contract ghi (registry, branches, agentAccess, salesSettings, ledger) làm writer của HistoryIndex (mỗi contract chỉ các kind của nó), nối AgentAccess vào
@@ -53,6 +54,8 @@ contract DeployPlatform is Script {
         address delegateImpl;
         address deskProxy;
         address deskImpl;
+        address resourceProxy;
+        address resourceImpl;
         address owner;
         address admin;
     }
@@ -180,6 +183,7 @@ contract DeployPlatform is Script {
         );
 
         _deployAccounts(deployed);
+        _deployResource(deployed);
 
         HistoryIndex history = HistoryIndex(deployed.historyProxy);
         PlatformAccess access = PlatformAccess(deployed.accessProxy);
@@ -247,6 +251,26 @@ contract DeployPlatform is Script {
         );
     }
 
+    /// @dev Resource (T2, ADR 0036): định danh thiết bị, không gắn quyền module.
+    function _deployResource(Deployed memory deployed) internal {
+        deployed.resourceImpl = address(new Resource());
+        deployed.resourceProxy = address(
+            new ERC1967Proxy(
+                deployed.resourceImpl,
+                abi.encodeCall(
+                    Resource.initialize,
+                    (
+                        deployed.accessProxy,
+                        deployed.branchesProxy,
+                        deployed.agentAccessProxy,
+                        deployed.delegateProxy,
+                        deployed.registryProxy
+                    )
+                )
+            )
+        );
+    }
+
     function run() external {
         uint256 pk = vm.envUint("PRIVATE_KEY");
         address owner = vm.addr(pk);
@@ -275,6 +299,7 @@ contract DeployPlatform is Script {
         console2.log("dutyProxy", deployed.dutyProxy);
         console2.log("delegateProxy", deployed.delegateProxy);
         console2.log("deskProxy", deployed.deskProxy);
+        console2.log("resourceProxy", deployed.resourceProxy);
         console2.log("wrote", path);
     }
 
@@ -319,6 +344,8 @@ contract DeployPlatform is Script {
         vm.serializeAddress(obj, "delegateImpl", deployed.delegateImpl);
         vm.serializeAddress(obj, "deskProxy", deployed.deskProxy);
         vm.serializeAddress(obj, "deskImpl", deployed.deskImpl);
+        vm.serializeAddress(obj, "resourceProxy", deployed.resourceProxy);
+        vm.serializeAddress(obj, "resourceImpl", deployed.resourceImpl);
         vm.serializeAddress(obj, "owner", deployed.owner);
         string memory json = vm.serializeAddress(obj, "admin", deployed.admin);
         vm.writeJson(json, path);

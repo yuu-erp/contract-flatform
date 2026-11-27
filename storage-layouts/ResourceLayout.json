@@ -1,0 +1,56 @@
+[
+ [
+  "s",
+  0,
+  0,
+  "struct Resource.ResourceStorage"
+ ],
+ [
+  "s.branches",
+  0,
+  0,
+  "contract IBranchRegistry"
+ ],
+ [
+  "s.agentAccess",
+  1,
+  0,
+  "contract IAgentAccess"
+ ],
+ [
+  "s.delegate",
+  2,
+  0,
+  "contract IDelegateRegistry"
+ ],
+ [
+  "s.registry",
+  3,
+  0,
+  "contract IRegistry"
+ ],
+ [
+  "s.nextId",
+  3,
+  20,
+  "uint64"
+ ],
+ [
+  "s.devices",
+  4,
+  0,
+  "mapping(uint64 => struct IResource.Device)"
+ ],
+ [
+  "s.deviceBySigner",
+  5,
+  0,
+  "mapping(address => uint64)"
+ ],
+ [
+  "s.devicesOfBranch",
+  6,
+  0,
+  "mapping(uint64 => uint64[])"
+ ]
+]

@@ -17,6 +17,8 @@ import {IDuty} from "../../src/interfaces/IDuty.sol";
 import {DelegateRegistry} from "../../src/tenant/delegate/DelegateRegistry.sol";
 import {IDelegateRegistry} from "../../src/interfaces/IDelegateRegistry.sol";
 import {CustomerDesk} from "../../src/shared/desk/CustomerDesk.sol";
+import {Resource} from "../../src/shared/resource/Resource.sol";
+import {IResource} from "../../src/interfaces/IResource.sol";
 import {Ledger} from "../../src/shared/ledger/Ledger.sol";
 import {AgentUserRegistry} from "../../src/tenant/user/AgentUserRegistry.sol";
 import {IAgentUserRegistry} from "../../src/interfaces/IAgentUserRegistry.sol";
@@ -127,4 +129,12 @@ contract DelegateRegistryRowsLayout {
 
 contract CustomerDeskLayout {
     CustomerDesk.DeskStorage internal s;
+}
+
+contract ResourceLayout {
+    Resource.ResourceStorage internal s;
+}
+
+contract ResourceRowsLayout {
+    IResource.Device internal deviceRow;
 }

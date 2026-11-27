@@ -18,6 +18,7 @@ import {Permission} from "../../src/shared/permission/Permission.sol";
 import {Duty} from "../../src/shared/duty/Duty.sol";
 import {DelegateRegistry} from "../../src/tenant/delegate/DelegateRegistry.sol";
 import {CustomerDesk} from "../../src/shared/desk/CustomerDesk.sol";
+import {Resource} from "../../src/shared/resource/Resource.sol";
 import {IBranchRegistry} from "../../src/interfaces/IBranchRegistry.sol";
 import {IAgentRegistry} from "../../src/interfaces/IAgentRegistry.sol";
 
@@ -41,6 +42,7 @@ abstract contract PlatformFixture is BaseTest {
     Duty internal duty;
     DelegateRegistry internal delegate;
     CustomerDesk internal desk;
+    Resource internal resource;
 
     uint16 internal constant NET = 1;
     uint16 internal constant IQR = 2;
@@ -176,6 +178,16 @@ abstract contract PlatformFixture is BaseTest {
         permission.setDelegate(address(delegate));
         duty.setDelegate(address(delegate));
         vm.stopPrank();
+
+        resource = Resource(
+            deployProxy(
+                address(new Resource()),
+                abi.encodeCall(
+                    Resource.initialize,
+                    (address(access), address(branches), address(agentAccess), address(delegate), address(modules))
+                )
+            )
+        );
     }
 
     /// @dev Danh mục quyền nền tảng (docs/modules/shared-permission-duty.md mục 1): bit 0..7 Staff, 8..10 chỉ Manager.

@@ -1,0 +1,38 @@
+[
+ [
+  "deviceRow",
+  0,
+  0,
+  "struct IResource.Device"
+ ],
+ [
+  "deviceRow.signer",
+  0,
+  0,
+  "address"
+ ],
+ [
+  "deviceRow.branchId",
+  0,
+  20,
+  "uint64"
+ ],
+ [
+  "deviceRow.moduleId",
+  0,
+  28,
+  "uint8"
+ ],
+ [
+  "deviceRow.status",
+  0,
+  29,
+  "enum IResource.Status"
+ ],
+ [
+  "deviceRow.label",
+  1,
+  0,
+  "string"
+ ]
+]
