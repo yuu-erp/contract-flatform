@@ -41,8 +41,13 @@ Trần ngày theo chi nhánh để sau (Y4: quy mô nhỏ).
 
 ### C4. Hook an toàn
 
-- Dịch vụ chính báo Loyalty (và module bổ trợ khác) qua `interfaces/ILoyaltyHook`, địa chỉ lấy từ `Registry`, **chỉ khi** Loyalty bật ở chi nhánh và đang `Active`.
-- Gọi với trần gas cố định + `try/catch`. Lỗi → phát `HookFailed(version, moduleId, hook, refId, data)`; giao dịch chính **vẫn thành công**.
+- Dịch vụ chính báo Loyalty (và module bổ trợ khác) qua `interfaces/ILoyaltyHook`, địa chỉ lấy từ `Registry.addressOf(keccak256("hook.loyalty"))`. **Chỉ khi** Loyalty bật ở chi nhánh và đang `Active` là việc của module gọi hook (đọc `BranchRegistry` + `Registry`); `libraries/SafeHook` **không** biết id Loyalty hay trạng thái chi nhánh (L2).
+- `SafeHook.call(hook, data, gasLimit)`:
+  - `hook == 0` hoặc không có code → `false`, không gọi.
+  - Trước `CALL`: `gasleft()` phải ≥ `gasLimit + gasLimit/63 + dự phòng` (EIP-150 63/64). Không đủ → không gọi, trả `false` (tránh kẻ gọi cố tình thiếu gas nền để né tích điểm).
+  - Gọi bằng assembly, `retSize = 0` — không copy returndata (hook xấu không được làm hết gas giao dịch chính bằng bom dữ liệu trả về).
+  - Mọi revert / hết gas trong hook → `false`; giao dịch chính **không** revert.
+- Khi `ok == false`: module phát `HookFailed(version, moduleId, hook, refId, data)` (`IHookEvents`); `moduleId` là module bổ trợ (ví dụ Loyalty), `data` là calldata đã encode.
 - Loyalty có hàm `replay` theo lô (quyền vận hành) để chạy bù từ sự kiện; tích điểm idempotent theo `refId` (bất biến "một hoá đơn tích một lần", `docs/01` mục 6).
 - Chiều ngược lại (dịch vụ chính hỏi "được trừ tối đa bao nhiêu điểm") là **tuỳ chọn**: Loyalty lỗi thì thanh toán tiếp tục không dùng điểm.
 

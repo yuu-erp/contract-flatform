@@ -70,7 +70,7 @@ Kịch bản chuẩn phục vụ: `docs/09-kich-ban-chuan.md` bước 5, 6, 10, 
 | 2. Quyền người thao tác qua `Permission.can()` | Người gọi quy về tài khoản bằng `DelegateRegistry.resolve`, rồi `requirePermission(branch, actor, 1, bit)` | ✅ |
 | 3. Tiền chỉ qua Ledger, giấy phép module | `walletSpend` / `refundSale`; không hàm nào nhận số tiền từ người gọi | ✅ |
 | 4. Lịch sử qua `HistoryIndex`, kind có tiền tố module | `net_sessions` | ✅ (ADR 0032 chưa chốt cách xử lý khi FullDB lỗi) |
-| 5. Báo module khác qua hook an toàn | `ILoyaltyHook.onSpend(...)` khi đóng phiên, trần gas + `try/catch` | ❌ **F2** — interface và cách gọi an toàn chưa có |
+| 5. Báo module khác qua hook an toàn | `ILoyaltyHook.onSpend(...)` khi đóng phiên, `SafeHook` (assembly, không copy returndata) | ✅ **F2** — N0b; NET tích hợp khi có `NetSessions` (N2) |
 | 6. Đặc tả, unit test, invariant tiền, test "module chết", gas | File này + mục 8 | ✅ |
 | (ngầm) Định danh thiết bị | Máy trạm ký `heartbeat` bằng khoá thiết bị | ✅ **F1** — `Resource` (ADR 0036, N0a) |
 | (ngầm) Một chỗ khai báo "contract này thuộc module nào" | Hiện phải khai 2 nơi: `Registry.setModuleContract` và `Ledger.setPoster(moduleId…)` | ⚠️ **F3** |

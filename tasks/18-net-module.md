@@ -63,11 +63,11 @@ Người dùng giao việc 2026-11-26 khi đặc tả còn 6 câu hỏi (net.md 
 
 **Files:** `src/interfaces/ILoyaltyHook.sol`, `src/libraries/SafeHook.sol` (hoặc `src/shared/hooks/` nếu cần state — ghi lý do), `docs/adr/0031-co-lap-loi.md` (bổ sung mục C4 chi tiết), test.
 
-- [ ] `ILoyaltyHook.onSpend(uint8 version, uint64 agentId, uint64 branchId, address account, uint8 moduleId, bytes32 refId, uint128 amount)` — gọi khi dịch vụ chính trừ tiền xong (NET: khi **đóng phiên**, với tổng đã trừ của phiên).
-- [ ] `SafeHook.call(address hook, bytes memory data, uint256 gasLimit) returns (bool ok)`: `hook == 0` → false; gọi với trần gas; nuốt mọi revert / hết gas; **không** để hook làm revert giao dịch chính (lưu ý 63/64 gas — kiểm còn đủ gas trước khi gọi).
-- [ ] Người gọi phát `HookFailed(uint8 version, uint8 moduleId, address hook, bytes32 refId, bytes data)` khi `ok = false`.
-- [ ] Địa chỉ hook: `IRegistry.addressOf(keccak256("hook.loyalty"))`; chỉ gọi khi chi nhánh bật Loyalty (`isServiceEnabled(branch, serviceBit(3))` — số 3 truyền từ cấu hình của NET, **không** hằng trong library) và module 3 Active.
-- [ ] Test với hook giả: revert, hết gas, vòng lặp vô tận, trả bình thường → giao dịch chính luôn thành công.
+- [x] `ILoyaltyHook.onSpend(uint8 version, uint64 agentId, uint64 branchId, address account, uint8 moduleId, bytes32 refId, uint128 amount)` — gọi khi dịch vụ chính trừ tiền xong (NET: khi **đóng phiên**, với tổng đã trừ của phiên).
+- [x] `SafeHook.call(address hook, bytes memory data, uint256 gasLimit) returns (bool ok)`: `hook == 0` → false; gọi với trần gas; nuốt mọi revert / hết gas; **không** để hook làm revert giao dịch chính (lưu ý 63/64 gas — kiểm còn đủ gas trước khi gọi).
+- [x] Người gọi phát `HookFailed(uint8 version, uint8 moduleId, address hook, bytes32 refId, bytes data)` khi `ok = false`.
+- [x] Địa chỉ hook: `IRegistry.addressOf(keccak256("hook.loyalty"))`; chỉ gọi khi chi nhánh bật Loyalty (`isServiceEnabled(branch, serviceBit(3))` — số 3 truyền từ cấu hình của NET, **không** hằng trong library) và module 3 Active — **do module gọi**, không trong `SafeHook`.
+- [x] Test với hook giả: revert, hết gas, vòng lặp vô tận, returndata lớn, EOA, reentrancy, thiếu gas nền → giao dịch chính luôn thành công.
 
 ### Task N0c: Ledger kiểm khai báo module ở Registry — F3
 
