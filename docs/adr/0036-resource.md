@@ -13,7 +13,7 @@ Bản đồ kiến trúc (`docs/02` mục 3) đã dành contract T2 `Resource` c
 Thêm `Resource` ở T2 (`src/shared/resource/`). Contract chỉ trả lời câu hỏi định danh:
 
 - `deviceId` đếm toàn cục (`uint64`, bắt đầu từ 1).
-- `branchId`, `moduleId` (phải đã đăng ký ở `Registry`, chưa Retired; module đang Paused vẫn đăng ký được — cầu dao module không nằm ở đây).
+- `branchId`, `moduleId` (phải đã đăng ký ở `Registry`, chưa Retired; với `moduleId ≠ 0` chi nhánh phải bật dịch vụ tương ứng; `moduleId = 0` là thiết bị nền tảng; module đang Paused vẫn đăng ký được — cầu dao module không nằm ở đây).
 - `signer`: địa chỉ khoá của chính thiết bị, duy nhất toàn hệ. Đổi khoá thì nhả khoá cũ.
 - `status`: `Active` hoặc `Disabled`. Vô hiệu không xoá và không nhả khoá.
 - `label`: 1–32 byte, chỉ để nhận ra thiết bị.

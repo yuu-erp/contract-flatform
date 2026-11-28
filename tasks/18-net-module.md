@@ -59,7 +59,7 @@ Người dùng giao việc 2026-11-26 khi đặc tả còn 6 câu hỏi (net.md 
 
 ### Task N0b: Hook an toàn cho module bổ trợ — F2
 
-- [ ] **Đầu tiên — R1 từ review N0a** (`tasks/18-reports/N0a-review.md`): `Resource.registerDevice` kiểm chi nhánh bật module (`moduleId != 0`), lỗi `ModuleNotEnabled`, thêm test.
+- [x] **Đầu tiên — R1 từ review N0a** (`tasks/18-reports/N0a-review.md`): `Resource.registerDevice` kiểm chi nhánh bật module (`moduleId != 0`), lỗi `ModuleNotEnabled`, thêm test.
 
 **Files:** `src/interfaces/ILoyaltyHook.sol`, `src/libraries/SafeHook.sol` (hoặc `src/shared/hooks/` nếu cần state — ghi lý do), `docs/adr/0031-co-lap-loi.md` (bổ sung mục C4 chi tiết), test.
 

@@ -26,6 +26,7 @@ interface IResource {
     error UnknownSigner(address signer);
     error UnknownModule(uint8 moduleId);
     error ModuleRetired(uint8 moduleId);
+    error ModuleNotEnabled(uint64 branchId, uint8 moduleId);
     error SignerInUse(address signer);
     error DeviceNotActive(uint64 deviceId);
     error WrongModule(uint64 deviceId, uint8 expected, uint8 actual);
@@ -53,7 +54,8 @@ interface IResource {
     function MAX_LABEL() external view returns (uint256);
     function MAX_PAGE() external view returns (uint256);
 
-    /// @notice Đăng ký thiết bị đang Active. `moduleId` phải đã đăng ký ở Registry và chưa Retired.
+    /// @notice Đăng ký thiết bị đang Active. `moduleId` phải đã đăng ký ở Registry và chưa Retired;
+    ///         với `moduleId != 0`, chi nhánh phải bật dịch vụ của module (`isServiceEnabled`). `moduleId = 0` là thiết bị nền tảng.
     ///         `signer` duy nhất toàn hệ. Manager+ của chi nhánh (sau `resolve`).
     function registerDevice(uint64 branchId, uint8 moduleId, address signer, string calldata label)
         external

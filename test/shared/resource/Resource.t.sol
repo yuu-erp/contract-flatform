@@ -149,6 +149,19 @@ contract ResourceTest is StaffFixture {
         resource.registerDevice(b1, 1, pc2, "B");
     }
 
+    function test_moduleNotEnabledOnBranch() public {
+        vm.prank(agentOwner);
+        resource.registerDevice(b2, 1, pc, "NET");
+
+        vm.prank(agentOwner);
+        vm.expectRevert(abi.encodeWithSelector(IResource.ModuleNotEnabled.selector, b2, uint8(2)));
+        resource.registerDevice(b2, 2, pc2, "IQR");
+
+        vm.prank(branchManager);
+        resource.registerDevice(b1, 2, pc2, "IQR");
+        assertEq(resource.getDevice(2).moduleId, 2);
+    }
+
     function test_moduleMustBeRegistered_pausedStillOk() public {
         vm.prank(branchManager);
         vm.expectRevert(abi.encodeWithSelector(IResource.UnknownModule.selector, uint8(9)));

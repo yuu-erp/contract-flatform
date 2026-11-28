@@ -69,7 +69,7 @@ contract Resource is PlatformAccessed, IResource {
         address actor = _requireManager(branchId);
         if (signer == address(0)) revert ZeroAddress();
         _checkLabel(label);
-        _requireModule(moduleId);
+        _requireModule(branchId, moduleId);
 
         ResourceStorage storage $ = _s();
         if ($.deviceBySigner[signer] != 0) revert SignerInUse(signer);
@@ -158,10 +158,15 @@ contract Resource is PlatformAccessed, IResource {
         }
     }
 
-    function _requireModule(uint8 moduleId) private view {
-        IRegistry.ModuleStatus status = _s().registry.getModule(moduleId).status;
+    function _requireModule(uint64 branchId, uint8 moduleId) private view {
+        ResourceStorage storage $ = _s();
+        IRegistry r = $.registry;
+        IRegistry.ModuleStatus status = r.getModule(moduleId).status;
         if (status == IRegistry.ModuleStatus.None) revert UnknownModule(moduleId);
         if (status == IRegistry.ModuleStatus.Retired) revert ModuleRetired(moduleId);
+        if (moduleId != 0 && !$.branches.isServiceEnabled(branchId, r.serviceBit(moduleId))) {
+            revert ModuleNotEnabled(branchId, moduleId);
+        }
     }
 
     function _existing(ResourceStorage storage $, uint64 deviceId) private view returns (Device storage d) {
