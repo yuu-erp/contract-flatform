@@ -30,11 +30,11 @@ contract DeployStaffTest is BaseTest {
             .createBranch(
                 agentId,
                 IBranchRegistry.BranchInit({
-                    domain: "q1.vn",
-                    services: 1,
-                    tzOffsetMinutes: 420,
-                    profile: IBranchRegistry.BranchProfile("Q1", "", "", "", "")
-                })
+                domain: "q1.vn",
+                services: 1,
+                tzOffsetMinutes: 420,
+                profile: IBranchRegistry.BranchProfile("Q1", "", "", "", "")
+            })
             );
         vm.stopPrank();
     }
