@@ -61,7 +61,7 @@ Mỗi contract trả lời **đúng một câu hỏi** (luật L4). Tính năng 
 | T2 | `Permission` | Ví này có quyền P của module M ở chi nhánh B **lúc này** không? (vị trí, `can()`) | ✅ (`docs/modules/shared-permission-duty.md`) | `src/shared/permission/` |
 | T2 | `Duty` | Ai đang trực ca nào, vị trí nào, đến khi nào? (ca, phân công, phiên trực, tăng ca) | ✅ (`docs/modules/shared-permission-duty.md`) | `src/shared/duty/` |
 | T2 | `CustomerDesk` | Nhân viên này có được thao tác trên tài khoản khách không? (ADR 0035) | ✅ (`docs/modules/tenant-delegate.md`) | `src/shared/desk/` |
-| T2 | `Resource` | Thiết bị này là gì, thuộc chi nhánh nào, module nào, khoá ký nào, còn dùng không? | ✅ đề xuất ([ADR 0036](adr/0036-resource.md)) | `src/shared/resource/` |
+| T2 | `Resource` | Thiết bị này là gì, thuộc chi nhánh nào, module nào, khoá ký nào, còn dùng không? | ✅ ([ADR 0036](adr/0036-resource.md)) | `src/shared/resource/` |
 | T3 | `modules/net/*` | Tài khoản NET, máy trạm & giá, phiên chơi, nạp tại máy | Chưa | `src/modules/net/` |
 | T3 | `modules/iqr/*` | Thực đơn, khuyến mãi quán, đơn/bàn (máy trạng thái), đặt bàn | Chưa | `src/modules/iqr/` |
 | T3 | `modules/loyalty/*` | Thành viên, điểm theo batch có hạn, hạng, chiến dịch, voucher | Chưa | `src/modules/loyalty/` |
@@ -146,7 +146,7 @@ Chi tiết: ADR 0031.
 | 0033 | Mô hình quyền: Permission + Duty | **Chốt hướng** (`docs/adr/0033-mo-hinh-quyen.md`) |
 | 0034 | Thư mục theo tầng | **Chốt** (`docs/adr/0034-thu-muc-theo-tang.md`) |
 | 0035 | Thao tác nhân viên trên tài khoản khách | **Chốt, đã cài** — phương án B, `CustomerDesk` (`docs/adr/0035-thao-tac-nhan-vien-tren-tai-khoan.md`) |
-| 0036 | Resource: định danh thiết bị dùng chung | **Đề xuất — Claude review** (`docs/adr/0036-resource.md`) |
+| 0036 | Resource: định danh thiết bị dùng chung | **Chốt, đã cài** (`docs/adr/0036-resource.md`) |
 
 ## 10. Nợ kiến trúc hiện có (đo 2026-11-26)
 

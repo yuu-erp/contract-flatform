@@ -72,7 +72,7 @@ Kịch bản chuẩn phục vụ: `docs/09-kich-ban-chuan.md` bước 5, 6, 10, 
 | 4. Lịch sử qua `HistoryIndex`, kind có tiền tố module | `net_sessions` | ✅ (ADR 0032 chưa chốt cách xử lý khi FullDB lỗi) |
 | 5. Báo module khác qua hook an toàn | `ILoyaltyHook.onSpend(...)` khi đóng phiên, trần gas + `try/catch` | ❌ **F2** — interface và cách gọi an toàn chưa có |
 | 6. Đặc tả, unit test, invariant tiền, test "module chết", gas | File này + mục 8 | ✅ |
-| (ngầm) Định danh thiết bị | Máy trạm ký `heartbeat` bằng khoá thiết bị | ❌ **F1** — `Resource` chưa có |
+| (ngầm) Định danh thiết bị | Máy trạm ký `heartbeat` bằng khoá thiết bị | ✅ **F1** — `Resource` (ADR 0036, N0a) |
 | (ngầm) Một chỗ khai báo "contract này thuộc module nào" | Hiện phải khai 2 nơi: `Registry.setModuleContract` và `Ledger.setPoster(moduleId…)` | ⚠️ **F3** |
 | (ngầm) Quy trình cắm module | Chưa có script mẫu: deploy → `setModuleContract` → `updateModule` (quyền) → giấy phép Ledger → writer HistoryIndex | ⚠️ **F4** |
 

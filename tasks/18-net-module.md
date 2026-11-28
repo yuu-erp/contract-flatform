@@ -59,6 +59,8 @@ Người dùng giao việc 2026-11-26 khi đặc tả còn 6 câu hỏi (net.md 
 
 ### Task N0b: Hook an toàn cho module bổ trợ — F2
 
+- [ ] **Đầu tiên — R1 từ review N0a** (`tasks/18-reports/N0a-review.md`): `Resource.registerDevice` kiểm chi nhánh bật module (`moduleId != 0`), lỗi `ModuleNotEnabled`, thêm test.
+
 **Files:** `src/interfaces/ILoyaltyHook.sol`, `src/libraries/SafeHook.sol` (hoặc `src/shared/hooks/` nếu cần state — ghi lý do), `docs/adr/0031-co-lap-loi.md` (bổ sung mục C4 chi tiết), test.
 
 - [ ] `ILoyaltyHook.onSpend(uint8 version, uint64 agentId, uint64 branchId, address account, uint8 moduleId, bytes32 refId, uint128 amount)` — gọi khi dịch vụ chính trừ tiền xong (NET: khi **đóng phiên**, với tổng đã trừ của phiên).
@@ -82,6 +84,7 @@ Người dùng giao việc 2026-11-26 khi đặc tả còn 6 câu hỏi (net.md 
 
 - [ ] Các bước theo thứ tự (một broadcast): deploy proxy các contract của module → `Registry.updateModule(id, …)` (danh mục quyền, cờ) → `Registry.setModuleContract` từng contract → `Ledger.setPoster(contract, id, kinds, maxAmount)` cho contract ghi tiền → `HistoryIndex.setWriter` + `setWriterKind(<tiền tố module>_*)` → (nếu có) `Registry.setAddress("hook.<module>", …)` → ghi `deployments/platform-<chainid>.json`.
 - [ ] Hàm `deploy()` không đọc env (test gọi được) + `run()` đọc env (như các script hiện có).
+- [ ] (Từ review N0a) `script/DeployResource.s.sol` + `make deploy-resource` cho hệ đang chạy: đọc deployments json, deploy proxy Resource, ghi `resourceProxy/Impl`; chạy sau `deploy-users`. Thêm vào `docs/07` mục 5.4b.
 
 ---
 

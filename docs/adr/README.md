@@ -33,4 +33,4 @@ Mỗi quyết định lớn một file `NNNN-ten-ngan.md`. Track xây hệ mới
 | [0033](0033-mo-hinh-quyen.md) | Mô hình quyền: Permission + Duty | Chốt, đã cài |
 | [0034](0034-thu-muc-theo-tang.md) | Thư mục theo tầng | Chốt |
 | [0035](0035-thao-tac-nhan-vien-tren-tai-khoan.md) | Thao tác nhân viên trên tài khoản khách (T1 không gọi lên T2) | Chốt, đã cài |
-| [0036](0036-resource.md) | Resource: định danh thiết bị dùng chung | Đề xuất — Claude review |
+| [0036](0036-resource.md) | Resource: định danh thiết bị dùng chung | Chốt |

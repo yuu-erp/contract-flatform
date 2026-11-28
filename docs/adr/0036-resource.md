@@ -1,6 +1,6 @@
 # 0036. Resource — định danh thiết bị dùng chung (T2)
 
-- Trạng thái: **Đề xuất — Claude review**
+- Trạng thái: **Chốt** — Claude review 2026-11-28 (`tasks/18-reports/N0a-review.md`); bổ sung R1 trong N0b
 - Ngày: 2026-11-27
 - Người duyệt: Claude (kỹ thuật thuần; không đổi quy tắc tiền)
 
@@ -36,3 +36,5 @@ Không lưu khu, giá, trạng thái phiên, hay tên module. Phần đó thuộ
 - Nâng cấp T2: ADR này, Claude review. Chưa đụng tiền.
 - `DeployPlatform` cắm proxy mới. Hệ đã deploy trên chain trước đó chưa có proxy này; script cắm thêm (kiểu `DeployAgentUsers`) chưa nằm trong N0a — anvil `make deploy-local` đi đường deploy đầy đủ nên có.
 - Thiết bị Disabled vẫn chiếm một suất trong trần 512. Xoá hẳn cần ADR riêng nếu vận hành cần tái sử dụng suất.
+- (Review) Thiết bị module dịch vụ chỉ đăng ký được ở chi nhánh **đang bật** module đó; `moduleId = 0` là thiết bị của nền tảng (ví dụ máy quầy).
+- (Review) Khoá thiết bị xác thực bằng `requireActiveDevice`, **không** bằng `DelegateRegistry.resolve` (hai sổ không kiểm trùng khoá với nhau).
